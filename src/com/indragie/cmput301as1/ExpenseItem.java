@@ -25,6 +25,10 @@ import org.joda.money.Money;
  * Model object representing a single item on an expense claim.
  */
 public class ExpenseItem {
+	//================================================================================
+    // Properties
+    //================================================================================
+
 	/**
 	 * Name of the expense item.
 	 */
@@ -47,6 +51,10 @@ public class ExpenseItem {
 	 */
 	private Money amount;
 	
+	//================================================================================
+    // Constructors
+    //================================================================================
+	
 	public ExpenseItem(String name, Date date, String category,
 			String description, Money amount) {
 		this.name = name;
@@ -55,6 +63,10 @@ public class ExpenseItem {
 		this.description = description;
 		this.amount = amount;
 	}
+	
+	//================================================================================
+    // Accessors
+    //================================================================================
 
 	public String getName() {
 		return name;
