@@ -17,6 +17,7 @@
 
 package com.indragie.cmput301as1;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,7 +29,9 @@ import java.util.NoSuchElementException;
 /**
  * Model object representing an expense claim.
  */
-public class ExpenseClaim {
+public class ExpenseClaim implements Serializable {
+	private static final long serialVersionUID = 4097224167619777631L;
+	
 	//================================================================================
 	// Properties
 	//================================================================================

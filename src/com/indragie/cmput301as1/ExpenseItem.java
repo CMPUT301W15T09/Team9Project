@@ -17,6 +17,7 @@
 
 package com.indragie.cmput301as1;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.joda.money.Money;
@@ -24,7 +25,9 @@ import org.joda.money.Money;
 /**
  * Model object representing a single item on an expense claim.
  */
-public class ExpenseItem {
+public class ExpenseItem implements Serializable {
+	private static final long serialVersionUID = -5923561360068724438L;
+	
 	//================================================================================
 	// Properties
 	//================================================================================
