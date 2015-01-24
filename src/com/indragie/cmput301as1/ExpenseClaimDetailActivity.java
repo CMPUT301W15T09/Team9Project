@@ -11,12 +11,12 @@ import android.view.MenuItem;
  * An activity representing a single Claim detail screen. This
  * activity is only used on handset devices. On tablet-size devices,
  * item details are presented side-by-side with a list of items
- * in a {@link ClaimListActivity}.
+ * in a {@link ExpenseClaimListActivity}.
  * <p>
  * This activity is mostly just a 'shell' activity containing nothing
- * more than a {@link ClaimDetailFragment}.
+ * more than a {@link ExpenseClaimDetailFragment}.
  */
-public class ClaimDetailActivity extends Activity {
+public class ExpenseClaimDetailActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +39,9 @@ public class ClaimDetailActivity extends Activity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(ClaimDetailFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(ClaimDetailFragment.ARG_ITEM_ID));
-            ClaimDetailFragment fragment = new ClaimDetailFragment();
+            arguments.putString(ExpenseClaimDetailFragment.ARG_ITEM_ID,
+                    getIntent().getStringExtra(ExpenseClaimDetailFragment.ARG_ITEM_ID));
+            ExpenseClaimDetailFragment fragment = new ExpenseClaimDetailFragment();
             fragment.setArguments(arguments);
             getFragmentManager().beginTransaction()
                     .add(R.id.claim_detail_container, fragment)
@@ -59,7 +59,7 @@ public class ClaimDetailActivity extends Activity {
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
-            navigateUpTo(new Intent(this, ClaimListActivity.class));
+            navigateUpTo(new Intent(this, ExpenseClaimListActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);

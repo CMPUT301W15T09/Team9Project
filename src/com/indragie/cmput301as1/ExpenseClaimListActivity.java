@@ -7,7 +7,7 @@ import android.app.Activity;
 /**
  * An activity that presents a list of expense claims.
  */
-public class ClaimListActivity extends Activity implements ClaimListFragment.Callbacks {
+public class ExpenseClaimListActivity extends Activity implements ExpenseClaimListFragment.Callbacks {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -16,8 +16,8 @@ public class ClaimListActivity extends Activity implements ClaimListFragment.Cal
 
     @Override
     public void onItemSelected(String id) {
-    	Intent detailIntent = new Intent(this, ClaimDetailActivity.class);
-        detailIntent.putExtra(ClaimDetailFragment.ARG_ITEM_ID, id);
+    	Intent detailIntent = new Intent(this, ExpenseClaimDetailActivity.class);
+        detailIntent.putExtra(ExpenseClaimDetailFragment.ARG_ITEM_ID, id);
         startActivity(detailIntent);
     }
 }
