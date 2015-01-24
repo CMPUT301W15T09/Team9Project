@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".ClaimListActivity"
+            android:name=".ExpenseClaimListActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,12 +23,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ClaimDetailActivity"
+            android:name=".ExpenseClaimDetailActivity"
             android:label="@string/title_claim_detail"
-            android:parentActivityName=".ClaimListActivity" >
+            android:parentActivityName=".ExpenseClaimListActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.indragie.cmput301as1.ClaimListActivity" />
+                android:value="com.indragie.cmput301as1.ExpenseClaimListActivity" />
         </activity>
     </application>
 
