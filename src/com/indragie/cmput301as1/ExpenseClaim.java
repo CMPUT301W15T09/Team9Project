@@ -47,7 +47,7 @@ public class ExpenseClaim implements Serializable {
 	/**
 	 * Expense items contained in the claim.
 	 */
-	private ArrayList<ExpenseItem> items;
+	private List<ExpenseItem> items;
 
 	/**
 	 * Possible statuses for an expense claim.
@@ -80,6 +80,7 @@ public class ExpenseClaim implements Serializable {
 		this.name = name;
 		this.description = description;
 		this.status = status;
+		this.items = new ArrayList<ExpenseItem>();
 	}
 
 	//================================================================================
@@ -102,12 +103,20 @@ public class ExpenseClaim implements Serializable {
 		this.description = description;
 	}
 
-	public ArrayList<ExpenseItem> getItems() {
-		return items;
+	public List<ExpenseItem> getItems() {
+		return Collections.unmodifiableList(items);
+	}
+	
+	public void setItems(List<ExpenseItem> items) {
+		this.items = items;
 	}
 
-	public void setItems(ArrayList<ExpenseItem> items) {
-		this.items = items;
+	public void addItem(ExpenseItem item) {
+		items.add(item);
+	}
+	
+	public void removeItem(int index) {
+		items.remove(index);
 	}
 
 	public Status getStatus() {
