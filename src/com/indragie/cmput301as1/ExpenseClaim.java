@@ -23,8 +23,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.NoSuchElementException;
+
+import org.joda.money.*;
 
 /**
  * Model object representing an expense claim.
@@ -147,5 +150,37 @@ public class ExpenseClaim implements Serializable {
 		ExpenseItem min = Collections.min(items, itemComparator);
 		ExpenseItem max = Collections.max(items, itemComparator);
 		return Arrays.asList(min.getDate(), max.getDate());
+	}
+	
+	/**
+	 * @return If the claim has expense items, this method returns a string
+	 * containing the totaled amounts of all of the currencies in its expense
+	 * items. For example: "USD 5.64, CAD 100.79". If there are no expense
+	 * items, this method returns null.
+	 */
+	public String getSummarizedAmounts() {
+		if (items.size() == 0) return null;
+		
+		HashMap<CurrencyUnit, Money> unitToMoneyMap = new HashMap<CurrencyUnit, Money>();
+		for (ExpenseItem item : items) {
+			Money amount = item.getAmount();
+			CurrencyUnit unit = amount.getCurrencyUnit();
+			
+			Money current = unitToMoneyMap.get(unit);
+			if (current == null) {
+				current = Money.zero(unit);
+			}
+			
+			unitToMoneyMap.put(unit, current.plus(item.getAmount()));
+		}
+		
+		StringBuilder builder = new StringBuilder();
+		for (Money amount : unitToMoneyMap.values()) {
+			builder.append(amount.toString());
+			builder.append(',');
+		}
+		// Remove trailing comma
+		builder.deleteCharAt(builder.length() - 1);
+		return builder.toString();
 	}
 }
