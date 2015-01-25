@@ -64,9 +64,11 @@ public class ExpenseClaimListActivity extends ListActivity {
 		if (resultCode != RESULT_OK) return;
 
 		if (requestCode == ADD_EXPENSE_CLAIM_REQUEST) {
-			Bundle extras = data.getExtras();
-			String name = extras.getString(AddExpenseClaimActivity.EXTRA_EXPENSE_CLAIM_NAME, getResources().getString(R.string.default_name));
-			String description = extras.getString(AddExpenseClaimActivity.EXTRA_EXPENSE_CLAIM_DESCRIPTION);
+			String name = data.getStringExtra(AddExpenseClaimActivity.EXTRA_EXPENSE_CLAIM_NAME);
+			if (name == null) {
+				name = getResources().getString(R.string.default_name);
+			}
+			String description = data.getStringExtra(AddExpenseClaimActivity.EXTRA_EXPENSE_CLAIM_DESCRIPTION);
 			addExpenseClaim(name, description);
 		}
 	}
