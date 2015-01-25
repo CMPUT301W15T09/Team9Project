@@ -1,7 +1,26 @@
+/* 
+ * Copyright (C) 2015 Indragie Karunaratne
+ * 
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *  
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.indragie.cmput301as1;
 
-import com.indragie.cmput301as1.dummy.DummyContent;
+import java.util.Arrays;
+import java.util.List;
 
+import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,20 +28,24 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.app.ListActivity;
 
 /**
  * An activity that presents a list of expense claims.
  */
 public class ExpenseClaimListActivity extends ListActivity {
+	private List<ExpenseClaim> claims;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(
+        ExpenseClaim claim1 = new ExpenseClaim("Claim 1", null, ExpenseClaim.Status.SUBMITTED);
+        ExpenseClaim claim2 = new ExpenseClaim("Claim 2", null, ExpenseClaim.Status.SUBMITTED);
+        claims = Arrays.asList(claim1, claim2);
+        setListAdapter(new ArrayAdapter<ExpenseClaim>(
                 this,
-                android.R.layout.simple_list_item_activated_1,
+                android.R.layout.simple_list_item_activated_2,
                 android.R.id.text1,
-                DummyContent.ITEMS));
+                claims));
     }
 
     @Override
