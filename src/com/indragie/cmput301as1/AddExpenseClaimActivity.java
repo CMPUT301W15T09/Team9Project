@@ -3,7 +3,6 @@ package com.indragie.cmput301as1;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.TextView;
 
 public class AddExpenseClaimActivity extends EditingActivity {
@@ -32,9 +31,9 @@ public class AddExpenseClaimActivity extends EditingActivity {
 	protected void onDone() {
 		Intent intent = new Intent();
 
-		TextView nameTextView = (TextView)findViewById(R.id.edit_text_expense_name);
+		TextView nameTextView = (TextView)findViewById(R.id.et_name);
 		intent.putExtra(EXTRA_EXPENSE_CLAIM_NAME, nameTextView.getText().toString());
-		TextView descriptionTextView = (TextView)findViewById(R.id.edit_text_expense_description);
+		TextView descriptionTextView = (TextView)findViewById(R.id.et_description);
 		intent.putExtra(EXTRA_EXPENSE_CLAIM_DESCRIPTION, descriptionTextView.getText().toString());
 
 		setResult(RESULT_OK, intent);

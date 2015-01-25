@@ -28,10 +28,8 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 /**
@@ -48,7 +46,7 @@ public class ExpenseClaimListActivity extends ListActivity {
 	// Properties
 	//================================================================================
 	private ArrayList<ExpenseClaim> claims;
-	private ArrayAdapter<ExpenseClaim> adapter;
+	private ExpenseClaimArrayAdapter adapter;
 
 	//================================================================================
 	// Activity Callbacks
@@ -57,11 +55,7 @@ public class ExpenseClaimListActivity extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		claims = loadExpenseClaims();
-		adapter = new ArrayAdapter<ExpenseClaim>(
-				this,
-				android.R.layout.simple_list_item_activated_2,
-				android.R.id.text1,
-				claims);
+		adapter = new ExpenseClaimArrayAdapter(this, claims);
 		setListAdapter(adapter);
 	}
 
@@ -79,8 +73,7 @@ public class ExpenseClaimListActivity extends ListActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.expense_claim_list, menu);
+		getMenuInflater().inflate(R.menu.expense_claim_list, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 
