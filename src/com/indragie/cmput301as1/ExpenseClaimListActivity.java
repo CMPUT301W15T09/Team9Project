@@ -17,14 +17,16 @@
 
 package com.indragie.cmput301as1;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -39,7 +41,8 @@ public class ExpenseClaimListActivity extends ListActivity {
 	//================================================================================
 	// Constants
 	//================================================================================
-	private static final int ADD_CLAIM_REQUEST = 1;
+	private static final int ADD_EXPENSE_CLAIM_REQUEST = 1;
+	private static final String EXPENSE_CLAIM_FILENAME = "claims";
 
 	//================================================================================
 	// Properties
@@ -53,7 +56,7 @@ public class ExpenseClaimListActivity extends ListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		claims = new ArrayList<ExpenseClaim>();
+		claims = loadExpenseClaims();
 		adapter = new ArrayAdapter<ExpenseClaim>(
 				this,
 				android.R.layout.simple_list_item_activated_2,
@@ -66,10 +69,10 @@ public class ExpenseClaimListActivity extends ListActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode != RESULT_OK) return;
 
-		if (requestCode == ADD_CLAIM_REQUEST) {
+		if (requestCode == ADD_EXPENSE_CLAIM_REQUEST) {
 			Bundle extras = data.getExtras();
-			String name = extras.getString(AddExpenseClaimActivity.EXTRA_EXPENSE_NAME, getResources().getString(R.string.default_name));
-			String description = extras.getString(AddExpenseClaimActivity.EXTRA_EXPENSE_DESCRIPTION);
+			String name = extras.getString(AddExpenseClaimActivity.EXTRA_EXPENSE_CLAIM_NAME, getResources().getString(R.string.default_name));
+			String description = extras.getString(AddExpenseClaimActivity.EXTRA_EXPENSE_CLAIM_DESCRIPTION);
 			addExpenseClaim(name, description);
 		}
 	}
@@ -108,12 +111,40 @@ public class ExpenseClaimListActivity extends ListActivity {
 
 	private void openAddExpenseClaim() {
 		Intent addIntent = new Intent(this, AddExpenseClaimActivity.class);
-		startActivityForResult(addIntent, ADD_CLAIM_REQUEST);
+		startActivityForResult(addIntent, ADD_EXPENSE_CLAIM_REQUEST);
 	}
 
 	private void addExpenseClaim(String name, String description) {
 		ExpenseClaim claim = new ExpenseClaim(name, description);
 		claims.add(claim);
 		adapter.notifyDataSetChanged();
+		saveExpenseClaims();
+	}
+	
+	private void saveExpenseClaims() {
+		try {
+			FileOutputStream fos = openFileOutput(EXPENSE_CLAIM_FILENAME, 0);
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(claims);
+			oos.close();
+			fos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private ArrayList<ExpenseClaim> loadExpenseClaims() {
+		try {
+			FileInputStream fis = openFileInput(EXPENSE_CLAIM_FILENAME);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			Object obj = ois.readObject();
+			ois.close();
+			fis.close();
+			return (ArrayList<ExpenseClaim>)obj;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ArrayList<ExpenseClaim>();
+		}
 	}
 }
