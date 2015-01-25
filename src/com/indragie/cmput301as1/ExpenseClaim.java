@@ -77,7 +77,7 @@ public class ExpenseClaim implements Serializable {
 	/**
 	 * Current status of the expense claim.
 	 */
-	private Status status = Status.APPROVED;
+	private Status status = Status.DEFAULT;
 
 	//================================================================================
 	// Constructors
@@ -87,6 +87,8 @@ public class ExpenseClaim implements Serializable {
 		this.name = name;
 		this.description = description;
 		this.items = new ArrayList<ExpenseItem>();
+		ExpenseItem item = new ExpenseItem("Test item", new Date(), "category", "descr", Money.of(CurrencyUnit.USD, 51.6));
+		addItem(item);
 	}
 
 	//================================================================================
