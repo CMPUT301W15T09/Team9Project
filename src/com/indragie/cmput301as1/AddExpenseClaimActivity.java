@@ -23,11 +23,6 @@ public class AddExpenseClaimActivity extends EditingActivity {
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		return super.onOptionsItemSelected(item);
-	}
-
-	@Override
 	protected void onCancel() {
 		setResult(RESULT_CANCELED, new Intent());
 		finish();
