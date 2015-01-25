@@ -94,7 +94,7 @@ public class ExpenseClaimListActivity extends ListActivity {
 	@Override
 	public void onListItemClick(ListView listView, View view, int position, long id) {
 		Intent detailIntent = new Intent(this, ExpenseClaimDetailActivity.class);
-		detailIntent.putExtra(ExpenseClaimDetailFragment.ARG_ITEM_ID, id);
+		detailIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_CLAIM, claims.get(position));
 		startActivity(detailIntent);
 	}
 
