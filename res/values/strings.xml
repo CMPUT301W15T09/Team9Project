@@ -3,5 +3,6 @@
 
     <string name="app_name">karunara-notes</string>
     <string name="title_claim_detail">Claim Detail</string>
+    <string name="action_add_claim">Add Claim</string>
 
 </resources>
