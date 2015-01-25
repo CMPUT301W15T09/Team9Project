@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -58,7 +59,23 @@ public class ExpenseClaimListActivity extends ListActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.activity_claim_actions, menu);
+        inflater.inflate(R.menu.expense_claim_list, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add_claim:
+                addExpenseClaim();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    
+    private void addExpenseClaim() {
+    	Intent addIntent = new Intent(this, AddExpenseClaimActivity.class);
+    	startActivity(addIntent);
     }
 }
