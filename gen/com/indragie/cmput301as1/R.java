@@ -32,8 +32,8 @@ public final class R {
         public static final int action_done=0x7f080004;
         public static final int claim_detail=0x7f080005;
         public static final int claim_detail_container=0x7f080002;
-        public static final int editText1=0x7f080000;
-        public static final int editText2=0x7f080001;
+        public static final int edit_text_expense_description=0x7f080001;
+        public static final int edit_text_expense_name=0x7f080000;
     }
     public static final class layout {
         public static final int activity_add_expense_claim=0x7f030000;
@@ -49,6 +49,7 @@ public final class R {
         public static final int action_add_claim=0x7f050002;
         public static final int app_name=0x7f050000;
         public static final int cancel_label=0x7f050007;
+        public static final int default_name=0x7f050009;
         public static final int description_hint=0x7f050006;
         public static final int done_label=0x7f050008;
         public static final int name_hint=0x7f050005;

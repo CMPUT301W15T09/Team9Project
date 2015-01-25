@@ -17,12 +17,14 @@
 
 package com.indragie.cmput301as1;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -34,26 +36,42 @@ import android.widget.ListView;
  * An activity that presents a list of expense claims.
  */
 public class ExpenseClaimListActivity extends ListActivity {
-	private List<ExpenseClaim> claims;
+	//================================================================================
+	// Constants
+	//================================================================================
+	private static final int ADD_CLAIM_REQUEST = 1;
 	
+	//================================================================================
+	// Properties
+	//================================================================================
+	private ArrayList<ExpenseClaim> claims;
+	private ArrayAdapter<ExpenseClaim> adapter;
+	
+	//================================================================================
+	// Activity Callbacks
+	//================================================================================
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ExpenseClaim claim1 = new ExpenseClaim("Claim 1", null, ExpenseClaim.Status.SUBMITTED);
-        ExpenseClaim claim2 = new ExpenseClaim("Claim 2", null, ExpenseClaim.Status.SUBMITTED);
-        claims = Arrays.asList(claim1, claim2);
-        setListAdapter(new ArrayAdapter<ExpenseClaim>(
-                this,
+        claims = new ArrayList<ExpenseClaim>();
+        adapter = new ArrayAdapter<ExpenseClaim>(
+        		this,
                 android.R.layout.simple_list_item_activated_2,
                 android.R.id.text1,
-                claims));
+                claims);
+        setListAdapter(adapter);
     }
-
+    
     @Override
-    public void onListItemClick(ListView listView, View view, int position, long id) {
-    	Intent detailIntent = new Intent(this, ExpenseClaimDetailActivity.class);
-        detailIntent.putExtra(ExpenseClaimDetailFragment.ARG_ITEM_ID, id);
-        startActivity(detailIntent);
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    	if (resultCode != RESULT_OK) return;
+    	
+        if (requestCode == ADD_CLAIM_REQUEST) {
+        	Bundle extras = data.getExtras();
+            String name = extras.getString(AddExpenseClaimActivity.EXTRA_EXPENSE_NAME, getResources().getString(R.string.default_name));
+            String description = extras.getString(AddExpenseClaimActivity.EXTRA_EXPENSE_DESCRIPTION);
+            addExpenseClaim(name, description);
+        }
     }
     
     @Override
@@ -67,15 +85,35 @@ public class ExpenseClaimListActivity extends ListActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_claim:
-                addExpenseClaim();
+                openAddExpenseClaim();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    //================================================================================
+  	// ListView Callbacks
+  	//================================================================================
+    @Override
+    public void onListItemClick(ListView listView, View view, int position, long id) {
+    	Intent detailIntent = new Intent(this, ExpenseClaimDetailActivity.class);
+        detailIntent.putExtra(ExpenseClaimDetailFragment.ARG_ITEM_ID, id);
+        startActivity(detailIntent);
+    }
     
-    private void addExpenseClaim() {
+    //================================================================================
+  	// Claims
+  	//================================================================================
+    
+    private void openAddExpenseClaim() {
     	Intent addIntent = new Intent(this, AddExpenseClaimActivity.class);
-    	startActivity(addIntent);
+    	startActivityForResult(addIntent, ADD_CLAIM_REQUEST);
+    }
+    
+    private void addExpenseClaim(String name, String description) {
+    	ExpenseClaim claim = new ExpenseClaim(name, description);
+    	claims.add(claim);
+    	adapter.notifyDataSetChanged();
     }
 }
