@@ -40,80 +40,80 @@ public class ExpenseClaimListActivity extends ListActivity {
 	// Constants
 	//================================================================================
 	private static final int ADD_CLAIM_REQUEST = 1;
-	
+
 	//================================================================================
 	// Properties
 	//================================================================================
 	private ArrayList<ExpenseClaim> claims;
 	private ArrayAdapter<ExpenseClaim> adapter;
-	
+
 	//================================================================================
 	// Activity Callbacks
 	//================================================================================
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        claims = new ArrayList<ExpenseClaim>();
-        adapter = new ArrayAdapter<ExpenseClaim>(
-        		this,
-                android.R.layout.simple_list_item_activated_2,
-                android.R.id.text1,
-                claims);
-        setListAdapter(adapter);
-    }
-    
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    	if (resultCode != RESULT_OK) return;
-    	
-        if (requestCode == ADD_CLAIM_REQUEST) {
-        	Bundle extras = data.getExtras();
-            String name = extras.getString(AddExpenseClaimActivity.EXTRA_EXPENSE_NAME, getResources().getString(R.string.default_name));
-            String description = extras.getString(AddExpenseClaimActivity.EXTRA_EXPENSE_DESCRIPTION);
-            addExpenseClaim(name, description);
-        }
-    }
-    
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.expense_claim_list, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-    
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_add_claim:
-                openAddExpenseClaim();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		claims = new ArrayList<ExpenseClaim>();
+		adapter = new ArrayAdapter<ExpenseClaim>(
+				this,
+				android.R.layout.simple_list_item_activated_2,
+				android.R.id.text1,
+				claims);
+		setListAdapter(adapter);
+	}
 
-    //================================================================================
-  	// ListView Callbacks
-  	//================================================================================
-    @Override
-    public void onListItemClick(ListView listView, View view, int position, long id) {
-    	Intent detailIntent = new Intent(this, ExpenseClaimDetailActivity.class);
-        detailIntent.putExtra(ExpenseClaimDetailFragment.ARG_ITEM_ID, id);
-        startActivity(detailIntent);
-    }
-    
-    //================================================================================
-  	// Claims
-  	//================================================================================
-    
-    private void openAddExpenseClaim() {
-    	Intent addIntent = new Intent(this, AddExpenseClaimActivity.class);
-    	startActivityForResult(addIntent, ADD_CLAIM_REQUEST);
-    }
-    
-    private void addExpenseClaim(String name, String description) {
-    	ExpenseClaim claim = new ExpenseClaim(name, description);
-    	claims.add(claim);
-    	adapter.notifyDataSetChanged();
-    }
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode != RESULT_OK) return;
+
+		if (requestCode == ADD_CLAIM_REQUEST) {
+			Bundle extras = data.getExtras();
+			String name = extras.getString(AddExpenseClaimActivity.EXTRA_EXPENSE_NAME, getResources().getString(R.string.default_name));
+			String description = extras.getString(AddExpenseClaimActivity.EXTRA_EXPENSE_DESCRIPTION);
+			addExpenseClaim(name, description);
+		}
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.expense_claim_list, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.action_add_claim:
+			openAddExpenseClaim();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	//================================================================================
+	// ListView Callbacks
+	//================================================================================
+	@Override
+	public void onListItemClick(ListView listView, View view, int position, long id) {
+		Intent detailIntent = new Intent(this, ExpenseClaimDetailActivity.class);
+		detailIntent.putExtra(ExpenseClaimDetailFragment.ARG_ITEM_ID, id);
+		startActivity(detailIntent);
+	}
+
+	//================================================================================
+	// Claims
+	//================================================================================
+
+	private void openAddExpenseClaim() {
+		Intent addIntent = new Intent(this, AddExpenseClaimActivity.class);
+		startActivityForResult(addIntent, ADD_CLAIM_REQUEST);
+	}
+
+	private void addExpenseClaim(String name, String description) {
+		ExpenseClaim claim = new ExpenseClaim(name, description);
+		claims.add(claim);
+		adapter.notifyDataSetChanged();
+	}
 }
