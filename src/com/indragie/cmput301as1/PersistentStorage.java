@@ -46,6 +46,8 @@ public class PersistentStorage<T extends Serializable> {
 	 * @throws UnsafeDeserializationException if the class of the deserialized object does not match the expected class.
 	 */
 	@SuppressWarnings("unchecked")
+	// Expected class has to be passed in explicitly because the type of T
+	// can not be accessed at runtime (due to type erasure).
 	public T read(Class<? extends Serializable> expectedClass) throws IOException, ClassNotFoundException, UnsafeDeserializationException {
 		FileInputStream fis = new FileInputStream(filename);
 		ObjectInputStream ois = new ObjectInputStream(fis);
