@@ -127,6 +127,10 @@ public class ExpenseClaim implements Serializable {
 		this.status = status;
 	}
 	
+	public String toString() {
+		return name;
+	}
+	
 	/**
 	 * @return A list containing two elements: the earliest date and
 	 * the latest date, respectively, for the expense items contained
