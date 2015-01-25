@@ -3,6 +3,8 @@ package com.indragie.cmput301as1;
 import java.util.List;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,8 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ExpenseClaim claim = getItem(position);
+		Resources resources = getContext().getResources();
+		
 		if (convertView == null) {
 			convertView = LayoutInflater.from(getContext()).inflate(R.layout.expense_claim_list_row, parent, false);
 		}
@@ -30,9 +34,33 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 		TextView tvAmounts = (TextView)convertView.findViewById(R.id.tv_amounts);
 		String amounts = claim.getSummarizedAmounts();
 		if (amounts == null) {
-			amounts = getContext().getResources().getString(R.string.no_expenses);
+			amounts = resources.getString(R.string.no_expenses);
 		}
 		tvAmounts.setText(amounts);
+		
+		TextView tvStatus = (TextView)convertView.findViewById(R.id.tv_status);
+		
+		String text = null;
+		Drawable background = null;
+		switch (claim.getStatus()) {
+		case APPROVED:
+			text = resources.getString(R.string.approved_label);
+			background = resources.getDrawable(R.drawable.bg_rounded_green);
+			break;
+		case RETURNED:
+			text = resources.getString(R.string.returned_label);
+			background = resources.getDrawable(R.drawable.bg_rounded_red);
+			break;
+		case SUBMITTED:
+			text = resources.getString(R.string.submitted_label);
+			background = resources.getDrawable(R.drawable.bg_rounded_yellow);
+			break;
+		default:
+			break;
+		}
+		tvStatus.setText(text);
+		tvStatus.setBackground(background);
+		
 		return convertView;
 	}
 }
