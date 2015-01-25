@@ -34,11 +34,11 @@ import org.joda.money.*;
  */
 public class ExpenseClaim implements Serializable {
 	private static final long serialVersionUID = 4097224167619777631L;
-	
+
 	//================================================================================
 	// Properties
 	//================================================================================
-	
+
 	/**
 	 * Name of the claim.
 	 */
@@ -73,12 +73,12 @@ public class ExpenseClaim implements Serializable {
 		 */
 		APPROVED
 	}
-	
+
 	/**
 	 * Current status of the expense claim.
 	 */
 	private Status status = Status.DEFAULT;
-	
+
 	//================================================================================
 	// Constructors
 	//================================================================================
@@ -112,7 +112,7 @@ public class ExpenseClaim implements Serializable {
 	public List<ExpenseItem> getItems() {
 		return Collections.unmodifiableList(items);
 	}
-	
+
 	public void setItems(List<ExpenseItem> items) {
 		this.items = items;
 	}
@@ -120,7 +120,7 @@ public class ExpenseClaim implements Serializable {
 	public void addItem(ExpenseItem item) {
 		items.add(item);
 	}
-	
+
 	public void removeItem(int index) {
 		items.remove(index);
 	}
@@ -132,11 +132,11 @@ public class ExpenseClaim implements Serializable {
 	public void setStatus(Status status) {
 		this.status = status;
 	}
-	
+
 	public String toString() {
 		return name;
 	}
-	
+
 	/**
 	 * @return A list containing two elements: the earliest date and
 	 * the latest date, respectively, for the expense items contained
@@ -154,7 +154,7 @@ public class ExpenseClaim implements Serializable {
 		ExpenseItem max = Collections.max(items, itemComparator);
 		return Arrays.asList(min.getDate(), max.getDate());
 	}
-	
+
 	/**
 	 * @return If the claim has expense items, this method returns a string
 	 * containing the totaled amounts of all of the currencies in its expense
@@ -163,20 +163,20 @@ public class ExpenseClaim implements Serializable {
 	 */
 	public String getSummarizedAmounts() {
 		if (items.size() == 0) return null;
-		
+
 		HashMap<CurrencyUnit, Money> unitToMoneyMap = new HashMap<CurrencyUnit, Money>();
 		for (ExpenseItem item : items) {
 			Money amount = item.getAmount();
 			CurrencyUnit unit = amount.getCurrencyUnit();
-			
+
 			Money current = unitToMoneyMap.get(unit);
 			if (current == null) {
 				current = Money.zero(unit);
 			}
-			
+
 			unitToMoneyMap.put(unit, current.plus(item.getAmount()));
 		}
-		
+
 		StringBuilder builder = new StringBuilder();
 		for (Money amount : unitToMoneyMap.values()) {
 			builder.append(amount.toString());

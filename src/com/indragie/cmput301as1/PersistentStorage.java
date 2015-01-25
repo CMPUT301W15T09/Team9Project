@@ -32,11 +32,11 @@ public class PersistentStorage<T extends Serializable> {
 	 * The name of the file to read and write from.
 	 */
 	private String filename;
-	
+
 	public PersistentStorage(String filename) {
 		this.filename = filename;
 	}
-	
+
 	/**
 	 * Reads an object from disk.
 	 * @param expectedClass The expected class of the object.
@@ -54,14 +54,14 @@ public class PersistentStorage<T extends Serializable> {
 		Object obj = ois.readObject();
 		ois.close();
 		fis.close();
-		
+
 		if (!expectedClass.isInstance(obj)) {
 			throw new UnsafeDeserializationException(String.format("Object class %s does not match expected class %s.", obj.getClass(), expectedClass));
 		}
-		
+
 		return (T)obj;
 	}
-	
+
 	/**
 	 * Writes an object to disk.
 	 * @warning Any existing data in the file will be overwritten.
