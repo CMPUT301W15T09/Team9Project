@@ -7,8 +7,8 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 public class AddExpenseClaimActivity extends EditingActivity {
-	public static final String EXTRA_EXPENSE_NAME = "com.indragie.cmput301as1.EXPENSE_NAME";
-	public static final String EXTRA_EXPENSE_DESCRIPTION = "com.indragie.cmput301as1.EXPENSE_DESCRIPTION";
+	public static final String EXTRA_EXPENSE_CLAIM_NAME = "com.indragie.cmput301as1.EXPENSE_CLAIM_NAME";
+	public static final String EXTRA_EXPENSE_CLAIM_DESCRIPTION = "com.indragie.cmput301as1.EXPENSE_CLAIM_DESCRIPTION";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,9 +38,9 @@ public class AddExpenseClaimActivity extends EditingActivity {
 		Intent intent = new Intent();
 
 		TextView nameTextView = (TextView)findViewById(R.id.edit_text_expense_name);
-		intent.putExtra(EXTRA_EXPENSE_NAME, nameTextView.getText().toString());
+		intent.putExtra(EXTRA_EXPENSE_CLAIM_NAME, nameTextView.getText().toString());
 		TextView descriptionTextView = (TextView)findViewById(R.id.edit_text_expense_description);
-		intent.putExtra(EXTRA_EXPENSE_DESCRIPTION, descriptionTextView.getText().toString());
+		intent.putExtra(EXTRA_EXPENSE_CLAIM_DESCRIPTION, descriptionTextView.getText().toString());
 
 		setResult(RESULT_OK, intent);
 		finish();
