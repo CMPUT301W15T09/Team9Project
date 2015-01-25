@@ -6,7 +6,9 @@
     <string name="action_add_claim">Add Claim</string>
     <string name="no_expenses">No expenses</string>
     <string name="title_activity_add_expense_claim">Add Expense Claim</string>
-    <string name="name">Name</string>
-    <string name="description">Description</string>
+    <string name="name_hint">Name</string>
+    <string name="description_hint">Description</string>
+    <string name="cancel_label">Cancel</string>
+    <string name="done_label">Done</string>
 
 </resources>

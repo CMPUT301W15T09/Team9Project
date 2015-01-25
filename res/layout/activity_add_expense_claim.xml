@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:hint="@string/name" />
+        android:hint="@string/name_hint" />
 
     <EditText
         android:id="@+id/editText2"
@@ -26,6 +26,6 @@
         android:layout_marginTop="18dp"
         android:ems="10"
         android:inputType="textMultiLine"
-        android:hint="@string/description" />
+        android:hint="@string/description_hint" />
 
 </RelativeLayout>

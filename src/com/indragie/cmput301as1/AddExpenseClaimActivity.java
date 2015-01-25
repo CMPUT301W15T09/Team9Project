@@ -1,11 +1,10 @@
 package com.indragie.cmput301as1;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class AddExpenseClaimActivity extends Activity {
+public class AddExpenseClaimActivity extends EditingActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -22,5 +21,15 @@ public class AddExpenseClaimActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	protected void onCancel() {
+		
+	}
+	
+	@Override
+	protected void onDone() {
+		
 	}
 }
