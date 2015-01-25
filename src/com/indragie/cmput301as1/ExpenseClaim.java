@@ -77,7 +77,7 @@ public class ExpenseClaim implements Serializable {
 	/**
 	 * Current status of the expense claim.
 	 */
-	private Status status = Status.DEFAULT;
+	private Status status = Status.APPROVED;
 
 	//================================================================================
 	// Constructors
