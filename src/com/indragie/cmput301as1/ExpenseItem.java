@@ -27,7 +27,7 @@ import org.joda.money.Money;
  */
 public class ExpenseItem implements Serializable {
 	private static final long serialVersionUID = -5923561360068724438L;
-	
+
 	//================================================================================
 	// Properties
 	//================================================================================
@@ -53,11 +53,11 @@ public class ExpenseItem implements Serializable {
 	 * (Money class is from the Joda Money library)
 	 */
 	private Money amount;
-	
+
 	//================================================================================
 	// Constructors
 	//================================================================================
-	
+
 	public ExpenseItem(String name, Date date, String category,
 			String description, Money amount) {
 		this.name = name;
@@ -66,7 +66,7 @@ public class ExpenseItem implements Serializable {
 		this.description = description;
 		this.amount = amount;
 	}
-	
+
 	//================================================================================
 	// Accessors
 	//================================================================================
@@ -74,39 +74,39 @@ public class ExpenseItem implements Serializable {
 	public String getName() {
 		return name;
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public Date getDate() {
 		return date;
 	}
-	
+
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	
+
 	public String getCategory() {
 		return category;
 	}
-	
+
 	public void setCategory(String category) {
 		this.category = category;
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}
-	
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
 	public Money getAmount() {
 		return amount;
 	}
-	
+
 	public void setAmount(Money amount) {
 		this.amount = amount;
 	}

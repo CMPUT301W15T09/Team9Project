@@ -30,6 +30,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.indragie.cmput301as1.ExpenseClaimListActivity" />
         </activity>
+        <activity
+            android:name=".AddExpenseClaimActivity"
+            android:label="@string/title_activity_add_expense_claim"
+            android:parentActivityName=".ExpenseClaimListActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.indragie.cmput301as1.ExpenseClaimListActivity" />
+        </activity>
     </application>
 
 </manifest>

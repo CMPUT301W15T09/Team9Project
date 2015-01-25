@@ -17,14 +17,19 @@
 
 package com.indragie.cmput301as1;
 
-import java.util.Arrays;
-import java.util.List;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -33,32 +38,113 @@ import android.widget.ListView;
  * An activity that presents a list of expense claims.
  */
 public class ExpenseClaimListActivity extends ListActivity {
-	private List<ExpenseClaim> claims;
-	
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        ExpenseClaim claim1 = new ExpenseClaim("Claim 1", null, ExpenseClaim.Status.SUBMITTED);
-        ExpenseClaim claim2 = new ExpenseClaim("Claim 2", null, ExpenseClaim.Status.SUBMITTED);
-        claims = Arrays.asList(claim1, claim2);
-        setListAdapter(new ArrayAdapter<ExpenseClaim>(
-                this,
-                android.R.layout.simple_list_item_activated_2,
-                android.R.id.text1,
-                claims));
-    }
+	//================================================================================
+	// Constants
+	//================================================================================
+	private static final int ADD_EXPENSE_CLAIM_REQUEST = 1;
+	private static final String EXPENSE_CLAIM_FILENAME = "claims";
 
-    @Override
-    public void onListItemClick(ListView listView, View view, int position, long id) {
-    	Intent detailIntent = new Intent(this, ExpenseClaimDetailActivity.class);
-        detailIntent.putExtra(ExpenseClaimDetailFragment.ARG_ITEM_ID, id);
-        startActivity(detailIntent);
-    }
-    
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.activity_claim_actions, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
+	//================================================================================
+	// Properties
+	//================================================================================
+	private ArrayList<ExpenseClaim> claims;
+	private ArrayAdapter<ExpenseClaim> adapter;
+
+	//================================================================================
+	// Activity Callbacks
+	//================================================================================
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		claims = loadExpenseClaims();
+		adapter = new ArrayAdapter<ExpenseClaim>(
+				this,
+				android.R.layout.simple_list_item_activated_2,
+				android.R.id.text1,
+				claims);
+		setListAdapter(adapter);
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode != RESULT_OK) return;
+
+		if (requestCode == ADD_EXPENSE_CLAIM_REQUEST) {
+			Bundle extras = data.getExtras();
+			String name = extras.getString(AddExpenseClaimActivity.EXTRA_EXPENSE_CLAIM_NAME, getResources().getString(R.string.default_name));
+			String description = extras.getString(AddExpenseClaimActivity.EXTRA_EXPENSE_CLAIM_DESCRIPTION);
+			addExpenseClaim(name, description);
+		}
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.expense_claim_list, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.action_add_claim:
+			openAddExpenseClaim();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	//================================================================================
+	// ListView Callbacks
+	//================================================================================
+	@Override
+	public void onListItemClick(ListView listView, View view, int position, long id) {
+		Intent detailIntent = new Intent(this, ExpenseClaimDetailActivity.class);
+		detailIntent.putExtra(ExpenseClaimDetailFragment.ARG_ITEM_ID, id);
+		startActivity(detailIntent);
+	}
+
+	//================================================================================
+	// Claims
+	//================================================================================
+
+	private void openAddExpenseClaim() {
+		Intent addIntent = new Intent(this, AddExpenseClaimActivity.class);
+		startActivityForResult(addIntent, ADD_EXPENSE_CLAIM_REQUEST);
+	}
+
+	private void addExpenseClaim(String name, String description) {
+		ExpenseClaim claim = new ExpenseClaim(name, description);
+		claims.add(claim);
+		adapter.notifyDataSetChanged();
+		saveExpenseClaims();
+	}
+	
+	private void saveExpenseClaims() {
+		try {
+			FileOutputStream fos = openFileOutput(EXPENSE_CLAIM_FILENAME, 0);
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(claims);
+			oos.close();
+			fos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private ArrayList<ExpenseClaim> loadExpenseClaims() {
+		try {
+			FileInputStream fis = openFileInput(EXPENSE_CLAIM_FILENAME);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			Object obj = ois.readObject();
+			ois.close();
+			fis.close();
+			return (ArrayList<ExpenseClaim>)obj;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ArrayList<ExpenseClaim>();
+		}
+	}
 }
