@@ -10,5 +10,6 @@
     <string name="description_hint">Description</string>
     <string name="cancel_label">Cancel</string>
     <string name="done_label">Done</string>
+    <string name="default_name">Untitled</string>
 
 </resources>

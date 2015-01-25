@@ -57,6 +57,10 @@ public class ExpenseClaim implements Serializable {
 	 */
 	public enum Status {
 		/**
+		 * Default status when the expense is created
+		 */
+		DEFAULT,
+		/**
 		 * Expense has been submitted, no edits allowed 
 		 */
 		SUBMITTED,
@@ -73,16 +77,15 @@ public class ExpenseClaim implements Serializable {
 	/**
 	 * Current status of the expense claim.
 	 */
-	private Status status;
+	private Status status = Status.DEFAULT;
 	
 	//================================================================================
 	// Constructors
 	//================================================================================
 
-	public ExpenseClaim(String name, String description, Status status) {
+	public ExpenseClaim(String name, String description) {
 		this.name = name;
 		this.description = description;
-		this.status = status;
 		this.items = new ArrayList<ExpenseItem>();
 	}
 
