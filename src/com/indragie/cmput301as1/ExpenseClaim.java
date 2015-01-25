@@ -135,8 +135,8 @@ public class ExpenseClaim implements Serializable {
 		this.status = status;
 	}
 
-	public String toString() {
-		return name;
+	public Boolean isEditable() {
+		return (status == Status.DEFAULT || status == Status.RETURNED);
 	}
 
 	/**
@@ -187,5 +187,13 @@ public class ExpenseClaim implements Serializable {
 		// Remove trailing comma
 		builder.deleteCharAt(builder.length() - 1);
 		return builder.toString();
+	}
+
+	//================================================================================
+	// Object
+	//================================================================================
+
+	public String toString() {
+		return name;
 	}
 }

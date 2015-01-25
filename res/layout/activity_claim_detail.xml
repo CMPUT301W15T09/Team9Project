@@ -1,7 +1,31 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/claim_detail_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.indragie.cmput301as1.ExpenseClaimDetailActivity"
-    tools:ignore="MergeRootFrame" />
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.indragie.cmput301as1.ExpenseClaimDetailActivity" >
+
+    <EditText
+        android:id="@+id/et_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:hint="@string/name_hint" />
+
+    <EditText
+        android:id="@+id/et_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@id/et_name"
+        android:layout_alignEnd="@id/et_name"
+        android:layout_below="@id/et_name"
+        android:layout_marginTop="18dp"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        android:hint="@string/description_hint" />
+
+</RelativeLayout>

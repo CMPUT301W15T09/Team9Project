@@ -30,15 +30,14 @@ public final class R {
         public static final int ic_launcher=0x7f020005;
     }
     public static final class id {
-        public static final int action_add_claim=0x7f080008;
-        public static final int action_cancel=0x7f080003;
-        public static final int action_done=0x7f080004;
-        public static final int claim_detail_container=0x7f080002;
+        public static final int action_add_claim=0x7f080007;
+        public static final int action_cancel=0x7f080002;
+        public static final int action_done=0x7f080003;
         public static final int et_description=0x7f080001;
         public static final int et_name=0x7f080000;
-        public static final int tv_amounts=0x7f080006;
-        public static final int tv_name=0x7f080005;
-        public static final int tv_status=0x7f080007;
+        public static final int tv_amounts=0x7f080005;
+        public static final int tv_name=0x7f080004;
+        public static final int tv_status=0x7f080006;
     }
     public static final class layout {
         public static final int activity_add_expense_claim=0x7f030000;
