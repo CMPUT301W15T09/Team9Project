@@ -7,52 +7,80 @@ import java.util.ArrayList;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.ListActivity;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
 public class ExpenseClaimDetailActivity extends ListActivity {
+	//================================================================================
+	// Properties
+	//================================================================================
 	public static final String EXTRA_CLAIM = "com.indragie.cmput301as1.EXTRA_CLAIM";
 	private ExpenseClaim claim;
 
+	//================================================================================
+	// Activity Callbacks
+	//================================================================================
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		
+
 		claim = (ExpenseClaim)getIntent().getSerializableExtra(EXTRA_CLAIM);
 		setTitle(claim.getName());
 		setupListHeaderView();
 		setListAdapter(new ExpenseClaimArrayAdapter(this, new ArrayList<ExpenseClaim>()));
 	}
-	
+
 	private void setupListHeaderView() {
 		ListView listView = getListView();
 		View headerView = getLayoutInflater().inflate(R.layout.activity_claim_detail_header, listView, false);
-		
+
 		EditText etName = (EditText)headerView.findViewById(R.id.et_name);
 		etName.setText(claim.getName());
 		etName.setEnabled(claim.isEditable());
-		
+		etName.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+			@Override
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+				if (actionId == EditorInfo.IME_ACTION_DONE) {
+					claim.setName(v.getText().toString());
+					return true;
+				}
+				return false;
+			}
+		});
+
 		EditText etDescription = (EditText)headerView.findViewById(R.id.et_description);
 		etDescription.setText(claim.getDescription());
 		etDescription.setEnabled(claim.isEditable());
-		
+		etDescription.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+			@Override
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+				if (actionId == EditorInfo.IME_ACTION_DONE) {
+					claim.setDescription(v.getText().toString());
+					return true;
+				}
+				return false;
+			}
+		});
+
 		DateFormat formatter = DateFormat.getDateInstance(DateFormat.LONG);
 		Date startDate = claim.getStartDate();
 		if (startDate != null) {
 			TextView tvStartDate = (TextView)headerView.findViewById(R.id.tv_start_date);
 			tvStartDate.setText(formatter.format(startDate));
 		}
-		
+
 		Date endDate = claim.getEndDate();
 		if (endDate != null) {
 			TextView tvEndDate = (TextView)headerView.findViewById(R.id.tv_end_date);
 			tvEndDate.setText(formatter.format(endDate));
 		}
-		
+
 		listView.addHeaderView(headerView);
 	}
 
@@ -66,3 +94,4 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		return super.onOptionsItemSelected(item);
 	}
 }
+
