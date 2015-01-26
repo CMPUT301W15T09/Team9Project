@@ -59,7 +59,7 @@ public class ExpenseClaim implements Serializable {
 		/**
 		 * Default status when the expense is created
 		 */
-		DEFAULT,
+		IN_PROGRESS,
 		/**
 		 * Expense has been submitted, no edits allowed 
 		 */
@@ -77,7 +77,7 @@ public class ExpenseClaim implements Serializable {
 	/**
 	 * Current status of the expense claim.
 	 */
-	private Status status = Status.DEFAULT;
+	private Status status = Status.IN_PROGRESS;
 
 	//================================================================================
 	// Constructors
@@ -136,7 +136,7 @@ public class ExpenseClaim implements Serializable {
 	}
 
 	public Boolean isEditable() {
-		return (status == Status.DEFAULT || status == Status.RETURNED);
+		return (status == Status.IN_PROGRESS || status == Status.RETURNED);
 	}
 
 	/**
