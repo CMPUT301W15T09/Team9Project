@@ -19,20 +19,17 @@ package com.indragie.cmput301as1;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.joda.money.*;
 
 /**
  * Model object representing an expense claim.
  */
-public class ExpenseClaim implements Serializable {
+public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 	private static final long serialVersionUID = 4097224167619777631L;
 
 	//================================================================================
@@ -140,21 +137,21 @@ public class ExpenseClaim implements Serializable {
 	}
 
 	/**
-	 * @return A list containing two elements: the earliest date and
-	 * the latest date, respectively, for the expense items contained
-	 * in the expense claim.
-	 * @throws NoSuchElementException if there are no expense items.
+	 * @return The starting date of the expense claim, based on the earliest
+	 * date of the items contained within the claim.
 	 */
-	public List<Date> getDateRange() throws NoSuchElementException {
-		Comparator<ExpenseItem> itemComparator = new Comparator<ExpenseItem>() {
-			@Override
-			public int compare(ExpenseItem item1, ExpenseItem item2) {
-				return item1.getDate().compareTo(item2.getDate());
-			}
-		};
-		ExpenseItem min = Collections.min(items, itemComparator);
-		ExpenseItem max = Collections.max(items, itemComparator);
-		return Arrays.asList(min.getDate(), max.getDate());
+	public Date getStartDate() {
+		if (items.size() == 0) return null;
+		return Collections.min(items).getDate();
+	}
+	
+	/**
+	 * @return The ending date of the expense claim, based on the latest
+	 * date of the items contained within the claim.
+	 */
+	public Date getEndDate() {
+		if (items.size() == 0) return null;
+		return Collections.max(items).getDate();
 	}
 
 	/**
@@ -195,5 +192,19 @@ public class ExpenseClaim implements Serializable {
 
 	public String toString() {
 		return name;
+	}
+
+	//================================================================================
+	// Comparable
+	//================================================================================
+
+	public int compareTo(ExpenseClaim claim) {
+		Date date1 = getStartDate();
+		Date date2 = claim.getStartDate();
+		if (date1 == null) {
+			return (date2 == null) ? 0 : 1;
+		} else {
+			return (date2 == null) ? 0 : -1;
+		}
 	}
 }
