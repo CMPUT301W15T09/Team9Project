@@ -75,6 +75,11 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 	 * Current status of the expense claim.
 	 */
 	private Status status = Status.IN_PROGRESS;
+	
+	/**
+	 * Date when the claim was created.
+	 */
+	private Date creationDate;
 
 	//================================================================================
 	// Constructors
@@ -86,6 +91,7 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 		this.items = new ArrayList<ExpenseItem>();
 		ExpenseItem item = new ExpenseItem("Test item", new Date(), "category", "descr", Money.of(CurrencyUnit.USD, 51.6));
 		addItem(item);
+		this.creationDate = new Date();
 	}
 
 	//================================================================================
@@ -200,11 +206,15 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 
 	public int compareTo(ExpenseClaim claim) {
 		Date date1 = getStartDate();
-		Date date2 = claim.getStartDate();
+		// If there are no expense items to grab the date from, use the
+		// creation date of the claim as the start and end dates.
 		if (date1 == null) {
-			return (date2 == null) ? 0 : 1;
-		} else {
-			return (date2 == null) ? 0 : -1;
+			date1 = claim.creationDate;
 		}
+		Date date2 = claim.getStartDate();
+		if (date2 == null) {
+			date2 = claim.creationDate;
+		}
+		return date1.compareTo(date2);
 	}
 }
