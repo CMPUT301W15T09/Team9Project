@@ -69,7 +69,7 @@ public class ExpenseClaimListActivity extends ListActivity {
 			onAddExpenseResult(data);
 			break;
 		case EDIT_EXPENSE_CLAIM_REQUEST:
-			onExpenseDetailResult(data);
+			onEditExpenseResult(data);
 			break;
 		}
 	}
@@ -86,9 +86,9 @@ public class ExpenseClaimListActivity extends ListActivity {
 		commitClaimsMutation();
 	}
 	
-	private void onExpenseDetailResult(Intent data) {
+	private void onEditExpenseResult(Intent data) {
 		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimEditActivity.EXTRA_CLAIM);
-		int position = data.getIntExtra(ExpenseClaimEditActivity.EXTRA_CLAIM_POSITION, 0);
+		int position = data.getIntExtra(ExpenseClaimEditActivity.EXTRA_CLAIM_POSITION, -1);
 		
 		claims.set(position, claim);
 		commitClaimsMutation();
@@ -119,6 +119,7 @@ public class ExpenseClaimListActivity extends ListActivity {
 	public void onListItemClick(ListView listView, View view, int position, long id) {
 		Intent detailIntent = new Intent(this, ExpenseClaimEditActivity.class);
 		detailIntent.putExtra(ExpenseClaimEditActivity.EXTRA_CLAIM, claims.get(position));
+		detailIntent.putExtra(ExpenseClaimEditActivity.EXTRA_CLAIM_POSITION, position);
 		startActivityForResult(detailIntent, EDIT_EXPENSE_CLAIM_REQUEST);
 	}
 
