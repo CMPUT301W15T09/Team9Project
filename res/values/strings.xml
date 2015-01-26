@@ -11,6 +11,7 @@
     <string name="cancel_label">Cancel</string>
     <string name="done_label">Done</string>
     <string name="default_name">Untitled</string>
+    <string name="in_progress_label">In Progress</string>
 	<string name="submitted_label">Submitted</string>
 	<string name="approved_label">Approved</string>
 	<string name="returned_label">Returned</string>

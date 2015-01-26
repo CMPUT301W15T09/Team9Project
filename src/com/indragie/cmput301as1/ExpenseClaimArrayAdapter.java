@@ -43,6 +43,10 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 		String text = null;
 		Drawable background = null;
 		switch (claim.getStatus()) {
+		case IN_PROGRESS:
+			text = resources.getString(R.string.in_progress_label);
+			background = resources.getDrawable(R.drawable.bg_rounded_blue);
+			break;
 		case APPROVED:
 			text = resources.getString(R.string.approved_label);
 			background = resources.getDrawable(R.drawable.bg_rounded_green);
