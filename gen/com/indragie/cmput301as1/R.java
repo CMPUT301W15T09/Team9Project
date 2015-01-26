@@ -42,7 +42,7 @@ public final class R {
     }
     public static final class layout {
         public static final int activity_add_expense_claim=0x7f030000;
-        public static final int activity_claim_detail=0x7f030001;
+        public static final int activity_claim_detail_header=0x7f030001;
         public static final int activity_editing_actionbar=0x7f030002;
         public static final int expense_claim_list_row=0x7f030003;
     }

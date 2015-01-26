@@ -1,30 +1,39 @@
 package com.indragie.cmput301as1;
 
+import java.util.ArrayList;
+
 import android.content.Intent;
 import android.os.Bundle;
-import android.app.Activity;
+import android.app.ListActivity;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ListView;
 
-public class ExpenseClaimDetailActivity extends Activity {
+public class ExpenseClaimDetailActivity extends ListActivity {
 	public static final String EXTRA_CLAIM = "com.indragie.cmput301as1.EXTRA_CLAIM";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_claim_detail);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		ExpenseClaim claim = (ExpenseClaim)getIntent().getSerializableExtra(EXTRA_CLAIM);
 		setTitle(claim.getName());
 		
-		EditText etName = (EditText)findViewById(R.id.et_name);
+		ListView listView = getListView();
+		View headerView = getLayoutInflater().inflate(R.layout.activity_claim_detail_header, listView, false);
+		
+		EditText etName = (EditText)headerView.findViewById(R.id.et_name);
 		etName.setText(claim.getName());
 		etName.setEnabled(claim.isEditable());
 		
-		EditText etDescription = (EditText)findViewById(R.id.et_description);
+		EditText etDescription = (EditText)headerView.findViewById(R.id.et_description);
 		etDescription.setText(claim.getDescription());
 		etDescription.setEnabled(claim.isEditable());
+		
+		listView.addHeaderView(headerView);
+		setListAdapter(new ExpenseClaimArrayAdapter(this, new ArrayList<ExpenseClaim>()));
 	}
 
 	@Override
