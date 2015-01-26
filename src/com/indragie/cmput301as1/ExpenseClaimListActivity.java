@@ -41,6 +41,7 @@ public class ExpenseClaimListActivity extends ListActivity {
 	// Constants
 	//================================================================================
 	private static final int ADD_EXPENSE_CLAIM_REQUEST = 1;
+	private static final int EDIT_EXPENSE_CLAIM_REQUEST = 2;
 	private static final String EXPENSE_CLAIM_FILENAME = "claims";
 
 	//================================================================================
@@ -63,15 +64,34 @@ public class ExpenseClaimListActivity extends ListActivity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode != RESULT_OK) return;
-
-		if (requestCode == ADD_EXPENSE_CLAIM_REQUEST) {
-			String name = data.getStringExtra(AddExpenseClaimActivity.EXTRA_EXPENSE_CLAIM_NAME);
-			if (name == null) {
-				name = getResources().getString(R.string.default_name);
-			}
-			String description = data.getStringExtra(AddExpenseClaimActivity.EXTRA_EXPENSE_CLAIM_DESCRIPTION);
-			addExpenseClaim(name, description);
+		switch (requestCode) {
+		case ADD_EXPENSE_CLAIM_REQUEST:
+			onAddExpenseResult(data);
+			break;
+		case EDIT_EXPENSE_CLAIM_REQUEST:
+			onExpenseDetailResult(data);
+			break;
 		}
+	}
+	
+	private void onAddExpenseResult(Intent data) {
+		String name = data.getStringExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM_NAME);
+		if (name == null) {
+			name = getResources().getString(R.string.default_name);
+		}
+		String description = data.getStringExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM_DESCRIPTION);
+		
+		ExpenseClaim claim = new ExpenseClaim(name, description);
+		claims.add(claim);
+		commitClaimsMutation();
+	}
+	
+	private void onExpenseDetailResult(Intent data) {
+		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimEditActivity.EXTRA_CLAIM);
+		int position = data.getIntExtra(ExpenseClaimEditActivity.EXTRA_CLAIM_POSITION, 0);
+		
+		claims.set(position, claim);
+		commitClaimsMutation();
 	}
 
 	@Override
@@ -84,7 +104,8 @@ public class ExpenseClaimListActivity extends ListActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_add_claim:
-			openAddExpenseClaim();
+			Intent addIntent = new Intent(this, ExpenseClaimAddActivity.class);
+			startActivityForResult(addIntent, ADD_EXPENSE_CLAIM_REQUEST);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -96,25 +117,18 @@ public class ExpenseClaimListActivity extends ListActivity {
 	//================================================================================
 	@Override
 	public void onListItemClick(ListView listView, View view, int position, long id) {
-		Intent detailIntent = new Intent(this, ExpenseClaimDetailActivity.class);
-		detailIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_CLAIM, claims.get(position));
-		startActivity(detailIntent);
+		Intent detailIntent = new Intent(this, ExpenseClaimEditActivity.class);
+		detailIntent.putExtra(ExpenseClaimEditActivity.EXTRA_CLAIM, claims.get(position));
+		startActivityForResult(detailIntent, EDIT_EXPENSE_CLAIM_REQUEST);
 	}
 
 	//================================================================================
 	// Claims
 	//================================================================================
 
-	private void openAddExpenseClaim() {
-		Intent addIntent = new Intent(this, AddExpenseClaimActivity.class);
-		startActivityForResult(addIntent, ADD_EXPENSE_CLAIM_REQUEST);
-	}
-
-	private void addExpenseClaim(String name, String description) {
-		ExpenseClaim claim = new ExpenseClaim(name, description);
-		claims.add(claim);
-		adapter.notifyDataSetChanged();
+	private void commitClaimsMutation() {
 		Collections.sort(claims);
+		adapter.notifyDataSetChanged();
 		saveExpenseClaims(claims);
 	}
 	
