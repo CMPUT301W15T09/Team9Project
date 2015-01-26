@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -113,10 +114,11 @@ public class ExpenseClaimListActivity extends ListActivity {
 		ExpenseClaim claim = new ExpenseClaim(name, description);
 		claims.add(claim);
 		adapter.notifyDataSetChanged();
-		saveExpenseClaims();
+		Collections.sort(claims);
+		saveExpenseClaims(claims);
 	}
 	
-	private void saveExpenseClaims() {
+	private void saveExpenseClaims(ArrayList<ExpenseClaim> claims) {
 		try {
 			FileOutputStream fos = openFileOutput(EXPENSE_CLAIM_FILENAME, 0);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
