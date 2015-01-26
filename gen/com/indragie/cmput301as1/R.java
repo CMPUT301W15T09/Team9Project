@@ -31,27 +31,25 @@ public final class R {
         public static final int ic_launcher=0x7f020006;
     }
     public static final class id {
-        public static final int action_add_claim=0x7f08000d;
-        public static final int action_cancel=0x7f080008;
-        public static final int action_done=0x7f080009;
-        public static final int date_separator=0x7f080003;
+        public static final int action_add_claim=0x7f08000c;
+        public static final int action_cancel=0x7f080007;
+        public static final int action_done=0x7f080008;
+        public static final int date_separator=0x7f080002;
         public static final int et_description=0x7f080001;
         public static final int et_name=0x7f080000;
-        public static final int list=0x7f080002;
-        public static final int tv_amounts=0x7f08000b;
-        public static final int tv_end_date=0x7f080007;
-        public static final int tv_end_label=0x7f080006;
-        public static final int tv_name=0x7f08000a;
-        public static final int tv_start_date=0x7f080005;
-        public static final int tv_start_label=0x7f080004;
-        public static final int tv_status=0x7f08000c;
+        public static final int tv_amounts=0x7f08000a;
+        public static final int tv_end_date=0x7f080006;
+        public static final int tv_end_label=0x7f080005;
+        public static final int tv_name=0x7f080009;
+        public static final int tv_start_date=0x7f080004;
+        public static final int tv_start_label=0x7f080003;
+        public static final int tv_status=0x7f08000b;
     }
     public static final class layout {
         public static final int activity_add_expense_claim=0x7f030000;
-        public static final int activity_claim_edit=0x7f030001;
-        public static final int activity_claim_edit_header=0x7f030002;
-        public static final int activity_editing_actionbar=0x7f030003;
-        public static final int expense_claim_list_row=0x7f030004;
+        public static final int activity_claim_edit_header=0x7f030001;
+        public static final int activity_editing_actionbar=0x7f030002;
+        public static final int expense_claim_list_row=0x7f030003;
     }
     public static final class menu {
         public static final int add_expense_claim=0x7f070000;
