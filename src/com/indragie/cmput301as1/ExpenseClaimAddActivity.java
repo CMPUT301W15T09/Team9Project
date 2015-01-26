@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.widget.TextView;
 
-public class AddExpenseClaimActivity extends EditingActivity {
+public class ExpenseClaimAddActivity extends EditingActivity {
 	public static final String EXTRA_EXPENSE_CLAIM_NAME = "com.indragie.cmput301as1.EXPENSE_CLAIM_NAME";
 	public static final String EXTRA_EXPENSE_CLAIM_DESCRIPTION = "com.indragie.cmput301as1.EXPENSE_CLAIM_DESCRIPTION";
 
