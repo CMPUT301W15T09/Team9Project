@@ -38,7 +38,7 @@ public class ExpenseClaimEditActivity extends ListActivity {
 
 		Intent intent = getIntent();
 		claim = (ExpenseClaim)intent.getSerializableExtra(EXTRA_CLAIM);
-		claimPosition = intent.getIntExtra(EXTRA_CLAIM_POSITION, 0);
+		claimPosition = intent.getIntExtra(EXTRA_CLAIM_POSITION, -1);
 		setTitle(claim.getName());
 
 		ListView listView = getListView();
@@ -54,7 +54,7 @@ public class ExpenseClaimEditActivity extends ListActivity {
 		etName.setEnabled(claim.isEditable());
 		etName.addTextChangedListener(new OnTextChangedWatcher() {
 			@Override
-			public void onTextChanged (CharSequence s, int start, int before, int count) {
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				claim.setName(s.toString());
 			}
 		});
@@ -64,7 +64,7 @@ public class ExpenseClaimEditActivity extends ListActivity {
 		etDescription.setEnabled(claim.isEditable());
 		etDescription.addTextChangedListener(new OnTextChangedWatcher() {
 			@Override
-			public void onTextChanged (CharSequence s, int start, int before, int count) {
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				claim.setDescription(s.toString());
 			}
 		});
@@ -88,27 +88,14 @@ public class ExpenseClaimEditActivity extends ListActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
 		if (id == android.R.id.home) {
-			navigateUpTo(new Intent(this, ExpenseClaimListActivity.class));
+			Intent intent = new Intent();
+			intent.putExtra(EXTRA_CLAIM, claim);
+			intent.putExtra(EXTRA_CLAIM_POSITION, claimPosition);
+			setResult(RESULT_OK, intent);
+			finish();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
-	}
-
-	//================================================================================
-	// EditingActivity
-	//================================================================================
-
-	protected void onDone() {
-		Intent intent = new Intent();
-		intent.putExtra(EXTRA_CLAIM, claim);
-		intent.putExtra(EXTRA_CLAIM_POSITION, claimPosition);
-		setResult(RESULT_OK, intent);
-		finish();
-	}
-
-	protected void onCancel() {
-		setResult(RESULT_CANCELED, new Intent());
-		finish();
 	}
 }
 
