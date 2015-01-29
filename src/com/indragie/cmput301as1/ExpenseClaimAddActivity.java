@@ -2,23 +2,23 @@ package com.indragie.cmput301as1;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.widget.TextView;
+import android.widget.EditText;
 
 public class ExpenseClaimAddActivity extends EditingActivity {
-	public static final String EXTRA_EXPENSE_CLAIM_NAME = "com.indragie.cmput301as1.EXPENSE_CLAIM_NAME";
-	public static final String EXTRA_EXPENSE_CLAIM_DESCRIPTION = "com.indragie.cmput301as1.EXPENSE_CLAIM_DESCRIPTION";
+	public static final String EXTRA_EXPENSE_CLAIM = "com.indragie.cmput301as1.EXPENSE_CLAIM";
+	
+	// Cache references to these views so that they don't have to be found
+	// a second time when the ExpenseClaim object is created.
+	private DateEditText startDateField;
+	private DateEditText endDateField;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_add_expense_claim);
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.add_expense_claim, menu);
-		return true;
+		
+		startDateField = (DateEditText)findViewById(R.id.et_start_date);
+		endDateField = (DateEditText)findViewById(R.id.et_end_date);
 	}
 
 	@Override
@@ -29,13 +29,17 @@ public class ExpenseClaimAddActivity extends EditingActivity {
 
 	@Override
 	protected void onDone() {
+		EditText nameField = (EditText)findViewById(R.id.et_name);
+		EditText descriptionField = (EditText)findViewById(R.id.et_description);
+		ExpenseClaim claim = new ExpenseClaim(
+			nameField.getText().toString(), 
+			descriptionField.getText().toString(), 
+			startDateField.getDate(), 
+			endDateField.getDate()
+		);
+		
 		Intent intent = new Intent();
-
-		TextView nameTextView = (TextView)findViewById(R.id.et_name);
-		intent.putExtra(EXTRA_EXPENSE_CLAIM_NAME, nameTextView.getText().toString());
-		TextView descriptionTextView = (TextView)findViewById(R.id.et_description);
-		intent.putExtra(EXTRA_EXPENSE_CLAIM_DESCRIPTION, descriptionTextView.getText().toString());
-
+		intent.putExtra(EXTRA_EXPENSE_CLAIM, claim);
 		setResult(RESULT_OK, intent);
 		finish();
 	}

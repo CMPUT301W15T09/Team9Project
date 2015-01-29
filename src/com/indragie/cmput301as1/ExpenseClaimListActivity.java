@@ -75,13 +75,7 @@ public class ExpenseClaimListActivity extends ListActivity {
 	}
 	
 	private void onAddExpenseResult(Intent data) {
-		String name = data.getStringExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM_NAME);
-		if (name == null) {
-			name = getResources().getString(R.string.default_name);
-		}
-		String description = data.getStringExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM_DESCRIPTION);
-		
-		ExpenseClaim claim = new ExpenseClaim(name, description);
+		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM);
 		claims.add(claim);
 		commitClaimsMutation();
 	}
