@@ -1,7 +1,5 @@
 package com.indragie.cmput301as1;
 
-import java.util.Date;
-import java.text.DateFormat;
 import java.util.ArrayList;
 
 import android.app.ListActivity;
@@ -11,7 +9,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
 public class ExpenseClaimEditActivity extends ListActivity {
 	//================================================================================
@@ -47,40 +44,52 @@ public class ExpenseClaimEditActivity extends ListActivity {
 	}
 
 	private View getListHeaderView() {
-		View headerView = getLayoutInflater().inflate(R.layout.activity_claim_edit_header, getListView(), false);
+		View headerView = getLayoutInflater().inflate(R.layout.activity_claim_header, getListView(), false);
 
-		EditText etName = (EditText)headerView.findViewById(R.id.et_name);
-		etName.setText(claim.getName());
-		etName.setEnabled(claim.isEditable());
-		etName.addTextChangedListener(new OnTextChangedWatcher() {
+		Boolean editable = claim.isEditable();
+		
+		EditText nameField = (EditText)headerView.findViewById(R.id.et_name);
+		nameField.setText(claim.getName());
+		nameField.setEnabled(editable);
+		nameField.addTextChangedListener(new OnTextChangedWatcher() {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				claim.setName(s.toString());
 			}
 		});
 
-		EditText etDescription = (EditText)headerView.findViewById(R.id.et_description);
-		etDescription.setText(claim.getDescription());
-		etDescription.setEnabled(claim.isEditable());
-		etDescription.addTextChangedListener(new OnTextChangedWatcher() {
+		EditText descriptionField = (EditText)headerView.findViewById(R.id.et_description);
+		descriptionField.setText(claim.getDescription());
+		descriptionField.setEnabled(editable);
+		descriptionField.addTextChangedListener(new OnTextChangedWatcher() {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				claim.setDescription(s.toString());
 			}
 		});
 
-		DateFormat formatter = DateFormat.getDateInstance(DateFormat.LONG);
-		Date startDate = claim.getStartDate();
-		if (startDate != null) {
-			TextView tvStartDate = (TextView)headerView.findViewById(R.id.tv_start_date);
-			tvStartDate.setText(formatter.format(startDate));
-		}
+		final DateEditText startDateField = (DateEditText)headerView.findViewById(R.id.et_start_date);
+		startDateField.setEnabled(editable);
+		startDateField.setFocusable(editable);
+		startDateField.setDate(claim.getStartDate());
+		startDateField.addTextChangedListener(new OnTextChangedWatcher() {
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				claim.setStartDate(startDateField.getDate());
+			}
+		});
+		
+		final DateEditText endDateField = (DateEditText)headerView.findViewById(R.id.et_end_date);
+		endDateField.setEnabled(editable);
+		endDateField.setFocusable(editable);
+		endDateField.setDate(claim.getEndDate());
+		endDateField.addTextChangedListener(new OnTextChangedWatcher() {
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				claim.setEndDate(endDateField.getDate());
+			}
+		});
 
-		Date endDate = claim.getEndDate();
-		if (endDate != null) {
-			TextView tvEndDate = (TextView)headerView.findViewById(R.id.tv_end_date);
-			tvEndDate.setText(formatter.format(endDate));
-		}
 		return headerView;
 	}
 

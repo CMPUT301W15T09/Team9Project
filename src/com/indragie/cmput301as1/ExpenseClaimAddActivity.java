@@ -15,7 +15,7 @@ public class ExpenseClaimAddActivity extends EditingActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_add_expense_claim);
+		setContentView(R.layout.activity_claim_header);
 		
 		startDateField = (DateEditText)findViewById(R.id.et_start_date);
 		endDateField = (DateEditText)findViewById(R.id.et_end_date);

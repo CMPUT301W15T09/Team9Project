@@ -21,6 +21,7 @@ import android.widget.EditText;
 public class DateEditText extends EditText {
 	private Context context;
 	private DateFormat dateFormat;
+	private DatePickerDialog dialog;
 
 	public DateEditText(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -51,23 +52,39 @@ public class DateEditText extends EditText {
 		}
 	}
 	
+	public void setDate(Date date) {
+		setText(dateFormat.format(date));
+	}
+	
 	private void showDatePickerDialog() {
+		if (dialog != null && dialog.isShowing()) return;
+		
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(getDate());
-		DatePickerDialog dialog = new DatePickerDialog(
-			context, 
-			new DatePickerDialog.OnDateSetListener() {
-				@Override
-				public void onDateSet(DatePicker view, int year, int month, int day) {
-					GregorianCalendar newCalendar = new GregorianCalendar(year, month, day);
-					DateFormat dateFormat = DateFormat.getDateInstance();
-					setText(dateFormat.format(newCalendar.getTime()));
-					clearFocus();
-				}
-			}, 
-			calendar.get(Calendar.YEAR), 
-			calendar.get(Calendar.MONTH), 
-			calendar.get(Calendar.DAY_OF_MONTH));
+		
+		// DatePickerDialog instance is lazily instantiated.
+		if (dialog == null) {
+			dialog = new DatePickerDialog(
+				context, 
+				new DatePickerDialog.OnDateSetListener() {
+					@Override
+					public void onDateSet(DatePicker view, int year, int month, int day) {
+						GregorianCalendar newCalendar = new GregorianCalendar(year, month, day);
+						setDate(newCalendar.getTime());
+						clearFocus();
+					}
+				}, 
+				calendar.get(Calendar.YEAR), 
+				calendar.get(Calendar.MONTH), 
+				calendar.get(Calendar.DAY_OF_MONTH)
+			);
+		} else {
+			dialog.updateDate(
+				calendar.get(Calendar.YEAR), 
+				calendar.get(Calendar.MONTH), 
+				calendar.get(Calendar.DAY_OF_MONTH)
+			);
+		}
 		dialog.show();
 	}
 }
