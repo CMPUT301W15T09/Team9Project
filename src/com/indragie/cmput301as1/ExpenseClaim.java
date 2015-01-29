@@ -77,21 +77,25 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 	private Status status = Status.IN_PROGRESS;
 	
 	/**
-	 * Date when the claim was created.
+	 * Starting date of the claim.
 	 */
-	private Date creationDate;
+	private Date startDate;
+	
+	/**
+	 * Ending date of the claim.
+	 */
+	private Date endDate;
 
 	//================================================================================
 	// Constructors
 	//================================================================================
 
-	public ExpenseClaim(String name, String description) {
+	public ExpenseClaim(String name, String description, Date startDate, Date endDate) {
 		this.name = name;
 		this.description = description;
 		this.items = new ArrayList<ExpenseItem>();
-		ExpenseItem item = new ExpenseItem("Test item", new Date(), "category", "descr", Money.of(CurrencyUnit.USD, 51.6));
-		addItem(item);
-		this.creationDate = new Date();
+		this.startDate = startDate;
+		this.endDate = endDate;
 	}
 
 	//================================================================================
@@ -142,22 +146,20 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 		return (status == Status.IN_PROGRESS || status == Status.RETURNED);
 	}
 
-	/**
-	 * @return The starting date of the expense claim, based on the earliest
-	 * date of the items contained within the claim.
-	 */
 	public Date getStartDate() {
-		if (items.size() == 0) return null;
-		return Collections.min(items).getDate();
+		return startDate;
 	}
 	
-	/**
-	 * @return The ending date of the expense claim, based on the latest
-	 * date of the items contained within the claim.
-	 */
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+	
 	public Date getEndDate() {
-		if (items.size() == 0) return null;
-		return Collections.max(items).getDate();
+		return endDate;	
+	}
+	
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 
 	/**
@@ -205,16 +207,6 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 	//================================================================================
 
 	public int compareTo(ExpenseClaim claim) {
-		Date date1 = getStartDate();
-		// If there are no expense items to grab the date from, use the
-		// creation date of the claim as the start and end dates.
-		if (date1 == null) {
-			date1 = claim.creationDate;
-		}
-		Date date2 = claim.getStartDate();
-		if (date2 == null) {
-			date2 = claim.creationDate;
-		}
-		return date1.compareTo(date2);
+		return getStartDate().compareTo(claim.getStartDate());
 	}
 }
