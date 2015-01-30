@@ -19,20 +19,17 @@ package com.indragie.cmput301as1;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.joda.money.*;
 
 /**
  * Model object representing an expense claim.
  */
-public class ExpenseClaim implements Serializable {
+public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 	private static final long serialVersionUID = 4097224167619777631L;
 
 	//================================================================================
@@ -59,7 +56,7 @@ public class ExpenseClaim implements Serializable {
 		/**
 		 * Default status when the expense is created
 		 */
-		DEFAULT,
+		IN_PROGRESS,
 		/**
 		 * Expense has been submitted, no edits allowed 
 		 */
@@ -77,16 +74,28 @@ public class ExpenseClaim implements Serializable {
 	/**
 	 * Current status of the expense claim.
 	 */
-	private Status status = Status.APPROVED;
+	private Status status = Status.IN_PROGRESS;
+	
+	/**
+	 * Starting date of the claim.
+	 */
+	private Date startDate;
+	
+	/**
+	 * Ending date of the claim.
+	 */
+	private Date endDate;
 
 	//================================================================================
 	// Constructors
 	//================================================================================
 
-	public ExpenseClaim(String name, String description) {
+	public ExpenseClaim(String name, String description, Date startDate, Date endDate) {
 		this.name = name;
 		this.description = description;
 		this.items = new ArrayList<ExpenseItem>();
+		this.startDate = startDate;
+		this.endDate = endDate;
 	}
 
 	//================================================================================
@@ -133,26 +142,24 @@ public class ExpenseClaim implements Serializable {
 		this.status = status;
 	}
 
-	public String toString() {
-		return name;
+	public Boolean isEditable() {
+		return (status == Status.IN_PROGRESS || status == Status.RETURNED);
 	}
 
-	/**
-	 * @return A list containing two elements: the earliest date and
-	 * the latest date, respectively, for the expense items contained
-	 * in the expense claim.
-	 * @throws NoSuchElementException if there are no expense items.
-	 */
-	public List<Date> getDateRange() throws NoSuchElementException {
-		Comparator<ExpenseItem> itemComparator = new Comparator<ExpenseItem>() {
-			@Override
-			public int compare(ExpenseItem item1, ExpenseItem item2) {
-				return item1.getDate().compareTo(item2.getDate());
-			}
-		};
-		ExpenseItem min = Collections.min(items, itemComparator);
-		ExpenseItem max = Collections.max(items, itemComparator);
-		return Arrays.asList(min.getDate(), max.getDate());
+	public Date getStartDate() {
+		return startDate;
+	}
+	
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+	
+	public Date getEndDate() {
+		return endDate;	
+	}
+	
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 
 	/**
@@ -185,5 +192,21 @@ public class ExpenseClaim implements Serializable {
 		// Remove trailing comma
 		builder.deleteCharAt(builder.length() - 1);
 		return builder.toString();
+	}
+
+	//================================================================================
+	// Object
+	//================================================================================
+
+	public String toString() {
+		return name;
+	}
+
+	//================================================================================
+	// Comparable
+	//================================================================================
+
+	public int compareTo(ExpenseClaim claim) {
+		return getStartDate().compareTo(claim.getStartDate());
 	}
 }

@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -40,6 +41,7 @@ public class ExpenseClaimListActivity extends ListActivity {
 	// Constants
 	//================================================================================
 	private static final int ADD_EXPENSE_CLAIM_REQUEST = 1;
+	private static final int EDIT_EXPENSE_CLAIM_REQUEST = 2;
 	private static final String EXPENSE_CLAIM_FILENAME = "claims";
 
 	//================================================================================
@@ -62,13 +64,28 @@ public class ExpenseClaimListActivity extends ListActivity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode != RESULT_OK) return;
-
-		if (requestCode == ADD_EXPENSE_CLAIM_REQUEST) {
-			Bundle extras = data.getExtras();
-			String name = extras.getString(AddExpenseClaimActivity.EXTRA_EXPENSE_CLAIM_NAME, getResources().getString(R.string.default_name));
-			String description = extras.getString(AddExpenseClaimActivity.EXTRA_EXPENSE_CLAIM_DESCRIPTION);
-			addExpenseClaim(name, description);
+		switch (requestCode) {
+		case ADD_EXPENSE_CLAIM_REQUEST:
+			onAddExpenseResult(data);
+			break;
+		case EDIT_EXPENSE_CLAIM_REQUEST:
+			onEditExpenseResult(data);
+			break;
 		}
+	}
+	
+	private void onAddExpenseResult(Intent data) {
+		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM);
+		claims.add(claim);
+		commitClaimsMutation();
+	}
+	
+	private void onEditExpenseResult(Intent data) {
+		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimEditActivity.EXTRA_CLAIM);
+		int position = data.getIntExtra(ExpenseClaimEditActivity.EXTRA_CLAIM_POSITION, -1);
+		
+		claims.set(position, claim);
+		commitClaimsMutation();
 	}
 
 	@Override
@@ -81,7 +98,8 @@ public class ExpenseClaimListActivity extends ListActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_add_claim:
-			openAddExpenseClaim();
+			Intent addIntent = new Intent(this, ExpenseClaimAddActivity.class);
+			startActivityForResult(addIntent, ADD_EXPENSE_CLAIM_REQUEST);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -93,28 +111,23 @@ public class ExpenseClaimListActivity extends ListActivity {
 	//================================================================================
 	@Override
 	public void onListItemClick(ListView listView, View view, int position, long id) {
-		Intent detailIntent = new Intent(this, ExpenseClaimDetailActivity.class);
-		detailIntent.putExtra(ExpenseClaimDetailFragment.ARG_ITEM_ID, id);
-		startActivity(detailIntent);
+		Intent detailIntent = new Intent(this, ExpenseClaimEditActivity.class);
+		detailIntent.putExtra(ExpenseClaimEditActivity.EXTRA_CLAIM, claims.get(position));
+		detailIntent.putExtra(ExpenseClaimEditActivity.EXTRA_CLAIM_POSITION, position);
+		startActivityForResult(detailIntent, EDIT_EXPENSE_CLAIM_REQUEST);
 	}
 
 	//================================================================================
 	// Claims
 	//================================================================================
 
-	private void openAddExpenseClaim() {
-		Intent addIntent = new Intent(this, AddExpenseClaimActivity.class);
-		startActivityForResult(addIntent, ADD_EXPENSE_CLAIM_REQUEST);
-	}
-
-	private void addExpenseClaim(String name, String description) {
-		ExpenseClaim claim = new ExpenseClaim(name, description);
-		claims.add(claim);
+	private void commitClaimsMutation() {
+		Collections.sort(claims);
 		adapter.notifyDataSetChanged();
-		saveExpenseClaims();
+		saveExpenseClaims(claims);
 	}
 	
-	private void saveExpenseClaims() {
+	private void saveExpenseClaims(ArrayList<ExpenseClaim> claims) {
 		try {
 			FileOutputStream fos = openFileOutput(EXPENSE_CLAIM_FILENAME, 0);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);

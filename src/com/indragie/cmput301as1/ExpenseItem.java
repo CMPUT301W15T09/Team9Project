@@ -25,7 +25,7 @@ import org.joda.money.Money;
 /**
  * Model object representing a single item on an expense claim.
  */
-public class ExpenseItem implements Serializable {
+public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	private static final long serialVersionUID = -5923561360068724438L;
 
 	//================================================================================
@@ -109,5 +109,13 @@ public class ExpenseItem implements Serializable {
 
 	public void setAmount(Money amount) {
 		this.amount = amount;
+	}
+
+	//================================================================================
+	// Comparable
+	//================================================================================
+
+	public int compareTo(ExpenseItem item) {
+		return this.getDate().compareTo(item.getDate());
 	}
 }
