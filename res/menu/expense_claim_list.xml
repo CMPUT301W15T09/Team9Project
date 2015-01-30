@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/action_add_claim"
-          android:icon="@android:drawable/ic_menu_add"
-          android:title="@string/action_add_claim" />
+
+    <item
+        android:id="@+id/action_add_claim"
+        android:title="@string/action_add_claim"/>
+
 </menu>
