@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_mark_submitted"
+        android:title="@string/action_mark_submitted"/>
+    <item
+        android:id="@+id/action_mark_returned"
+        android:title="@string/action_mark_returned"/>
+    <item
+        android:id="@+id/action_mark_approved"
+        android:title="@string/action_mark_approved"/>
+
+</menu>

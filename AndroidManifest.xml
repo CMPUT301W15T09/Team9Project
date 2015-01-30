@@ -23,16 +23,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ExpenseClaimDetailActivity"
-            android:label="@string/title_claim_detail"
+            android:name=".ExpenseClaimEditActivity"
             android:parentActivityName=".ExpenseClaimListActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.indragie.cmput301as1.ExpenseClaimListActivity" />
         </activity>
         <activity
-            android:name=".AddExpenseClaimActivity"
-            android:label="@string/title_activity_add_expense_claim"
+            android:name=".ExpenseClaimAddActivity"
             android:parentActivityName=".ExpenseClaimListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
