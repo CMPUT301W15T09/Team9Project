@@ -28,8 +28,8 @@ import android.widget.EditText;
 public class ExpenseClaimAddActivity extends EditingActivity {
 	public static final String EXTRA_EXPENSE_CLAIM = "com.indragie.cmput301as1.EXPENSE_CLAIM";
 	
-	// Cache references to these views so that they don't have to be found
-	// a second time when the ExpenseClaim object is created.
+	private EditText nameField;
+	private EditText descriptionField;
 	private DateEditText startDateField;
 	private DateEditText endDateField;
 
@@ -38,6 +38,8 @@ public class ExpenseClaimAddActivity extends EditingActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_claim_header);
 		
+		nameField = (EditText)findViewById(R.id.et_name);
+		descriptionField = (EditText)findViewById(R.id.et_description);
 		startDateField = (DateEditText)findViewById(R.id.et_start_date);
 		endDateField = (DateEditText)findViewById(R.id.et_end_date);
 	}
@@ -50,8 +52,6 @@ public class ExpenseClaimAddActivity extends EditingActivity {
 
 	@Override
 	protected void onDone() {
-		EditText nameField = (EditText)findViewById(R.id.et_name);
-		EditText descriptionField = (EditText)findViewById(R.id.et_description);
 		ExpenseClaim claim = new ExpenseClaim(
 			nameField.getText().toString(), 
 			descriptionField.getText().toString(), 
