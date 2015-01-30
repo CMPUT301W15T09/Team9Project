@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="categories_array">
+        <item>air fare</item>
+        <item>ground transport</item>
+        <item>vehicle rental</item>
+        <item>fuel</item>
+        <item>parking</item>
+        <item>registration</item>
+        <item>accomodation</item>
+        <item>meal</item>
+        <item>other</item>
+    </string-array>
+</resources>
