@@ -131,6 +131,10 @@ public class ExpenseClaimEditActivity extends ListActivity {
 		case android.R.id.home:
 			commitChangesAndFinish();
 			return true;
+		case R.id.action_add_item:
+			Intent addIntent = new Intent(this, ExpenseItemAddActivity.class);
+			startActivity(addIntent);
+			return true;
 		case R.id.action_mark_submitted:
 			claim.setStatus(Status.SUBMITTED);
 			commitChangesAndFinish();
