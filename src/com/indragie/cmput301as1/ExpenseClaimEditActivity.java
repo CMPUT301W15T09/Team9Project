@@ -2,13 +2,15 @@ package com.indragie.cmput301as1;
 
 import java.util.ArrayList;
 
+import com.indragie.cmput301as1.ExpenseClaim.Status;
+
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ListView;
 
 public class ExpenseClaimEditActivity extends ListActivity {
 	//================================================================================
@@ -23,6 +25,10 @@ public class ExpenseClaimEditActivity extends ListActivity {
 
 	private ExpenseClaim claim;
 	private int claimPosition;
+	private EditText nameField;
+	private EditText descriptionField;
+	private DateEditText startDateField;
+	private DateEditText endDateField;
 
 	//================================================================================
 	// Activity Callbacks
@@ -38,19 +44,16 @@ public class ExpenseClaimEditActivity extends ListActivity {
 		claimPosition = intent.getIntExtra(EXTRA_CLAIM_POSITION, -1);
 		setTitle(claim.getName());
 
-		ListView listView = getListView();
-		listView.addHeaderView(getListHeaderView());
-		listView.setAdapter(new ExpenseClaimArrayAdapter(this, new ArrayList<ExpenseClaim>()));
+		setupListHeaderView();
+		setEditable(claim.isEditable());
+		getListView().setAdapter(new ExpenseClaimArrayAdapter(this, new ArrayList<ExpenseClaim>()));
 	}
 
-	private View getListHeaderView() {
+	private void setupListHeaderView() {
 		View headerView = getLayoutInflater().inflate(R.layout.activity_claim_header, getListView(), false);
-
-		Boolean editable = claim.isEditable();
 		
-		EditText nameField = (EditText)headerView.findViewById(R.id.et_name);
+		nameField = (EditText)headerView.findViewById(R.id.et_name);
 		nameField.setText(claim.getName());
-		nameField.setEnabled(editable);
 		nameField.addTextChangedListener(new OnTextChangedWatcher() {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -58,9 +61,8 @@ public class ExpenseClaimEditActivity extends ListActivity {
 			}
 		});
 
-		EditText descriptionField = (EditText)headerView.findViewById(R.id.et_description);
+		descriptionField = (EditText)headerView.findViewById(R.id.et_description);
 		descriptionField.setText(claim.getDescription());
-		descriptionField.setEnabled(editable);
 		descriptionField.addTextChangedListener(new OnTextChangedWatcher() {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -68,9 +70,7 @@ public class ExpenseClaimEditActivity extends ListActivity {
 			}
 		});
 
-		final DateEditText startDateField = (DateEditText)headerView.findViewById(R.id.et_start_date);
-		startDateField.setEnabled(editable);
-		startDateField.setFocusable(editable);
+		startDateField = (DateEditText)headerView.findViewById(R.id.et_start_date);
 		startDateField.setDate(claim.getStartDate());
 		startDateField.addTextChangedListener(new OnTextChangedWatcher() {
 			@Override
@@ -79,9 +79,7 @@ public class ExpenseClaimEditActivity extends ListActivity {
 			}
 		});
 		
-		final DateEditText endDateField = (DateEditText)headerView.findViewById(R.id.et_end_date);
-		endDateField.setEnabled(editable);
-		endDateField.setFocusable(editable);
+		endDateField = (DateEditText)headerView.findViewById(R.id.et_end_date);
 		endDateField.setDate(claim.getEndDate());
 		endDateField.addTextChangedListener(new OnTextChangedWatcher() {
 			@Override
@@ -90,21 +88,51 @@ public class ExpenseClaimEditActivity extends ListActivity {
 			}
 		});
 
-		return headerView;
+		getListView().addHeaderView(headerView);
+	}
+	
+	private void setEditable(Boolean editable) {
+		nameField.setEnabled(editable);
+		descriptionField.setEnabled(editable);
+		startDateField.setEnabled(editable);
+		endDateField.setEnabled(editable);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.expense_claim_edit, menu);
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		int id = item.getItemId();
-		if (id == android.R.id.home) {
-			Intent intent = new Intent();
-			intent.putExtra(EXTRA_CLAIM, claim);
-			intent.putExtra(EXTRA_CLAIM_POSITION, claimPosition);
-			setResult(RESULT_OK, intent);
-			finish();
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			commitChangesAndFinish();
 			return true;
+		case R.id.action_mark_submitted:
+			claim.setStatus(Status.SUBMITTED);
+			commitChangesAndFinish();
+			return true;
+		case R.id.action_mark_returned:
+			claim.setStatus(Status.RETURNED);
+			setEditable(true);
+			return true;
+		case R.id.action_mark_approved:
+			claim.setStatus(Status.APPROVED);
+			commitChangesAndFinish();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
-		return super.onOptionsItemSelected(item);
+	}
+	
+	private void commitChangesAndFinish() {
+		Intent intent = new Intent();
+		intent.putExtra(EXTRA_CLAIM, claim);
+		intent.putExtra(EXTRA_CLAIM_POSITION, claimPosition);
+		setResult(RESULT_OK, intent);
+		finish();
 	}
 }
 
