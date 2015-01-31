@@ -22,8 +22,7 @@ import android.os.Bundle;
 import android.widget.EditText;
 
 /**
- * Activity for creating a new expense claim by filling in the name, description
- * and start/end dates.
+ * Activity for entering information to create a new expense claim.
  */
 public class ExpenseClaimAddActivity extends EditingActivity {
 	public static final String EXTRA_EXPENSE_CLAIM = "com.indragie.cmput301as1.EXPENSE_CLAIM";

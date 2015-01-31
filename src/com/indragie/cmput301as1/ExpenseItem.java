@@ -58,13 +58,12 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	// Constructors
 	//================================================================================
 
-	public ExpenseItem(String name, Date date, String category,
-			String description, Money amount) {
+	public ExpenseItem(String name, String description, String category, Money amount, Date date) {
 		this.name = name;
-		this.date = date;
-		this.category = category;
 		this.description = description;
+		this.category = category;
 		this.amount = amount;
+		this.date = date;
 	}
 
 	//================================================================================
