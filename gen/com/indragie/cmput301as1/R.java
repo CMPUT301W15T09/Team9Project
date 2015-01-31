@@ -35,25 +35,26 @@ public final class R {
         public static final int ic_launcher=0x7f020006;
     }
     public static final class id {
-        public static final int action_add_claim=0x7f090012;
-        public static final int action_add_item=0x7f09000e;
+        public static final int action_add_claim=0x7f090013;
+        public static final int action_add_item=0x7f09000f;
         public static final int action_cancel=0x7f090006;
         public static final int action_done=0x7f090007;
-        public static final int action_mark_approved=0x7f090011;
-        public static final int action_mark_returned=0x7f090010;
-        public static final int action_mark_submitted=0x7f09000f;
+        public static final int action_mark_approved=0x7f090012;
+        public static final int action_mark_returned=0x7f090011;
+        public static final int action_mark_submitted=0x7f090010;
         public static final int et_amount=0x7f09000a;
+        public static final int et_date=0x7f09000b;
         public static final int et_description=0x7f090001;
         public static final int et_end_date=0x7f090003;
         public static final int et_name=0x7f090000;
         public static final int et_start_date=0x7f090002;
         public static final int sp_category=0x7f090008;
         public static final int sp_currency=0x7f090009;
-        public static final int tv_amounts=0x7f09000c;
+        public static final int tv_amounts=0x7f09000d;
         public static final int tv_end_label=0x7f090005;
-        public static final int tv_name=0x7f09000b;
+        public static final int tv_name=0x7f09000c;
         public static final int tv_start_label=0x7f090004;
-        public static final int tv_status=0x7f09000d;
+        public static final int tv_status=0x7f09000e;
     }
     public static final class layout {
         public static final int activity_claim_header=0x7f030000;
@@ -73,6 +74,10 @@ public final class R {
         public static final int action_mark_approved=0x7f060010;
         public static final int action_mark_returned=0x7f06000f;
         public static final int action_mark_submitted=0x7f06000e;
+        public static final int amount_hint=0x7f060012;
+        /**  ExpenseItem{Edit,Add}Activity 
+         */
+        public static final int amount_placeholder=0x7f060011;
         /**  General 
          */
         public static final int app_name=0x7f060000;
