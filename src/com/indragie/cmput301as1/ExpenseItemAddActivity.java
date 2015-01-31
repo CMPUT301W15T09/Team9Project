@@ -17,27 +17,33 @@
 
 package com.indragie.cmput301as1;
 
+import org.joda.money.*;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 /**
- * Activity for entering information to create a new expense claim.
+ * Activity for entering information to create a new expense item.
  */
-public class ExpenseClaimAddActivity extends EditingActivity {
+public class ExpenseItemAddActivity extends EditingActivity {
 	//================================================================================
 	// Constants
 	//================================================================================
-	public static final String EXTRA_EXPENSE_CLAIM = "com.indragie.cmput301as1.EXPENSE_CLAIM";
+	public static final String EXTRA_EXPENSE_ITEM = "com.indragie.cmput301as1.EXPENSE_ITEM";
 
 	//================================================================================
 	// Properties
 	//================================================================================
 
-	private EditText nameField;
-	private EditText descriptionField;
-	private DateEditText startDateField;
-	private DateEditText endDateField;
+	protected EditText nameField;
+	protected EditText descriptionField;
+	protected EditText amountField;
+	protected DateEditText dateField;
+	protected Spinner categorySpinner;
+	protected Spinner currencySpinner;
 
 	//================================================================================
 	// Activity Callbacks
@@ -46,12 +52,26 @@ public class ExpenseClaimAddActivity extends EditingActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_claim_header);
+		setContentView(R.layout.activity_expense_item_add);
 
 		nameField = (EditText)findViewById(R.id.et_name);
 		descriptionField = (EditText)findViewById(R.id.et_description);
-		startDateField = (DateEditText)findViewById(R.id.et_start_date);
-		endDateField = (DateEditText)findViewById(R.id.et_end_date);
+		amountField = (EditText)findViewById(R.id.et_amount);
+		dateField = (DateEditText)findViewById(R.id.et_date);
+
+		categorySpinner = (Spinner)findViewById(R.id.sp_category);
+		configureSpinner(categorySpinner, R.array.categories_array);
+
+		currencySpinner = (Spinner)findViewById(R.id.sp_currency);
+		configureSpinner(currencySpinner, R.array.currency_array);
+	}
+
+	private void configureSpinner(Spinner spinner, int resourceID) {
+		// From http://developer.android.com/guide/topics/ui/controls/spinner.html
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+				resourceID, android.R.layout.simple_spinner_item);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinner.setAdapter(adapter);
 	}
 
 	//================================================================================
@@ -66,16 +86,22 @@ public class ExpenseClaimAddActivity extends EditingActivity {
 
 	@Override
 	protected void onDone() {
-		ExpenseClaim claim = new ExpenseClaim(
-			nameField.getText().toString(), 
-			descriptionField.getText().toString(), 
-			startDateField.getDate(), 
-			endDateField.getDate()
+		Money amount = Money.of(
+			CurrencyUnit.of(currencySpinner.getSelectedItem().toString()), 
+			Float.parseFloat(amountField.getText().toString())
+		);
+		ExpenseItem item = new ExpenseItem(
+			nameField.getText().toString(),
+			descriptionField.getText().toString(),
+			categorySpinner.getSelectedItem().toString(),
+			amount,
+			dateField.getDate()
 		);
 
 		Intent intent = new Intent();
-		intent.putExtra(EXTRA_EXPENSE_CLAIM, claim);
+		intent.putExtra(EXTRA_EXPENSE_ITEM, item);
 		setResult(RESULT_OK, intent);
+		finish();
 		finish();
 	}
 }
