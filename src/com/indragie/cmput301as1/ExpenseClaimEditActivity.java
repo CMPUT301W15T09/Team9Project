@@ -24,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.indragie.cmput301as1.ExpenseClaim.Status;
 
@@ -50,6 +51,7 @@ public class ExpenseClaimEditActivity extends ListActivity {
 	private EditText descriptionField;
 	private DateEditText startDateField;
 	private DateEditText endDateField;
+	private TextView amountsTextView;
 	private ExpenseItemArrayAdapter adapter;
 
 	//================================================================================
@@ -67,6 +69,7 @@ public class ExpenseClaimEditActivity extends ListActivity {
 		setTitle(claim.getName());
 
 		setupListHeaderView();
+		setupListFooterView();
 		setEditable(claim.isEditable());
 		
 		adapter = new ExpenseItemArrayAdapter(this, claim.getItems());
@@ -115,6 +118,15 @@ public class ExpenseClaimEditActivity extends ListActivity {
 		getListView().addHeaderView(headerView);
 	}
 	
+	private void setupListFooterView() {
+		View footerView = getLayoutInflater().inflate(R.layout.activity_claim_footer, getListView(), false);
+		
+		amountsTextView = (TextView)footerView.findViewById(R.id.tv_amounts);
+		amountsTextView.setText(claim.getSummarizedAmounts());
+		
+		getListView().addFooterView(footerView);
+	}
+	
 	private void setEditable(Boolean editable) {
 		this.editable = editable;
 		
@@ -140,6 +152,7 @@ public class ExpenseClaimEditActivity extends ListActivity {
 	private void onAddExpenseItem(Intent data) {
 		ExpenseItem item = (ExpenseItem)data.getSerializableExtra(ExpenseItemAddActivity.EXTRA_EXPENSE_ITEM);
 		claim.addItem(item);
+		amountsTextView.setText(claim.getSummarizedAmounts());
 		adapter.notifyDataSetChanged();
 	}
 
