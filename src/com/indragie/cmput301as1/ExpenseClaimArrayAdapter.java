@@ -45,17 +45,17 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 		if (convertView == null) {
 			convertView = LayoutInflater.from(getContext()).inflate(R.layout.expense_claim_list_row, parent, false);
 		}
-		TextView tvName = (TextView)convertView.findViewById(R.id.tv_name);
-		tvName.setText(claim.getName());
+		TextView nameTextView = (TextView)convertView.findViewById(R.id.tv_name);
+		nameTextView.setText(claim.getName());
 		
-		TextView tvAmounts = (TextView)convertView.findViewById(R.id.tv_amounts);
+		TextView amountsTextView = (TextView)convertView.findViewById(R.id.tv_amounts);
 		String amounts = claim.getSummarizedAmounts();
 		if (amounts == null) {
 			amounts = resources.getString(R.string.no_expenses);
 		}
-		tvAmounts.setText(amounts);
+		amountsTextView.setText(amounts);
 		
-		TextView tvStatus = (TextView)convertView.findViewById(R.id.tv_status);
+		TextView statusTextView = (TextView)convertView.findViewById(R.id.tv_status);
 		
 		String text = null;
 		Drawable background = null;
@@ -79,8 +79,8 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 		default:
 			break;
 		}
-		tvStatus.setText(text);
-		tvStatus.setBackground(background);
+		statusTextView.setText(text);
+		statusTextView.setBackground(background);
 		
 		return convertView;
 	}

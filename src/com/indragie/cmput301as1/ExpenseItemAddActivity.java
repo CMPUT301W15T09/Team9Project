@@ -29,39 +29,54 @@ import android.widget.Spinner;
  * Activity for entering information to create a new expense item.
  */
 public class ExpenseItemAddActivity extends EditingActivity {
+	//================================================================================
+	// Constants
+	//================================================================================
 	public static final String EXTRA_EXPENSE_ITEM = "com.indragie.cmput301as1.EXPENSE_ITEM";
-	
+
+	//================================================================================
+	// Properties
+	//================================================================================
+
 	protected EditText nameField;
 	protected EditText descriptionField;
 	protected EditText amountField;
 	protected DateEditText dateField;
 	protected Spinner categorySpinner;
 	protected Spinner currencySpinner;
-	
+
+	//================================================================================
+	// Activity Callbacks
+	//================================================================================
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_expense_item_add);
-		
+
 		nameField = (EditText)findViewById(R.id.et_name);
 		descriptionField = (EditText)findViewById(R.id.et_description);
 		amountField = (EditText)findViewById(R.id.et_amount);
 		dateField = (DateEditText)findViewById(R.id.et_date);
-		
+
 		categorySpinner = (Spinner)findViewById(R.id.sp_category);
 		configureSpinner(categorySpinner, R.array.categories_array);
-		
+
 		currencySpinner = (Spinner)findViewById(R.id.sp_currency);
 		configureSpinner(currencySpinner, R.array.currency_array);
 	}
-	
+
 	private void configureSpinner(Spinner spinner, int resourceID) {
 		// From http://developer.android.com/guide/topics/ui/controls/spinner.html
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-		        resourceID, android.R.layout.simple_spinner_item);
+				resourceID, android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinner.setAdapter(adapter);
 	}
+
+	//================================================================================
+	// EditingActivity
+	//================================================================================
 
 	@Override
 	protected void onCancel() {
@@ -82,7 +97,7 @@ public class ExpenseItemAddActivity extends EditingActivity {
 			amount,
 			dateField.getDate()
 		);
-		
+
 		Intent intent = new Intent();
 		intent.putExtra(EXTRA_EXPENSE_ITEM, item);
 		setResult(RESULT_OK, intent);

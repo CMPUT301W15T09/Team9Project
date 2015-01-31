@@ -25,23 +25,38 @@ import android.widget.EditText;
  * Activity for entering information to create a new expense claim.
  */
 public class ExpenseClaimAddActivity extends EditingActivity {
+	//================================================================================
+	// Constants
+	//================================================================================
 	public static final String EXTRA_EXPENSE_CLAIM = "com.indragie.cmput301as1.EXPENSE_CLAIM";
-	
+
+	//================================================================================
+	// Properties
+	//================================================================================
+
 	private EditText nameField;
 	private EditText descriptionField;
 	private DateEditText startDateField;
 	private DateEditText endDateField;
 
+	//================================================================================
+	// Activity Callbacks
+	//================================================================================
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_claim_header);
-		
+
 		nameField = (EditText)findViewById(R.id.et_name);
 		descriptionField = (EditText)findViewById(R.id.et_description);
 		startDateField = (DateEditText)findViewById(R.id.et_start_date);
 		endDateField = (DateEditText)findViewById(R.id.et_end_date);
 	}
+
+	//================================================================================
+	// EditingActivity
+	//================================================================================
 
 	@Override
 	protected void onCancel() {
@@ -57,7 +72,7 @@ public class ExpenseClaimAddActivity extends EditingActivity {
 			startDateField.getDate(), 
 			endDateField.getDate()
 		);
-		
+
 		Intent intent = new Intent();
 		intent.putExtra(EXTRA_EXPENSE_CLAIM, claim);
 		setResult(RESULT_OK, intent);
