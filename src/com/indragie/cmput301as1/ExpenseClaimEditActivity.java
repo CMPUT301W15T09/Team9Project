@@ -43,6 +43,7 @@ public class ExpenseClaimEditActivity extends ListActivity {
 	// Properties
 	//================================================================================
 
+	private Boolean editable;
 	private ExpenseClaim claim;
 	private int claimPosition;
 	private EditText nameField;
@@ -115,10 +116,13 @@ public class ExpenseClaimEditActivity extends ListActivity {
 	}
 	
 	private void setEditable(Boolean editable) {
+		this.editable = editable;
+		
 		nameField.setEnabled(editable);
 		descriptionField.setEnabled(editable);
 		startDateField.setEnabled(editable);
 		endDateField.setEnabled(editable);
+		invalidateOptionsMenu();
 	}
 	
 	@Override
@@ -143,6 +147,13 @@ public class ExpenseClaimEditActivity extends ListActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.expense_claim_edit, menu);
 		return super.onCreateOptionsMenu(menu);
+	}
+	
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		super.onPrepareOptionsMenu(menu);
+		menu.findItem(R.id.action_add_item).setEnabled(editable);
+	    return true;
 	}
 
 	@Override
