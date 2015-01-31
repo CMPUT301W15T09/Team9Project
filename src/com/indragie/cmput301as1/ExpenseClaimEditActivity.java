@@ -17,10 +17,6 @@
 
 package com.indragie.cmput301as1;
 
-import java.util.ArrayList;
-
-import com.indragie.cmput301as1.ExpenseClaim.Status;
-
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,6 +24,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+
+import com.indragie.cmput301as1.ExpenseClaim.Status;
 
 /**
  * Activity for editing an expense claim, including marking it as submitted/returned/approved
@@ -39,6 +37,7 @@ public class ExpenseClaimEditActivity extends ListActivity {
 	//================================================================================
 	public static final String EXTRA_CLAIM = "com.indragie.cmput301as1.EXTRA_CLAIM";
 	public static final String EXTRA_CLAIM_POSITION = "com.indragie.cmput301as1.EXTRA_CLAIM_POSITION";
+	private static final int ADD_EXPENSE_ITEM_REQUEST = 1;
 
 	//================================================================================
 	// Properties
@@ -50,6 +49,7 @@ public class ExpenseClaimEditActivity extends ListActivity {
 	private EditText descriptionField;
 	private DateEditText startDateField;
 	private DateEditText endDateField;
+	private ExpenseItemArrayAdapter adapter;
 
 	//================================================================================
 	// Activity Callbacks
@@ -67,7 +67,9 @@ public class ExpenseClaimEditActivity extends ListActivity {
 
 		setupListHeaderView();
 		setEditable(claim.isEditable());
-		getListView().setAdapter(new ExpenseClaimArrayAdapter(this, new ArrayList<ExpenseClaim>()));
+		
+		adapter = new ExpenseItemArrayAdapter(this, claim.getItems());
+		getListView().setAdapter(adapter);
 	}
 
 	private void setupListHeaderView() {
@@ -118,6 +120,24 @@ public class ExpenseClaimEditActivity extends ListActivity {
 		startDateField.setEnabled(editable);
 		endDateField.setEnabled(editable);
 	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode != RESULT_OK) return;
+		switch (requestCode) {
+		case ADD_EXPENSE_ITEM_REQUEST:
+			onAddExpenseItem(data);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	private void onAddExpenseItem(Intent data) {
+		ExpenseItem item = (ExpenseItem)data.getSerializableExtra(ExpenseItemAddActivity.EXTRA_EXPENSE_ITEM);
+		claim.addItem(item);
+		adapter.notifyDataSetChanged();
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -133,7 +153,7 @@ public class ExpenseClaimEditActivity extends ListActivity {
 			return true;
 		case R.id.action_add_item:
 			Intent addIntent = new Intent(this, ExpenseItemAddActivity.class);
-			startActivity(addIntent);
+			startActivityForResult(addIntent, ADD_EXPENSE_ITEM_REQUEST);
 			return true;
 		case R.id.action_mark_submitted:
 			claim.setStatus(Status.SUBMITTED);
