@@ -17,10 +17,6 @@
 
 package com.indragie.cmput301as1;
 
-import java.util.ArrayList;
-
-import com.indragie.cmput301as1.ExpenseClaim.Status;
-
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,6 +24,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
+
+import com.indragie.cmput301as1.ExpenseClaim.Status;
 
 /**
  * Activity for editing an expense claim, including marking it as submitted/returned/approved
@@ -39,17 +38,21 @@ public class ExpenseClaimEditActivity extends ListActivity {
 	//================================================================================
 	public static final String EXTRA_CLAIM = "com.indragie.cmput301as1.EXTRA_CLAIM";
 	public static final String EXTRA_CLAIM_POSITION = "com.indragie.cmput301as1.EXTRA_CLAIM_POSITION";
+	private static final int ADD_EXPENSE_ITEM_REQUEST = 1;
 
 	//================================================================================
 	// Properties
 	//================================================================================
 
+	private Boolean editable;
 	private ExpenseClaim claim;
 	private int claimPosition;
 	private EditText nameField;
 	private EditText descriptionField;
 	private DateEditText startDateField;
 	private DateEditText endDateField;
+	private TextView amountsTextView;
+	private ExpenseItemArrayAdapter adapter;
 
 	//================================================================================
 	// Activity Callbacks
@@ -66,8 +69,11 @@ public class ExpenseClaimEditActivity extends ListActivity {
 		setTitle(claim.getName());
 
 		setupListHeaderView();
+		setupListFooterView();
 		setEditable(claim.isEditable());
-		getListView().setAdapter(new ExpenseClaimArrayAdapter(this, new ArrayList<ExpenseClaim>()));
+		
+		adapter = new ExpenseItemArrayAdapter(this, claim.getItems());
+		getListView().setAdapter(adapter);
 	}
 
 	private void setupListHeaderView() {
@@ -112,11 +118,42 @@ public class ExpenseClaimEditActivity extends ListActivity {
 		getListView().addHeaderView(headerView);
 	}
 	
+	private void setupListFooterView() {
+		View footerView = getLayoutInflater().inflate(R.layout.activity_claim_footer, getListView(), false);
+		
+		amountsTextView = (TextView)footerView.findViewById(R.id.tv_amounts);
+		amountsTextView.setText(claim.getSummarizedAmounts());
+		
+		getListView().addFooterView(footerView);
+	}
+	
 	private void setEditable(Boolean editable) {
+		this.editable = editable;
+		
 		nameField.setEnabled(editable);
 		descriptionField.setEnabled(editable);
 		startDateField.setEnabled(editable);
 		endDateField.setEnabled(editable);
+		invalidateOptionsMenu();
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode != RESULT_OK) return;
+		switch (requestCode) {
+		case ADD_EXPENSE_ITEM_REQUEST:
+			onAddExpenseItem(data);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	private void onAddExpenseItem(Intent data) {
+		ExpenseItem item = (ExpenseItem)data.getSerializableExtra(ExpenseItemAddActivity.EXTRA_EXPENSE_ITEM);
+		claim.addItem(item);
+		amountsTextView.setText(claim.getSummarizedAmounts());
+		adapter.notifyDataSetChanged();
 	}
 
 	@Override
@@ -124,12 +161,23 @@ public class ExpenseClaimEditActivity extends ListActivity {
 		getMenuInflater().inflate(R.menu.expense_claim_edit, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
+	
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		super.onPrepareOptionsMenu(menu);
+		menu.findItem(R.id.action_add_item).setEnabled(editable);
+	    return true;
+	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			commitChangesAndFinish();
+			return true;
+		case R.id.action_add_item:
+			Intent addIntent = new Intent(this, ExpenseItemAddActivity.class);
+			startActivityForResult(addIntent, ADD_EXPENSE_ITEM_REQUEST);
 			return true;
 		case R.id.action_mark_submitted:
 			claim.setStatus(Status.SUBMITTED);
