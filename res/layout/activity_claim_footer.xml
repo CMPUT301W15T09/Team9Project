@@ -22,7 +22,7 @@
         android:layout_marginStart="10dp"
         android:layout_weight="1"
         android:gravity="end"
-        android:hint="@string/total_hint"
+        android:hint="@string/amount_placeholder"
         android:textAppearance="?android:attr/textAppearanceListItemSmall" />
 
 </LinearLayout>
