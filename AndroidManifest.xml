@@ -36,8 +36,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.indragie.cmput301as1.ExpenseClaimListActivity" />
         </activity>
+        <activity android:name=".ExpenseItemAddActivity" >
+        </activity>
         <activity
-            android:name=".ExpenseItemAddActivity">
+            android:name=".ExpenseItemEditActivity" >
         </activity>
     </application>
 

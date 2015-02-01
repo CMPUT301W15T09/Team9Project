@@ -90,12 +90,13 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 	// Constructors
 	//================================================================================
 
-	public ExpenseClaim(String name, String description, Date startDate, Date endDate) {
+	public ExpenseClaim(String name, String description, Date startDate, Date endDate, Status status) {
 		this.name = name;
 		this.description = description;
 		this.items = new ArrayList<ExpenseItem>();
 		this.startDate = startDate;
 		this.endDate = endDate;
+		this.status = status;
 	}
 
 	//================================================================================
@@ -128,6 +129,11 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 
 	public void addItem(ExpenseItem item) {
 		items.add(item);
+		Collections.sort(items);
+	}
+	
+	public void setItem(int position, ExpenseItem item) {
+		items.set(position, item);
 		Collections.sort(items);
 	}
 
