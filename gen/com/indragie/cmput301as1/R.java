@@ -33,16 +33,18 @@ public final class R {
         public static final int bg_rounded_yellow=0x7f020004;
         public static final int ic_action_accept=0x7f020005;
         public static final int ic_action_cancel=0x7f020006;
-        public static final int ic_launcher=0x7f020007;
+        public static final int ic_action_discard=0x7f020007;
+        public static final int ic_launcher=0x7f020008;
     }
     public static final class id {
-        public static final int action_add_claim=0x7f090013;
-        public static final int action_add_item=0x7f09000f;
+        public static final int action_add_claim=0x7f090014;
+        public static final int action_add_item=0x7f090010;
         public static final int action_cancel=0x7f090008;
+        public static final int action_delete=0x7f09000f;
         public static final int action_done=0x7f090009;
-        public static final int action_mark_approved=0x7f090012;
-        public static final int action_mark_returned=0x7f090011;
-        public static final int action_mark_submitted=0x7f090010;
+        public static final int action_mark_approved=0x7f090013;
+        public static final int action_mark_returned=0x7f090012;
+        public static final int action_mark_submitted=0x7f090011;
         public static final int et_amount=0x7f09000c;
         public static final int et_date=0x7f09000d;
         public static final int et_description=0x7f090003;
@@ -65,9 +67,9 @@ public final class R {
         public static final int expense_claim_list_row=0x7f030004;
     }
     public static final class menu {
-        public static final int expense_claim_edit=0x7f080000;
-        public static final int expense_claim_list=0x7f080001;
-        public static final int expense_item_edit=0x7f080002;
+        public static final int contextual_delete=0x7f080000;
+        public static final int expense_claim_edit=0x7f080001;
+        public static final int expense_claim_list=0x7f080002;
     }
     public static final class string {
         /**  ExpenseClaimListActivity 
