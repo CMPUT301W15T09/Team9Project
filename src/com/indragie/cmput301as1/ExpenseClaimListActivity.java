@@ -109,12 +109,13 @@ public class ExpenseClaimListActivity extends ListActivity {
 	//================================================================================
 	// ListView Callbacks
 	//================================================================================
+	
 	@Override
 	public void onListItemClick(ListView listView, View view, int position, long id) {
-		Intent detailIntent = new Intent(this, ExpenseClaimEditActivity.class);
-		detailIntent.putExtra(ExpenseClaimEditActivity.EXTRA_EXPENSE_CLAIM, claims.get(position));
-		detailIntent.putExtra(ExpenseClaimEditActivity.EXTRA_EXPENSE_CLAIM_POSITION, position);
-		startActivityForResult(detailIntent, EDIT_EXPENSE_CLAIM_REQUEST);
+		Intent intent = new Intent(this, ExpenseClaimEditActivity.class);
+		intent.putExtra(ExpenseClaimEditActivity.EXTRA_EXPENSE_CLAIM, (ExpenseClaim)listView.getItemAtPosition(position));
+		intent.putExtra(ExpenseClaimEditActivity.EXTRA_EXPENSE_CLAIM_POSITION, position);
+		startActivityForResult(intent, EDIT_EXPENSE_CLAIM_REQUEST);
 	}
 
 	//================================================================================
