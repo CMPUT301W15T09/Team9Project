@@ -21,4 +21,16 @@ public class SpinnerUtils {
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinner.setAdapter(adapter);
 	}
+	
+	/**
+	 * Sets the selected item of a spinner by value.
+	 * @param spinner Spinner to set selected item of.
+	 * @param value The value to select.
+	 */
+	@SuppressWarnings("unchecked")
+	public static void setSelectedItem(Spinner spinner, String value) {
+		ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>)spinner.getAdapter();
+		int position = adapter.getPosition(value);
+		spinner.setSelection(position);
+	}
 }
