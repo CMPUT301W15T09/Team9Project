@@ -18,6 +18,7 @@
 package com.indragie.cmput301as1;
 
 import java.io.Serializable;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -144,6 +145,16 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 	public Status getStatus() {
 		return status;
 	}
+	
+	public String getStatusString() {
+		switch (status) {
+		case IN_PROGRESS: return "In Progress";
+		case SUBMITTED: return "Submitted";
+		case RETURNED: return "Returned";
+		case APPROVED: return "Approved";
+		default: return null;
+		}
+	}
 
 	public void setStatus(Status status) {
 		this.status = status;
@@ -198,6 +209,25 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 		}
 		// Remove trailing comma
 		builder.deleteCharAt(builder.length() - 1);
+		return builder.toString();
+	}
+	
+	/**
+	 * Generates HTML markup.
+	 * @return HTML representation of the expense claim suitable for sending in an email.
+	 */
+	public String getHTMLString() {
+		StringBuilder builder = new StringBuilder(name + "<br />");
+		if (description.length() > 0) {
+			builder.append("<b>Description:</b> " + description + "<br />");
+		}
+		DateFormat dateFormat = DateFormat.getDateInstance();
+		builder.append("<b>Dates:</b> " + dateFormat.format(startDate) + " - " + dateFormat.format(endDate) + "<br />");
+		builder.append("<b>Status:</b> " + getStatusString() + "<br /><ol>");
+		for (ExpenseItem item : items) {
+			builder.append(item.getHTMLString());
+		}
+		builder.append("</ol>");
 		return builder.toString();
 	}
 
