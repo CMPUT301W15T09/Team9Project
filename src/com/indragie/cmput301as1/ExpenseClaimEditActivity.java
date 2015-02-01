@@ -77,9 +77,8 @@ public class ExpenseClaimEditActivity extends ListActivity {
 		setupListFooterView();
 		setEditable(claim.isEditable());
 
-		ListView listView = getListView();
 		adapter = new ExpenseItemArrayAdapter(this, claim.getItems());
-		listView.setAdapter(adapter);
+		setListAdapter(adapter);
 		
 		final ActionMode.Callback longClickCallback = new ActionMode.Callback() {
 			@Override
@@ -109,13 +108,12 @@ public class ExpenseClaimEditActivity extends ListActivity {
 				return false;
 			}
 		};
-		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+		getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 				if (editable) {
 					longPressedItemIndex = (int)id;
 					startActionMode(longClickCallback);
-					view.setSelected(true);
 					return true;
 				} else {
 					return false;
