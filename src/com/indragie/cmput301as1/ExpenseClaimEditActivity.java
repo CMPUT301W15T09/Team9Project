@@ -20,9 +20,11 @@ package com.indragie.cmput301as1;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -55,6 +57,7 @@ public class ExpenseClaimEditActivity extends ListActivity {
 	private DateEditText endDateField;
 	private TextView amountsTextView;
 	private ExpenseItemArrayAdapter adapter;
+	private int longPressedItemIndex;
 
 	//================================================================================
 	// Activity Callbacks
@@ -74,8 +77,51 @@ public class ExpenseClaimEditActivity extends ListActivity {
 		setupListFooterView();
 		setEditable(claim.isEditable());
 
+		ListView listView = getListView();
 		adapter = new ExpenseItemArrayAdapter(this, claim.getItems());
-		getListView().setAdapter(adapter);
+		listView.setAdapter(adapter);
+		
+		final ActionMode.Callback longClickCallback = new ActionMode.Callback() {
+			@Override
+			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+				switch (item.getItemId()) {
+				case R.id.action_delete:
+					claim.removeItem(longPressedItemIndex);
+					updateInterfaceForDataSetChange();
+					mode.finish();
+					return true;
+				default:
+					return false;
+				}
+			}
+
+			@Override
+			public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+				mode.getMenuInflater().inflate(R.menu.contextual_delete, menu);
+				return true;
+			}
+
+			@Override
+			public void onDestroyActionMode(ActionMode mode) {}
+
+			@Override
+			public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+				return false;
+			}
+		};
+		listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+				if (editable) {
+					longPressedItemIndex = (int)id;
+					startActionMode(longClickCallback);
+					view.setSelected(true);
+					return true;
+				} else {
+					return false;
+				}
+			}
+		});
 	}
 
 	private void setupListHeaderView() {
