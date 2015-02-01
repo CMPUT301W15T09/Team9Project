@@ -202,6 +202,13 @@ public class ExpenseClaimEditActivity extends ListActivity {
 		setResult(RESULT_OK, intent);
 		finish();
 	}
+	
+	@Override
+	public void onBackPressed() {
+		// Changes should persist even when the back button is pressed,
+		// since this is for editing and not adding.
+		commitChangesAndFinish();
+	}
 
 	//================================================================================
 	// ListView Callbacks
