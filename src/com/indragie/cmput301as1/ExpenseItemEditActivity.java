@@ -11,7 +11,6 @@ public class ExpenseItemEditActivity extends ExpenseItemAddActivity {
 	//================================================================================
 	// Constants
 	//================================================================================
-	public static final String EXTRA_EXPENSE_ITEM = "com.indragie.cmput301as1.EXPENSE_ITEM";
 	public static final String EXTRA_EXPENSE_ITEM_POSITION = "com.indragie.cmput301as1.EXPENSE_ITEM_POSITION";
 	public static final String EXTRA_EXPENSE_ITEM_EDITABLE = "com.indragie.cmput301as1.EXPENSE_ITEM_EDITABLE";
 	
