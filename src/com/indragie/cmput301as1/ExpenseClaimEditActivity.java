@@ -24,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.indragie.cmput301as1.ExpenseClaim.Status;
@@ -39,6 +40,7 @@ public class ExpenseClaimEditActivity extends ListActivity {
 	public static final String EXTRA_EXPENSE_CLAIM = "com.indragie.cmput301as1.EXTRA_CLAIM";
 	public static final String EXTRA_EXPENSE_CLAIM_POSITION = "com.indragie.cmput301as1.EXTRA_EXPENSE_CLAIM_POSITION";
 	private static final int ADD_EXPENSE_ITEM_REQUEST = 1;
+	private static final int EDIT_EXPENSE_ITEM_REQUEST = 2;
 
 	//================================================================================
 	// Properties
@@ -71,14 +73,14 @@ public class ExpenseClaimEditActivity extends ListActivity {
 		setupListHeaderView();
 		setupListFooterView();
 		setEditable(claim.isEditable());
-		
+
 		adapter = new ExpenseItemArrayAdapter(this, claim.getItems());
 		getListView().setAdapter(adapter);
 	}
 
 	private void setupListHeaderView() {
 		View headerView = getLayoutInflater().inflate(R.layout.activity_claim_header, getListView(), false);
-		
+
 		nameField = (EditText)headerView.findViewById(R.id.et_name);
 		nameField.setText(claim.getName());
 
@@ -87,32 +89,32 @@ public class ExpenseClaimEditActivity extends ListActivity {
 
 		startDateField = (DateEditText)headerView.findViewById(R.id.et_start_date);
 		startDateField.setDate(claim.getStartDate());
-		
+
 		endDateField = (DateEditText)headerView.findViewById(R.id.et_end_date);
 		endDateField.setDate(claim.getEndDate());
 
 		getListView().addHeaderView(headerView);
 	}
-	
+
 	private void setupListFooterView() {
 		View footerView = getLayoutInflater().inflate(R.layout.activity_claim_footer, getListView(), false);
-		
+
 		amountsTextView = (TextView)footerView.findViewById(R.id.tv_amounts);
 		amountsTextView.setText(claim.getSummarizedAmounts());
-		
+
 		getListView().addFooterView(footerView);
 	}
-	
+
 	private void setEditable(Boolean editable) {
 		this.editable = editable;
-		
+
 		nameField.setEnabled(editable);
 		descriptionField.setEnabled(editable);
 		startDateField.setEnabled(editable);
 		endDateField.setEnabled(editable);
 		invalidateOptionsMenu();
 	}
-	
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode != RESULT_OK) return;
@@ -120,29 +122,45 @@ public class ExpenseClaimEditActivity extends ListActivity {
 		case ADD_EXPENSE_ITEM_REQUEST:
 			onAddExpenseItem(data);
 			break;
+		case EDIT_EXPENSE_ITEM_REQUEST:
+			onEditExpenseItem(data);
+			break;
 		default:
 			break;
 		}
 	}
-	
+
 	private void onAddExpenseItem(Intent data) {
 		ExpenseItem item = (ExpenseItem)data.getSerializableExtra(ExpenseItemAddActivity.EXTRA_EXPENSE_ITEM);
 		claim.addItem(item);
+		
+		updateInterfaceForDataSetChange();
+	}
+
+	private void onEditExpenseItem(Intent data) {
+		ExpenseItem item = (ExpenseItem)data.getSerializableExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM);
+		int position = data.getIntExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_POSITION, -1);
+		claim.setItem(position, item);
+		
+		updateInterfaceForDataSetChange();
+	}
+
+	private void updateInterfaceForDataSetChange() {
 		amountsTextView.setText(claim.getSummarizedAmounts());
 		adapter.notifyDataSetChanged();
 	}
-
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.expense_claim_edit, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
-	
+
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);
 		menu.findItem(R.id.action_add_item).setEnabled(editable);
-	    return true;
+		return true;
 	}
 
 	@Override
@@ -171,18 +189,35 @@ public class ExpenseClaimEditActivity extends ListActivity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
 	private void commitChangesAndFinish() {
 		claim.setName(nameField.getText().toString());
 		claim.setDescription(descriptionField.getText().toString());
 		claim.setStartDate(startDateField.getDate());
 		claim.setEndDate(endDateField.getDate());
-		
+
 		Intent intent = new Intent();
 		intent.putExtra(EXTRA_EXPENSE_CLAIM, claim);
 		intent.putExtra(EXTRA_EXPENSE_CLAIM_POSITION, claimPosition);
 		setResult(RESULT_OK, intent);
 		finish();
+	}
+
+	//================================================================================
+	// ListView Callbacks
+	//================================================================================
+
+	@Override
+	public void onListItemClick(ListView listView, View view, int position, long id) {
+		// If the header or footer was clicked, the item will be null.
+		ExpenseItem item = (ExpenseItem)listView.getItemAtPosition(position);
+		if (item == null) return;
+		
+		Intent intent = new Intent(this, ExpenseItemEditActivity.class);
+		intent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM, item);
+		intent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_POSITION, (int)id);
+		intent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_EDITABLE, editable);
+		startActivityForResult(intent, EDIT_EXPENSE_ITEM_REQUEST);
 	}
 }
 

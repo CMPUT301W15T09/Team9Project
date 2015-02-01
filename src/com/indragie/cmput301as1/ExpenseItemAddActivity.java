@@ -66,17 +66,10 @@ public class ExpenseItemAddActivity extends EditingActivity {
 	}
 
 	//================================================================================
-	// EditingActivity
+	// Subclass Overrides
 	//================================================================================
 
-	@Override
-	protected void onCancel() {
-		setResult(RESULT_CANCELED, new Intent());
-		finish();
-	}
-
-	@Override
-	protected void onDone() {
+	protected Intent getResultIntent()  {
 		Money amount = Money.of(
 			CurrencyUnit.of(currencySpinner.getSelectedItem().toString()), 
 			Float.parseFloat(amountField.getText().toString())
@@ -91,8 +84,22 @@ public class ExpenseItemAddActivity extends EditingActivity {
 
 		Intent intent = new Intent();
 		intent.putExtra(EXTRA_EXPENSE_ITEM, item);
-		setResult(RESULT_OK, intent);
+		return intent;
+	}
+	
+	//================================================================================
+	// EditingActivity
+	//================================================================================
+
+	@Override
+	protected void onCancel() {
+		setResult(RESULT_CANCELED, new Intent());
 		finish();
+	}
+
+	@Override
+	protected void onDone() {
+		setResult(RESULT_OK, getResultIntent());
 		finish();
 	}
 }

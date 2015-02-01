@@ -131,6 +131,11 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 		items.add(item);
 		Collections.sort(items);
 	}
+	
+	public void setItem(int position, ExpenseItem item) {
+		items.set(position, item);
+		Collections.sort(items);
+	}
 
 	public void removeItem(int index) {
 		items.remove(index);
