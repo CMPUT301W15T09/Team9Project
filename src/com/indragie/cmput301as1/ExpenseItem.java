@@ -18,6 +18,7 @@
 package com.indragie.cmput301as1;
 
 import java.io.Serializable;
+import java.text.DateFormat;
 import java.util.Date;
 
 import org.joda.money.Money;
@@ -108,6 +109,20 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 
 	public void setAmount(Money amount) {
 		this.amount = amount;
+	}
+	
+	/**
+	 * @return HTML representation of the expense item suitable for sending in an email.
+	 */
+	public String getHTMLString() {
+		StringBuilder builder = new StringBuilder(name + "<ul>");
+		if (description.length() > 0) {
+			builder.append("<li><b>Description:</b> " + description + "</li>");
+		}
+		builder.append("<li><b>Category:</b> " + category + "</li>");
+		builder.append("<li><b>Amount:</b> " + amount.toString() + "</li>");
+		builder.append("<li><b>Date:</b> " + DateFormat.getDateInstance().format(date) + "</li></ul>");
+		return builder.toString();
 	}
 
 	//================================================================================
