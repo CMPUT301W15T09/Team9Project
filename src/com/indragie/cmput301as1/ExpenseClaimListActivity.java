@@ -81,8 +81,8 @@ public class ExpenseClaimListActivity extends ListActivity {
 	}
 	
 	private void onEditExpenseResult(Intent data) {
-		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimEditActivity.EXTRA_CLAIM);
-		int position = data.getIntExtra(ExpenseClaimEditActivity.EXTRA_CLAIM_POSITION, -1);
+		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimEditActivity.EXTRA_EXPENSE_CLAIM);
+		int position = data.getIntExtra(ExpenseClaimEditActivity.EXTRA_EXPENSE_CLAIM_POSITION, -1);
 		
 		claims.set(position, claim);
 		commitClaimsMutation();
@@ -112,8 +112,8 @@ public class ExpenseClaimListActivity extends ListActivity {
 	@Override
 	public void onListItemClick(ListView listView, View view, int position, long id) {
 		Intent detailIntent = new Intent(this, ExpenseClaimEditActivity.class);
-		detailIntent.putExtra(ExpenseClaimEditActivity.EXTRA_CLAIM, claims.get(position));
-		detailIntent.putExtra(ExpenseClaimEditActivity.EXTRA_CLAIM_POSITION, position);
+		detailIntent.putExtra(ExpenseClaimEditActivity.EXTRA_EXPENSE_CLAIM, claims.get(position));
+		detailIntent.putExtra(ExpenseClaimEditActivity.EXTRA_EXPENSE_CLAIM_POSITION, position);
 		startActivityForResult(detailIntent, EDIT_EXPENSE_CLAIM_REQUEST);
 	}
 

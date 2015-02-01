@@ -36,8 +36,8 @@ public class ExpenseClaimEditActivity extends ListActivity {
 	//================================================================================
 	// Constants
 	//================================================================================
-	public static final String EXTRA_CLAIM = "com.indragie.cmput301as1.EXTRA_CLAIM";
-	public static final String EXTRA_CLAIM_POSITION = "com.indragie.cmput301as1.EXTRA_CLAIM_POSITION";
+	public static final String EXTRA_EXPENSE_CLAIM = "com.indragie.cmput301as1.EXTRA_CLAIM";
+	public static final String EXTRA_EXPENSE_CLAIM_POSITION = "com.indragie.cmput301as1.EXTRA_EXPENSE_CLAIM_POSITION";
 	private static final int ADD_EXPENSE_ITEM_REQUEST = 1;
 
 	//================================================================================
@@ -64,8 +64,8 @@ public class ExpenseClaimEditActivity extends ListActivity {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		Intent intent = getIntent();
-		claim = (ExpenseClaim)intent.getSerializableExtra(EXTRA_CLAIM);
-		claimPosition = intent.getIntExtra(EXTRA_CLAIM_POSITION, -1);
+		claim = (ExpenseClaim)intent.getSerializableExtra(EXTRA_EXPENSE_CLAIM);
+		claimPosition = intent.getIntExtra(EXTRA_EXPENSE_CLAIM_POSITION, -1);
 		setTitle(claim.getName());
 
 		setupListHeaderView();
@@ -198,8 +198,8 @@ public class ExpenseClaimEditActivity extends ListActivity {
 	
 	private void commitChangesAndFinish() {
 		Intent intent = new Intent();
-		intent.putExtra(EXTRA_CLAIM, claim);
-		intent.putExtra(EXTRA_CLAIM_POSITION, claimPosition);
+		intent.putExtra(EXTRA_EXPENSE_CLAIM, claim);
+		intent.putExtra(EXTRA_EXPENSE_CLAIM_POSITION, claimPosition);
 		setResult(RESULT_OK, intent);
 		finish();
 	}
