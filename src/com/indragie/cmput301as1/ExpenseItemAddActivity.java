@@ -21,7 +21,6 @@ import org.joda.money.*;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
@@ -60,18 +59,10 @@ public class ExpenseItemAddActivity extends EditingActivity {
 		dateField = (DateEditText)findViewById(R.id.et_date);
 
 		categorySpinner = (Spinner)findViewById(R.id.sp_category);
-		configureSpinner(categorySpinner, R.array.categories_array);
+		SpinnerUtils.configureSpinner(this, categorySpinner, R.array.categories_array);
 
 		currencySpinner = (Spinner)findViewById(R.id.sp_currency);
-		configureSpinner(currencySpinner, R.array.currency_array);
-	}
-
-	private void configureSpinner(Spinner spinner, int resourceID) {
-		// From http://developer.android.com/guide/topics/ui/controls/spinner.html
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-				resourceID, android.R.layout.simple_spinner_item);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		spinner.setAdapter(adapter);
+		SpinnerUtils.configureSpinner(this, currencySpinner, R.array.currency_array);
 	}
 
 	//================================================================================
