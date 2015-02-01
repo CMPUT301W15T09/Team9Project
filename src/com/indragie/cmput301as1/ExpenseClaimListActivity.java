@@ -28,9 +28,11 @@ import java.util.Collections;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 /**
@@ -40,6 +42,7 @@ public class ExpenseClaimListActivity extends ListActivity {
 	//================================================================================
 	// Constants
 	//================================================================================
+	
 	private static final int ADD_EXPENSE_CLAIM_REQUEST = 1;
 	private static final int EDIT_EXPENSE_CLAIM_REQUEST = 2;
 	private static final String EXPENSE_CLAIM_FILENAME = "claims";
@@ -47,18 +50,58 @@ public class ExpenseClaimListActivity extends ListActivity {
 	//================================================================================
 	// Properties
 	//================================================================================
+	
 	private ArrayList<ExpenseClaim> claims;
 	private ExpenseClaimArrayAdapter adapter;
+	private int longPressedItemIndex;
 
 	//================================================================================
 	// Activity Callbacks
 	//================================================================================
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		claims = loadExpenseClaims();
 		adapter = new ExpenseClaimArrayAdapter(this, claims);
 		setListAdapter(adapter);
+		
+		final ActionMode.Callback longClickCallback = new ActionMode.Callback() {
+			@Override
+			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+				switch (item.getItemId()) {
+				case R.id.action_delete:
+					claims.remove(longPressedItemIndex);
+					commitClaimsMutation();
+					mode.finish();
+					return true;
+				default:
+					return false;
+				}
+			}
+
+			@Override
+			public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+				mode.getMenuInflater().inflate(R.menu.contextual_delete, menu);
+				return true;
+			}
+
+			@Override
+			public void onDestroyActionMode(ActionMode mode) {}
+
+			@Override
+			public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+				return false;
+			}
+		};
+		getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+				longPressedItemIndex = (int)id;
+				startActionMode(longClickCallback);
+				return true;
+			}
+		});
 	}
 
 	@Override
@@ -114,7 +157,7 @@ public class ExpenseClaimListActivity extends ListActivity {
 	public void onListItemClick(ListView listView, View view, int position, long id) {
 		Intent intent = new Intent(this, ExpenseClaimEditActivity.class);
 		intent.putExtra(ExpenseClaimEditActivity.EXTRA_EXPENSE_CLAIM, (ExpenseClaim)listView.getItemAtPosition(position));
-		intent.putExtra(ExpenseClaimEditActivity.EXTRA_EXPENSE_CLAIM_POSITION, position);
+		intent.putExtra(ExpenseClaimEditActivity.EXTRA_EXPENSE_CLAIM_POSITION, (int)id);
 		startActivityForResult(intent, EDIT_EXPENSE_CLAIM_REQUEST);
 	}
 

@@ -11,7 +11,6 @@ public class ExpenseItemEditActivity extends ExpenseItemAddActivity {
 	//================================================================================
 	// Constants
 	//================================================================================
-	public static final String EXTRA_EXPENSE_ITEM = "com.indragie.cmput301as1.EXPENSE_ITEM";
 	public static final String EXTRA_EXPENSE_ITEM_POSITION = "com.indragie.cmput301as1.EXPENSE_ITEM_POSITION";
 	public static final String EXTRA_EXPENSE_ITEM_EDITABLE = "com.indragie.cmput301as1.EXPENSE_ITEM_EDITABLE";
 	
@@ -23,7 +22,7 @@ public class ExpenseItemEditActivity extends ExpenseItemAddActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// The superclass shows a custom action bar with Cancel and Done buttons by default
-		// Disable that appearance here because this activity needs to show a custom menu in the bar.
+		// and that needs to be disabled to show the Up button.
 		getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE);
 
 		Intent intent = getIntent();
