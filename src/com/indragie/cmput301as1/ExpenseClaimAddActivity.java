@@ -70,7 +70,8 @@ public class ExpenseClaimAddActivity extends EditingActivity {
 			nameField.getText().toString(), 
 			descriptionField.getText().toString(), 
 			startDateField.getDate(), 
-			endDateField.getDate()
+			endDateField.getDate(),
+			ExpenseClaim.Status.IN_PROGRESS
 		);
 
 		Intent intent = new Intent();

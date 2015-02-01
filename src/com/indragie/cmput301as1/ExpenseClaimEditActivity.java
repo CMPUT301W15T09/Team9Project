@@ -81,39 +81,15 @@ public class ExpenseClaimEditActivity extends ListActivity {
 		
 		nameField = (EditText)headerView.findViewById(R.id.et_name);
 		nameField.setText(claim.getName());
-		nameField.addTextChangedListener(new OnTextChangedWatcher() {
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				claim.setName(s.toString());
-			}
-		});
 
 		descriptionField = (EditText)headerView.findViewById(R.id.et_description);
 		descriptionField.setText(claim.getDescription());
-		descriptionField.addTextChangedListener(new OnTextChangedWatcher() {
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				claim.setDescription(s.toString());
-			}
-		});
 
 		startDateField = (DateEditText)headerView.findViewById(R.id.et_start_date);
 		startDateField.setDate(claim.getStartDate());
-		startDateField.addTextChangedListener(new OnTextChangedWatcher() {
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				claim.setStartDate(startDateField.getDate());
-			}
-		});
 		
 		endDateField = (DateEditText)headerView.findViewById(R.id.et_end_date);
 		endDateField.setDate(claim.getEndDate());
-		endDateField.addTextChangedListener(new OnTextChangedWatcher() {
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				claim.setEndDate(endDateField.getDate());
-			}
-		});
 
 		getListView().addHeaderView(headerView);
 	}
@@ -197,6 +173,11 @@ public class ExpenseClaimEditActivity extends ListActivity {
 	}
 	
 	private void commitChangesAndFinish() {
+		claim.setName(nameField.getText().toString());
+		claim.setDescription(descriptionField.getText().toString());
+		claim.setStartDate(startDateField.getDate());
+		claim.setEndDate(endDateField.getDate());
+		
 		Intent intent = new Intent();
 		intent.putExtra(EXTRA_EXPENSE_CLAIM, claim);
 		intent.putExtra(EXTRA_EXPENSE_CLAIM_POSITION, claimPosition);
