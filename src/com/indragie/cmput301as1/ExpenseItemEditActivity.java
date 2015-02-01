@@ -66,6 +66,13 @@ public class ExpenseItemEditActivity extends ExpenseItemAddActivity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
+	
+	@Override
+	public void onBackPressed() {
+		// Changes should persist even when the back button is pressed,
+		// since this is for editing and not adding.
+		onDone();
+	}
 
 	//================================================================================
 	// ExpenseItemAddActivity Overrides
