@@ -12,9 +12,12 @@ Expense tracker application for Android.
 * Custom ListView Item
 	* [https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView](https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView)
 	* [https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/layout/simple_list_item_2.xml](https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/layout/simple_list_item_2.xml)
-* Sending Email - [http://stackoverflow.com/a/2745702/153112](http://stackoverflow.com/a/2745702/153112)
-* Assigning Spinner items from XML - [http://developer.android.com/guide/topics/ui/controls/spinner.html](http://developer.android.com/guide/topics/ui/controls/spinner.html)
-* Action Bar Icons - [https://developer.android.com/design/downloads/index.html](https://developer.android.com/design/downloads/index.html)
+* Sending Email
+	* [http://stackoverflow.com/a/2745702/153112](http://stackoverflow.com/a/2745702/153112)
+* Assigning Spinner items from XML
+	* [http://developer.android.com/guide/topics/ui/controls/spinner.html](http://developer.android.com/guide/topics/ui/controls/spinner.html)
+* Action Bar Icons
+	* [https://developer.android.com/design/downloads/index.html](https://developer.android.com/design/downloads/index.html)
 
 ### Libraries Used
 
