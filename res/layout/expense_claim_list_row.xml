@@ -15,11 +15,10 @@
      limitations under the License.
 -->
 
-<TwoLineListItem xmlns:android="http://schemas.android.com/apk/res/android" 
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="?android:attr/listPreferredItemHeight"
-    android:mode="twoLine"
     android:paddingLeft="12dp"
     android:paddingRight="12dp"
     android:paddingTop="8dp"
@@ -30,23 +29,32 @@
     	android:layout_height="wrap_content"
     	android:textAppearance="?android:attr/textAppearanceListItem" />
 	
+	<TextView android:id="@+id/tv_date"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignBaseline="@id/tv_name"
+	    android:layout_alignParentEnd="true"
+	    android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+	
 	<TextView android:id="@+id/tv_amounts"
     	android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
     	android:layout_below="@id/tv_name"
       	android:layout_alignStart="@id/tv_name"
     	android:textAppearance="?android:attr/textAppearanceListItemSmall" />
-
+	
 	<TextView
 	    android:id="@+id/tv_status"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:padding="5dp"
-	    android:layout_centerVertical="true"
+	    android:paddingLeft="4dp"
+	    android:paddingRight="4dp"
+	    android:paddingBottom="1dp"
+	    android:layout_alignBaseline="@id/tv_amounts"
 	    android:layout_alignParentEnd="true"
 	    android:gravity="center"
 	    android:textColor="#ffffff"
 	    android:textStyle="bold"
-	    android:textSize="16sp" />
+	    android:textSize="14sp" />
 	
-</TwoLineListItem>
+</RelativeLayout>

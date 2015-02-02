@@ -17,6 +17,7 @@
 
 package com.indragie.cmput301as1;
 
+import java.text.DateFormat;
 import java.util.List;
 
 import android.content.Context;
@@ -47,6 +48,9 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 		}
 		TextView nameTextView = (TextView)convertView.findViewById(R.id.tv_name);
 		nameTextView.setText(claim.getName());
+		
+		TextView dateTextView = (TextView)convertView.findViewById(R.id.tv_date);
+		dateTextView.setText(DateFormat.getDateInstance().format(claim.getStartDate()));
 		
 		TextView amountsTextView = (TextView)convertView.findViewById(R.id.tv_amounts);
 		String amounts = claim.getSummarizedAmounts();
