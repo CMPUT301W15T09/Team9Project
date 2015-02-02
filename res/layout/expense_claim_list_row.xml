@@ -24,19 +24,22 @@
     android:paddingTop="8dp"
     android:paddingBottom="8dp">
     
-	<TextView android:id="@+id/tv_name"
+	<TextView 
+	    android:id="@+id/tv_name"
     	android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
     	android:textAppearance="?android:attr/textAppearanceListItem" />
 	
-	<TextView android:id="@+id/tv_date"
+	<TextView 
+	    android:id="@+id/tv_date"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:layout_alignBaseline="@id/tv_name"
 	    android:layout_alignParentEnd="true"
 	    android:textAppearance="?android:attr/textAppearanceListItemSmall" />
 	
-	<TextView android:id="@+id/tv_amounts"
+	<TextView
+	    android:id="@+id/tv_amounts"
     	android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
     	android:layout_below="@id/tv_name"
