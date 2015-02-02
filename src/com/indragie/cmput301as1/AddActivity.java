@@ -24,9 +24,10 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 /**
- * Activity that displays Cancel and Done buttons in its action bar.
+ * Abstract activity that displays Cancel and Done buttons in its action bar, 
+ * suitable for activities that facilitate the entering of new data.
  */
-public abstract class EditingActivity extends Activity {
+public abstract class AddActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

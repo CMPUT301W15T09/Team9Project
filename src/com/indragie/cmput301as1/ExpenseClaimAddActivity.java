@@ -26,7 +26,7 @@ import android.widget.EditText;
 /**
  * Activity for entering information to create a new expense claim.
  */
-public class ExpenseClaimAddActivity extends EditingActivity {
+public class ExpenseClaimAddActivity extends AddActivity {
 	//================================================================================
 	// Constants
 	//================================================================================
