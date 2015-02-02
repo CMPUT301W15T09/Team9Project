@@ -112,16 +112,17 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	}
 	
 	/**
-	 * @return HTML representation of the expense item suitable for sending in an email.
+	 * Creates a plain text representation of the expense item.
+	 * @return Plain text representation of the expense item suitable for sending in an email.
 	 */
-	public String getHTMLString() {
-		StringBuilder builder = new StringBuilder(name + "<ul>");
+	public String getPlainText() {
+		StringBuilder builder = new StringBuilder("\u2022 " + name + "\n");
 		if (description.length() > 0) {
-			builder.append("<li><b>Description:</b> " + description + "</li>");
+			builder.append("\t\u25e6 Description: " + description + "\n");
 		}
-		builder.append("<li><b>Category:</b> " + category + "</li>");
-		builder.append("<li><b>Amount:</b> " + amount.toString() + "</li>");
-		builder.append("<li><b>Date:</b> " + DateFormat.getDateInstance().format(date) + "</li></ul>");
+		builder.append("\t\u25e6 Category: " + category + "\n");
+		builder.append("\t\u25e6 Amount: " + amount.toString() + "\n");
+		builder.append("\t\u25e6 Date: " + DateFormat.getDateInstance().format(date) + "\n");
 		return builder.toString();
 	}
 

@@ -23,6 +23,7 @@
     <string name="start_label">Start</string>
     <string name="end_label">End</string>
     <string name="action_add_item">Add Item</string>
+    <string name="action_email">Email</string>
     <string name="action_mark_submitted">Mark as Submitted</string>
     <string name="action_mark_returned">Mark as Returned</string>
     <string name="action_mark_approved">Mark as Approved</string>
