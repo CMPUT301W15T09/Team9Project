@@ -17,6 +17,7 @@
 
 package com.indragie.cmput301as1;
 
+import java.text.DateFormat;
 import java.util.List;
 
 import android.content.Context;
@@ -47,12 +48,15 @@ public class ExpenseItemArrayAdapter extends ArrayAdapter<ExpenseItem> {
 		TextView nameTextView = (TextView)convertView.findViewById(R.id.tv_name);
 		nameTextView.setText(item.getName());
 		
+		TextView dateTextView = (TextView)convertView.findViewById(R.id.tv_date);
+		dateTextView.setText(DateFormat.getDateInstance().format(item.getDate()));
+		
 		TextView amountsTextView = (TextView)convertView.findViewById(R.id.tv_amounts);
 		amountsTextView.setText(item.getAmount().toString());
 		
-		TextView statusTextView = (TextView)convertView.findViewById(R.id.tv_status);
-		statusTextView.setBackground(resources.getDrawable(R.drawable.bg_rounded_grey));
-		statusTextView.setText(item.getCategory());
+		TextView categoryTextView = (TextView)convertView.findViewById(R.id.tv_status);
+		categoryTextView.setBackground(resources.getDrawable(R.drawable.bg_rounded_grey));
+		categoryTextView.setText(item.getCategory());
 		
 		return convertView;
 	}
