@@ -35,6 +35,9 @@ import android.widget.EditText;
  * and updates the date text when a new date is picked.
  */
 public class DateEditText extends EditText {
+	//================================================================================
+	// Properties
+	//================================================================================
 	private Context context;
 	private DateFormat dateFormat;
 	private DatePickerDialog dialog;
@@ -42,6 +45,10 @@ public class DateEditText extends EditText {
 	private Date minDate;
 	private Date maxDate;
 	private OnDateChangedListener onDateChangedListener;
+	
+	//================================================================================
+	// Interfaces
+	//================================================================================
 	
 	/**
 	 * Listener to be called when the user picks a different date.
@@ -55,6 +62,10 @@ public class DateEditText extends EditText {
 		public void onDateChanged(DateEditText view, Date date);
 	}
 
+	//================================================================================
+	// Constructors
+	//================================================================================
+	
 	public DateEditText(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		this.context = context;
@@ -72,6 +83,10 @@ public class DateEditText extends EditText {
 			}
 		});
 	}
+	
+	//================================================================================
+	// Accessors
+	//================================================================================
 	
 	public Date getDate() {
 		return date;
@@ -120,6 +135,10 @@ public class DateEditText extends EditText {
 	public void setOnDateChangedListener(OnDateChangedListener listener) {
 		onDateChangedListener = listener;
 	}
+	
+	//================================================================================
+	// Private
+	//================================================================================
 	
 	private void showDatePickerDialog() {
 		if (dialog != null && dialog.isShowing()) return;
