@@ -98,6 +98,7 @@ public class ExpenseClaimListActivity extends ListActivity {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 				longPressedItemIndex = (int)id;
+				view.setSelected(true);
 				startActionMode(longClickCallback);
 				return true;
 			}
