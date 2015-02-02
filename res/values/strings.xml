@@ -2,7 +2,7 @@
 <resources>
 
     <!-- General -->
-    <string name="app_name">karunara-notes</string>
+    <string name="app_name">karunara-expenses</string>
     <string name="action_delete">Delete</string>
     
     <!-- ExpenseClaim -->
