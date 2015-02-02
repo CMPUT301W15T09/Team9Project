@@ -16,6 +16,11 @@ Expense tracker application for Android.
 * Assigning Spinner items from XML - [http://developer.android.com/guide/topics/ui/controls/spinner.html](http://developer.android.com/guide/topics/ui/controls/spinner.html)
 * Action Bar Icons - [https://developer.android.com/design/downloads/index.html](https://developer.android.com/design/downloads/index.html)
 
+### Libraries Used
+
+* [Joda Money](http://www.joda.org/joda-money/) 0.10.0
+* Android Support Library v4 (automatically included by Eclipse)
+
 ### License
 
 Licensed under the GPLv3. See `LICENSE` for the full license text.
