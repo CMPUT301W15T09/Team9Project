@@ -205,10 +205,10 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 		StringBuilder builder = new StringBuilder();
 		for (Money amount : unitToMoneyMap.values()) {
 			builder.append(amount.toString());
-			builder.append(',');
+			builder.append(", ");
 		}
 		// Remove trailing comma
-		builder.deleteCharAt(builder.length() - 1);
+		builder.delete(builder.length() - 2, builder.length());
 		return builder.toString();
 	}
 	
