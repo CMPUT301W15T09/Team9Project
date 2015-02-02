@@ -18,7 +18,6 @@
 package com.indragie.cmput301as1;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -39,6 +38,22 @@ public class DateEditText extends EditText {
 	private Context context;
 	private DateFormat dateFormat;
 	private DatePickerDialog dialog;
+	private Date date;
+	private Date minDate;
+	private Date maxDate;
+	private OnDateChangedListener onDateChangedListener;
+	
+	/**
+	 * Listener to be called when the user picks a different date.
+	 */
+	public interface OnDateChangedListener {
+		/**
+		 * Called when a different date is picked.
+		 * @param view Field whose date changed.
+		 * @param date The new date.
+		 */
+		public void onDateChanged(DateEditText view, Date date);
+	}
 
 	public DateEditText(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -46,9 +61,7 @@ public class DateEditText extends EditText {
 		this.dateFormat = DateFormat.getDateInstance();
 		
 		setInputType(InputType.TYPE_CLASS_DATETIME);
-		
-		String currentDate = dateFormat.format(new Date());
-		setText(currentDate);
+		setDate(new Date());
 		
 		setOnFocusChangeListener(new View.OnFocusChangeListener() {
 			@Override
@@ -61,16 +74,51 @@ public class DateEditText extends EditText {
 	}
 	
 	public Date getDate() {
-		try {
-			return dateFormat.parse(getText().toString());
-		} catch (ParseException e) {
-			e.printStackTrace();
-			return null;
-		}
+		return date;
 	}
 	
 	public void setDate(Date date) {
+		this.date = date;
 		setText(dateFormat.format(date));
+		if (onDateChangedListener != null) {
+			onDateChangedListener.onDateChanged(this, date);
+		}
+	}
+	
+	public Date getMinimumDate() {
+		return minDate;
+	}
+	
+	public void setMinDate(Date minDate) {
+		this.minDate = minDate;
+		if (dialog != null) {
+			dialog.getDatePicker().setMinDate(minDate.getTime());
+		}
+		if (date.compareTo(minDate) < 0) {
+			setDate(minDate);
+		}
+	}
+	
+	public Date getMaxDate() {
+		return maxDate;
+	}
+	
+	public void setMaxDate(Date maxDate) {
+		this.maxDate = maxDate;
+		if (dialog != null) {
+			dialog.getDatePicker().setMaxDate(maxDate.getTime());
+		}
+		if (date.compareTo(maxDate) > 0) {
+			setDate(maxDate);
+		}
+	}
+	
+	public OnDateChangedListener getOnDateChangedListener() {
+		return onDateChangedListener;
+	}
+	
+	public void setOnDateChangedListener(OnDateChangedListener listener) {
+		onDateChangedListener = listener;
 	}
 	
 	private void showDatePickerDialog() {
@@ -95,6 +143,12 @@ public class DateEditText extends EditText {
 				calendar.get(Calendar.MONTH), 
 				calendar.get(Calendar.DAY_OF_MONTH)
 			);
+			if (minDate != null) {
+				dialog.getDatePicker().setMinDate(minDate.getTime());
+			}
+			if (maxDate != null) {
+				dialog.getDatePicker().setMaxDate(maxDate.getTime());
+			}
 		} else {
 			dialog.updateDate(
 				calendar.get(Calendar.YEAR), 

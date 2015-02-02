@@ -17,6 +17,8 @@
 
 package com.indragie.cmput301as1;
 
+import java.util.Date;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
@@ -50,8 +52,22 @@ public class ExpenseClaimAddActivity extends EditingActivity {
 
 		nameField = (EditText)findViewById(R.id.et_name);
 		descriptionField = (EditText)findViewById(R.id.et_description);
+		
 		startDateField = (DateEditText)findViewById(R.id.et_start_date);
+		startDateField.setOnDateChangedListener(new DateEditText.OnDateChangedListener() {
+			@Override
+			public void onDateChanged(DateEditText view, Date date) {
+				endDateField.setMinDate(date);
+			}
+		});
+		
 		endDateField = (DateEditText)findViewById(R.id.et_end_date);
+		endDateField.setOnDateChangedListener(new DateEditText.OnDateChangedListener() {
+			@Override
+			public void onDateChanged(DateEditText view, Date date) {
+				startDateField.setMaxDate(date);
+			}
+		});
 	}
 
 	//================================================================================
