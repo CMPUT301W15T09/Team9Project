@@ -19,6 +19,7 @@ package com.indragie.cmput301as1;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -195,6 +196,13 @@ public class ExpenseClaimEditActivity extends ListActivity {
 	}
 	
 	@Override
+	public void onBackPressed() {
+		// Changes should persist even when the back button is pressed,
+		// since this is for editing and not adding.
+		commitChangesAndFinish();
+	}
+	
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.expense_claim_edit, menu);
 		return super.onCreateOptionsMenu(menu);
@@ -214,8 +222,10 @@ public class ExpenseClaimEditActivity extends ListActivity {
 			commitChangesAndFinish();
 			return true;
 		case R.id.action_add_item:
-			Intent addIntent = new Intent(this, ExpenseItemAddActivity.class);
-			startActivityForResult(addIntent, ADD_EXPENSE_ITEM_REQUEST);
+			startAddExpenseItemActivity();
+			return true;
+		case R.id.action_email:
+			startEmailActivity();
 			return true;
 		case R.id.action_mark_submitted:
 			claim.setStatus(Status.SUBMITTED);
@@ -233,7 +243,24 @@ public class ExpenseClaimEditActivity extends ListActivity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
+	
+	private void startAddExpenseItemActivity() {
+		Intent addIntent = new Intent(this, ExpenseItemAddActivity.class);
+		startActivityForResult(addIntent, ADD_EXPENSE_ITEM_REQUEST);
+	}
+	
+	private void startEmailActivity() {
+		// Based on http://stackoverflow.com/a/2745702/153112
+		Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:"));
+		emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Expense Claim: " + claim.getName());
+		
+		// Originally planned to use HTML for rich text in the email, but it turns
+		// out that most email clients on Android (including K-9) don't support HTML
+		// for composing emails, so I decided to use plain text instead.
+		emailIntent.putExtra(Intent.EXTRA_TEXT, claim.getPlainText());
+		startActivity(Intent.createChooser(emailIntent, "Send Email"));
+	}
+	
 	private void commitChangesAndFinish() {
 		claim.setName(nameField.getText().toString());
 		claim.setDescription(descriptionField.getText().toString());
@@ -246,13 +273,6 @@ public class ExpenseClaimEditActivity extends ListActivity {
 		setResult(RESULT_OK, intent);
 		finish();
 	}
-	
-	@Override
-	public void onBackPressed() {
-		// Changes should persist even when the back button is pressed,
-		// since this is for editing and not adding.
-		commitChangesAndFinish();
-	}
 
 	//================================================================================
 	// ListView Callbacks
@@ -264,11 +284,11 @@ public class ExpenseClaimEditActivity extends ListActivity {
 		ExpenseItem item = (ExpenseItem)listView.getItemAtPosition(position);
 		if (item == null) return;
 		
-		Intent intent = new Intent(this, ExpenseItemEditActivity.class);
-		intent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM, item);
-		intent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_POSITION, (int)id);
-		intent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_EDITABLE, editable);
-		startActivityForResult(intent, EDIT_EXPENSE_ITEM_REQUEST);
+		Intent editIntent = new Intent(this, ExpenseItemEditActivity.class);
+		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM, item);
+		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_POSITION, (int)id);
+		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_EDITABLE, editable);
+		startActivityForResult(editIntent, EDIT_EXPENSE_ITEM_REQUEST);
 	}
 }
 

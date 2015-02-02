@@ -213,21 +213,21 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 	}
 	
 	/**
-	 * Generates HTML markup.
-	 * @return HTML representation of the expense claim suitable for sending in an email.
+	 * Creates a plain text representation of the expense claim;
+	 * @return Plain text representation of the expense claim suitable for sending in an email.
 	 */
-	public String getHTMLString() {
-		StringBuilder builder = new StringBuilder(name + "<br />");
+	public String getPlainText() {
+		StringBuilder builder = new StringBuilder(name + "\n");
 		if (description.length() > 0) {
-			builder.append("<b>Description:</b> " + description + "<br />");
+			builder.append("Description: " + description + "\n");
 		}
 		DateFormat dateFormat = DateFormat.getDateInstance();
-		builder.append("<b>Dates:</b> " + dateFormat.format(startDate) + " - " + dateFormat.format(endDate) + "<br />");
-		builder.append("<b>Status:</b> " + getStatusString() + "<br /><ol>");
+		builder.append("Dates: " + dateFormat.format(startDate) + " - " + dateFormat.format(endDate) + "\n");
+		builder.append("Status: " + getStatusString() + "\n\n");
+		builder.append("Expense Items:\n");
 		for (ExpenseItem item : items) {
-			builder.append(item.getHTMLString());
+			builder.append(item.getPlainText());
 		}
-		builder.append("</ol>");
 		return builder.toString();
 	}
 

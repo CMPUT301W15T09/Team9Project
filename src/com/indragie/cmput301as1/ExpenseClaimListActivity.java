@@ -155,10 +155,10 @@ public class ExpenseClaimListActivity extends ListActivity {
 	
 	@Override
 	public void onListItemClick(ListView listView, View view, int position, long id) {
-		Intent intent = new Intent(this, ExpenseClaimEditActivity.class);
-		intent.putExtra(ExpenseClaimEditActivity.EXTRA_EXPENSE_CLAIM, (ExpenseClaim)listView.getItemAtPosition(position));
-		intent.putExtra(ExpenseClaimEditActivity.EXTRA_EXPENSE_CLAIM_POSITION, (int)id);
-		startActivityForResult(intent, EDIT_EXPENSE_CLAIM_REQUEST);
+		Intent editIntent = new Intent(this, ExpenseClaimEditActivity.class);
+		editIntent.putExtra(ExpenseClaimEditActivity.EXTRA_EXPENSE_CLAIM, (ExpenseClaim)listView.getItemAtPosition(position));
+		editIntent.putExtra(ExpenseClaimEditActivity.EXTRA_EXPENSE_CLAIM_POSITION, (int)id);
+		startActivityForResult(editIntent, EDIT_EXPENSE_CLAIM_REQUEST);
 	}
 
 	//================================================================================
