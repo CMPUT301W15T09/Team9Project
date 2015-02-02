@@ -76,36 +76,45 @@ public final class R {
     public static final class string {
         /**  ExpenseClaimListActivity 
          */
-        public static final int action_add_claim=0x7f060004;
-        public static final int action_add_item=0x7f06000e;
+        public static final int action_add_claim=0x7f06000f;
+        public static final int action_add_item=0x7f060014;
         public static final int action_delete=0x7f060001;
-        public static final int action_email=0x7f06000f;
-        public static final int action_mark_approved=0x7f060012;
-        public static final int action_mark_returned=0x7f060011;
-        public static final int action_mark_submitted=0x7f060010;
-        public static final int amount_hint=0x7f060014;
+        public static final int action_email=0x7f060015;
+        public static final int action_mark_approved=0x7f060018;
+        public static final int action_mark_returned=0x7f060017;
+        public static final int action_mark_submitted=0x7f060016;
+        public static final int amount=0x7f06000b;
         /**  ExpenseItem{Edit,Add}Activity 
          */
-        public static final int amount_placeholder=0x7f060013;
+        public static final int amount_placeholder=0x7f060019;
         /**  General 
          */
         public static final int app_name=0x7f060000;
-        public static final int approved_label=0x7f060008;
         /**  EditingActivity 
          */
-        public static final int cancel_label=0x7f060002;
-        public static final int description_hint=0x7f06000b;
-        public static final int done_label=0x7f060003;
-        public static final int end_label=0x7f06000d;
-        public static final int in_progress_label=0x7f060006;
+        public static final int cancel_label=0x7f06000d;
+        /**  ExpenseItem 
+         */
+        public static final int category=0x7f06000a;
+        public static final int date=0x7f06000c;
+        public static final int dates=0x7f060003;
+        /**  ExpenseClaim 
+         */
+        public static final int description=0x7f060002;
+        public static final int done_label=0x7f06000e;
+        public static final int end_label=0x7f060013;
+        public static final int expense_items=0x7f060005;
         /**  ExpenseClaim{Edit,Add}Activity 
          */
-        public static final int name_hint=0x7f06000a;
-        public static final int no_expenses=0x7f060005;
-        public static final int returned_label=0x7f060009;
-        public static final int start_label=0x7f06000c;
-        public static final int submitted_label=0x7f060007;
-        public static final int total_label=0x7f060015;
+        public static final int name_hint=0x7f060011;
+        public static final int no_expenses=0x7f060010;
+        public static final int start_label=0x7f060012;
+        public static final int status=0x7f060004;
+        public static final int status_approved=0x7f060008;
+        public static final int status_in_progress=0x7f060006;
+        public static final int status_returned=0x7f060009;
+        public static final int status_submitted=0x7f060007;
+        public static final int total_label=0x7f06001a;
     }
     public static final class style {
         /** 

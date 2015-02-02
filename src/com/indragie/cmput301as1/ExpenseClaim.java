@@ -27,6 +27,9 @@ import java.util.List;
 
 import org.joda.money.*;
 
+import android.content.Context;
+import android.content.res.Resources;
+
 /**
  * Model object representing an expense claim.
  */
@@ -146,12 +149,12 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 		return status;
 	}
 	
-	public String getStatusString() {
+	public String getStatusString(Resources resources) {
 		switch (status) {
-		case IN_PROGRESS: return "In Progress";
-		case SUBMITTED: return "Submitted";
-		case RETURNED: return "Returned";
-		case APPROVED: return "Approved";
+		case IN_PROGRESS: return resources.getString(R.string.status_in_progress);
+		case SUBMITTED: return resources.getString(R.string.status_submitted);
+		case RETURNED: return resources.getString(R.string.status_returned);
+		case APPROVED: return resources.getString(R.string.status_approved);
 		default: return null;
 		}
 	}
@@ -214,19 +217,21 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 	
 	/**
 	 * Creates a plain text representation of the expense claim;
+	 * @param context Context to use for getting localized string resources.
 	 * @return Plain text representation of the expense claim suitable for sending in an email.
 	 */
-	public String getPlainText() {
+	public String getPlainText(Context context) {
+		Resources resources = context.getResources();
 		StringBuilder builder = new StringBuilder(name + "\n");
 		if (description.length() > 0) {
-			builder.append("Description: " + description + "\n");
+			builder.append(resources.getString(R.string.description) + ": " + description + "\n");
 		}
 		DateFormat dateFormat = DateFormat.getDateInstance();
-		builder.append("Dates: " + dateFormat.format(startDate) + " - " + dateFormat.format(endDate) + "\n");
-		builder.append("Status: " + getStatusString() + "\n\n");
-		builder.append("Expense Items:\n");
+		builder.append(resources.getString(R.string.dates) + ": " + dateFormat.format(startDate) + " - " + dateFormat.format(endDate) + "\n");
+		builder.append(resources.getString(R.string.status) + ": " + getStatusString(resources) + "\n\n");
+		builder.append(resources.getString(R.string.expense_items) + ":\n");
 		for (ExpenseItem item : items) {
-			builder.append(item.getPlainText());
+			builder.append(item.getPlainText(context));
 		}
 		return builder.toString();
 	}

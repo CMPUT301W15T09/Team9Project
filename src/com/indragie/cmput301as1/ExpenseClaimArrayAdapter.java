@@ -60,32 +60,24 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 		amountsTextView.setText(amounts);
 		
 		TextView statusTextView = (TextView)convertView.findViewById(R.id.tv_status);
-		
-		String text = null;
-		Drawable background = null;
-		switch (claim.getStatus()) {
-		case IN_PROGRESS:
-			text = resources.getString(R.string.in_progress_label);
-			background = resources.getDrawable(R.drawable.bg_rounded_blue);
-			break;
-		case APPROVED:
-			text = resources.getString(R.string.approved_label);
-			background = resources.getDrawable(R.drawable.bg_rounded_green);
-			break;
-		case RETURNED:
-			text = resources.getString(R.string.returned_label);
-			background = resources.getDrawable(R.drawable.bg_rounded_red);
-			break;
-		case SUBMITTED:
-			text = resources.getString(R.string.submitted_label);
-			background = resources.getDrawable(R.drawable.bg_rounded_yellow);
-			break;
-		default:
-			break;
-		}
-		statusTextView.setText(text);
-		statusTextView.setBackground(background);
+		statusTextView.setText(claim.getStatusString(resources));
+		statusTextView.setBackground(drawableForStatus(claim.getStatus(), resources));
 		
 		return convertView;
+	}
+	
+	private Drawable drawableForStatus(ExpenseClaim.Status status, Resources resources) {
+		switch (status) {
+		case IN_PROGRESS:
+			return resources.getDrawable(R.drawable.bg_rounded_blue);
+		case APPROVED:
+			return resources.getDrawable(R.drawable.bg_rounded_green);
+		case RETURNED:
+			return resources.getDrawable(R.drawable.bg_rounded_red);
+		case SUBMITTED:
+			return resources.getDrawable(R.drawable.bg_rounded_yellow);
+		default:
+			return null;
+		}
 	}
 }

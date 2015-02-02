@@ -257,7 +257,7 @@ public class ExpenseClaimEditActivity extends ListActivity {
 		// Originally planned to use HTML for rich text in the email, but it turns
 		// out that most email clients on Android (including K-9) don't support HTML
 		// for composing emails, so I decided to use plain text instead.
-		emailIntent.putExtra(Intent.EXTRA_TEXT, claim.getPlainText());
+		emailIntent.putExtra(Intent.EXTRA_TEXT, claim.getPlainText(this));
 		startActivity(Intent.createChooser(emailIntent, "Send Email"));
 	}
 	
