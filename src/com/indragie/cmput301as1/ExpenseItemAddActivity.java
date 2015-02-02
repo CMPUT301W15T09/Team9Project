@@ -27,7 +27,7 @@ import android.widget.Spinner;
 /**
  * Activity for entering information to create a new expense item.
  */
-public class ExpenseItemAddActivity extends EditingActivity {
+public class ExpenseItemAddActivity extends AddActivity {
 	//================================================================================
 	// Constants
 	//================================================================================
