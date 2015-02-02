@@ -115,7 +115,7 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 				if (editable) {
-					longPressedItemIndex = (int)id;
+					longPressedItemIndex = itemPositionForListViewPosition(position);
 					startActionMode(longClickCallback);
 					return true;
 				} else {
@@ -296,7 +296,7 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 	public void onListItemClick(ListView listView, View view, int position, long id) {
 		// If the header or footer was clicked, the item will be null
 		if (listView.getItemAtPosition(position) == null) return;
-		startEditExpenseItemActivity(position - 1); // Subtract 1 for the header
+		startEditExpenseItemActivity(itemPositionForListViewPosition(position));
 	}
 	
 	private void startEditExpenseItemActivity(int position) {
@@ -305,6 +305,11 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_POSITION, position);
 		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_EDITABLE, editable);
 		startActivityForResult(editIntent, EDIT_EXPENSE_ITEM_REQUEST);
+	}
+	
+	private int itemPositionForListViewPosition(int position) {
+		// Subtract 1 for the header
+		return position - 1;
 	}
 }
 
