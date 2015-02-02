@@ -124,8 +124,8 @@ public class ExpenseClaimListActivity extends ListActivity {
 	}
 	
 	private void onEditExpenseResult(Intent data) {
-		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimEditActivity.EXTRA_EXPENSE_CLAIM);
-		int position = data.getIntExtra(ExpenseClaimEditActivity.EXTRA_EXPENSE_CLAIM_POSITION, -1);
+		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM);
+		int position = data.getIntExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_POSITION, -1);
 		
 		claims.set(position, claim);
 		commitClaimsMutation();
@@ -141,12 +141,16 @@ public class ExpenseClaimListActivity extends ListActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_add_claim:
-			Intent addIntent = new Intent(this, ExpenseClaimAddActivity.class);
-			startActivityForResult(addIntent, ADD_EXPENSE_CLAIM_REQUEST);
+			startAddExpenseClaimActivity();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+	
+	private void startAddExpenseClaimActivity() {
+		Intent addIntent = new Intent(this, ExpenseClaimAddActivity.class);
+		startActivityForResult(addIntent, ADD_EXPENSE_CLAIM_REQUEST);
 	}
 
 	//================================================================================
@@ -155,9 +159,13 @@ public class ExpenseClaimListActivity extends ListActivity {
 	
 	@Override
 	public void onListItemClick(ListView listView, View view, int position, long id) {
-		Intent editIntent = new Intent(this, ExpenseClaimEditActivity.class);
-		editIntent.putExtra(ExpenseClaimEditActivity.EXTRA_EXPENSE_CLAIM, (ExpenseClaim)listView.getItemAtPosition(position));
-		editIntent.putExtra(ExpenseClaimEditActivity.EXTRA_EXPENSE_CLAIM_POSITION, (int)id);
+		startEditExpenseClaimActivity(position);
+	}
+	
+	private void startEditExpenseClaimActivity(int position) {
+		Intent editIntent = new Intent(this, ExpenseClaimDetailActivity.class);
+		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM, claims.get(position));
+		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_POSITION, position);
 		startActivityForResult(editIntent, EDIT_EXPENSE_CLAIM_REQUEST);
 	}
 

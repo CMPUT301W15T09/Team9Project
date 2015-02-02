@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ExpenseClaimEditActivity"
+            android:name=".ExpenseClaimDetailActivity"
             android:parentActivityName=".ExpenseClaimListActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

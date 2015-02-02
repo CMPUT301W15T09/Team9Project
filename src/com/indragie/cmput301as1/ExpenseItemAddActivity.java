@@ -25,7 +25,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 /**
- * Activity for entering information to create a new expense item.
+ * Activity that presents a user interface for entering information to 
+ * create a new expense item.
  */
 public class ExpenseItemAddActivity extends AddActivity {
 	//================================================================================

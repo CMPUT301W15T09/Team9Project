@@ -35,10 +35,10 @@ import android.widget.TextView;
 import com.indragie.cmput301as1.ExpenseClaim.Status;
 
 /**
- * Activity for editing an expense claim, including marking it as submitted/returned/approved
- * and adding/deleting/editing expense items.
+ * Activity for viewing details of and editing an expense claim, including marking 
+ * it as submitted/returned/approved and adding/deleting/editing expense items.
  */
-public class ExpenseClaimEditActivity extends ListActivity {
+public class ExpenseClaimDetailActivity extends ListActivity {
 	//================================================================================
 	// Constants
 	//================================================================================
@@ -294,13 +294,15 @@ public class ExpenseClaimEditActivity extends ListActivity {
 
 	@Override
 	public void onListItemClick(ListView listView, View view, int position, long id) {
-		// If the header or footer was clicked, the item will be null.
-		ExpenseItem item = (ExpenseItem)listView.getItemAtPosition(position);
-		if (item == null) return;
-		
+		// If the header or footer was clicked, the item will be null
+		if (listView.getItemAtPosition(position) == null) return;
+		startEditExpenseItemActivity(position - 1); // Subtract 1 for the header
+	}
+	
+	private void startEditExpenseItemActivity(int position) {
 		Intent editIntent = new Intent(this, ExpenseItemEditActivity.class);
-		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM, item);
-		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_POSITION, (int)id);
+		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM, claim.getItems().get(position));
+		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_POSITION, position);
 		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_EDITABLE, editable);
 		startActivityForResult(editIntent, EDIT_EXPENSE_ITEM_REQUEST);
 	}
