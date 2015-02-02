@@ -24,7 +24,8 @@ import android.os.Bundle;
 import android.widget.EditText;
 
 /**
- * Activity for entering information to create a new expense claim.
+ * Activity that presents a user interface for entering information to 
+ * create a new expense claim.
  */
 public class ExpenseClaimAddActivity extends AddActivity {
 	//================================================================================
@@ -52,7 +53,7 @@ public class ExpenseClaimAddActivity extends AddActivity {
 
 		nameField = (EditText)findViewById(R.id.et_name);
 		descriptionField = (EditText)findViewById(R.id.et_description);
-		
+
 		startDateField = (DateEditText)findViewById(R.id.et_start_date);
 		startDateField.setOnDateChangedListener(new DateEditText.OnDateChangedListener() {
 			@Override
@@ -60,7 +61,7 @@ public class ExpenseClaimAddActivity extends AddActivity {
 				endDateField.setMinDate(date);
 			}
 		});
-		
+
 		endDateField = (DateEditText)findViewById(R.id.et_end_date);
 		endDateField.setOnDateChangedListener(new DateEditText.OnDateChangedListener() {
 			@Override
@@ -82,6 +83,11 @@ public class ExpenseClaimAddActivity extends AddActivity {
 
 	@Override
 	protected void onDone() {
+		setResult(RESULT_OK, constructResultIntent());
+		finish();
+	}
+
+	private Intent constructResultIntent() {
 		ExpenseClaim claim = new ExpenseClaim(
 			nameField.getText().toString(), 
 			descriptionField.getText().toString(), 
@@ -92,7 +98,6 @@ public class ExpenseClaimAddActivity extends AddActivity {
 
 		Intent intent = new Intent();
 		intent.putExtra(EXTRA_EXPENSE_CLAIM, claim);
-		setResult(RESULT_OK, intent);
-		finish();
+		return intent;
 	}
 }
