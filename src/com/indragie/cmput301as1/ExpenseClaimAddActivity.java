@@ -49,7 +49,6 @@ public class ExpenseClaimAddActivity extends EditingActivity {
 		setContentView(R.layout.activity_claim_header);
 
 		nameField = (EditText)findViewById(R.id.et_name);
-		nameField.requestFocus();
 		descriptionField = (EditText)findViewById(R.id.et_description);
 		startDateField = (DateEditText)findViewById(R.id.et_start_date);
 		endDateField = (DateEditText)findViewById(R.id.et_end_date);
