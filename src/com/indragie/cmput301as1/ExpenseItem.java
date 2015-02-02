@@ -23,6 +23,9 @@ import java.util.Date;
 
 import org.joda.money.Money;
 
+import android.content.Context;
+import android.content.res.Resources;
+
 /**
  * Model object representing a single item on an expense claim.
  */
@@ -111,19 +114,33 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 		this.amount = amount;
 	}
 	
+	private static final String BULLET = "\u2022 ";
+	private static final String INDENTED_BULLET = "\t\u25e6 ";
+	
 	/**
 	 * Creates a plain text representation of the expense item.
+	 * @param context Context to use for getting localized string resources.
 	 * @return Plain text representation of the expense item suitable for sending in an email.
 	 */
-	public String getPlainText() {
-		StringBuilder builder = new StringBuilder("\u2022 " + name + "\n");
+	public String getPlainText(Context context) {
+		Resources resources = context.getResources();
+		StringBuilder builder = new StringBuilder(BULLET + name + "\n");
+		
 		if (description.length() > 0) {
-			builder.append("\t\u25e6 Description: " + description + "\n");
+			builder.append(attributeString(resources.getString(R.string.description), description));
 		}
-		builder.append("\t\u25e6 Category: " + category + "\n");
-		builder.append("\t\u25e6 Amount: " + amount.toString() + "\n");
-		builder.append("\t\u25e6 Date: " + DateFormat.getDateInstance().format(date) + "\n");
+		builder.append(attributeString(resources.getString(R.string.category), category));
+		builder.append(attributeString(resources.getString(R.string.amount), amount.toString()));
+		builder.append(attributeString(resources.getString(R.string.date), DateFormat.getDateInstance().format(date)));
 		return builder.toString();
+	}
+	
+	/**
+	 * Helper function used in getPlainText() to create strings representing
+	 * each of the attributes of the expense item.
+	 */
+	private String attributeString(String name, String value) {
+		return INDENTED_BULLET + name + ": " + value + "\n";
 	}
 
 	//================================================================================
