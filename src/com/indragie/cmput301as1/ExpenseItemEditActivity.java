@@ -24,6 +24,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+/**
+ * Activity for editing the attributes of an expense item.
+ */
 public class ExpenseItemEditActivity extends ExpenseItemAddActivity {
 	//================================================================================
 	// Constants
