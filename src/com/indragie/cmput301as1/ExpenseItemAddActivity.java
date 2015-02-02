@@ -54,7 +54,6 @@ public class ExpenseItemAddActivity extends EditingActivity {
 		setContentView(R.layout.activity_expense_item_add);
 
 		nameField = (EditText)findViewById(R.id.et_name);
-		nameField.requestFocus();
 		descriptionField = (EditText)findViewById(R.id.et_description);
 		amountField = (EditText)findViewById(R.id.et_amount);
 		dateField = (DateEditText)findViewById(R.id.et_date);

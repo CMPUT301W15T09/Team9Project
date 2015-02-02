@@ -128,7 +128,6 @@ public class ExpenseClaimEditActivity extends ListActivity {
 
 		nameField = (EditText)headerView.findViewById(R.id.et_name);
 		nameField.setText(claim.getName());
-		nameField.requestFocus();
 
 		descriptionField = (EditText)headerView.findViewById(R.id.et_description);
 		descriptionField.setText(claim.getDescription());
