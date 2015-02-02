@@ -114,6 +114,7 @@ public class ExpenseClaimEditActivity extends ListActivity {
 			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 				if (editable) {
 					longPressedItemIndex = (int)id;
+					view.setSelected(true);
 					startActionMode(longClickCallback);
 					return true;
 				} else {
