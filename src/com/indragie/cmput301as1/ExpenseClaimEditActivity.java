@@ -17,6 +17,8 @@
 
 package com.indragie.cmput301as1;
 
+import java.util.Date;
+
 import android.app.ListActivity;
 import android.content.Intent;
 import android.net.Uri;
@@ -134,9 +136,21 @@ public class ExpenseClaimEditActivity extends ListActivity {
 
 		startDateField = (DateEditText)headerView.findViewById(R.id.et_start_date);
 		startDateField.setDate(claim.getStartDate());
+		startDateField.setOnDateChangedListener(new DateEditText.OnDateChangedListener() {
+			@Override
+			public void onDateChanged(DateEditText view, Date date) {
+				endDateField.setMinDate(date);
+			}
+		});
 
 		endDateField = (DateEditText)headerView.findViewById(R.id.et_end_date);
 		endDateField.setDate(claim.getEndDate());
+		endDateField.setOnDateChangedListener(new DateEditText.OnDateChangedListener() {
+			@Override
+			public void onDateChanged(DateEditText view, Date date) {
+				startDateField.setMaxDate(date);
+			}
+		});
 
 		getListView().addHeaderView(headerView);
 	}
