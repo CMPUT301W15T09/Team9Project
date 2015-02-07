@@ -1,8 +1,8 @@
-## CMPUT 301 Assignment 1
+## Team 9 Project
 
-Expense tracker application for Android.
+Expense tracker application for CMPUT 301 Winter 2015.
 
-[Video demonstration](https://www.youtube.com/watch?v=VX76KyLlDig&feature=youtu.be)
+Original source code is from [indragiek/cmput301as1](https://github.com/indragiek/cmput301as1)
 
 ### References
 
