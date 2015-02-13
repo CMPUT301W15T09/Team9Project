@@ -15,14 +15,41 @@ public class ClaimTagsTests extends ActivityInstrumentationTestCase2<T> {
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
-
+	
 	//================================================================================
 	// Test 2_1
 	//================================================================================
 	
+	
+	protected void testGetList() {
+		Intent intent = new Intent();
+		TagsActivity activity = getActivity();
+		
+		Tag tag = new Tag("Some new tag");
+		Tag tag2 = new Tag("Some other tag");
+		Tag tag3 = new Tag("This other tag");
+
+		ArrayAdapter<Tag> adapter = activity.getAdapter();
+		
+		assertEquals(adapter.getCount, 0));
+		
+		adapter.add(tag);
+		adapter.add(tag2);
+		adapter.add(tag3);
+		
+		assertEquals(tag, adapter.getItem(0));
+		assertEquals(tag3, adapter.getItem(2));
+		
+	}
+	
+
+	//================================================================================
+	// Test 2_2
+	//================================================================================
+	
 	public void testAddClaimToGroups() {
-	    String tag1 = "tag 1";
-	    String tag5 = "tag 5";
+	    Tag tag1 = new Tag("tag 1");
+	    Tag tag5 = new Tag("tag 5");
 	    ExpenseClaim claim = new ExpenseClaim("Some claim","description", new Date(2015, 01, 20), new Date(2015, 01, 31), null);
 	    ExpenseClaim claim2 = new ExpenseClaim("Some other claim", "description", new Date(2015, 01, 20), new Date(2015, 01, 25), null);
 	    
@@ -37,7 +64,7 @@ public class ClaimTagsTests extends ActivityInstrumentationTestCase2<T> {
 	}
 	
 	//================================================================================
-	// Test 2_2
+	// Test 2_3
 	//================================================================================
 	public void testManipulateTags() {
 	    Tags tag = new Tags();
@@ -66,13 +93,13 @@ public class ClaimTagsTests extends ActivityInstrumentationTestCase2<T> {
 	}
 	
 	//================================================================================
-	// Test 2_3
+	// Test 2_4
 	//================================================================================
 		
 	public void testMatchTags() {
-	    String tag1 = "tag 1";
-	    String tag5 = "tag 5";
-	    String tag3 = "tag 3";
+	    Tag tag1 = new Tag("tag 1");
+	    Tag tag5 = new Tag("tag 5");
+	    Tag tag3 = new Tag("tag 3");
 	    
 	    ExpenseClaim claim = new ExpenseClaim("Some claim","description", new Date(2015, 01, 20), new Date(2015, 01, 31), null);
 	    ExpenseClaim claim2 = new ExpenseClaim("Some other claim", "description", new Date(2015, 01, 20), new Date(2015, 01, 25), null)
