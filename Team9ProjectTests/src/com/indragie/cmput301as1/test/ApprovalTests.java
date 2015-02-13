@@ -128,15 +128,15 @@ public class ApprovalTests extends ActivityInstrumentationTestCase2<T> {
 	//================================================================================
 	protected void testReturnApprove() {
         
-        Claim claim = new Claim("Some claim", "John", new Date(2015, 01, 20), new Date(2015, 01, 31));
-        
-        Claim claim2 = new Claim("Some claim", "John", new Date(2015, 01, 20), new Date(2015, 01, 31));
-        
-        assertFalse(claim.setApproved("John"));
-        assertFalse(claim.setDisapproved("John"));
-        
-        assertTrue(claim.setApproved("Satyen"));
-        assertTrue(claim.setDisapproved("Satyen"));
-        
-    } 
+	    
+		ExpenseClaim claim = new ExpenseClaim("Some claim","description", new Date(2015, 01, 20), new Date(2015, 01, 31), null);
+		ExpenseClaim claim2 = new ExpenseClaim("Some other claim", "description", new Date(2015, 01, 20), new Date(2015, 01, 25), null)    
+	        
+	        assertFalse(claim.setApproved("John"));
+	        assertFalse(claim.setDisapproved("John"));
+	        
+	        assertTrue(claim.setApproved("Satyen"));
+	        assertTrue(claim.setDisapproved("Satyen"));
+	        
+    	} 
 }
