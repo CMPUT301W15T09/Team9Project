@@ -1,32 +1,14 @@
-package com.indragie.cmput301as1.test;
+//================================================================================
+// Test 6.1 from 8.1
+//================================================================================
+protected void testOfflinePush() {
+	Claim claim = new Claim("Some claim", new Date(2015, 01, 20), new Date(2015, 01, 31));
 
-import java.util.Date;
+	saveInFile(claim);
 
-import android.test.ActivityInstrumentationTestCase2;
+	assertEquals(claim, loadFromFile());
 
-public class OfflineTests extends ActivityInstrumentationTestCase2<T> {
+	claim.addTag("Adding a tag to make this claim different");
 
-	public OfflineTests(String name) {
-		super(name);
-	}
-
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
-	
-	//================================================================================
-		// Test 6_1 from 8_1
-		//================================================================================
-		protected void testOfflinePush() {
-			Claim claim = new Claim("Some claim", new Date(2015, 01, 20), new Date(2015, 01, 31));
-			
-			saveInFile(claim);
-			
-			assertEquals(claim, loadFromFile());
-			
-			claim.addTag("Adding a tag to make this claim different");
-			
-			assertNotEquals(claim, loadFromFile());
-		}
+	assertNotEquals(claim, loadFromFile());
 }
