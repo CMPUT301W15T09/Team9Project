@@ -87,3 +87,39 @@ public void testMatchTags() {
 	assertTrue(claim2.hasTag(tag3));
 	assertTrue(claim2.hasTag(tag5));
 }
+
+//================================================================================
+// Test 2.5
+//================================================================================
+protected void testFilterTags() {
+
+	Intent intent = new Intent();
+	TagsActivity activity = getActivity();
+	
+	Tag tag = new Tag("Some new tag");
+	Tag tag2 = new Tag("Some other tag");
+
+	ExpenseClaimArrayAdapter adapter = activity.getAdapter();
+	
+	assertEquals(adapter.getCount, 0));
+	
+	ExpenseClaim claim = new ExpenseClaim("Some claim","description", new Date(2015, 01, 20), new Date(2015, 01, 31), null);
+	ExpenseClaim claim2 = new ExpenseClaim("Some other claim", "description", new Date(2015, 01, 20), new Date(2015, 01, 25), null)
+	
+	claim.addTag(tag);
+	claim2.addTag(tag2);
+	
+	adapter.add(claim);
+	adapter.add(claim2);
+
+	assertEquals(adapter.getCount(),2);
+	
+	adapter.filter(tag);
+	assertEquals(adapter.getCount(), 1);
+	
+	adapter.filter(tag);
+	assertEquals(adapter.getcount(), 0);
+	
+	adapter.restore();
+	assertEquals(adapter.getcount(),2);		
+}
