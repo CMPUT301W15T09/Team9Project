@@ -206,3 +206,21 @@ public void testDeleteExpenseClaim() {
 	assertEquals("There should be 1 claim after deleting one", adapter.getCount(), 1);
 	assertEquals("Remaining claim should be the first claim", adapter.get(0), claim1);
 }
+
+//================================================================================
+// Test 1.6
+//================================================================================
+public void testExpenseClaimPersistence() {
+	ExpenseClaimCollection collection = new ExpenseClaimCollection();
+	ExpenseClaim claim1 = createSampleExpenseClaim("Paris");
+	ExpenseClaim claim2 = createSampleExpenseClaim("Rome");
+	collection.add(claim1);
+	collection.add(claim2);
+
+	collection.saveToFile("claims.dat");
+
+	ExpenseClaimCollection loadedCollection = ExpenseClaimCollection.loadFromFile("claims.dat");
+	assertEquals("Loaded collection should have 2 claims", loadedCollection.size(), 2);
+	assertEquals("First claim should be equal", loadedCollection.get(0), claim1);
+	assertEquals("Second claim should be equal", loadedCollection.get(1), claim2);
+}

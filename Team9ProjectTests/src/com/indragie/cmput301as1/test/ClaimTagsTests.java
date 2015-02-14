@@ -25,7 +25,7 @@ protected void testGetList() {
 //================================================================================
 // Test 2.2
 //================================================================================
-public void testAddClaimToGroups() {
+public void testAddTags() {
 	Tag tag1 = new Tag("tag 1");
 	Tag tag5 = new Tag("tag 5");
 	ExpenseClaim claim = new ExpenseClaim("Some claim","description", new Date(2015, 01, 20), new Date(2015, 01, 31), null);
