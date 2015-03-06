@@ -34,6 +34,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 /**
  * An activity that presents a list of expense claims.
@@ -45,6 +46,7 @@ public class ExpenseClaimListActivity extends ListActivity {
 	
 	private static final int ADD_EXPENSE_CLAIM_REQUEST = 1;
 	private static final int EDIT_EXPENSE_CLAIM_REQUEST = 2;
+	private static final int SORT_EXPENSE_CLAIM_REQUEST = 3;
 	private static final String EXPENSE_CLAIM_FILENAME = "claims";
 
 	//================================================================================
@@ -114,6 +116,9 @@ public class ExpenseClaimListActivity extends ListActivity {
 		case EDIT_EXPENSE_CLAIM_REQUEST:
 			onEditExpenseResult(data);
 			break;
+		case SORT_EXPENSE_CLAIM_REQUEST:
+			onSortExpenseResult(data);
+			break;
 		}
 	}
 	
@@ -130,6 +135,10 @@ public class ExpenseClaimListActivity extends ListActivity {
 		claims.set(position, claim);
 		commitClaimsMutation();
 	}
+	
+	private void onSortExpenseResult(Intent data) {
+		
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -143,14 +152,32 @@ public class ExpenseClaimListActivity extends ListActivity {
 		case R.id.action_add_claim:
 			startAddExpenseClaimActivity();
 			return true;
+		case R.id.action_sort_claim:
+			startSortExpenseClaimActivity();
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
 	
+	/*
+	public void sortClaim(MenuItem menu) {
+		Toast.makeText(this,  "Sort Claim", Toast.LENGTH_SHORT).show();
+		Intent intent = new Intent(ExpenseClaimListActivity.this, ExpenseClaimSort.class);
+		startActivity(intent);
+	}*/
+	
+	
+	
 	private void startAddExpenseClaimActivity() {
 		Intent addIntent = new Intent(this, ExpenseClaimAddActivity.class);
 		startActivityForResult(addIntent, ADD_EXPENSE_CLAIM_REQUEST);
+	}
+	
+	// CRASHES
+	private void startSortExpenseClaimActivity() {
+		Intent intent = new Intent(this, ExpenseClaimSort.class);
+		startActivityForResult(intent, SORT_EXPENSE_CLAIM_REQUEST);
 	}
 
 	//================================================================================
