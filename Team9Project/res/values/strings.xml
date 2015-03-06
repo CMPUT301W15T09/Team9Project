@@ -41,5 +41,15 @@
     <!-- ExpenseItem{Edit,Add}Activity -->
     <string name="amount_placeholder">0.00</string>
     <string name="total_label">Total</string>
+    <string-array name="sort_type_spinner_array">
+        <item >Date of Travel</item>
+        <item >Order of Entry</item>
+    </string-array>
+    <string-array name="sort_time_spinner_array">
+        <item >Ascending</item>
+        <item >Descending</item>
+    </string-array>
+    
+    <string name="action_sort_claim">Sort Claim</string>
 
 </resources>
