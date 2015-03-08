@@ -45,7 +45,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	// Properties
 	//================================================================================
 	
-	private ExpenseClaimList claimsList;
+	private ExpenseClaimListModel claimsList;
 	private int longPressedItemIndex;
 
 	//================================================================================
@@ -55,7 +55,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		claimsList = new ExpenseClaimList(EXPENSE_CLAIM_FILENAME, this);
+		claimsList = new ExpenseClaimListModel(EXPENSE_CLAIM_FILENAME, this);
 		claimsList.addObserver(this);
 		setListAdapter(new ExpenseClaimArrayAdapter(this, claimsList.getExpenseClaims()));
 		
