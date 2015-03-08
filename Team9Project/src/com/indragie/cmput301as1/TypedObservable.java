@@ -32,34 +32,69 @@ public class TypedObservable<T> {
 	private boolean changed;
 	private HashSet<TypedObserver<T>> observers = new HashSet<TypedObserver<T>>();
 	
+	/**
+	 * Adds a new observer to the set of observers.
+	 * @param o The observer to add.
+	 */
 	public void addObserver(TypedObserver<T> o) {
 		observers.add(o);
 	}
 	
+	/**
+	 * @return The number of observers.
+	 */
 	public int countObservers() {
 		return observers.size();
 	}
 	
+	/**
+	 * Deletes an observer from the set of observers.
+	 * @param o The observer to delete.
+	 */
 	public void deleteObserver(TypedObserver<T> o) {
 		observers.remove(o);
 	}
 	
+	/**
+	 * Deletes all observers.
+	 */
 	public void deleteObservers() {
 		observers.clear();
 	}
 
+	/** 
+	 * @return Whether the changed flag has been set by a call to
+	 * {@link #setChanged()}
+	 */
 	public boolean hasChanged() {
 		return changed;
 	}
 	
+	/**
+	 * Clears the changed flag such that {@link #hasChanged()} will
+	 * return false.
+	 */
 	protected void clearChanged() {
 		changed = false;
 	}
 	
+	/**
+	 * Sets the changed flag such that {@link #hasChanged()} will
+	 * return true.
+	 */
 	protected void setChanged() {
 		changed = true;
 	}
 	
+	/**
+	 * If {@link #hasChanged()} returns true, this method will notify
+	 * all observers that the observable has been updated and then
+	 * clear the changed flag.
+	 * 
+	 * If {@link #hasChanged()} returns false, this method has no effect.
+	 * 
+	 * @param arg An optional argument to pass to observers.
+	 */
 	public void notifyObservers(T arg) {
 		if (hasChanged()) {
 			for (TypedObserver<T> o : observers) {
@@ -69,6 +104,9 @@ public class TypedObservable<T> {
 		}
 	}
 	
+	/**
+	 * Calls {@link #hasChanged()} with a null argument.
+	 */
 	public void notifyObservers() {
 		notifyObservers(null);
 	}

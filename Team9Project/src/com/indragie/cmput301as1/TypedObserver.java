@@ -26,5 +26,11 @@ package com.indragie.cmput301as1;
  *
  */
 public interface TypedObserver<T> {
+	/**
+	 * Informs the observer that the observable has been updated.
+	 * @param o The observable that was updated.
+	 * @param arg An optional argument containing data that can be used
+	 * by the observer to update itself (e.g. updating UI)
+	 */
 	public void update(TypedObservable<T> o, T arg);
 }
