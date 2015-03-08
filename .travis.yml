@@ -4,3 +4,7 @@ android:
         - build-tools-21.1.2
         - android-17
         - sys-img-x86-android-17
+script:
+    - cd ./Team9ProjectTests
+    - ant clean
+    - ant debug install test
