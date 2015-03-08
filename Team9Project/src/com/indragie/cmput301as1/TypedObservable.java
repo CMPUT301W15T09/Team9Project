@@ -30,11 +30,7 @@ import java.util.HashSet;
  */
 public class TypedObservable<T> {
 	private boolean changed;
-	private HashSet<TypedObserver<T>> observers;
-	
-	public TypedObservable() {
-		this.observers = new HashSet<TypedObserver<T>>();
-	}
+	private HashSet<TypedObserver<T>> observers = new HashSet<TypedObserver<T>>();
 	
 	public void addObserver(TypedObserver<T> o) {
 		observers.add(o);
