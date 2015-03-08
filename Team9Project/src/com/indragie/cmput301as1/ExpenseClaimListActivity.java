@@ -45,7 +45,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	// Properties
 	//================================================================================
 	
-	private ExpenseClaimListModel claimsList;
+	private ExpenseClaimListModel listModel;
 	private int longPressedItemIndex;
 
 	//================================================================================
@@ -55,16 +55,16 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		claimsList = new ExpenseClaimListModel(EXPENSE_CLAIM_FILENAME, this);
-		claimsList.addObserver(this);
-		setListAdapter(new ExpenseClaimArrayAdapter(this, claimsList.getExpenseClaims()));
+		listModel = new ExpenseClaimListModel(EXPENSE_CLAIM_FILENAME, this);
+		listModel.addObserver(this);
+		setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getExpenseClaims()));
 		
 		final ActionMode.Callback longClickCallback = new ActionMode.Callback() {
 			@Override
 			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 				switch (item.getItemId()) {
 				case R.id.action_delete:
-					claimsList.removeExpenseClaim(longPressedItemIndex);
+					listModel.remove(longPressedItemIndex);
 					mode.finish();
 					return true;
 				default:
@@ -111,13 +111,13 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	
 	private void onAddExpenseResult(Intent data) {
 		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM);
-		claimsList.addExpenseClaim(claim);
+		listModel.add(claim);
 	}
 	
 	private void onEditExpenseResult(Intent data) {
 		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM);
 		int position = data.getIntExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_POSITION, -1);
-		claimsList.setExpenseClaim(position, claim);
+		listModel.set(position, claim);
 	}
 
 	@Override
@@ -153,7 +153,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	
 	private void startEditExpenseClaimActivity(int position) {
 		Intent editIntent = new Intent(this, ExpenseClaimDetailActivity.class);
-		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM, claimsList.getExpenseClaims().get(position));
+		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM, listModel.getExpenseClaims().get(position));
 		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_POSITION, position);
 		startActivityForResult(editIntent, EDIT_EXPENSE_CLAIM_REQUEST);
 	}

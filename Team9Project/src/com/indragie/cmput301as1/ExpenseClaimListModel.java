@@ -54,7 +54,7 @@ public class ExpenseClaimListModel extends TypedObservable<List<ExpenseClaim>> {
 	public ExpenseClaimListModel(String fileName, Context context) {
 		this.fileName = fileName;
 		this.context = context;
-		this.claims = loadExpenseClaims();
+		this.claims = load();
 	}
 	
 	//================================================================================
@@ -76,7 +76,7 @@ public class ExpenseClaimListModel extends TypedObservable<List<ExpenseClaim>> {
 	 * Adds a new expense claim to the list of expense claims.
 	 * @param claim The expense claim to add.
 	 */
-	public void addExpenseClaim(ExpenseClaim claim) {
+	public void add(ExpenseClaim claim) {
 		claims.add(claim);
 		Collections.sort(claims);
 		commitClaimsMutation();
@@ -86,7 +86,7 @@ public class ExpenseClaimListModel extends TypedObservable<List<ExpenseClaim>> {
 	 * Removes an existing expense claim from the list of expense claims.
 	 * @param claim The expense claim to remove.
 	 */
-	public void removeExpenseClaim(ExpenseClaim claim) {
+	public void remove(ExpenseClaim claim) {
 		if (claims.remove(claim)) {
 			commitClaimsMutation();
 		}
@@ -96,8 +96,16 @@ public class ExpenseClaimListModel extends TypedObservable<List<ExpenseClaim>> {
 	 * Removes an existing expense claim from the list of expense claims.
 	 * @param index The index of the expense claim to remove.
 	 */
-	public void removeExpenseClaim(int index) {
+	public void remove(int index) {
 		claims.remove(index);
+		commitClaimsMutation();
+	}
+	
+	/**
+	 * Remove all expense claims from the list of expense claims.
+	 */
+	public void removeAll() {
+		claims.clear();
 		commitClaimsMutation();
 	}
 	
@@ -106,10 +114,17 @@ public class ExpenseClaimListModel extends TypedObservable<List<ExpenseClaim>> {
 	 * @param index The index of the expense claim to replace.
 	 * @param newClaim The expense claim to replace the existing expense claim with.
 	 */
-	public void setExpenseClaim(int index, ExpenseClaim newClaim) {
+	public void set(int index, ExpenseClaim newClaim) {
 		claims.set(index, newClaim);
 		Collections.sort(claims);
 		commitClaimsMutation();
+	}
+	
+	/**
+	 * @return The number of expense claims.
+	 */
+	public int count() {
+		return claims.size();
 	}
 	
 	//================================================================================
@@ -117,13 +132,13 @@ public class ExpenseClaimListModel extends TypedObservable<List<ExpenseClaim>> {
 	//================================================================================
 	
 	private void commitClaimsMutation() {
-		saveExpenseClaims(claims);
+		save(claims);
 		setChanged();
 		notifyObservers(claims);
 	}
 	
 	@SuppressWarnings("unchecked")
-	private ArrayList<ExpenseClaim> loadExpenseClaims() {
+	private ArrayList<ExpenseClaim> load() {
 		try {
 			FileInputStream fis = context.openFileInput(fileName);
 			ObjectInputStream ois = new ObjectInputStream(fis);
@@ -137,7 +152,7 @@ public class ExpenseClaimListModel extends TypedObservable<List<ExpenseClaim>> {
 		}
 	}
 	
-	private void saveExpenseClaims(ArrayList<ExpenseClaim> claims) {
+	private void save(ArrayList<ExpenseClaim> claims) {
 		try {
 			FileOutputStream fos = context.openFileOutput(fileName, 0);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
