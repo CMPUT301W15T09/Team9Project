@@ -4,7 +4,7 @@
     <!-- General -->
     <string name="app_name">karunara-expenses</string>
     <string name="action_delete">Delete</string>
-    
+
     <!-- ExpenseClaim -->
     <string name="description">Description</string>
     <string name="dates">Dates</string>
@@ -19,7 +19,7 @@
     <string name="category">Category</string>
     <string name="amount">Amount</string>
     <string name="date">Date</string>
-    
+
     <!-- EditingActivity -->
     <string name="cancel_label">Cancel</string>
     <string name="done_label">Done</string>
@@ -37,19 +37,23 @@
     <string name="action_mark_submitted">Mark as Submitted</string>
     <string name="action_mark_returned">Mark as Returned</string>
     <string name="action_mark_approved">Mark as Approved</string>
-    
+
     <!-- ExpenseItem{Edit,Add}Activity -->
     <string name="amount_placeholder">0.00</string>
     <string name="total_label">Total</string>
+
     <string-array name="sort_type_spinner_array">
-        <item >Date of Travel</item>
-        <item >Order of Entry</item>
+        <item>Date of Travel</item>
+        <item>Order of Entry</item>
     </string-array>
     <string-array name="sort_time_spinner_array">
-        <item >Ascending</item>
-        <item >Descending</item>
+        <item>Ascending</item>
+        <item>Descending</item>
     </string-array>
-    
+
     <string name="action_sort_claim">Sort Claim</string>
+    <string name="title_activity_expense_claim_sort">ExpenseClaimSortActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 
 </resources>
