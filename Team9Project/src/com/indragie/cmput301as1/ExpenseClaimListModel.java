@@ -1,6 +1,20 @@
-/**
+/* 
+ * Copyright (C) 2015 Indragie Karunaratne
  * 
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *  
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.indragie.cmput301as1;
 
 import java.io.FileInputStream;
@@ -19,7 +33,7 @@ import android.content.Context;
  * Observers will be notified when the list is modified by adding, removing, or
  * replacing existing expense claims.
  */
-public class ExpenseClaimList extends TypedObservable<List<ExpenseClaim>> {
+public class ExpenseClaimListModel extends TypedObservable<List<ExpenseClaim>> {
 	//================================================================================
 	// Properties
 	//================================================================================
@@ -33,11 +47,11 @@ public class ExpenseClaimList extends TypedObservable<List<ExpenseClaim>> {
 	//================================================================================
 	
 	/**
-	 * Create a new instance of {@link ExpenseClaimList}
+	 * Create a new instance of {@link ExpenseClaimListModel}
 	 * @param fileName Name of the file used to persist the expense claims.
 	 * @param context The context used for I/O operations.
 	 */
-	public ExpenseClaimList(String fileName, Context context) {
+	public ExpenseClaimListModel(String fileName, Context context) {
 		this.fileName = fileName;
 		this.context = context;
 		this.claims = loadExpenseClaims();
