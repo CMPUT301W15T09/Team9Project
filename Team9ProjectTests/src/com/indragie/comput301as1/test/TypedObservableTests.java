@@ -48,63 +48,63 @@ public class TypedObservableTests extends TestCase {
 	}
 	
 	public void testAddObserver() {
-		assertEquals(observable.countObservers(), 0);
+		assertEquals(0,observable.countObservers());
 		
 		observable.addObserver(new MockObserver<String>());
-		assertEquals(observable.countObservers(), 1);
+		assertEquals(1, observable.countObservers());
 	}
 	
 	public void testAddingExistingObserverAgain() {
-		assertEquals(observable.countObservers(), 0);
+		assertEquals(0, observable.countObservers());
 		
 		MockObserver<String> observer = new MockObserver<String>();
 		observable.addObserver(observer);
 		observable.addObserver(observer);
-		assertEquals(observable.countObservers(), 1);
+		assertEquals(1, observable.countObservers());
 	}
 	
 	public void testDeleteObserver() {
-		assertEquals(observable.countObservers(), 0);
+		assertEquals(0, observable.countObservers());
 		
 		MockObserver<String> observer = new MockObserver<String>();
 		observable.addObserver(observer);
-		assertEquals(observable.countObservers(), 1);
+		assertEquals(1, observable.countObservers());
 		
 		observable.deleteObserver(observer);
-		assertEquals(observable.countObservers(), 0);
+		assertEquals(0, observable.countObservers());
 	}
 	
 	public void testDeleteNonexistentObserver() {
-		assertEquals(observable.countObservers(), 0);
+		assertEquals(0, observable.countObservers());
 		
 		MockObserver<String> observer = new MockObserver<String>();
 		observable.addObserver(observer);
-		assertEquals(observable.countObservers(), 1);
+		assertEquals(1, observable.countObservers());
 		
 		observable.deleteObserver(new MockObserver<String>());
-		assertEquals(observable.countObservers(), 1);
+		assertEquals(1, observable.countObservers());
 	}
 	
 	public void testDeleteAllObservers() {
-		assertEquals(observable.countObservers(), 0);
+		assertEquals(0, observable.countObservers());
 		
 		observable.addObserver(new MockObserver<String>());
 		observable.addObserver(new MockObserver<String>());
 		observable.addObserver(new MockObserver<String>());
-		assertEquals(observable.countObservers(), 3);
+		assertEquals(3, observable.countObservers());
 		
 		observable.deleteObservers();
-		assertEquals(observable.countObservers(), 0);
+		assertEquals(0, observable.countObservers());
 	}
 	
 	public void testSetClearChanged() {
-		assertEquals(observable.hasChanged(), false);
+		assertEquals(false, observable.hasChanged());
 		
 		observable.setChanged();
-		assertEquals(observable.hasChanged(), true);
+		assertEquals(true, observable.hasChanged());
 		
 		observable.clearChanged();
-		assertEquals(observable.hasChanged(), false);
+		assertEquals(false, observable.hasChanged());
 	}
 	
 	public void testNotifyObserversWithValue() {
@@ -116,22 +116,22 @@ public class TypedObservableTests extends TestCase {
 		
 		String value1 = "Hello world!";
 		observable.notifyObservers(value1);
-		assertEquals(observer1.getUpdateCalled(), false);
-		assertEquals(observer2.getUpdateCalled(), false);
+		assertEquals(false, observer1.getUpdateCalled());
+		assertEquals(false, observer2.getUpdateCalled());
 		
 		observable.setChanged();
 		observable.notifyObservers(value1);
-		assertEquals(observer1.getUpdateValue(), value1);
-		assertEquals(observer2.getUpdateValue(), value1);
-		assertEquals(observable.hasChanged(), false);
+		assertEquals(value1, observer1.getUpdateValue());
+		assertEquals(value1, observer2.getUpdateValue());
+		assertEquals(false, observable.hasChanged());
 		
 		observable.deleteObserver(observer1);
 		String value2 = "Hello universe!";
 		observable.setChanged();
 		observable.notifyObservers(value2);
-		assertEquals(observer1.getUpdateValue(), value1);
-		assertEquals(observer2.getUpdateValue(), value2);
-		assertEquals(observable.hasChanged(), false);
+		assertEquals(value1, observer1.getUpdateValue());
+		assertEquals(value2, observer2.getUpdateValue());
+		assertEquals(false, observable.hasChanged());
 	}
 	
 	public void testNotifyObserversWithoutValue() {
@@ -142,16 +142,16 @@ public class TypedObservableTests extends TestCase {
 		observable.addObserver(observer2);
 		
 		observable.notifyObservers();
-		assertEquals(observer1.getUpdateCalled(), false);
-		assertEquals(observer2.getUpdateCalled(), false);
+		assertEquals(false, observer1.getUpdateCalled());
+		assertEquals(false, observer2.getUpdateCalled());
 		
 		observable.setChanged();
 		observable.notifyObservers();
-		assertEquals(observer1.getUpdateCalled(), true);
-		assertEquals(observer2.getUpdateCalled(), true);
-		assertEquals(observer1.getUpdateValue(), null);
-		assertEquals(observer2.getUpdateValue(), null);
-		assertEquals(observable.hasChanged(), false);
+		assertEquals(true, observer1.getUpdateCalled());
+		assertEquals(true, observer2.getUpdateCalled());
+		assertEquals(null, observer1.getUpdateValue());
+		assertEquals(null, observer2.getUpdateValue());
+		assertEquals(false, observable.hasChanged());
 		
 		observer1.setUpdateCalled(false);
 		observer2.setUpdateCalled(false);
@@ -159,10 +159,10 @@ public class TypedObservableTests extends TestCase {
 		observable.setChanged();
 		observable.notifyObservers();
 		
-		assertEquals(observer1.getUpdateCalled(), false);
-		assertEquals(observer2.getUpdateCalled(), true);
-		assertEquals(observer1.getUpdateValue(), null);
-		assertEquals(observer2.getUpdateValue(), null);
-		assertEquals(observable.hasChanged(), false);
+		assertEquals(false, observer1.getUpdateCalled());
+		assertEquals(true, observer2.getUpdateCalled());
+		assertEquals(null, observer1.getUpdateValue());
+		assertEquals(null, observer2.getUpdateValue());
+		assertEquals(false, observable.hasChanged());
 	}
 }
