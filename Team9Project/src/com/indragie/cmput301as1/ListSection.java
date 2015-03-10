@@ -73,7 +73,7 @@ public class ListSection<T> {
 	//================================================================================
 	
 	private String title;
-	private List<T> objects;
+	private List<T> items;
 	private ViewConfigurator<T> viewConfigurator;
 	private OnItemClickListener<T> onItemClickListener;
 	
@@ -85,16 +85,16 @@ public class ListSection<T> {
 	 * Creates a new instance of {@link ListSection}
 	 * @param title The title of the section. Pass null for this parameter to hide the
 	 * section header.
-	 * @param objects Objects contained within the section.
+	 * @param items Objects contained within the section.
 	 * @param viewConfigurator Configurator used to create and configure views used
 	 * to display items from the section in a {@link ListView}
 	 */
-	public ListSection(String title, List<T> objects, ViewConfigurator<T> viewConfigurator) {
+	public ListSection(String title, List<T> items, ViewConfigurator<T> viewConfigurator) {
 		if (viewConfigurator == null) {
 			throw new IllegalArgumentException("viewConfigurator must be non null");
 		}
 		this.title = title;
-		this.objects = new ArrayList<T>(objects); // Shallow copy
+		this.items = new ArrayList<T>(items); // Shallow copy
 		this.viewConfigurator = viewConfigurator;
 	}
 	
@@ -102,30 +102,55 @@ public class ListSection<T> {
 	// Accessors
 	//================================================================================
 	
+	/**
+	 * @return The title of the section.
+	 */
 	public String getTitle() {
 		return title;
 	}
 	
+	/**
+	 * Sets the title of the section.
+	 * @param title The title of the section.
+	 */
 	public void setTitle(String title) {
 		this.title = title;
 	}
 	
-	public List<T> getObjects() {
-		return Collections.unmodifiableList(objects);
+	/**
+	 * @return An unmodifiable list of the items contained within the section.
+	 */
+	public List<T> getItems() {
+		return Collections.unmodifiableList(items);
 	}
 	
-	public void setObjects(List<T> objects) {
-		this.objects = new ArrayList<T>(objects); // Shallow copy
+	/**
+	 * Sets the items in the section. The objects are shallow-copied.
+	 * @param items The items in the section.
+	 */
+	public void setItems(List<T> items) {
+		this.items = new ArrayList<T>(items); // Shallow copy
 	}
 	
+	/**
+	 * @return Configurator used to create and configure views used
+	 * to display items from the section in a {@link ListView}
+	 */
 	public ViewConfigurator<T> getViewConfigurator() {
 		return viewConfigurator;
 	}
 	
+	/**
+	 * @return Listener that is called when an item in the section is clicked.
+	 */
 	public OnItemClickListener<T> getOnItemClickListener() {
 		return onItemClickListener;
 	}
 	
+	/**
+	 * Sets the listener that is called when an item in the section is clicked.
+	 * @param onItemClickListener The listener.
+	 */
 	public void setOnItemClickListener(OnItemClickListener<T> onItemClickListener) {
 		this.onItemClickListener = onItemClickListener;
 	}
