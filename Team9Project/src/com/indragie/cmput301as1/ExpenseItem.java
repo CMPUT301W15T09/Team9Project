@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2015 Indragie Karunaratne
+ * Copyright (C) 2015 Indragie Karunaratne, Brandon Williams
  * 
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ import org.joda.money.Money;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.net.Uri;
 
 /**
  * Model object representing a single item on an expense claim.
@@ -57,6 +58,8 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	 * (Money class is from the Joda Money library)
 	 */
 	private Money amount;
+	
+	private Uri receiptUri;
 
 	//================================================================================
 	// Constructors
@@ -112,6 +115,14 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 
 	public void setAmount(Money amount) {
 		this.amount = amount;
+	}
+	
+	public Uri getReceiptUri() {
+		return receiptUri;
+	}
+
+	public void setReceiptUri(Uri receiptUri) {
+		this.receiptUri = receiptUri;
 	}
 	
 	private static final String BULLET = "\u2022 ";
