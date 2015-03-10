@@ -17,7 +17,7 @@
 
 package com.indragie.cmput301as1;
 
-public class Tag {
+public class Tag implements Comparable<Tag>{
 	
 	private String name;
 	
@@ -27,6 +27,11 @@ public class Tag {
 	
 	public String getName() {
 		return this.name;
+	}
+	
+	@Override
+	public int compareTo(Tag tag) {
+		return this.name.compareTo(tag.getName());
 	}
 
 }
