@@ -17,11 +17,17 @@
 
 package com.indragie.cmput301as1;
 
+import java.io.File;
+
 import org.joda.money.*;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 
 /**
@@ -29,10 +35,15 @@ import android.widget.Spinner;
  * create a new expense item.
  */
 public class ExpenseItemAddActivity extends AddActivity {
+	
+	protected Uri imageFileUri;
+
 	//================================================================================
 	// Constants
 	//================================================================================
 	public static final String EXTRA_EXPENSE_ITEM = "com.indragie.cmput301as1.EXPENSE_ITEM";
+	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+	public static final int REQUEST_IMAGE_CAPTURE = 100;
 
 	//================================================================================
 	// Properties
@@ -44,6 +55,7 @@ public class ExpenseItemAddActivity extends AddActivity {
 	protected DateEditText dateField;
 	protected Spinner categorySpinner;
 	protected Spinner currencySpinner;
+	protected ImageButton receiptButton;
 
 	//================================================================================
 	// Activity Callbacks
@@ -103,4 +115,38 @@ public class ExpenseItemAddActivity extends AddActivity {
 		setResult(RESULT_OK, getResultIntent());
 		finish();
 	}
+	
+	//================================================================================
+	// Receipt Handling
+	//================================================================================
+	
+	protected void takePhoto() {
+	
+		// create folder to store receipt images
+		String folder = Environment.getExternalStorageDirectory()
+									.getAbsolutePath() + "/ExpenseReceipts";
+		File receiptFolder = new File(folder);
+		if (!receiptFolder.exists()) {
+			receiptFolder.mkdir();
+		}
+		
+		// create image file Uri
+		String receiptFilePath = folder + "/"
+				+ String.valueOf(System.currentTimeMillis()) + ".jpg";
+		File receiptFile = new File(receiptFilePath);
+		imageFileUri = Uri.fromFile(receiptFile);
+		
+		// create and dispatch picture intent 
+		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, imageFileUri);
+		
+		startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+	}
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		
+		// w.i.p.
+		
+	}
 }
+
