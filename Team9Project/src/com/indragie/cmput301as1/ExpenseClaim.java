@@ -52,7 +52,11 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 	 * Expense items contained in the claim.
 	 */
 	private List<ExpenseItem> items;
-
+	/*
+	 * Tags contained in the claim.
+	 */
+	private List<Tag> tags;
+	
 	/**
 	 * Possible statuses for an expense claim.
 	 */
@@ -182,6 +186,32 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
+	
+	public void addTag(Tag tag) {
+		tags.add(tag);
+	}
+	
+	public void removeTag(Tag tag) {
+		tags.remove(tag);
+	}
+	
+	public void removeTag(int index) {
+		tags.remove(index);
+	}
+	
+	public boolean hasTag(Tag tag) {
+		return(tags.contains(tag));
+	}
+	
+	public void replaceTag(Tag oldTag, Tag newTag) {
+		tags.add(tags.indexOf(oldTag), newTag);
+		tags.remove(oldTag);
+	}
+	
+	public List<Tag> getTags() {
+		return tags; //Does not return unmodifiable List<Tag>
+	}
+	
 
 	/**
 	 * @return If the claim has expense items, this method returns a string
