@@ -204,8 +204,7 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 	}
 	
 	public void replaceTag(Tag oldTag, Tag newTag) {
-		tags.add(tags.indexOf(oldTag), newTag);
-		tags.remove(oldTag);
+		tags.set(tags.indexOf(oldTag), newTag);
 	}
 	
 	public List<Tag> getTags() {

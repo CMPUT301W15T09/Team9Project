@@ -33,12 +33,11 @@ import android.content.Context;
  * Observers will be notified when the list is modified by adding, removing, or
  * replacing existing expense claims.
  */
-public class ExpenseClaimListModel extends TypedObservable<List<ExpenseClaim>> {
+public class ExpenseClaimListModel extends ListModel<ExpenseClaim> {
 	//================================================================================
 	// Properties
 	//================================================================================
 	
-	private ArrayList<ExpenseClaim> claims;
 	private String fileName;
 	private Context context;
 	
@@ -54,7 +53,7 @@ public class ExpenseClaimListModel extends TypedObservable<List<ExpenseClaim>> {
 	public ExpenseClaimListModel(String fileName, Context context) {
 		this.fileName = fileName;
 		this.context = context;
-		this.claims = load();
+		this.list = load();
 	}
 	
 	//================================================================================
@@ -65,7 +64,7 @@ public class ExpenseClaimListModel extends TypedObservable<List<ExpenseClaim>> {
 	 * @return An unmodifiable list of expense claims.
 	 */
 	public List<ExpenseClaim> getExpenseClaims() {
-		return Collections.unmodifiableList(claims);
+		return Collections.unmodifiableList(list);
 	}
 	
 	//================================================================================
@@ -77,8 +76,7 @@ public class ExpenseClaimListModel extends TypedObservable<List<ExpenseClaim>> {
 	 * @param claim The expense claim to add.
 	 */
 	public void add(ExpenseClaim claim) {
-		claims.add(claim);
-		Collections.sort(claims);
+		super.add(claim);
 		commitClaimsMutation();
 	}
 	
@@ -86,10 +84,12 @@ public class ExpenseClaimListModel extends TypedObservable<List<ExpenseClaim>> {
 	 * Removes an existing expense claim from the list of expense claims.
 	 * @param claim The expense claim to remove.
 	 */
-	public void remove(ExpenseClaim claim) {
-		if (claims.remove(claim)) {
+	public boolean remove(ExpenseClaim claim) {
+		if (list.remove(claim)) {
 			commitClaimsMutation();
+			return true;
 		}
+		return false;
 	}
 	
 	/**
@@ -97,7 +97,7 @@ public class ExpenseClaimListModel extends TypedObservable<List<ExpenseClaim>> {
 	 * @param index The index of the expense claim to remove.
 	 */
 	public void remove(int index) {
-		claims.remove(index);
+		super.remove(index);
 		commitClaimsMutation();
 	}
 	
@@ -105,7 +105,7 @@ public class ExpenseClaimListModel extends TypedObservable<List<ExpenseClaim>> {
 	 * Remove all expense claims from the list of expense claims.
 	 */
 	public void removeAll() {
-		claims.clear();
+		super.removeAll();
 		commitClaimsMutation();
 	}
 	
@@ -115,26 +115,19 @@ public class ExpenseClaimListModel extends TypedObservable<List<ExpenseClaim>> {
 	 * @param newClaim The expense claim to replace the existing expense claim with.
 	 */
 	public void set(int index, ExpenseClaim newClaim) {
-		claims.set(index, newClaim);
-		Collections.sort(claims);
+		super.set(index, newClaim);
 		commitClaimsMutation();
 	}
 	
-	/**
-	 * @return The number of expense claims.
-	 */
-	public int count() {
-		return claims.size();
-	}
-	
+
 	//================================================================================
 	// Helpers
 	//================================================================================
 	
 	private void commitClaimsMutation() {
-		save(claims);
+		save(list);
 		setChanged();
-		notifyObservers(claims);
+		notifyObservers(list);
 	}
 	
 	@SuppressWarnings("unchecked")
