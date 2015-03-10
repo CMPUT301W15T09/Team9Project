@@ -17,13 +17,7 @@
 
 package com.indragie.cmput301as1;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.List;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -38,7 +32,7 @@ import android.widget.ListView;
 /**
  * An activity that presents a list of expense claims.
  */
-public class ExpenseClaimListActivity extends ListActivity {
+public class ExpenseClaimListActivity extends ListActivity implements TypedObserver<List<ExpenseClaim>> {
 	//================================================================================
 	// Constants
 	//================================================================================
@@ -51,8 +45,7 @@ public class ExpenseClaimListActivity extends ListActivity {
 	// Properties
 	//================================================================================
 	
-	private ArrayList<ExpenseClaim> claims;
-	private ExpenseClaimArrayAdapter adapter;
+	private ExpenseClaimListModel listModel;
 	private int longPressedItemIndex;
 
 	//================================================================================
@@ -62,17 +55,16 @@ public class ExpenseClaimListActivity extends ListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		claims = loadExpenseClaims();
-		adapter = new ExpenseClaimArrayAdapter(this, claims);
-		setListAdapter(adapter);
+		listModel = new ExpenseClaimListModel(EXPENSE_CLAIM_FILENAME, this);
+		listModel.addObserver(this);
+		setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getExpenseClaims()));
 		
 		final ActionMode.Callback longClickCallback = new ActionMode.Callback() {
 			@Override
 			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 				switch (item.getItemId()) {
 				case R.id.action_delete:
-					claims.remove(longPressedItemIndex);
-					commitClaimsMutation();
+					listModel.remove(longPressedItemIndex);
 					mode.finish();
 					return true;
 				default:
@@ -103,6 +95,12 @@ public class ExpenseClaimListActivity extends ListActivity {
 			}
 		});
 	}
+	
+	@Override
+	public void onDestroy() {
+		listModel.deleteObserver(this);
+		super.onDestroy();
+	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -119,16 +117,13 @@ public class ExpenseClaimListActivity extends ListActivity {
 	
 	private void onAddExpenseResult(Intent data) {
 		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM);
-		claims.add(claim);
-		commitClaimsMutation();
+		listModel.add(claim);
 	}
 	
 	private void onEditExpenseResult(Intent data) {
 		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM);
 		int position = data.getIntExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_POSITION, -1);
-		
-		claims.set(position, claim);
-		commitClaimsMutation();
+		listModel.set(position, claim);
 	}
 
 	@Override
@@ -164,45 +159,17 @@ public class ExpenseClaimListActivity extends ListActivity {
 	
 	private void startEditExpenseClaimActivity(int position) {
 		Intent editIntent = new Intent(this, ExpenseClaimDetailActivity.class);
-		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM, claims.get(position));
+		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM, listModel.getExpenseClaims().get(position));
 		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_POSITION, position);
 		startActivityForResult(editIntent, EDIT_EXPENSE_CLAIM_REQUEST);
 	}
 
 	//================================================================================
-	// Claims
+	// TypedObserver
 	//================================================================================
-
-	private void commitClaimsMutation() {
-		Collections.sort(claims);
-		adapter.notifyDataSetChanged();
-		saveExpenseClaims(claims);
-	}
 	
-	private void saveExpenseClaims(ArrayList<ExpenseClaim> claims) {
-		try {
-			FileOutputStream fos = openFileOutput(EXPENSE_CLAIM_FILENAME, 0);
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			oos.writeObject(claims);
-			oos.close();
-			fos.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	@SuppressWarnings("unchecked")
-	private ArrayList<ExpenseClaim> loadExpenseClaims() {
-		try {
-			FileInputStream fis = openFileInput(EXPENSE_CLAIM_FILENAME);
-			ObjectInputStream ois = new ObjectInputStream(fis);
-			Object obj = ois.readObject();
-			ois.close();
-			fis.close();
-			return (ArrayList<ExpenseClaim>)obj;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ArrayList<ExpenseClaim>();
-		}
+	@Override
+	public void update(TypedObservable<List<ExpenseClaim>> o, List<ExpenseClaim> claims) {
+		setListAdapter(new ExpenseClaimArrayAdapter(this, claims));
 	}
 }
