@@ -95,6 +95,12 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 			}
 		});
 	}
+	
+	@Override
+	public void onDestroy() {
+		listModel.deleteObserver(this);
+		super.onDestroy();
+	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
