@@ -16,6 +16,8 @@
  */
 package com.indragie.cmput301as1;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import android.view.View;
@@ -53,6 +55,19 @@ public class ListSection<T> {
 		public void configureView(View view, T obj);
 	}
 	
+	/**
+	 * Interface definition for a callback that is invoked when an item
+	 * from this section is clicked in a {@link ListView};
+	 */
+	public interface OnItemClickListener<T> {
+		/**
+		 * Called when an item is clicked in a {@link ListView}
+		 * @param parent The parent section containing the item.
+		 * @param item The item that was clicked.
+		 */
+		public void onItemClick(ListSection<T> parent, T item);
+	}
+	
 	//================================================================================
 	// Properties
 	//================================================================================
@@ -60,6 +75,7 @@ public class ListSection<T> {
 	private String title;
 	private List<T> objects;
 	private ViewConfigurator<T> viewConfigurator;
+	private OnItemClickListener<T> onItemClickListener;
 	
 	//================================================================================
 	// Constructors
@@ -67,14 +83,18 @@ public class ListSection<T> {
 	
 	/**
 	 * Creates a new instance of {@link ListSection}
-	 * @param title The title of the section.
+	 * @param title The title of the section. Pass null for this parameter to hide the
+	 * section header.
 	 * @param objects Objects contained within the section.
 	 * @param viewConfigurator Configurator used to create and configure views used
 	 * to display items from the section in a {@link ListView}
 	 */
 	public ListSection(String title, List<T> objects, ViewConfigurator<T> viewConfigurator) {
+		if (viewConfigurator == null) {
+			throw new IllegalArgumentException("viewConfigurator must be non null");
+		}
 		this.title = title;
-		this.objects = objects;
+		this.objects = new ArrayList<T>(objects); // Shallow copy
 		this.viewConfigurator = viewConfigurator;
 	}
 	
@@ -91,14 +111,22 @@ public class ListSection<T> {
 	}
 	
 	public List<T> getObjects() {
-		return objects;
+		return Collections.unmodifiableList(objects);
 	}
 	
 	public void setObjects(List<T> objects) {
-		this.objects = objects;
+		this.objects = new ArrayList<T>(objects); // Shallow copy
 	}
 	
 	public ViewConfigurator<T> getViewConfigurator() {
 		return viewConfigurator;
+	}
+	
+	public OnItemClickListener<T> getOnItemClickListener() {
+		return onItemClickListener;
+	}
+	
+	public void setOnItemClickListener(OnItemClickListener<T> onItemClickListener) {
+		this.onItemClickListener = onItemClickListener;
 	}
 }
