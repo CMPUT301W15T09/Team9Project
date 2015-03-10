@@ -67,6 +67,7 @@ public final class R {
         public static final int activity_editing_actionbar=0x7f030002;
         public static final int activity_expense_item_add=0x7f030003;
         public static final int expense_claim_list_row=0x7f030004;
+        public static final int tag_list_row=0x7f030005;
     }
     public static final class menu {
         public static final int contextual_delete=0x7f080000;
