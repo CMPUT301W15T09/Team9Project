@@ -22,10 +22,12 @@ import java.io.File;
 import org.joda.money.*;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -36,7 +38,7 @@ import android.widget.Spinner;
  */
 public class ExpenseItemAddActivity extends AddActivity {
 	
-	protected Uri imageFileUri;
+	protected Uri receiptFileUri;
 
 	//================================================================================
 	// Constants
@@ -76,6 +78,24 @@ public class ExpenseItemAddActivity extends AddActivity {
 
 		currencySpinner = (Spinner)findViewById(R.id.sp_currency);
 		SpinnerUtils.configureSpinner(this, currencySpinner, R.array.currency_array);
+		
+		receiptButton = (ImageButton) findViewById(R.id.btn_receipt);
+		receiptButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				takePhoto();				
+			}
+		});
+		
+		receiptButton.setOnLongClickListener(new View.OnLongClickListener() {
+			
+			@Override
+			public boolean onLongClick(View v) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+		});
 	}
 
 	//================================================================================
@@ -94,6 +114,9 @@ public class ExpenseItemAddActivity extends AddActivity {
 			amount,
 			dateField.getDate()
 		);
+		if (!receiptFileUri.equals(null)) {
+			item.setReceiptUri(receiptFileUri);
+		}
 
 		Intent intent = new Intent();
 		intent.putExtra(EXTRA_EXPENSE_ITEM, item);
@@ -134,18 +157,22 @@ public class ExpenseItemAddActivity extends AddActivity {
 		String receiptFilePath = folder + "/"
 				+ String.valueOf(System.currentTimeMillis()) + ".jpg";
 		File receiptFile = new File(receiptFilePath);
-		imageFileUri = Uri.fromFile(receiptFile);
+		receiptFileUri = Uri.fromFile(receiptFile);
 		
 		// create and dispatch picture intent 
 		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		intent.putExtra(MediaStore.EXTRA_OUTPUT, imageFileUri);
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, receiptFileUri);
 		
 		startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
 	}
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		
-		// w.i.p.
+		if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+			receiptButton = (ImageButton) findViewById(R.id.btn_receipt);
+			Drawable receiptPic = Drawable.createFromPath(receiptFileUri.getPath());
+			receiptButton.setImageDrawable(receiptPic);
+		}
 		
 	}
 }
