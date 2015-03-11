@@ -89,6 +89,8 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 	 * Ending date of the claim.
 	 */
 	private Date endDate;
+	
+	private User user;
 
 	//================================================================================
 	// Constructors
@@ -101,6 +103,7 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.status = status;
+		this.user = null;
 	}
 
 	//================================================================================

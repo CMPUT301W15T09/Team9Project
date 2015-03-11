@@ -19,15 +19,20 @@ package com.indragie.cmput301as1;
 
 import java.util.List;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 /**
  * An activity that presents a list of expense claims.
@@ -55,6 +60,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		checkFirstRun();
 		listModel = new ExpenseClaimListModel(EXPENSE_CLAIM_FILENAME, this);
 		listModel.addObserver(this);
 		setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getExpenseClaims()));
@@ -146,6 +152,46 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private void startAddExpenseClaimActivity() {
 		Intent addIntent = new Intent(this, ExpenseClaimAddActivity.class);
 		startActivityForResult(addIntent, ADD_EXPENSE_CLAIM_REQUEST);
+	}
+	
+	public void checkFirstRun() {
+	    boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("isFirstRun", true);
+	    if (true){
+	        
+	        
+	        //http://www.androidsnippets.com/prompt-user-input-with-an-alertdialog
+	        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+	        alert.setTitle("Username");
+	        alert.setMessage("Please enter your name:");
+
+	        // Set an EditText view to get user input 
+	        final EditText input = new EditText(this);
+	        alert.setView(input);
+
+	        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int whichButton) {
+	          String value = input.getText().toString();
+	          Toast.makeText(getApplicationContext(), "Welcome "+value, Toast.LENGTH_LONG).show();
+	          
+	          getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+	          .edit()
+	          .putBoolean("isFirstRun", false)
+	          .apply();
+	          }
+	        });
+
+	        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+	          public void onClick(DialogInterface dialog, int whichButton) {
+	            checkFirstRun();
+	            Toast.makeText(getApplicationContext(), "You must enter a username", Toast.LENGTH_LONG).show();
+	          }
+	        });
+
+	        alert.show();
+
+	        
+	    }
 	}
 
 	//================================================================================
