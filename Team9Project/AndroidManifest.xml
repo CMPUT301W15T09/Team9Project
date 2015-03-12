@@ -38,8 +38,11 @@
         </activity>
         <activity android:name=".ExpenseItemAddActivity" >
         </activity>
+        <activity android:name=".ExpenseItemEditActivity" >
+        </activity>
         <activity
-            android:name=".ExpenseItemEditActivity" >
+            android:name=".ManageTagsActivity"
+            android:label="@string/title_activity_manage_tags" >
         </activity>
     </application>
 
