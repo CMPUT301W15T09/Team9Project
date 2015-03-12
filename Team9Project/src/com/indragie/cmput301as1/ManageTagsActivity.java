@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 public class ManageTagsActivity extends ListActivity implements TypedObserver<List<Tag>>{
 	
@@ -17,8 +16,8 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 	
 	private static final String TAG_FILENAME = "tags";
 
-	private TagListModel listModel;
-	private List<Tag> tags; //temp list of tags 
+	private ListModel<Tag> listModel;
+	private List<Tag> tags; 
 	private Button addButton;
 	
 	@Override
@@ -27,9 +26,9 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 		
 		setupListFooterView(); //need to set up footer view first before setting up list 
 		
-		listModel = new TagListModel(TAG_FILENAME, this);
+		listModel = new ListModel<Tag>(TAG_FILENAME, this);
 		listModel.addObserver(this);
-		setListAdapter(new TagArrayAdapter(this, listModel.getTags()));
+		setListAdapter(new TagArrayAdapter(this, listModel.getItems()));
 		
 		
 		View actionBarButtons = getLayoutInflater().inflate(R.layout.activity_editing_actionbar, new LinearLayout(this), false);
