@@ -2,7 +2,6 @@ package com.indragie.cmput301as1;
 
 import java.util.List;
 
-import android.app.ActionBar;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,29 +11,29 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.LinearLayout;
-
+import android.widget.DatePicker;
 public class ManageTagsActivity extends ListActivity implements TypedObserver<List<Tag>>{
 	
 	
 	
 	private static final String TAG_FILENAME = "tags";
 
-	private Boolean editable = true;
 	private ListModel<Tag> listModel;
 	private Button addButton;
 	private int longPressedItemIndex;
-	private TagArrayAdapter adapter;
 	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		setupListFooterView(); //need to set up footer view first before setting up list 
 		
 		listModel = new ListModel<Tag>(TAG_FILENAME, this);
 		listModel.addObserver(this);
+		listModel.add(new Tag("some tag"));
+		listModel.add(new Tag("this other tag"));
 		setListAdapter(new TagArrayAdapter(this, listModel.getItems()));
 		
 		
@@ -43,8 +42,7 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 				switch (item.getItemId()) {
 				case R.id.action_delete:
-					listModel.getItems().remove(longPressedItemIndex);
-					updateInterfaceForDataSetChange();
+					listModel.remove(longPressedItemIndex);
 					mode.finish();
 					return true;
 				default:
@@ -70,17 +68,11 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 		getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-				if (editable) {
-					longPressedItemIndex = itemPositionForListViewPosition(position);
-					startActionMode(longClickCallback);
-					return true;
-				} else {
-					return false;
-				}
+				longPressedItemIndex = position;
+				startActionMode(longClickCallback);
+				return true;
 			}
 		});
-		
-		
 		
 		
 	}
@@ -100,6 +92,17 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 		return new Intent();
 	}
 	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			finish();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+	
 	
 	
 	private void setupListFooterView() {
@@ -109,33 +112,6 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 		
 		getListView().addFooterView(footerView);
 	}
-
-	@Override
-	public void onBackPressed() {
-		// Changes should persist even when the back button is pressed,
-		// since this is for editing and not adding.
-		commitChangesAndFinish();
-	}
-	
-	private void commitChangesAndFinish() {
-		/*
-		claim.setName(nameField.getText().toString());
-		claim.setDescription(descriptionField.getText().toString());
-		claim.setStartDate(startDateField.getDate());
-		claim.setEndDate(endDateField.getDate());
-		 */
-		finish();
-	}
-	
-	private int itemPositionForListViewPosition(int position) {
-		// Subtract 1 for the header
-		return position - 1;
-	}
-	
-	private void updateInterfaceForDataSetChange() {
-		adapter.notifyDataSetChanged();
-	}
-	
 	
 	@Override
 	public void update(TypedObservable<List<Tag>> o, List<Tag> tags) {

@@ -42,7 +42,7 @@ public class ListModel<T extends Comparable<? super T>> extends TypedObservable<
 	//================================================================================
 	
 	/**
-	 * @return An unmodifiable list of expense claims.
+	 * @return An unmodifiable list of items.
 	 */
 	public List<T> getItems() {
 		return Collections.unmodifiableList(list);
