@@ -114,12 +114,20 @@ public class ListModel<T extends Comparable<? super T>> extends TypedObservable<
 	// Helpers
 	//================================================================================
 	
+	/**
+	 * Commits the changes.
+	 */
 	private void commitClaimsMutation() {
 		save(list);
 		setChanged();
 		notifyObservers(list);
 	}
 	
+	
+	/**
+	 * Loads a list from a save file. 
+	 * @return A list of specified type.
+	 */
 	@SuppressWarnings("unchecked")
 	private ArrayList<T> load() {
 		try {
@@ -134,7 +142,10 @@ public class ListModel<T extends Comparable<? super T>> extends TypedObservable<
 			return new ArrayList<T>();
 		}
 	}
-	
+	/**
+	 * Saves a list into a file.
+	 * @param o The list to save.
+	 */
 	private void save(ArrayList<T> o) {
 		try {
 			FileOutputStream fos = context.openFileOutput(fileName, 0);

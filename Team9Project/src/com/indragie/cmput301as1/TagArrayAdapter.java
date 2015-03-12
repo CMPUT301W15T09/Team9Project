@@ -31,6 +31,7 @@ import android.widget.TextView;
  * Based on https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
  */
 public class TagArrayAdapter extends ArrayAdapter<Tag> {
+	
 	public TagArrayAdapter(Context context, List<Tag> tags) {
 		super(context, R.layout.tag_list_row, tags);
 	}
@@ -47,7 +48,6 @@ public class TagArrayAdapter extends ArrayAdapter<Tag> {
 		
 		return convertView;
 	}
-	
-	
+
 	
 }
