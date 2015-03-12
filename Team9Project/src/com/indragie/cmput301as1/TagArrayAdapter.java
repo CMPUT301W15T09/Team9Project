@@ -44,7 +44,7 @@ public class TagArrayAdapter extends ArrayAdapter<Tag> {
 			convertView = LayoutInflater.from(getContext()).inflate(R.layout.tag_list_row, parent, false);
 		}
 		TextView nameTextView = (TextView)convertView.findViewById(R.id.tv_name);
-		nameTextView.setText(tags.getName());
+		nameTextView.setText(tags.getName().toString());
 		
 		return convertView;
 	}
