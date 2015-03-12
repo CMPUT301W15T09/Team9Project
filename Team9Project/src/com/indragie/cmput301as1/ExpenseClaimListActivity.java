@@ -138,6 +138,9 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		case R.id.action_add_claim:
 			startAddExpenseClaimActivity();
 			return true;
+		case R.id.action_manage_tags:
+			startManageTagsActivity();
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -146,6 +149,11 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private void startAddExpenseClaimActivity() {
 		Intent addIntent = new Intent(this, ExpenseClaimAddActivity.class);
 		startActivityForResult(addIntent, ADD_EXPENSE_CLAIM_REQUEST);
+	}
+	
+	private void startManageTagsActivity() {
+		Intent manageTagsIntent = new Intent(this, ManageTagsActivity.class);
+		startActivity(manageTagsIntent);
 	}
 
 	//================================================================================

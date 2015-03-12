@@ -30,21 +30,24 @@ import android.widget.TextView;
  * Adaptor for showing an array of {@link ExpenseItem} objects in a {@link ListView}
  * Based on https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
  */
-public class TagArrayAdapter extends ArrayAdapter<ExpenseItem> {
-	public TagArrayAdapter(Context context, List<ExpenseItem> items) {
-		super(context, R.layout.expense_claim_list_row, items);
+public class TagArrayAdapter extends ArrayAdapter<Tag> {
+	public TagArrayAdapter(Context context, List<Tag> tags) {
+		super(context, R.layout.tag_list_row, tags);
 	}
 	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		ExpenseItem item = getItem(position);
+		Tag tags = getItem(position);
 		
 		if (convertView == null) {
 			convertView = LayoutInflater.from(getContext()).inflate(R.layout.tag_list_row, parent, false);
 		}
 		TextView nameTextView = (TextView)convertView.findViewById(R.id.tv_name);
-		nameTextView.setText(item.getName());
+		nameTextView.setText(tags.getName());
 		
 		return convertView;
 	}
+	
+	
+	
 }
