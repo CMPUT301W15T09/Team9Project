@@ -45,7 +45,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	// Properties
 	//================================================================================
 	
-	private ExpenseClaimListModel listModel;
+	private ListModel<ExpenseClaim> listModel;
 	private int longPressedItemIndex;
 
 	//================================================================================
@@ -55,9 +55,9 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		listModel = new ExpenseClaimListModel(EXPENSE_CLAIM_FILENAME, this);
+		listModel = new ListModel<ExpenseClaim>(EXPENSE_CLAIM_FILENAME, this);
 		listModel.addObserver(this);
-		setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getExpenseClaims()));
+		setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems()));
 		
 		final ActionMode.Callback longClickCallback = new ActionMode.Callback() {
 			@Override
@@ -167,7 +167,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	
 	private void startEditExpenseClaimActivity(int position) {
 		Intent editIntent = new Intent(this, ExpenseClaimDetailActivity.class);
-		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM, listModel.getExpenseClaims().get(position));
+		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM, listModel.getItems().get(position));
 		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_POSITION, position);
 		startActivityForResult(editIntent, EDIT_EXPENSE_CLAIM_REQUEST);
 	}
