@@ -4,20 +4,21 @@ import java.io.Serializable;
 
 import android.content.Context;
 
+/**
+ * Model object representing a user object.
+ */
+
 public class User implements Serializable {
 	
 	//================================================================================
 	// Properties
 	//================================================================================
-	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private String name;
 	private int id;
-	private static final String EXPENSE_CLAIM_FILENAME = "user";
-	private Context context;
 	
 	
 	//================================================================================
