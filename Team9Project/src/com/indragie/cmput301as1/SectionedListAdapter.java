@@ -38,16 +38,39 @@ public class SectionedListAdapter<T> extends BaseAdapter {
 	//================================================================================
 	// Constants
 	//================================================================================
-	private static final int NOT_A_ROW_INDEX = -1;
+	/**
+	 * Used as a placeholder index for list items that are section headers and
+	 * not actual content.
+	 */
+	private static final int NOT_AN_ITEM_INDEX = -1;
 	
 	//================================================================================
 	// Properties
 	//================================================================================
 	
+	/**
+	 * The current context.
+	 */
 	private Context context;
+	
+	/**
+	 * Sections to display in the adapter.
+	 */
 	private List<ListSection<?>> sections;
+	
+	/**
+	 * Flattened representation of sections.
+	 */
 	private ArrayList<ItemMetadata> flattenedItems;
+	
+	/**
+	 * Configurator for section header views.
+	 */
 	private SectionHeaderConfigurator headerConfigurator;
+	
+	/**
+	 * Maps list positions to sectioned indices.
+	 */
 	private SparseArray<SectionedListIndex> indexMapping = new SparseArray<SectionedListIndex>();
 	
 	//================================================================================
@@ -123,7 +146,11 @@ public class SectionedListAdapter<T> extends BaseAdapter {
 	
 	@Override
 	public int getViewTypeCount() {
-		return numberOfViewTypesInSections(sections);
+		HashSet<Integer> types = new HashSet<Integer>();
+		for (ListSection<?> section : sections) {
+			types.add(section.getViewConfigurator().getViewTypeCode());
+		}
+		return types.size();
 	}
 	
 	@Override
@@ -143,20 +170,24 @@ public class SectionedListAdapter<T> extends BaseAdapter {
 	
 	@Override
 	public boolean isEnabled(int position) {
-		return indexMapping.get(position).getItemIndex() != NOT_A_ROW_INDEX;
+		return indexMapping.get(position).getItemIndex() != NOT_AN_ITEM_INDEX;
 	}
 	
 	//================================================================================
 	// Private
 	//================================================================================
 	
+	/**
+	 * Creates a flattened representation of the section contents and
+	 * updates the position -> {@link SectionedListIndex} mapping.
+	 */
 	private void flattenSections() {
 		ArrayList<ItemMetadata> items = new ArrayList<ItemMetadata>();
 		int flattenedIndex = 0, sectionIndex = 0, rowIndex = 0;
 		for (ListSection<?> section : sections) {
 			if (section.getTitle() != null) {
 				items.add(new ItemMetadata(headerConfigurator, section.getTitle()));
-				indexMapping.put(flattenedIndex, new SectionedListIndex(sectionIndex, NOT_A_ROW_INDEX));
+				indexMapping.put(flattenedIndex, new SectionedListIndex(sectionIndex, NOT_AN_ITEM_INDEX));
 				flattenedIndex++;
 			}
 			for (Object item : section.getItems()) {
@@ -171,34 +202,80 @@ public class SectionedListAdapter<T> extends BaseAdapter {
 		this.flattenedItems = items;
 	}
 	
-	private static int numberOfViewTypesInSections(List<ListSection<?>> sections) {
-		HashSet<Integer> types = new HashSet<Integer>();
-		for (ListSection<?> section : sections) {
-			types.add(section.getViewConfigurator().getViewTypeCode());
-		}
-		return types.size();
-	}
-	
+	/**
+	 * Holds metadata about each item in the list.
+	 */
 	private static class ItemMetadata {
+		//================================================================================
+		// Properties
+		//================================================================================
+		/**
+		 * Object used to create and configure views.
+		 */
 		ViewConfigurator viewConfigurator;
+		/**
+		 * Model object.
+		 */
 		Object object;
 		
+		//================================================================================
+		// Constructors
+		//================================================================================
+		
+		/**
+		 * Creates a new instance of {@link ViewConfigurator}
+		 * @param viewConfigurator Object used to create and configure views.
+		 * @param object Model object.
+		 */
 		ItemMetadata(ViewConfigurator viewConfigurator, Object object) {
 			this.viewConfigurator = viewConfigurator;
 			this.object = object;
 		}
 	}
 	
+	/**
+	 * Creates and configures section header views.
+	 */
 	private static class SectionHeaderConfigurator implements ViewConfigurator {
+		//================================================================================
+		// Constants
+		//================================================================================
+		/**
+		 * Type code for section headers. Row views should not use this code.
+		 */
 		private static final int HEADER_VIEW_TYPE_CODE = -1;
 		
+		//================================================================================
+		// Properties
+		//================================================================================
+		
+		/**
+		 * Resource ID of the header view layout.
+		 */
 		private int resource;
+		
+		/**
+		 * ID of the text view used to display the section title.
+		 */
 		private int textViewResourceId;
 		
+		//================================================================================
+		// Constructors
+		//================================================================================
+		
+		/**
+		 * Creates a new instance of {@link SectionHeaderConfigurator{
+		 * @param resource Resource ID of the header view layout.
+		 * @param textViewResourceId ID of the text view used to display the section title.
+		 */
 		SectionHeaderConfigurator(int resource, int textViewResourceId) {
 			this.resource = resource;
 			this.textViewResourceId = textViewResourceId;
 		}
+		
+		//================================================================================
+		// ViewConfigurator
+		//================================================================================
 		
 		@Override
 		public int getViewTypeCode() {
