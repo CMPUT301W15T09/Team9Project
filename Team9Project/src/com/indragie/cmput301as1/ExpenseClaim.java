@@ -94,6 +94,10 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 	 * User who created this claim.
 	 */
 	private User user;
+	
+	private String comments;
+	
+	private User approver;
 
 	//================================================================================
 	// Constructors
@@ -318,5 +322,21 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+
+	public User getApprover() {
+		return approver;
+	}
+
+	public void setApprover(User approver) {
+		this.approver = approver;
 	}
 }

@@ -61,6 +61,9 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 	private DateEditText startDateField;
 	private DateEditText endDateField;
 	private TextView amountsTextView;
+	private EditText comments;
+	private TextView userField;
+	private TextView approverField;
 	private ExpenseItemArrayAdapter adapter;
 	private int longPressedItemIndex;
 	private User user;
@@ -82,7 +85,8 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 
 		setupListHeaderView();
 		setupListFooterView();
-		setEditable(claim.isEditable());
+		
+		setEditable(checkEditable(user, claim.getStatus()));
 
 		adapter = new ExpenseItemArrayAdapter(this, claim.getItems());
 		setListAdapter(adapter);
@@ -155,6 +159,22 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 				startDateField.setMaxDate(date);
 			}
 		});
+		
+		userField = (TextView)headerView.findViewById(R.id.tv_user);
+		userField.append(claim.getUser().getName());
+		
+		approverField = (TextView)headerView.findViewById(R.id.tv_approver);
+		try{
+			approverField.append(claim.getApprover().getName());
+		}
+		catch(NullPointerException e){
+			
+		}
+		
+		
+		comments = (EditText)headerView.findViewById(R.id.editText1);
+		comments.setText(claim.getComments());
+		
 
 		getListView().addHeaderView(headerView);
 	}
@@ -170,12 +190,24 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 
 	private void setEditable(Boolean editable) {
 		this.editable = editable;
-
 		nameField.setEnabled(editable);
 		descriptionField.setEnabled(editable);
 		startDateField.setEnabled(editable);
 		endDateField.setEnabled(editable);
+		comments.setEnabled(!editable);
 		invalidateOptionsMenu();
+		
+		
+	}
+	
+	private boolean checkEditable(User user, Status status){
+		boolean test = user.getName().contentEquals(claim.getUser().getName());//SHOULD BE ID USING NAME FOR TESTING
+		if(status == Status.SUBMITTED){
+			test = false;
+		}
+		//Toast.makeText(getApplicationContext(), " "+ test,
+			//	   Toast.LENGTH_LONG).show();
+		return (test); 
 	}
 
 	@Override
@@ -230,6 +262,11 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);
 		menu.findItem(R.id.action_add_item).setEnabled(editable);
+		menu.findItem(R.id.action_mark_submitted).setEnabled(editable);
+		menu.findItem(R.id.action_mark_approved).setEnabled(!editable);
+		menu.findItem(R.id.action_mark_returned).setEnabled(!editable);
+		
+		
 		return true;
 	}
 
@@ -251,10 +288,12 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 			return true;
 		case R.id.action_mark_returned:
 			claim.setStatus(Status.RETURNED);
+			claim.setApprover(user);
 			setEditable(true);
 			return true;
 		case R.id.action_mark_approved:
 			claim.setStatus(Status.APPROVED);
+			claim.setApprover(user);
 			commitChangesAndFinish();
 			return true;
 		default:
@@ -284,7 +323,8 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		claim.setDescription(descriptionField.getText().toString());
 		claim.setStartDate(startDateField.getDate());
 		claim.setEndDate(endDateField.getDate());
-
+		claim.setComments(comments.getText().toString());
+		
 		Intent intent = new Intent();
 		intent.putExtra(EXTRA_EXPENSE_CLAIM, claim);
 		intent.putExtra(EXTRA_EXPENSE_CLAIM_POSITION, claimPosition);
