@@ -86,4 +86,15 @@
         android:layout_height="wrap_content"
         android:text="@string/approver" />
 
+    <EditText
+        android:id="@+id/editText1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/comments"
+        android:inputType="textMultiLine" >
+
+        <requestFocus />
+    </EditText>
+
 </LinearLayout>

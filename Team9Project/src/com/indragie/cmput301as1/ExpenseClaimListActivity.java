@@ -65,7 +65,6 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		
 		String name = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("name", null);
 		int id = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getInt("id", -1);
-		//Toast.makeText(getApplicationContext(), "Welcome "+ name, Toast.LENGTH_LONG).show();
 		user = new User(name,id);
 		
 		listModel = new ExpenseClaimListModel(EXPENSE_CLAIM_FILENAME, this);
@@ -165,7 +164,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	
 	public void checkFirstRun() {
 	    boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("isFirstRun", true);
-	    if (isFirstRun){ //isFrirstRun 
+	    if (true){ //isFrirstRun 
 	        
 	        
 	        //http://www.androidsnippets.com/prompt-user-input-with-an-alertdialog

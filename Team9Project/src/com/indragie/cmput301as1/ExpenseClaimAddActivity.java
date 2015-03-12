@@ -22,6 +22,7 @@ import java.util.Date;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
+import android.widget.TextView;
 
 /**
  * Activity that presents a user interface for entering information to 
@@ -42,6 +43,8 @@ public class ExpenseClaimAddActivity extends AddActivity {
 	private EditText descriptionField;
 	private DateEditText startDateField;
 	private DateEditText endDateField;
+	private TextView userfield;
+	private EditText commentField;
 	private User user;
 
 	//================================================================================
@@ -74,6 +77,13 @@ public class ExpenseClaimAddActivity extends AddActivity {
 				startDateField.setMaxDate(date);
 			}
 		});
+		
+		userfield = (TextView)findViewById(R.id.tv_user);
+		userfield.setText(userfield.getText()+" "+user.getName());
+		
+		commentField = (EditText)findViewById(R.id.editText1);
+		commentField.setEnabled(false);
+				
 	}
 
 	//================================================================================
