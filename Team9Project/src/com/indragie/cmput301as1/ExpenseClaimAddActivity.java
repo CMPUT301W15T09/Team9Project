@@ -17,10 +17,13 @@
 
 package com.indragie.cmput301as1;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.widget.EditText;
 
 /**
@@ -88,12 +91,20 @@ public class ExpenseClaimAddActivity extends AddActivity {
 	}
 
 	private Intent constructResultIntent() {
+		
+		// modified http://www.mkyong.com/java/java-how-to-get-current-date-time-date-and-calender/ 2015, March 12, 14:47
+		//SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		Calendar cal = Calendar.getInstance();
+		
 		ExpenseClaim claim = new ExpenseClaim(
 			nameField.getText().toString(), 
 			descriptionField.getText().toString(), 
 			startDateField.getDate(), 
 			endDateField.getDate(),
-			ExpenseClaim.Status.IN_PROGRESS
+			ExpenseClaim.Status.IN_PROGRESS,
+			
+			// modified
+			cal.getTime()
 		);
 
 		Intent intent = new Intent();

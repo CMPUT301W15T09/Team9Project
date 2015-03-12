@@ -1,6 +1,14 @@
 package com.indragie.cmput301as1;
 
-public class ExpenseClaimSortType {
+import java.io.Serializable;
+
+public class ExpenseClaimSortType implements Serializable {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6723217384990256305L;
+	
 	
 	private static String sort_time;
 	private static String sort_type;

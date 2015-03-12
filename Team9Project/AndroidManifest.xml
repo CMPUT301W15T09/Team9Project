@@ -41,6 +41,9 @@
         <activity
             android:name=".ExpenseItemEditActivity" >
         </activity>
+        <activity 
+            android:name=".ExpenseClaimSortActivity" >
+    	</activity>
     </application>
 
 </manifest>
