@@ -194,7 +194,12 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		descriptionField.setEnabled(editable);
 		startDateField.setEnabled(editable);
 		endDateField.setEnabled(editable);
+		if(user.getName().contentEquals(claim.getUser().getName())){
 		comments.setEnabled(!editable);
+		}
+		else{
+			comments.setEnabled(editable);
+		}
 		invalidateOptionsMenu();
 		
 		
@@ -202,7 +207,7 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 	
 	private boolean checkEditable(User user, Status status){
 		boolean test = user.getName().contentEquals(claim.getUser().getName());//SHOULD BE ID USING NAME FOR TESTING
-		if(status == Status.SUBMITTED){
+		if(status == Status.SUBMITTED && test){
 			test = false;
 		}
 		//Toast.makeText(getApplicationContext(), " "+ test,
