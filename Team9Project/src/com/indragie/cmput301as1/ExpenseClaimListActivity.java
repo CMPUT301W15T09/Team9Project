@@ -53,9 +53,16 @@ public class ExpenseClaimListActivity extends ListActivity {
 	// Properties
 	//================================================================================
 	
-	private ArrayList<ExpenseClaim> claims;
-	private ExpenseClaimArrayAdapter adapter;
+	private static ArrayList<ExpenseClaim> claims;
+	private static ExpenseClaimArrayAdapter adapter;
 	private int longPressedItemIndex;
+	
+	public static ExpenseClaimArrayAdapter getAdapter () {
+		return adapter;
+	}
+	public static ArrayList<ExpenseClaim> getClaims() {
+		return claims;
+	}
 
 	//================================================================================
 	// Activity Callbacks
@@ -187,7 +194,7 @@ public class ExpenseClaimListActivity extends ListActivity {
 	//================================================================================
 
 	private void commitClaimsMutation() {
-		Collections.sort(claims);
+		//Collections.sort(claims);
 		adapter.notifyDataSetChanged();
 		saveExpenseClaims(claims);
 	}

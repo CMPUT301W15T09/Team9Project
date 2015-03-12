@@ -266,6 +266,9 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 	//================================================================================
 
 	public int compareTo(ExpenseClaim claim) {
+		return 0;
+		/*
+		
 		String sort_type = ExpenseClaimSortType.getSortType();
 		String sort_time = ExpenseClaimSortType.getSortTime();
 		
@@ -295,7 +298,7 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 			}
 		}
 		return getStartDate().compareTo(claim.getStartDate());
-		
+		*/
 		
 	}
 
