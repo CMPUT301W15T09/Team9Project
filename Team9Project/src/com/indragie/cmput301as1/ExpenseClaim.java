@@ -90,20 +90,23 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 	 */
 	private Date endDate;
 	
+	/**
+	 * User who created this claim.
+	 */
 	private User user;
 
 	//================================================================================
 	// Constructors
 	//================================================================================
 
-	public ExpenseClaim(String name, String description, Date startDate, Date endDate, Status status) {
+	public ExpenseClaim(String name, String description, Date startDate, Date endDate, User user, Status status) {
 		this.name = name;
 		this.description = description;
 		this.items = new ArrayList<ExpenseItem>();
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.status = status;
-		this.user = null;
+		this.user= user;
 	}
 
 	//================================================================================
@@ -307,5 +310,13 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 
 	public int compareTo(ExpenseClaim claim) {
 		return getStartDate().compareTo(claim.getStartDate());
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 }
