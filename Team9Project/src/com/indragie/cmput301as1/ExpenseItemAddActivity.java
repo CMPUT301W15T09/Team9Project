@@ -21,6 +21,9 @@ import java.io.File;
 
 import org.joda.money.*;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -31,6 +34,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 /**
  * Activity that presents a user interface for entering information to 
@@ -43,9 +47,12 @@ public class ExpenseItemAddActivity extends AddActivity {
 	//================================================================================
 	// Constants
 	//================================================================================
+	
 	public static final String EXTRA_EXPENSE_ITEM = "com.indragie.cmput301as1.EXPENSE_ITEM";
-	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
-	public static final int REQUEST_IMAGE_CAPTURE = 100;
+	protected static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+	protected static final int REQUEST_IMAGE_CAPTURE = 200;
+	protected final CharSequence[] dialogOptions = { "Take Photo", "Open in Gallery", 
+			"Delete Photo", "Cancel"};
 
 	//================================================================================
 	// Properties
@@ -67,7 +74,7 @@ public class ExpenseItemAddActivity extends AddActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_expense_item_add);
-
+		
 		nameField = (EditText)findViewById(R.id.et_name);
 		descriptionField = (EditText)findViewById(R.id.et_description);
 		amountField = (EditText)findViewById(R.id.et_amount);
@@ -84,7 +91,7 @@ public class ExpenseItemAddActivity extends AddActivity {
 			
 			@Override
 			public void onClick(View v) {
-				takePhoto();				
+				startDialog();				
 			}
 		});
 		
@@ -114,7 +121,7 @@ public class ExpenseItemAddActivity extends AddActivity {
 			amount,
 			dateField.getDate()
 		);
-		if (!receiptFileUri.equals(null)) {
+		if (receiptFileUri != null) {
 			item.setReceiptUri(receiptFileUri);
 		}
 
@@ -140,7 +147,7 @@ public class ExpenseItemAddActivity extends AddActivity {
 	}
 	
 	//================================================================================
-	// Receipt Handling
+	// Receipt-Image Capture and Handling
 	//================================================================================
 	
 	protected void takePhoto() {
@@ -168,12 +175,61 @@ public class ExpenseItemAddActivity extends AddActivity {
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		
-		if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+		if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
 			receiptButton = (ImageButton) findViewById(R.id.btn_receipt);
 			Drawable receiptPic = Drawable.createFromPath(receiptFileUri.getPath());
 			receiptButton.setImageDrawable(receiptPic);
+			Toast.makeText(getApplicationContext(), "Receipt saved", Toast.LENGTH_SHORT).show();
 		}
-		
+		else {
+			Toast.makeText(getApplicationContext(), "Save unsuccessful", Toast.LENGTH_SHORT).show();
+		}
+	}
+	
+	//================================================================================
+	// Camera + Gallery Dialogue
+	//================================================================================
+	
+	
+	/** method startDialog borrowed from 
+	 *  http://www.theappguruz.com/blog/android-take-photo-camera-gallery-code-sample/
+	 *  last accessed: 03/12/2015 3:02pm
+	 */
+	protected void startDialog() {
+		AlertDialog.Builder openDialog = new AlertDialog.Builder(this);
+		openDialog.setTitle("Select an action");
+		openDialog.setItems(dialogOptions, new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int item) {
+				
+				if (dialogOptions[item].equals("Take Photo")) {
+					takePhoto();
+				}
+				
+				else if (dialogOptions[item].equals("Open in Gallery")) {
+					if (receiptFileUri.equals(null)) {
+						dialog.dismiss();
+						Toast.makeText(getApplicationContext(), "No saved photo", Toast.LENGTH_SHORT).show();
+					}
+					else {
+						Intent intent = new Intent(Intent.ACTION_VIEW, receiptFileUri);
+						startActivity(intent);
+						
+					}
+				}
+				
+				else if (dialogOptions[item].equals("Delete Photo")) {
+					receiptFileUri = null;
+					receiptButton.clearAnimation();
+				}
+				
+				else if (dialogOptions[item].equals("Cancel")) {
+					dialog.dismiss();
+				}
+			}
+		});
+		openDialog.show();
 	}
 }
 
