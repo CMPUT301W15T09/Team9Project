@@ -74,4 +74,16 @@
             android:textStyle="bold" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/tv_user"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/user" />
+
+    <TextView
+        android:id="@+id/tv_approver"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/approver" />
+
 </LinearLayout>
