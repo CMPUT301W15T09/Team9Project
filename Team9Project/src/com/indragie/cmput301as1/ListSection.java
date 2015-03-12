@@ -20,7 +20,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
 
 /**
  * Model object containing sectioned data displayed by a {@link ListView}, via
@@ -35,37 +37,28 @@ public class ListSection<T> {
 	 * An object that creates and configures views for display in a {@link ListView}
 	 * using model objects contained within the section.
 	 */
-	public interface ViewConfigurator<T> {
+	public interface ViewConfigurator {
 		/**
 		 * Type code for the view used to display items from the section. Sections
 		 * that use the same view should return the same type code.
 		 * @return View type code.
 		 */
-		public int getItemViewTypeCode();
+		public int getViewTypeCode();
 		/**
+		 * Creates a new view.
+		 * @param context The current context.
+		 * @param parent The parent view that the created view will be attached to.
 		 * @return A new view for displaying an item from the section, e.g. by
 		 * inflating from XML.
 		 */
-		public View createView();
+		public View createView(Context context, ViewGroup parent);
 		/**
 		 * Configures a view for display using a model.
+		 * @param context The current context.
 		 * @param view The view to configure.
-		 * @param obj The model object to get data from.
+		 * @param object The model object to get data from.
 		 */
-		public void configureView(View view, T obj);
-	}
-	
-	/**
-	 * Interface definition for a callback that is invoked when an item
-	 * from this section is clicked in a {@link ListView};
-	 */
-	public interface OnItemClickListener<T> {
-		/**
-		 * Called when an item is clicked in a {@link ListView}
-		 * @param parent The parent section containing the item.
-		 * @param item The item that was clicked.
-		 */
-		public void onItemClick(ListSection<T> parent, T item);
+		public void configureView(Context context, View view, Object object);
 	}
 	
 	//================================================================================
@@ -74,8 +67,7 @@ public class ListSection<T> {
 	
 	private String title;
 	private List<T> items;
-	private ViewConfigurator<T> viewConfigurator;
-	private OnItemClickListener<T> onItemClickListener;
+	private ViewConfigurator viewConfigurator;
 	
 	//================================================================================
 	// Constructors
@@ -89,7 +81,7 @@ public class ListSection<T> {
 	 * @param viewConfigurator Configurator used to create and configure views used
 	 * to display items from the section in a {@link ListView}
 	 */
-	public ListSection(String title, List<T> items, ViewConfigurator<T> viewConfigurator) {
+	public ListSection(String title, List<T> items, ViewConfigurator viewConfigurator) {
 		if (viewConfigurator == null) {
 			throw new IllegalArgumentException("viewConfigurator must be non null");
 		}
@@ -136,22 +128,7 @@ public class ListSection<T> {
 	 * @return Configurator used to create and configure views used
 	 * to display items from the section in a {@link ListView}
 	 */
-	public ViewConfigurator<T> getViewConfigurator() {
+	public ViewConfigurator getViewConfigurator() {
 		return viewConfigurator;
-	}
-	
-	/**
-	 * @return Listener that is called when an item in the section is clicked.
-	 */
-	public OnItemClickListener<T> getOnItemClickListener() {
-		return onItemClickListener;
-	}
-	
-	/**
-	 * Sets the listener that is called when an item in the section is clicked.
-	 * @param onItemClickListener The listener.
-	 */
-	public void setOnItemClickListener(OnItemClickListener<T> onItemClickListener) {
-		this.onItemClickListener = onItemClickListener;
 	}
 }

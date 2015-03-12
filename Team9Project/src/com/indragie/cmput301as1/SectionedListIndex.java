@@ -27,7 +27,6 @@ public class SectionedListIndex {
 	
 	private int sectionIndex;
 	private int itemIndex;
-	private int listViewIndex;
 	
 	//================================================================================
 	// Constructors
@@ -37,12 +36,10 @@ public class SectionedListIndex {
 	 * Creates a new instance of {@link SectionedListIndex}
 	 * @param sectionIndex The index of the section.
 	 * @param itemIndex The index of the item relative to the section.
-	 * @param listViewIndex The index of the item in the list view (i.e. the "position")
 	 */
-	public SectionedListIndex(int sectionIndex, int itemIndex, int listViewIndex)  {
+	public SectionedListIndex(int sectionIndex, int itemIndex)  {
 		this.sectionIndex = sectionIndex;
 		this.itemIndex = itemIndex;
-		this.listViewIndex = listViewIndex;
 	}
 	
 	//================================================================================
@@ -59,14 +56,7 @@ public class SectionedListIndex {
 	/**
 	 * @return The index of the item relative to the section.
 	 */
-	public int itemIndex() {
+	public int getItemIndex() {
 		return itemIndex;
-	}
-	
-	/**
-	 * @return The index of the item in the list view (i.e. the "position")
-	 */
-	public int listViewIndex() { 
-		return listViewIndex;
 	}
 }
