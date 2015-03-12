@@ -90,23 +90,39 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 	 * Ending date of the claim.
 	 */
 	private Date endDate;
+	
+
+	// added private variable creation date
+	private Date creationDate;
 
 	//================================================================================
 	// Constructors
 	//================================================================================
 
-	public ExpenseClaim(String name, String description, Date startDate, Date endDate, Status status) {
+	public ExpenseClaim(String name, String description, Date startDate, Date endDate, Status status, Date creationDate) {
 		this.name = name;
 		this.description = description;
 		this.items = new ArrayList<ExpenseItem>();
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.status = status;
+		
+		// modified for creation date
+		this.creationDate = creationDate;
 	}
 
 	//================================================================================
 	// Accessors
 	//================================================================================
+	
+	// modified for creation date
+	public Date getCreationDate() {
+		return creationDate;
+	}
+	
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
+	}
 
 	public String getName() {
 		return name;
@@ -272,7 +288,7 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 		} else if (type2.equals(sort_type)) {
 			if (time1.equals(sort_time)) {
 				// Ascending order
-				return getStartDate().compareTo(claim.getStartDate());
+				return getCreationDate().compareTo(claim.getCreationDate());
 			} else {
 				// Descending order
 				return getStartDate().compareTo(claim.getStartDate());
