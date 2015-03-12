@@ -52,6 +52,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	
 	private ExpenseClaimListModel listModel;
 	private int longPressedItemIndex;
+	private User user;
 
 	//================================================================================
 	// Activity Callbacks
@@ -61,6 +62,12 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		checkFirstRun();
+		
+		String name = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("name", null);
+		int id = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getInt("id", -1);
+		//Toast.makeText(getApplicationContext(), "Welcome "+ name, Toast.LENGTH_LONG).show();
+		user = new User(name,id);
+		
 		listModel = new ExpenseClaimListModel(EXPENSE_CLAIM_FILENAME, this);
 		listModel.addObserver(this);
 		setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getExpenseClaims()));
@@ -151,12 +158,14 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	
 	private void startAddExpenseClaimActivity() {
 		Intent addIntent = new Intent(this, ExpenseClaimAddActivity.class);
+		addIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_USER, user);
 		startActivityForResult(addIntent, ADD_EXPENSE_CLAIM_REQUEST);
 	}
 	
+	
 	public void checkFirstRun() {
 	    boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("isFirstRun", true);
-	    if (true){
+	    if (isFirstRun){ //isFrirstRun 
 	        
 	        
 	        //http://www.androidsnippets.com/prompt-user-input-with-an-alertdialog
@@ -172,12 +181,26 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 	        public void onClick(DialogInterface dialog, int whichButton) {
 	          String value = input.getText().toString();
-	          Toast.makeText(getApplicationContext(), "Welcome "+value, Toast.LENGTH_LONG).show();
+	          
+	          
+	          getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+	           .edit()
+	          .putString("name", value)
+	          .apply();
+	          
+	          getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+	           .edit()
+	           //setup as default ID will change later
+	          .putInt("id", 1)
+	          .apply();
 	          
 	          getSharedPreferences("PREFERENCE", MODE_PRIVATE)
 	          .edit()
 	          .putBoolean("isFirstRun", false)
 	          .apply();
+	          
+	          
+	          
 	          }
 	        });
 
@@ -207,6 +230,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		Intent editIntent = new Intent(this, ExpenseClaimDetailActivity.class);
 		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM, listModel.getExpenseClaims().get(position));
 		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_POSITION, position);
+		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_USER, user);
 		startActivityForResult(editIntent, EDIT_EXPENSE_CLAIM_REQUEST);
 	}
 

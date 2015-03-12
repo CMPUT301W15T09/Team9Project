@@ -32,6 +32,7 @@ public class ExpenseClaimAddActivity extends AddActivity {
 	// Constants
 	//================================================================================
 	public static final String EXTRA_EXPENSE_CLAIM = "com.indragie.cmput301as1.EXPENSE_CLAIM";
+	public static final String EXTRA_EXPENSE_CLAIM_USER = "com.indragie.cmput301as1.EXTRA_EXPENSE_CLAIM_USER";
 
 	//================================================================================
 	// Properties
@@ -41,6 +42,7 @@ public class ExpenseClaimAddActivity extends AddActivity {
 	private EditText descriptionField;
 	private DateEditText startDateField;
 	private DateEditText endDateField;
+	private User user;
 
 	//================================================================================
 	// Activity Callbacks
@@ -50,6 +52,9 @@ public class ExpenseClaimAddActivity extends AddActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_claim_header);
+		
+		Intent intent = getIntent();
+		user = (User)intent.getSerializableExtra(EXTRA_EXPENSE_CLAIM_USER);
 
 		nameField = (EditText)findViewById(R.id.et_name);
 		descriptionField = (EditText)findViewById(R.id.et_description);
@@ -93,6 +98,7 @@ public class ExpenseClaimAddActivity extends AddActivity {
 			descriptionField.getText().toString(), 
 			startDateField.getDate(), 
 			endDateField.getDate(),
+			user,
 			ExpenseClaim.Status.IN_PROGRESS
 		);
 

@@ -31,6 +31,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.indragie.cmput301as1.ExpenseClaim.Status;
 
@@ -44,6 +45,7 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 	//================================================================================
 	public static final String EXTRA_EXPENSE_CLAIM = "com.indragie.cmput301as1.EXTRA_CLAIM";
 	public static final String EXTRA_EXPENSE_CLAIM_POSITION = "com.indragie.cmput301as1.EXTRA_EXPENSE_CLAIM_POSITION";
+	public static final String EXTRA_EXPENSE_CLAIM_USER = "com.indragie.cmput301as1.EXTRA_EXPENSE_CLAIM_USER";
 	private static final int ADD_EXPENSE_ITEM_REQUEST = 1;
 	private static final int EDIT_EXPENSE_ITEM_REQUEST = 2;
 
@@ -61,6 +63,7 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 	private TextView amountsTextView;
 	private ExpenseItemArrayAdapter adapter;
 	private int longPressedItemIndex;
+	private User user;
 
 	//================================================================================
 	// Activity Callbacks
@@ -74,6 +77,7 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		Intent intent = getIntent();
 		claim = (ExpenseClaim)intent.getSerializableExtra(EXTRA_EXPENSE_CLAIM);
 		claimPosition = intent.getIntExtra(EXTRA_EXPENSE_CLAIM_POSITION, -1);
+		user = (User)intent.getSerializableExtra(EXTRA_EXPENSE_CLAIM_USER);
 		setTitle(claim.getName());
 
 		setupListHeaderView();
