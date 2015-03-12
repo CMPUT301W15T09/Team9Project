@@ -54,11 +54,36 @@ public class SectionedListAdapter<T> extends BaseAdapter {
 	// Constructors
 	//================================================================================
 	
+	/**
+	 * Creates a new instance of {@link SectionedListAdapter}
+	 * @param context The current context.
+	 * @param sections The sections to display in the adapter. The adapter does not
+	 * perform a deep copy of the sections. Thus, it is legal to modify the {@link ListSection}
+	 * objects that are passed to this adapter after initialization. After sections have
+	 * been modified, {@link #noteSectionsChanged()} must be called to update internal
+	 * state and notify observers to reload the data set.
+	 * @param headerResource Resource ID of the layout for the section headers.
+	 * @param headerTextViewResourceId ID of the text view in the section header layout used
+	 * to display the section title.
+	 */
 	public SectionedListAdapter(Context context, List<ListSection<?>> sections, int headerResource, int headerTextViewResourceId) {
 		this.context = context;
 		this.sections = sections;
-		this.flattenedItems = flattenSections(sections);
 		this.headerConfigurator = new SectionHeaderConfigurator(headerResource, headerTextViewResourceId);
+		flattenSections();
+	}
+	
+	//================================================================================
+	// API
+	//================================================================================
+	
+	/**
+	 * Called when the sections are mutated. This updates the adapter's internal
+	 * state and also notifies all observers that the data set has changed.
+	 */
+	public void noteSectionsChanged() {
+		flattenSections();
+		notifyDataSetChanged();
 	}
 	
 	//================================================================================
@@ -125,12 +150,12 @@ public class SectionedListAdapter<T> extends BaseAdapter {
 	// Private
 	//================================================================================
 	
-	private ArrayList<ItemMetadata> flattenSections(List<ListSection<?>> sections) {
-		ArrayList<ItemMetadata> flattenedItems = new ArrayList<ItemMetadata>();
+	private void flattenSections() {
+		ArrayList<ItemMetadata> items = new ArrayList<ItemMetadata>();
 		int flattenedIndex = 0, sectionIndex = 0, rowIndex = 0;
 		for (ListSection<?> section : sections) {
 			if (section.getTitle() != null) {
-				flattenedItems.add(new ItemMetadata(headerConfigurator, section.getTitle()));
+				items.add(new ItemMetadata(headerConfigurator, section.getTitle()));
 				indexMapping.put(flattenedIndex, new SectionedListIndex(sectionIndex, NOT_A_ROW_INDEX));
 				flattenedIndex++;
 			}
@@ -143,7 +168,7 @@ public class SectionedListAdapter<T> extends BaseAdapter {
 			sectionIndex++;
 			rowIndex = 0;
 		}
-		return flattenedItems;
+		this.flattenedItems = items;
 	}
 	
 	private static int numberOfViewTypesInSections(List<ListSection<?>> sections) {
