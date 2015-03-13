@@ -29,7 +29,6 @@ import org.joda.money.*;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.widget.Toast;
 
 /**
  * Model object representing an expense claim.
@@ -267,39 +266,6 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 
 	public int compareTo(ExpenseClaim claim) {
 		return 0;
-		/*
-		
-		String sort_type = ExpenseClaimSortType.getSortType();
-		String sort_time = ExpenseClaimSortType.getSortTime();
-		
-		String type1 = "Date of Travel";
-		String type2 = "Order of Entry";
-		
-		String time1 = "Ascending";
-		String time2 = "Descending";
-		
-		// Date of Travel
-		if (type1.equals(sort_type)) {
-			if (time1.equals(sort_time)) {
-				// Ascending order
-				return getStartDate().compareTo(claim.getStartDate());
-			} else {
-				// Descending order
-				return getStartDate().compareTo(claim.getStartDate());
-			}
-		// Order of Entry
-		} else if (type2.equals(sort_type)) {
-			if (time1.equals(sort_time)) {
-				// Ascending order
-				return getCreationDate().compareTo(claim.getCreationDate());
-			} else {
-				// Descending order
-				return getStartDate().compareTo(claim.getStartDate());
-			}
-		}
-		return getStartDate().compareTo(claim.getStartDate());
-		*/
-		
 	}
 
 
