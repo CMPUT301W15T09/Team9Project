@@ -41,6 +41,9 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 			@Override
 			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 				switch (item.getItemId()) {
+				case R.id.action_edit:
+					return false;
+					//Need to call to edit tag
 				case R.id.action_delete:
 					listModel.remove(longPressedItemIndex);
 					mode.finish();
@@ -52,6 +55,7 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 
 			@Override
 			public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+				mode.getMenuInflater().inflate(R.menu.contextual_edit, menu);
 				mode.getMenuInflater().inflate(R.menu.contextual_delete, menu);
 				return true;
 			}
