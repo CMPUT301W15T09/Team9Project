@@ -25,11 +25,11 @@ import com.indragie.cmput301as1.ListModel;
 
 import android.test.ActivityInstrumentationTestCase2;
 
-public class ExpenseClaimListModelTests extends ActivityInstrumentationTestCase2<ExpenseClaimListActivity> {
+public class ListModelTests extends ActivityInstrumentationTestCase2<ExpenseClaimListActivity> {
 	private static final String CLAIMS_FILENAME = "claims.dat";
 	private ListModel<ExpenseClaim> listModel;
 	
-	public ExpenseClaimListModelTests() {
+	public ListModelTests() {
 		super(ExpenseClaimListActivity.class);
 	}
 	
