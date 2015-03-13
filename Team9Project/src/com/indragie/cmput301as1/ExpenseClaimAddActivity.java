@@ -17,13 +17,11 @@
 
 package com.indragie.cmput301as1;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.format.DateFormat;
 import android.widget.EditText;
 
 /**

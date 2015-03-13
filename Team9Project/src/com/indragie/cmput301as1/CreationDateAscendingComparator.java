@@ -3,7 +3,7 @@ package com.indragie.cmput301as1;
 import java.util.Comparator;
 
 
-public class CreationDateComparator implements Comparator<ExpenseClaim>
+public class CreationDateAscendingComparator implements Comparator<ExpenseClaim>
 {
 
 	@Override

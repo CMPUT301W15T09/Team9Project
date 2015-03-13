@@ -1,29 +1,14 @@
 package com.indragie.cmput301as1;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import android.app.ListActivity;
-
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 public class ExpenseClaimSortActivity extends AddActivity {
 	
-	private static final String EXPENSE_CLAIM_FILENAME = "claims";
 	private ArrayList<ExpenseClaim> claims;
 	private ExpenseClaimArrayAdapter adapter;
 
@@ -53,10 +38,7 @@ public class ExpenseClaimSortActivity extends AddActivity {
 		
 		Spinner sort_time_spinner = (Spinner) findViewById(R.id.sort_time_spinner);
 		String sort_time = sort_time_spinner.getSelectedItem().toString();
-		
-		ExpenseClaimSortType sort = new ExpenseClaimSortType(sort_time, sort_type);
-		
-		
+
 		adapter = ExpenseClaimListActivity.getAdapter();
 		claims = ExpenseClaimListActivity.getClaims();
 		
@@ -64,34 +46,33 @@ public class ExpenseClaimSortActivity extends AddActivity {
 		String type2 = "Order of Entry";
 		
 		String time1 = "Ascending";
-		String time2 = "Descending";
+		// String time2 = "Descending";
 		
 		// Date of Travel
 		if (type1.equals(sort_type)) {
 			if (time1.equals(sort_time)) {
 				// Ascending order
-				Collections.sort(claims, new StartDateComparator());
+				Collections.sort(claims, new StartDateAscendingComparator());
 				commitClaimsMutation();
 			} else {
 				// Descending order
-				Collections.sort(claims, new StartDateComparator2());
+				Collections.sort(claims, new StartDateDescendingComparator());
 				commitClaimsMutation();
 			}
 		// Order of Entry
 		} else if (type2.equals(sort_type)) {
 			if (time1.equals(sort_time)) {
 				// Ascending order
-				Collections.sort(claims, new CreationDateComparator());
+				Collections.sort(claims, new CreationDateAscendingComparator());
 				commitClaimsMutation();
 			} else {
 				// Descending order
-				Collections.sort(claims, new CreationDateComparator2());
+				Collections.sort(claims, new CreationDateDescendingComparator());
 				commitClaimsMutation();
 			}
 		}
 		
 		Intent intent = new Intent();
-		intent.putExtra("SORT_CLAIM", sort);
 		return intent;
 	}
 	
