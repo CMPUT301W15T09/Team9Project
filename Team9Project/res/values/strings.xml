@@ -55,5 +55,7 @@
     <string name="title_activity_expense_claim_sort">ExpenseClaimSortActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="sort_type">Type of Sort: </string>
+	<string name="sort_order">Order of Sort: </string>    
 
 </resources>
