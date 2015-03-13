@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.widget.EditText;
 
 public class TagAddActivity extends AddActivity {
-	public static final String EXTRA_EXPENSE_CLAIM_TAG = "com.indragie.cmput301as1.EXPENSE_CLAIM_TAG";
 	private EditText textField;
 
 	
@@ -21,7 +20,7 @@ public class TagAddActivity extends AddActivity {
 		);
 
 		Intent intent = new Intent();
-		//missing
+		//intent.(tag)
 		return intent;
 	}
 	@Override
