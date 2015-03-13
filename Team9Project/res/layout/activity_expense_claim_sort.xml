@@ -10,7 +10,7 @@
 
         <Spinner
         android:id="@+id/sort_type_spinner"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
@@ -20,11 +20,32 @@
 
     <Spinner
         android:id="@+id/sort_time_spinner"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/sort_type_spinner"
         android:layout_marginTop="46dp" 
         android:entries="@array/sort_time_spinner_array"
         />
+
+    <TextView
+        android:id="@+id/sortTypeTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:text="@string/sort_type"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/orderOfSortTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sort_type_spinner"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="@string/sort_order"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
 </RelativeLayout>
