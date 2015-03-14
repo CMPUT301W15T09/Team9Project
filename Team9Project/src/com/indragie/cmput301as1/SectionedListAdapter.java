@@ -24,17 +24,15 @@ import com.indragie.cmput301as1.ListSection.ViewConfigurator;
 
 import android.content.Context;
 import android.util.SparseArray;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
 
 /**
  * A list view adapter that displays data grouped by section. Sections are defined 
  * using instances of {@link ListSection}.
  */
-public class SectionedListAdapter<T> extends BaseAdapter {
+public class SectionedListAdapter extends BaseAdapter {
 	//================================================================================
 	// Constants
 	//================================================================================
@@ -66,7 +64,7 @@ public class SectionedListAdapter<T> extends BaseAdapter {
 	/**
 	 * Configurator for section header views.
 	 */
-	private SectionHeaderConfigurator headerConfigurator;
+	private ViewConfigurator headerConfigurator;
 	
 	/**
 	 * Maps list positions to sectioned indices.
@@ -85,14 +83,12 @@ public class SectionedListAdapter<T> extends BaseAdapter {
 	 * objects that are passed to this adapter after initialization. After sections have
 	 * been modified, {@link #noteSectionsChanged()} must be called to update internal
 	 * state and notify observers to reload the data set.
-	 * @param headerResource Resource ID of the layout for the section headers.
-	 * @param headerTextViewResourceId ID of the text view in the section header layout used
-	 * to display the section title.
+	 * @param headerConfigurator View configurator used to create and configure section headers.
 	 */
-	public SectionedListAdapter(Context context, List<ListSection<?>> sections, int headerResource, int headerTextViewResourceId) {
+	public SectionedListAdapter(Context context, List<ListSection<?>> sections, ViewConfigurator headerConfigurator) {
 		this.context = context;
 		this.sections = sections;
-		this.headerConfigurator = new SectionHeaderConfigurator(headerResource, headerTextViewResourceId);
+		this.headerConfigurator = headerConfigurator;
 		flattenSections();
 	}
 	
@@ -230,67 +226,6 @@ public class SectionedListAdapter<T> extends BaseAdapter {
 		ItemMetadata(ViewConfigurator viewConfigurator, Object object) {
 			this.viewConfigurator = viewConfigurator;
 			this.object = object;
-		}
-	}
-	
-	/**
-	 * Creates and configures section header views.
-	 */
-	private static class SectionHeaderConfigurator implements ViewConfigurator {
-		//================================================================================
-		// Constants
-		//================================================================================
-		/**
-		 * Type code for section headers. Row views should not use this code.
-		 */
-		private static final int HEADER_VIEW_TYPE_CODE = -1;
-		
-		//================================================================================
-		// Properties
-		//================================================================================
-		
-		/**
-		 * Resource ID of the header view layout.
-		 */
-		private int resource;
-		
-		/**
-		 * ID of the text view used to display the section title.
-		 */
-		private int textViewResourceId;
-		
-		//================================================================================
-		// Constructors
-		//================================================================================
-		
-		/**
-		 * Creates a new instance of {@link SectionHeaderConfigurator{
-		 * @param resource Resource ID of the header view layout.
-		 * @param textViewResourceId ID of the text view used to display the section title.
-		 */
-		SectionHeaderConfigurator(int resource, int textViewResourceId) {
-			this.resource = resource;
-			this.textViewResourceId = textViewResourceId;
-		}
-		
-		//================================================================================
-		// ViewConfigurator
-		//================================================================================
-		
-		@Override
-		public int getViewTypeCode() {
-			return HEADER_VIEW_TYPE_CODE;
-		}
-		
-		@Override
-		public View createView(Context context, ViewGroup parent) {
-			return LayoutInflater.from(context).inflate(resource, parent, false);
-		}
-		
-		@Override
-		public void configureView(Context context, View view, Object object) {
-			TextView textView = (TextView)view.findViewById(textViewResourceId);
-			textView.setText((String)object);
 		}
 	}
 }
