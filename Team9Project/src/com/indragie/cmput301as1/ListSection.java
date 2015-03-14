@@ -37,7 +37,7 @@ public class ListSection<T> {
 	 * An object that creates and configures views for display in a {@link ListView}
 	 * using model objects contained within the section.
 	 */
-	public interface ViewConfigurator {
+	public interface ViewConfigurator<T> {
 		/**
 		 * Type code for the view used to display items from the section. Sections
 		 * that use the same view should return the same type code.
@@ -58,7 +58,7 @@ public class ListSection<T> {
 		 * @param view The view to configure.
 		 * @param object The model object to get data from.
 		 */
-		public void configureView(Context context, View view, Object object);
+		public void configureView(Context context, View view, T object);
 	}
 	
 	//================================================================================
@@ -67,7 +67,7 @@ public class ListSection<T> {
 	
 	private String title;
 	private List<T> items;
-	private ViewConfigurator viewConfigurator;
+	private ViewConfigurator<T> viewConfigurator;
 	
 	//================================================================================
 	// Constructors
@@ -81,7 +81,7 @@ public class ListSection<T> {
 	 * @param viewConfigurator Configurator used to create and configure views used
 	 * to display items from the section in a {@link ListView}
 	 */
-	public ListSection(String title, List<T> items, ViewConfigurator viewConfigurator) {
+	public ListSection(String title, List<T> items, ViewConfigurator<T> viewConfigurator) {
 		if (viewConfigurator == null) {
 			throw new IllegalArgumentException("viewConfigurator must be non null");
 		}
@@ -128,7 +128,7 @@ public class ListSection<T> {
 	 * @return Configurator used to create and configure views used
 	 * to display items from the section in a {@link ListView}
 	 */
-	public ViewConfigurator getViewConfigurator() {
+	public ViewConfigurator<T> getViewConfigurator() {
 		return viewConfigurator;
 	}
 }
