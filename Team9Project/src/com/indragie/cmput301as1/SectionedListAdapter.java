@@ -32,7 +32,7 @@ import android.widget.BaseAdapter;
  * A list view adapter that displays data grouped by section. Sections are defined 
  * using instances of {@link ListSection}.
  */
-public class SectionedListAdapter extends BaseAdapter {
+public class SectionedListAdapter<T> extends BaseAdapter {
 	//================================================================================
 	// Constants
 	//================================================================================
@@ -54,7 +54,7 @@ public class SectionedListAdapter extends BaseAdapter {
 	/**
 	 * Sections to display in the adapter.
 	 */
-	private List<ListSection<?>> sections;
+	private List<ListSection<T>> sections;
 	
 	/**
 	 * Flattened representation of sections.
@@ -64,7 +64,7 @@ public class SectionedListAdapter extends BaseAdapter {
 	/**
 	 * Configurator for section header views.
 	 */
-	private ViewConfigurator headerConfigurator;
+	private ViewConfigurator<String> headerConfigurator;
 	
 	/**
 	 * Maps list positions to sectioned indices.
@@ -85,7 +85,7 @@ public class SectionedListAdapter extends BaseAdapter {
 	 * state and notify observers to reload the data set.
 	 * @param headerConfigurator View configurator used to create and configure section headers.
 	 */
-	public SectionedListAdapter(Context context, List<ListSection<?>> sections, ViewConfigurator headerConfigurator) {
+	public SectionedListAdapter(Context context, List<ListSection<T>> sections, ViewConfigurator<String> headerConfigurator) {
 		this.context = context;
 		this.sections = sections;
 		this.headerConfigurator = headerConfigurator;
@@ -132,18 +132,25 @@ public class SectionedListAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ItemMetadata metadata = flattenedItems.get(position);
-		ViewConfigurator configurator = metadata.viewConfigurator;
-		if (convertView == null) {
-			convertView = configurator.createView(context, parent);
+		if (metadata.isSectionHeader) {
+			if (convertView == null) {
+				convertView = headerConfigurator.createView(context, parent);
+			}
+			headerConfigurator.configureView(context, convertView, metadata.sectionTitle);
+		} else {
+			ViewConfigurator<T> configurator = metadata.viewConfigurator;
+			if (convertView == null) {
+				convertView = configurator.createView(context, parent);
+			}
+			configurator.configureView(context, convertView, metadata.object);
 		}
-		configurator.configureView(context, convertView, metadata.object);
 		return convertView;
 	}
 	
 	@Override
 	public int getViewTypeCount() {
 		HashSet<Integer> types = new HashSet<Integer>();
-		for (ListSection<?> section : sections) {
+		for (ListSection<T> section : sections) {
 			types.add(section.getViewConfigurator().getViewTypeCode());
 		}
 		return types.size();
@@ -180,13 +187,13 @@ public class SectionedListAdapter extends BaseAdapter {
 	private void flattenSections() {
 		ArrayList<ItemMetadata> items = new ArrayList<ItemMetadata>();
 		int flattenedIndex = 0, sectionIndex = 0, rowIndex = 0;
-		for (ListSection<?> section : sections) {
+		for (ListSection<T> section : sections) {
 			if (section.getTitle() != null) {
-				items.add(new ItemMetadata(headerConfigurator, section.getTitle()));
+				items.add(new ItemMetadata(section.getTitle()));
 				indexMapping.put(flattenedIndex, new SectionedListIndex(sectionIndex, NOT_AN_ITEM_INDEX));
 				flattenedIndex++;
 			}
-			for (Object item : section.getItems()) {
+			for (T item : section.getItems()) {
 				flattenedItems.add(new ItemMetadata(section.getViewConfigurator(), item));
 				indexMapping.put(flattenedIndex, new SectionedListIndex(sectionIndex, rowIndex));
 				flattenedIndex++;
@@ -201,31 +208,48 @@ public class SectionedListAdapter extends BaseAdapter {
 	/**
 	 * Holds metadata about each item in the list.
 	 */
-	private static class ItemMetadata {
+	private class ItemMetadata {
 		//================================================================================
 		// Properties
 		//================================================================================
 		/**
 		 * Object used to create and configure views.
 		 */
-		ViewConfigurator viewConfigurator;
+		ViewConfigurator<T> viewConfigurator;
+		
 		/**
 		 * Model object.
 		 */
-		Object object;
+		T object;
+		
+		/**
+		 * Whether the item is for a section header.
+		 */
+		boolean isSectionHeader;
+		
+		/**
+		 * The title of the section, if {@link #isSectionHeader()} returns true,
+		 * otherwise null.
+		 */
+		String sectionTitle;
 		
 		//================================================================================
 		// Constructors
 		//================================================================================
 		
 		/**
-		 * Creates a new instance of {@link ViewConfigurator}
+		 * Creates a new instance of {@link ViewConfigurator} representing an item.
 		 * @param viewConfigurator Object used to create and configure views.
 		 * @param object Model object.
 		 */
-		ItemMetadata(ViewConfigurator viewConfigurator, Object object) {
+		ItemMetadata(ViewConfigurator<T> viewConfigurator, T object) {
 			this.viewConfigurator = viewConfigurator;
 			this.object = object;
+		}
+		
+		ItemMetadata(String sectionTitle) {
+			this.isSectionHeader = true;
+			this.sectionTitle = sectionTitle;
 		}
 	}
 }
