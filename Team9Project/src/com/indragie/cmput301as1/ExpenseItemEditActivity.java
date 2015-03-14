@@ -25,8 +25,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageButton;
 
 /**
  * Activity for editing the attributes of an expense item.
@@ -82,8 +80,10 @@ public class ExpenseItemEditActivity extends ExpenseItemAddActivity {
 		SpinnerUtils.setSelectedItem(categorySpinner, item.getCategory());
 		categorySpinner.setEnabled(editable);
 		
-		Drawable receiptPic = Drawable.createFromPath(receiptFileUri.getPath());
-		receiptButton.setImageDrawable(receiptPic);
+		if (receiptFileUri != null) {
+			Drawable receiptPic = Drawable.createFromPath(receiptFileUri.getPath());
+			receiptButton.setImageDrawable(receiptPic);
+		}
 	}
 	
 	@Override
