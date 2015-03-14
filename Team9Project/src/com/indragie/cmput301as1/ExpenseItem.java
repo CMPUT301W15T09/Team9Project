@@ -25,7 +25,6 @@ import org.joda.money.Money;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.net.Uri;
 
 /**
  * Model object representing a single item on an expense claim.
@@ -59,7 +58,7 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	 */
 	private Money amount;
 	
-	private Uri receiptUri;
+	private String receipt;
 
 	//================================================================================
 	// Constructors
@@ -117,12 +116,12 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 		this.amount = amount;
 	}
 	
-	public Uri getReceiptUri() {
-		return receiptUri;
+	public String getReceipt() {
+		return receipt;
 	}
 
-	public void setReceiptUri(Uri receiptUri) {
-		this.receiptUri = receiptUri;
+	public void setReceipt(String receipt) {
+		this.receipt = receipt;
 	}
 	
 	private static final String BULLET = "\u2022 ";
