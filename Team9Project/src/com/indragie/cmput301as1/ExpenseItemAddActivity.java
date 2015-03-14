@@ -86,20 +86,10 @@ public class ExpenseItemAddActivity extends AddActivity {
 		SpinnerUtils.configureSpinner(this, currencySpinner, R.array.currency_array);
 		
 		receiptButton = (ImageButton) findViewById(R.id.btn_receipt);
-		receiptButton.setOnClickListener(new View.OnClickListener() {
-			
+		receiptButton.setOnClickListener(new View.OnClickListener() {	
 			@Override
 			public void onClick(View v) {
 				startDialog();				
-			}
-		});
-		
-		receiptButton.setOnLongClickListener(new View.OnLongClickListener() {
-			
-			@Override
-			public boolean onLongClick(View v) {
-				// TODO Auto-generated method stub
-				return false;
 			}
 		});
 	}
@@ -212,15 +202,16 @@ public class ExpenseItemAddActivity extends AddActivity {
 						Toast.makeText(getApplicationContext(), "No saved photo", Toast.LENGTH_SHORT).show();
 					}
 					else {
-						Intent intent = new Intent(Intent.ACTION_VIEW, receiptFileUri);
-						intent.setType("image/*");
+						Intent intent = new Intent();
+						intent.setAction(Intent.ACTION_VIEW);
+						intent.setDataAndType(receiptFileUri, "image/*");
 						startActivity(intent);
 					}
 				}
 				
 				else if (dialogOptions[item].equals("Delete Photo")) {
 					receiptFileUri = null;
-					receiptButton.clearAnimation();
+					receiptButton = (ImageButton) findViewById(R.id.btn_receipt);
 				}
 				
 				else if (dialogOptions[item].equals("Cancel")) {
