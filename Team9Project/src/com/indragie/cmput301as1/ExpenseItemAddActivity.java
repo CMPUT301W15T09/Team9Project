@@ -23,7 +23,6 @@ import org.joda.money.*;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -122,7 +121,7 @@ public class ExpenseItemAddActivity extends AddActivity {
 			dateField.getDate()
 		);
 		if (receiptFileUri != null) {
-			item.setReceiptUri(receiptFileUri);
+			item.setReceipt(receiptFileUri.toString());
 		}
 
 		Intent intent = new Intent();
@@ -214,8 +213,8 @@ public class ExpenseItemAddActivity extends AddActivity {
 					}
 					else {
 						Intent intent = new Intent(Intent.ACTION_VIEW, receiptFileUri);
+						intent.setType("image/*");
 						startActivity(intent);
-						
 					}
 				}
 				

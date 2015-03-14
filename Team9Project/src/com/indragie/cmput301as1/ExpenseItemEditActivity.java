@@ -21,13 +21,18 @@ import org.joda.money.Money;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 
 /**
  * Activity for editing the attributes of an expense item.
  */
 public class ExpenseItemEditActivity extends ExpenseItemAddActivity {
+	
 	//================================================================================
 	// Constants
 	//================================================================================
@@ -49,8 +54,11 @@ public class ExpenseItemEditActivity extends ExpenseItemAddActivity {
 		ExpenseItem item = (ExpenseItem)getIntent().getSerializableExtra(EXTRA_EXPENSE_ITEM);
 		Boolean editable = intent.getBooleanExtra(EXTRA_EXPENSE_ITEM_EDITABLE, false);
 		
+		receiptFileUri = Uri.parse(item.getReceipt());
+		
 		setTitle(item.getName());
 		setupFields(item, editable);
+		
 	}
 
 	private void setupFields(ExpenseItem item, Boolean editable) {
@@ -73,6 +81,9 @@ public class ExpenseItemEditActivity extends ExpenseItemAddActivity {
 		
 		SpinnerUtils.setSelectedItem(categorySpinner, item.getCategory());
 		categorySpinner.setEnabled(editable);
+		
+		Drawable receiptPic = Drawable.createFromPath(receiptFileUri.getPath());
+		receiptButton.setImageDrawable(receiptPic);
 	}
 	
 	@Override
