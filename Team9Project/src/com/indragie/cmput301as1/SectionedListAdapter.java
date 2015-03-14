@@ -106,6 +106,24 @@ public class SectionedListAdapter<T> extends BaseAdapter {
 	}
 	
 	//================================================================================
+	// API
+	//================================================================================
+	
+	/**
+	 * Strongly typed version of {@link #getItem(int)}
+	 * @param position The position of the item in the list.
+	 * @return The item, or null if the position is for a section header.
+	 */
+	public T getTypedItem(int position) {
+		ItemMetadata metadata = flattenedItems.get(position);
+		if (metadata.isSectionHeader) {
+			return null;
+		} else {
+			return metadata.object;
+		}
+	}
+	
+	//================================================================================
 	// BaseAdapter
 	//================================================================================
 	
@@ -116,7 +134,7 @@ public class SectionedListAdapter<T> extends BaseAdapter {
 	
 	@Override
 	public Object getItem(int position) {
-		return flattenedItems.get(position);
+		return getTypedItem(position);
 	}
 	
 	@Override
@@ -126,7 +144,12 @@ public class SectionedListAdapter<T> extends BaseAdapter {
 	
 	@Override
 	public int getItemViewType(int position) {
-		return flattenedItems.get(position).viewConfigurator.getViewTypeCode();
+		ItemMetadata metadata = flattenedItems.get(position);
+		if (metadata.isSectionHeader) {
+			return headerConfigurator.getViewTypeCode();
+		} else {
+			return metadata.viewConfigurator.getViewTypeCode();
+		}
 	}
 	
 	@Override
@@ -194,7 +217,7 @@ public class SectionedListAdapter<T> extends BaseAdapter {
 				flattenedIndex++;
 			}
 			for (T item : section.getItems()) {
-				flattenedItems.add(new ItemMetadata(section.getViewConfigurator(), item));
+				items.add(new ItemMetadata(section.getViewConfigurator(), item));
 				indexMapping.put(flattenedIndex, new SectionedListIndex(sectionIndex, rowIndex));
 				flattenedIndex++;
 				rowIndex++;

@@ -125,6 +125,22 @@ public class ListSection<T> {
 	}
 	
 	/**
+	 * Gets the item at the specified index.
+	 * @param index The index of the item to get.
+	 * @return The item.
+	 */
+	public T get(int index) {
+		return items.get(index);
+	}
+	
+	/**
+	 * @return The number of items in the section.
+	 */
+	public int size() {
+		return items.size();
+	}
+	
+	/**
 	 * @return Configurator used to create and configure views used
 	 * to display items from the section in a {@link ListView}
 	 */
