@@ -92,12 +92,12 @@ public class ExpenseClaimAddActivity extends Activity {
 	
 	private Intent constructResultIntent() {
 		ExpenseClaim claim = new ExpenseClaim(
-				nameField.getText().toString(), 
-				descriptionField.getText().toString(), 
-				startDateField.getDate(), 
-				endDateField.getDate(),
-				ExpenseClaim.Status.IN_PROGRESS
-				);
+			nameField.getText().toString(), 
+			descriptionField.getText().toString(), 
+			startDateField.getDate(), 
+			endDateField.getDate(),
+			ExpenseClaim.Status.IN_PROGRESS
+		);
 
 		Intent intent = new Intent();
 		intent.putExtra(EXTRA_EXPENSE_CLAIM, claim);
