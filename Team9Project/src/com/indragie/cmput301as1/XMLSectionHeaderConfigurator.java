@@ -29,7 +29,7 @@ import com.indragie.cmput301as1.ListSection.ViewConfigurator;
  * Creates and configures section header views for use with
  * @{link SectionedListAdapter }
  */
-class XMLSectionHeaderConfigurator implements ViewConfigurator {
+public class XMLSectionHeaderConfigurator implements ViewConfigurator<String> {
 	//================================================================================
 	// Constants
 	//================================================================================
@@ -61,7 +61,7 @@ class XMLSectionHeaderConfigurator implements ViewConfigurator {
 	 * @param resource Resource ID of the header view layout.
 	 * @param textViewResourceId ID of the text view used to display the section title.
 	 */
-	XMLSectionHeaderConfigurator(int resource, int textViewResourceId) {
+	public XMLSectionHeaderConfigurator(int resource, int textViewResourceId) {
 		this.resource = resource;
 		this.textViewResourceId = textViewResourceId;
 	}
@@ -81,8 +81,8 @@ class XMLSectionHeaderConfigurator implements ViewConfigurator {
 	}
 	
 	@Override
-	public void configureView(Context context, View view, Object object) {
+	public void configureView(Context context, View view, String object) {
 		TextView textView = (TextView)view.findViewById(textViewResourceId);
-		textView.setText((String)object);
+		textView.setText(object);
 	}
 }
