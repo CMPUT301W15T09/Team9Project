@@ -55,9 +55,7 @@ public class TagAddActivity extends Activity{
 	
 	
 	protected Intent addTagIntent()  {
-		Tag tag= new Tag(
-			textField.getText().toString()
-		);
+		Tag tag= new Tag(textField.getText().toString());
 
 		Intent intent = new Intent();
 		intent.putExtra(ADDED_TAG, tag);
