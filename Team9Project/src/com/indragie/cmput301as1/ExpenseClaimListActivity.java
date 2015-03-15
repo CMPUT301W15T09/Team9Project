@@ -160,7 +160,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	
 	public void checkFirstRun() {
 	    boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("isFirstRun", true);
-	    if (true){ 
+	    if (isFirstRun){ 
 	        
 	        //http://www.androidsnippets.com/prompt-user-input-with-an-alertdialog
 	        AlertDialog.Builder alert = new AlertDialog.Builder(this);
