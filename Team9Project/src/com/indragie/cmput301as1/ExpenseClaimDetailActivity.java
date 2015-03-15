@@ -323,7 +323,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements Observer
 
 		Intent intent = new Intent();
 		intent.putExtra(EXTRA_EXPENSE_CLAIM, claim);
-		intent.putExtra(EXTRA_EXPENSE_CLAIM_INDEX, intent.getIntExtra(EXTRA_EXPENSE_CLAIM_INDEX, -1));
+		intent.putExtra(EXTRA_EXPENSE_CLAIM_INDEX, getIntent().getIntExtra(EXTRA_EXPENSE_CLAIM_INDEX, -1));
 		setResult(RESULT_OK, intent);
 		finish();
 	}
