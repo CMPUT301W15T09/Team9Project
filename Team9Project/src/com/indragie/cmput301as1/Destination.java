@@ -29,6 +29,11 @@ public class Destination {
 	 */
 	private String name;
 	
+	/**
+	 * The reason of travel to the destination.
+	 */
+	private String travelReason;
+	
 	//================================================================================
 	// Constructors
 	//================================================================================
@@ -36,8 +41,9 @@ public class Destination {
 	/**
 	 * Creates a new instance of {@link Destination}
 	 * @param name The name of the destination.
+	 * @param travelReason The reason of travel to the destination.
 	 */
-	public Destination(String name) {
+	public Destination(String name, String travelReason) {
 		this.name = name;
 	}
 	
@@ -45,11 +51,33 @@ public class Destination {
 	// Accessors
 	//================================================================================
 	
+	/**
+	 * @return The name of the destination.
+	 */
 	public String getName() {
 		return name;
 	}
 	
+	/**
+	 * Sets the name of the destination.
+	 * @param name The name of the destination.
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
-}
+	
+	/**
+	 * @return The reason of travel to the destination.
+	 */
+	public String getTravelReason() {
+		return travelReason;
+	}
+	
+	/**
+	 * Sets the reason of travel to the destination.
+	 * @param travelReason The reason of travel to the destination.
+	 */
+	public void setTravelReason(String travelReason) {
+		this.travelReason = travelReason;
+	}
+} 
