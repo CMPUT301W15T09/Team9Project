@@ -14,7 +14,7 @@ public class TagAddActivity extends Activity{
 	
 	public static final String ADDED_TAG = "com.indragie.cmput301as1.ADDED_TAG";
 	
-	private EditText textField;
+	protected EditText textField;
 
 	
 	@Override

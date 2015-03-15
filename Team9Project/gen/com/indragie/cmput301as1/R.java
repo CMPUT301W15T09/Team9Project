@@ -138,7 +138,8 @@ public final class R {
         public static final int status_in_progress=0x7f060006;
         public static final int status_returned=0x7f060009;
         public static final int status_submitted=0x7f060007;
-        public static final int title_activity_add_tags=0x7f060024;
+        public static final int title_activity_add_tag=0x7f060024;
+        public static final int title_activity_edit_tag=0x7f060025;
         public static final int title_activity_manage_tags=0x7f06001b;
         public static final int total_label=0x7f06001a;
     }
