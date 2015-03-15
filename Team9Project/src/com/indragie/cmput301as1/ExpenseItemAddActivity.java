@@ -19,6 +19,7 @@ package com.indragie.cmput301as1;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -167,20 +168,20 @@ public class ExpenseItemAddActivity extends AddActivity {
 		startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
 	}
 	
-	/*  Scaling bitmap borrowed from
+	/*  Elements of scalingImage borrowed from
 	 *  http://stackoverflow.com/questions/3331527/android-resize-a-large-bitmap-file-to-scaled-output-file
 	 *  last accessed: 03/15/15 3:29pm
 	 */ 
 	protected void scaleImage(Uri imageFileUri) {
 		try {
 		    final int IMAGE_MAX_SIZE = 65536; 
-		    InputStream in = new FileInputStream(imageFileUri.getPath());
+		    InputStream fin = new FileInputStream(imageFileUri.getPath());
 
 		    // Decode image size
 		    BitmapFactory.Options options = new BitmapFactory.Options();
 		    options.inJustDecodeBounds = true;
-		    BitmapFactory.decodeStream(in, null, options);
-		    in.close();
+		    BitmapFactory.decodeStream(fin, null, options);
+		    fin.close();
 
 		    int scale = 1;
 		    while ((options.outWidth * options.outHeight) * (1 / Math.pow(scale, 2)) > 
@@ -188,15 +189,15 @@ public class ExpenseItemAddActivity extends AddActivity {
 		       scale++;
 		    }
 		    
-		    Bitmap bmp = null;
-		    in = new FileInputStream(imageFileUri.getPath());
 		    if (scale > 1) {
+		    	Bitmap bmp = null;
+		    	fin = new FileInputStream(imageFileUri.getPath());
 		    	// scale to max possible inSampleSize that still yields an image
 		        // larger than target
 		        scale--;
 		        options = new BitmapFactory.Options();
 		        options.inSampleSize = scale;
-		        bmp = BitmapFactory.decodeStream(in, null, options);
+		        bmp = BitmapFactory.decodeStream(fin, null, options);
 
 		        // resize to desired dimensions
 		        int height = bmp.getHeight();
@@ -210,15 +211,20 @@ public class ExpenseItemAddActivity extends AddActivity {
 		           (int) y, true);
 		        bmp.recycle();
 		        bmp = scaledBitmap;
-
+		        
 		        /* System.gc(); 
 		         * TODO: I heard this is bad practice so I left it out
 		         * TODO: convert bitmap back to JPEG
 		         * I'm inexperienced with java so how else should i free up memory?
 		         */
+		        
+		        fin.close();	
+		        
+		        FileOutputStream fos = new FileOutputStream(imageFileUri.getPath());
+		        bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+		        fos.flush();
+		        fos.close();
 		    }
-		    in.close();
-		    
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -227,6 +233,7 @@ public class ExpenseItemAddActivity extends AddActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		
 		if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+			scaleImage(receiptFileUri);
 			receiptButton = (ImageButton) findViewById(R.id.btn_receipt);
 			Drawable receiptPic = Drawable.createFromPath(receiptFileUri.getPath());
 			receiptButton.setImageDrawable(receiptPic);
