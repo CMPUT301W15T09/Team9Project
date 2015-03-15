@@ -81,7 +81,7 @@ public class ExpenseClaimAddActivity extends AddActivity {
 		userfield = (TextView)findViewById(R.id.tv_user);
 		userfield.setText(userfield.getText()+" "+user.getName());
 		
-		commentField = (EditText)findViewById(R.id.editText1);
+		commentField = (EditText)findViewById(R.id.et_comments);
 		commentField.setEnabled(false);
 				
 	}

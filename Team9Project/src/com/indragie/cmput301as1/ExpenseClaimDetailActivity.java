@@ -31,7 +31,6 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.indragie.cmput301as1.ExpenseClaim.Status;
 
@@ -174,7 +173,7 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		}
 		
 		
-		comments = (EditText)headerView.findViewById(R.id.editText1);
+		comments = (EditText)headerView.findViewById(R.id.et_comments);
 		comments.setText(claim.getComments());
 		
 
@@ -289,12 +288,8 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);
 		boolean UserCheck = user.getName().contentEquals(claim.getUser().getName());//SHOULD BE ID USING NAME FOR TESTING
-		Toast.makeText(getApplicationContext(), " "+ UserCheck,
-				   Toast.LENGTH_SHORT).show();
 		
 		if (status ==Status.APPROVED){
-			Toast.makeText(getApplicationContext(), "1 "+ status,
-					   Toast.LENGTH_SHORT).show();
 			menu.findItem(R.id.action_add_item).setEnabled(false);
 			menu.findItem(R.id.action_mark_submitted).setEnabled(false);
 			menu.findItem(R.id.action_mark_approved).setEnabled(false);
@@ -302,16 +297,12 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		}
 		if(status == Status.RETURNED){
 			if(UserCheck){
-				Toast.makeText(getApplicationContext(), "2a "+ status,
-						   Toast.LENGTH_SHORT).show();
 				menu.findItem(R.id.action_add_item).setEnabled(true);
 				menu.findItem(R.id.action_mark_submitted).setEnabled(true);
 				menu.findItem(R.id.action_mark_approved).setEnabled(false);
 				menu.findItem(R.id.action_mark_returned).setEnabled(false);
 			}
 			else{
-				Toast.makeText(getApplicationContext(), "2b "+ status,
-						   Toast.LENGTH_SHORT).show();
 				menu.findItem(R.id.action_add_item).setEnabled(false);
 				menu.findItem(R.id.action_mark_submitted).setEnabled(false);
 				menu.findItem(R.id.action_mark_approved).setEnabled(false);
@@ -320,16 +311,12 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		}
 		if(status==Status.SUBMITTED){
 			if(UserCheck){
-				Toast.makeText(getApplicationContext(), "3a "+ status,
-						   Toast.LENGTH_SHORT).show();
 				menu.findItem(R.id.action_add_item).setEnabled(false);
 				menu.findItem(R.id.action_mark_submitted).setEnabled(false);
 				menu.findItem(R.id.action_mark_approved).setEnabled(false);
 				menu.findItem(R.id.action_mark_returned).setEnabled(false);
 			}
 			else{
-				Toast.makeText(getApplicationContext(), "3b "+ status,
-						   Toast.LENGTH_SHORT).show();
 				menu.findItem(R.id.action_add_item).setEnabled(false);
 				menu.findItem(R.id.action_mark_submitted).setEnabled(false);
 				menu.findItem(R.id.action_mark_approved).setEnabled(true);
@@ -338,16 +325,12 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		}
 		if(status== Status.IN_PROGRESS){
 			if(UserCheck){
-				Toast.makeText(getApplicationContext(), "4a "+ status,
-						   Toast.LENGTH_SHORT).show();
 				menu.findItem(R.id.action_add_item).setEnabled(true);
 				menu.findItem(R.id.action_mark_submitted).setEnabled(true);
 				menu.findItem(R.id.action_mark_approved).setEnabled(false);
 				menu.findItem(R.id.action_mark_returned).setEnabled(false);
 			}
 			else{
-				Toast.makeText(getApplicationContext(), "4b "+ status,
-						   Toast.LENGTH_SHORT).show();
 				menu.findItem(R.id.action_add_item).setEnabled(false);
 				menu.findItem(R.id.action_mark_submitted).setEnabled(false);
 				menu.findItem(R.id.action_mark_approved).setEnabled(false);
