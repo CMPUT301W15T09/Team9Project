@@ -210,6 +210,14 @@ public class ExpenseClaimDetailController implements Observer {
 	}
 	
 	/**
+	 * Removes the item at the specified position.
+	 * @param position The position of the item to remove.
+	 */
+	public void remove(int position) {
+		adapter.remove(position);
+	}
+	
+	/**
 	 * @param position The position of the item in the {@link ListView}
 	 * @return The {@link DetailItem.ItemType} corresponding to the position.
 	 */
