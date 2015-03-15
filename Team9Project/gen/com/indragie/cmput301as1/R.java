@@ -38,14 +38,14 @@ public final class R {
     }
     public static final class id {
         public static final int action_add_claim=0x7f090019;
-        public static final int action_add_item=0x7f090017;
+        public static final int action_add_item=0x7f090018;
         public static final int action_cancel=0x7f09000b;
         public static final int action_delete=0x7f090013;
         public static final int action_done=0x7f09000c;
         public static final int action_email=0x7f090014;
         public static final int action_mark_approved=0x7f090016;
         public static final int action_mark_returned=0x7f090015;
-        public static final int action_mark_submitted=0x7f090018;
+        public static final int action_mark_submitted=0x7f090017;
         public static final int editText1=0x7f09000a;
         public static final int et_amount=0x7f09000f;
         public static final int et_date=0x7f090010;

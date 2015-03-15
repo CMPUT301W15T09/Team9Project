@@ -67,6 +67,7 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 	private ExpenseItemArrayAdapter adapter;
 	private int longPressedItemIndex;
 	private User user;
+	private Status status;
 
 	//================================================================================
 	// Activity Callbacks
@@ -81,12 +82,13 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		claim = (ExpenseClaim)intent.getSerializableExtra(EXTRA_EXPENSE_CLAIM);
 		claimPosition = intent.getIntExtra(EXTRA_EXPENSE_CLAIM_POSITION, -1);
 		user = (User)intent.getSerializableExtra(EXTRA_EXPENSE_CLAIM_USER);
+		status = claim.getStatus();
 		setTitle(claim.getName());
 
 		setupListHeaderView();
 		setupListFooterView();
 		
-		setEditable(checkEditable(user, claim.getStatus()));
+		setEditable();
 
 		adapter = new ExpenseItemArrayAdapter(this, claim.getItems());
 		setListAdapter(adapter);
@@ -187,32 +189,52 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 
 		getListView().addFooterView(footerView);
 	}
-
-	private void setEditable(Boolean editable) {
-		this.editable = editable;
-		nameField.setEnabled(editable);
-		descriptionField.setEnabled(editable);
-		startDateField.setEnabled(editable);
-		endDateField.setEnabled(editable);
-		if(user.getName().contentEquals(claim.getUser().getName())){
-		comments.setEnabled(!editable);
-		}
-		else{
-			comments.setEnabled(editable);
-		}
-		invalidateOptionsMenu();
-		
-		
-	}
 	
-	private boolean checkEditable(User user, Status status){
-		boolean test = user.getName().contentEquals(claim.getUser().getName());//SHOULD BE ID USING NAME FOR TESTING
-		if(status == Status.SUBMITTED && test){
-			test = false;
+	private void setEditable(){
+		boolean UserCheck = user.getName().contentEquals(claim.getUser().getName());//SHOULD BE ID USING NAME FOR TESTING
+		
+		
+		if(status == Status.SUBMITTED ){
+			if(UserCheck){
+				nameField.setEnabled(!UserCheck);
+				descriptionField.setEnabled(!UserCheck);
+				startDateField.setEnabled(!UserCheck);
+				endDateField.setEnabled(!UserCheck);
+				comments.setEnabled(!UserCheck);
+			}
+			else{
+				nameField.setEnabled(false);
+				descriptionField.setEnabled(false);
+				startDateField.setEnabled(false);
+				endDateField.setEnabled(false);
+				comments.setEnabled(true);
+			}
+			this.editable = false;
 		}
-		//Toast.makeText(getApplicationContext(), " "+ test,
-			//	   Toast.LENGTH_LONG).show();
-		return (test); 
+		else if(status == Status.APPROVED){
+			nameField.setEnabled(false);
+			descriptionField.setEnabled(false);
+			startDateField.setEnabled(false);
+			endDateField.setEnabled(false);
+			comments.setEnabled(false);	
+			this.editable = false;
+		}
+		else {
+			nameField.setEnabled(UserCheck);
+			descriptionField.setEnabled(UserCheck);
+			startDateField.setEnabled(UserCheck);
+			endDateField.setEnabled(UserCheck);
+			comments.setEnabled(false);
+			if(UserCheck){
+				this.editable = true;
+			}
+			else{
+				this.editable = false;
+			}
+		}
+		
+		invalidateOptionsMenu();
+
 	}
 
 	@Override
@@ -266,12 +288,72 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);
-		menu.findItem(R.id.action_add_item).setEnabled(editable);
-		menu.findItem(R.id.action_mark_submitted).setEnabled(editable);
-		menu.findItem(R.id.action_mark_approved).setEnabled(!editable);
-		menu.findItem(R.id.action_mark_returned).setEnabled(!editable);
+		boolean UserCheck = user.getName().contentEquals(claim.getUser().getName());//SHOULD BE ID USING NAME FOR TESTING
+		Toast.makeText(getApplicationContext(), " "+ UserCheck,
+				   Toast.LENGTH_SHORT).show();
 		
-		
+		if (status ==Status.APPROVED){
+			Toast.makeText(getApplicationContext(), "1 "+ status,
+					   Toast.LENGTH_SHORT).show();
+			menu.findItem(R.id.action_add_item).setEnabled(false);
+			menu.findItem(R.id.action_mark_submitted).setEnabled(false);
+			menu.findItem(R.id.action_mark_approved).setEnabled(false);
+			menu.findItem(R.id.action_mark_returned).setEnabled(false);
+		}
+		if(status == Status.RETURNED){
+			if(UserCheck){
+				Toast.makeText(getApplicationContext(), "2a "+ status,
+						   Toast.LENGTH_SHORT).show();
+				menu.findItem(R.id.action_add_item).setEnabled(true);
+				menu.findItem(R.id.action_mark_submitted).setEnabled(true);
+				menu.findItem(R.id.action_mark_approved).setEnabled(false);
+				menu.findItem(R.id.action_mark_returned).setEnabled(false);
+			}
+			else{
+				Toast.makeText(getApplicationContext(), "2b "+ status,
+						   Toast.LENGTH_SHORT).show();
+				menu.findItem(R.id.action_add_item).setEnabled(false);
+				menu.findItem(R.id.action_mark_submitted).setEnabled(false);
+				menu.findItem(R.id.action_mark_approved).setEnabled(false);
+				menu.findItem(R.id.action_mark_returned).setEnabled(false);
+			}
+		}
+		if(status==Status.SUBMITTED){
+			if(UserCheck){
+				Toast.makeText(getApplicationContext(), "3a "+ status,
+						   Toast.LENGTH_SHORT).show();
+				menu.findItem(R.id.action_add_item).setEnabled(false);
+				menu.findItem(R.id.action_mark_submitted).setEnabled(false);
+				menu.findItem(R.id.action_mark_approved).setEnabled(false);
+				menu.findItem(R.id.action_mark_returned).setEnabled(false);
+			}
+			else{
+				Toast.makeText(getApplicationContext(), "3b "+ status,
+						   Toast.LENGTH_SHORT).show();
+				menu.findItem(R.id.action_add_item).setEnabled(false);
+				menu.findItem(R.id.action_mark_submitted).setEnabled(false);
+				menu.findItem(R.id.action_mark_approved).setEnabled(true);
+				menu.findItem(R.id.action_mark_returned).setEnabled(true);
+			}
+		}
+		if(status== Status.IN_PROGRESS){
+			if(UserCheck){
+				Toast.makeText(getApplicationContext(), "4a "+ status,
+						   Toast.LENGTH_SHORT).show();
+				menu.findItem(R.id.action_add_item).setEnabled(true);
+				menu.findItem(R.id.action_mark_submitted).setEnabled(true);
+				menu.findItem(R.id.action_mark_approved).setEnabled(false);
+				menu.findItem(R.id.action_mark_returned).setEnabled(false);
+			}
+			else{
+				Toast.makeText(getApplicationContext(), "4b "+ status,
+						   Toast.LENGTH_SHORT).show();
+				menu.findItem(R.id.action_add_item).setEnabled(false);
+				menu.findItem(R.id.action_mark_submitted).setEnabled(false);
+				menu.findItem(R.id.action_mark_approved).setEnabled(false);
+				menu.findItem(R.id.action_mark_returned).setEnabled(false);
+			}
+		}
 		return true;
 	}
 
@@ -294,7 +376,7 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		case R.id.action_mark_returned:
 			claim.setStatus(Status.RETURNED);
 			claim.setApprover(user);
-			setEditable(true);
+			setEditable();
 			return true;
 		case R.id.action_mark_approved:
 			claim.setStatus(Status.APPROVED);

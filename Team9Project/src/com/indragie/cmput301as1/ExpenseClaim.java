@@ -111,6 +111,7 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 		this.endDate = endDate;
 		this.status = status;
 		this.user= user;
+		this.approver = new User("", -2);
 	}
 
 	//================================================================================
