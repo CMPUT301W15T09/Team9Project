@@ -7,15 +7,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.ActionMode;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.DatePicker;
 public class ManageTagsActivity extends ListActivity implements TypedObserver<List<Tag>>{
 	
 	
-	
+	private static final int ADD_TAG_REQUEST= 1;
+	private static final int EDIT_TAG_REQUEST= 2;
 	private static final String TAG_FILENAME = "tags";
 
 	private ListModel<Tag> listModel;
@@ -32,8 +34,6 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 		
 		listModel = new ListModel<Tag>(TAG_FILENAME, this);
 		listModel.addObserver(this);
-		listModel.add(new Tag("some tag"));
-		listModel.add(new Tag("this other tag"));
 		setListAdapter(new TagArrayAdapter(this, listModel.getItems()));
 		
 		
@@ -41,15 +41,15 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 			@Override
 			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 				switch (item.getItemId()) {
-				case R.id.action_edit:
-					return false;
-					//Need to call to edit tag
-				case R.id.action_delete:
-					listModel.remove(longPressedItemIndex);
-					mode.finish();
-					return true;
-				default:
-					return false;
+					case R.id.action_edit:
+						return false;
+						//Need to call to edit tag
+					case R.id.action_delete:
+						listModel.remove(longPressedItemIndex);
+						mode.finish();
+						return true;
+					default:
+						return false;
 				}
 			}
 
@@ -77,28 +77,25 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 				return true;
 			}
 		});
+				
 		
-		
 	}
+	
+	@Override 
+	public boolean onCreateOptionsMenu(Menu menu){
+		super.onCreateOptionsMenu(menu);
 
-	protected void onCancel() {
-		setResult(RESULT_CANCELED, new Intent());
-		finish();
-	}
-
-	protected void onDone() {
-		setResult(RESULT_OK, constructResultIntent());
-		finish();
-	}
-
-	//If I don't save the tags
-	private Intent constructResultIntent() {
-		return new Intent();
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.contextual_add,menu);
+		return super.onCreateOptionsMenu(menu);
 	}
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case R.id.action_add_tag:
+			startAddTagActivity();
+			return true;
 		case android.R.id.home:
 			finish();
 			return true;
@@ -106,8 +103,6 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
-	
 	
 	private void setupListFooterView() {
 		View footerView = getLayoutInflater().inflate(R.layout.activity_tag_add, getListView(), false);
@@ -120,6 +115,41 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 	@Override
 	public void update(TypedObservable<List<Tag>> o, List<Tag> tags) {
 		setListAdapter(new TagArrayAdapter(this, tags));
+	}
+	
+	private void startAddTagActivity() {
+		Intent addTagIntent = new Intent(this, TagAddActivity.class);
+		startActivityForResult(addTagIntent, ADD_TAG_REQUEST);
+	}
+	/*
+	private void editTagActivity() {
+		Intent editTagIntent = new Intent(this, EditTagActivity.class);
+		startActivityForResult(EditTagIntent, ADD_TAG_REQUEST);
+	}
+	*/
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode != RESULT_OK) return;
+		switch (requestCode) {
+		case ADD_TAG_REQUEST:
+			onAddTag(data);
+			break;
+		case EDIT_TAG_REQUEST:
+			onEditTag(data);
+			break;
+		}
+	}
+	
+	private void onAddTag(Intent data) {
+		Tag tag = (Tag)data.getSerializableExtra(TagAddActivity.ADDED_TAG);
+		listModel.add(tag);
+		
+	}
+	
+	private void onEditTag(Intent data) {
+		Tag tag = (Tag)data.getSerializableExtra(TagAddActivity.ADDED_TAG);
+		listModel.set(longPressedItemIndex, tag);
 	}
 
 }
