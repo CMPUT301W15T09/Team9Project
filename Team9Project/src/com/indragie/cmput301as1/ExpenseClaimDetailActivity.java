@@ -212,7 +212,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements Observer
 					new LongClickDeleteListener.OnDeleteListener() {
 						@Override
 						public void onDelete(int position) {
-							model.removeItem(itemPositionForListViewPosition(position));
+							controller.remove(itemPositionForListViewPosition(position));
 						}
 					}
 				)

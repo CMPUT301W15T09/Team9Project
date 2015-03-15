@@ -127,6 +127,25 @@ public class SectionedListAdapter<T> extends BaseAdapter {
 		return indexMapping.get(position);
 	}
 	
+	/**
+	 * Removes the item or section at the specified position.
+	 * @param position The position of the item or section to remove in the list.
+	 */
+	public void remove(int position) {
+		SectionedListIndex index = getSectionedIndex(position);
+		int itemIndex = index.getItemIndex();
+		int sectionIndex = index.getSectionIndex();
+		if (itemIndex == NOT_AN_ITEM_INDEX) {
+			sections.remove(sectionIndex);
+		} else {
+			ListSection<T> section = sections.get(sectionIndex);
+			ArrayList<T> items = new ArrayList<T>(section.getItems());
+			items.remove(index.getItemIndex());
+			section.setItems(items);	
+		}
+		noteSectionsChanged();
+	}
+	
 	//================================================================================
 	// BaseAdapter
 	//================================================================================
