@@ -111,7 +111,7 @@ public class SectionedListAdapterTests extends AndroidTestCase {
 	}
 	
 	public void testGetViewTypeCount() {
-		assertEquals(2, adapter.getViewTypeCount());
+		assertEquals(3, adapter.getViewTypeCount());
 	}
 	
 	public void testGetView() {

@@ -173,6 +173,7 @@ public class SectionedListAdapter<T> extends BaseAdapter {
 	@Override
 	public int getViewTypeCount() {
 		HashSet<Integer> types = new HashSet<Integer>();
+		types.add(headerConfigurator.getViewTypeCode());
 		for (ListSection<T> section : sections) {
 			types.add(section.getViewConfigurator().getViewTypeCode());
 		}
