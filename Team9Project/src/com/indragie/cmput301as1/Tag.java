@@ -17,8 +17,11 @@
 
 package com.indragie.cmput301as1;
 
-public class Tag implements Comparable<Tag>{
+import java.io.Serializable;
+
+public class Tag implements Serializable, Comparable<Tag>{
 	
+	private static final long serialVersionUID = 4055130777493746380L;
 	private String name;
 	
 	public Tag(String name) {

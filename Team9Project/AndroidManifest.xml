@@ -44,6 +44,10 @@
             android:name=".ManageTagsActivity"
             android:label="@string/title_activity_manage_tags" >
         </activity>
+                <activity
+            android:name=".TagAddActivity"
+            android:label="@string/title_activity_add_tags" >
+        </activity>
     </application>
 
 </manifest>
