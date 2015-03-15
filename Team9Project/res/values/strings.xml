@@ -29,6 +29,7 @@
     <string name="no_expenses">No expenses</string>
 
     <!-- ExpenseClaim{Detail,Add}Activity -->
+    <string name="detail_title">Detail</string>
     <string name="name_hint">Name</string>
     <string name="travel_reason_hint">Travel Reason</string>
     <string name="start_label">Start</string>
