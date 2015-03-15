@@ -44,14 +44,21 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 	 * Name of the claim.
 	 */
 	private String name;
+	
 	/**
 	 * Textual description of the claim.
 	 */
 	private String description;
+	
+	/**
+	 * Destinations of travel included in the expense claim.
+	 */
+	private List<Destination> destinations = new ArrayList<Destination>();
+	
 	/**
 	 * Expense items contained in the claim.
 	 */
-	private List<ExpenseItem> items;
+	private List<ExpenseItem> items = new ArrayList<ExpenseItem>();
 
 	/**
 	 * Possible statuses for an expense claim.
@@ -97,7 +104,6 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 	public ExpenseClaim(String name, String description, Date startDate, Date endDate, Status status) {
 		this.name = name;
 		this.description = description;
-		this.items = new ArrayList<ExpenseItem>();
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.status = status;
@@ -122,6 +128,26 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
+	public List<Destination> getDestinations() {
+		return Collections.unmodifiableList(destinations);
+	}
+	
+	public void setDestinations(List<Destination> destinations) {
+		this.destinations = destinations;
+	}
+	
+	public void addDestination(Destination destination) {
+		destinations.add(destination);
+	}
+	
+	public void setDestination(int index, Destination destination) {
+		destinations.set(index, destination);
+	}
+	
+	public void removeDestination(int index) {
+		destinations.remove(index);
+	}
 
 	public List<ExpenseItem> getItems() {
 		return Collections.unmodifiableList(items);
@@ -136,8 +162,8 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 		Collections.sort(items);
 	}
 	
-	public void setItem(int position, ExpenseItem item) {
-		items.set(position, item);
+	public void setItem(int index, ExpenseItem item) {
+		items.set(index, item);
 		Collections.sort(items);
 	}
 

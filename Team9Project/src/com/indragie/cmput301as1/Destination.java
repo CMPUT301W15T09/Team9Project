@@ -17,10 +17,14 @@
 
 package com.indragie.cmput301as1;
 
+import java.io.Serializable;
+
 /**
  * Model object representing a travel destination.
  */
-public class Destination {
+public class Destination implements Serializable {
+	private static final long serialVersionUID = 88384989745470050L;
+
 	//================================================================================
 	// Properties
 	//================================================================================
