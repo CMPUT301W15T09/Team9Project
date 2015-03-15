@@ -214,7 +214,17 @@ public class ExpenseClaimDetailController implements Observer {
 	 * @param position The position of the item to remove.
 	 */
 	public void remove(int position) {
-		adapter.remove(position);
+		DetailItem.ItemType type = getItemType(position);
+		SectionedListIndex index = getSectionedIndex(position);
+		switch (type) {
+		case DESTINATION:
+			model.removeDestination(index.getItemIndex());
+			break;
+		case TAG:
+			// TODO
+		case EXPENSE_ITEM:
+			model.removeItem(index.getItemIndex());
+		}
 	}
 	
 	/**

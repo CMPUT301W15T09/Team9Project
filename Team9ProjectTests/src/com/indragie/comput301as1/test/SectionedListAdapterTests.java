@@ -151,18 +151,6 @@ public class SectionedListAdapterTests extends AndroidTestCase {
 		assertEquals(new SectionedListIndex(1, 1), adapter.getSectionedIndex(4));
 	}
 	
-	public void testRemove() {
-		adapter.remove(0);
-		assertEquals(3, adapter.getCount());
-		assertEquals(null, adapter.getItem(0));
-		assertEquals("Cadillac", adapter.getItem(1));
-		assertEquals("Chevrolet", adapter.getItem(2));
-		
-		adapter.remove(1);
-		assertEquals(null, adapter.getItem(0));
-		assertEquals("Chevrolet", adapter.getItem(1));
-	}
-	
 	public void testSectionMutation() {
 		MockDataSetObserver observer = new MockDataSetObserver();
 		assertFalse(observer.onChangedCalled);
