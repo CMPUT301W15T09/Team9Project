@@ -89,47 +89,6 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		XMLSectionHeaderConfigurator headerConfigurator = new XMLSectionHeaderConfigurator(R.layout.list_header, R.id.title_label);
 		adapter = new SectionedListAdapter<ExpenseItem>(this, sections, headerConfigurator);
 		setListAdapter(adapter);
-		
-		final ActionMode.Callback longClickCallback = new ActionMode.Callback() {
-			@Override
-			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-				switch (item.getItemId()) {
-				case R.id.action_delete:
-					claim.removeItem(longPressedItemIndex);
-					updateInterfaceForDataSetChange();
-					mode.finish();
-					return true;
-				default:
-					return false;
-				}
-			}
-
-			@Override
-			public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-				mode.getMenuInflater().inflate(R.menu.contextual_delete, menu);
-				return true;
-			}
-
-			@Override
-			public void onDestroyActionMode(ActionMode mode) {}
-
-			@Override
-			public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-				return false;
-			}
-		};
-		getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-				if (editable) {
-					longPressedItemIndex = itemPositionForListViewPosition(position);
-					startActionMode(longClickCallback);
-					return true;
-				} else {
-					return false;
-				}
-			}
-		});
 	}
 
 	private void setupListHeaderView() {
@@ -179,6 +138,22 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		startDateField.setEnabled(editable);
 		endDateField.setEnabled(editable);
 		invalidateOptionsMenu();
+		
+		if (editable) {
+			getListView().setOnItemLongClickListener(
+				new LongClickDeleteListener(this, 
+					new LongClickDeleteListener.OnDeleteListener() {
+						@Override
+						public void onDelete(int position) {
+							claim.removeItem(itemPositionForListViewPosition(position));
+							updateInterfaceForDataSetChange();
+						}
+					}
+				)
+			);
+		} else {
+			getListView().setOnItemLongClickListener(null);
+		}
 	}
 
 	@Override
