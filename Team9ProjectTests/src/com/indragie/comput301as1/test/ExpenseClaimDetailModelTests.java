@@ -69,6 +69,13 @@ public class ExpenseClaimDetailModelTests extends TestCase {
 		assertEquals(destination, model.getDestinations().get(0));
 	}
 	
+	public void testRemoveDestination() {
+		assertEquals(2, model.getDestinations().size());
+		model.removeDestination(0);
+		assertEquals(1, model.getDestinations().size());
+		assertEquals(destination2, model.getDestinations().get(0));
+	}
+	
 	public void testGetItems() {
 		assertEquals(item1, model.getItems().get(0));
 		assertEquals(item2, model.getItems().get(1));
@@ -84,5 +91,12 @@ public class ExpenseClaimDetailModelTests extends TestCase {
 		ExpenseItem item = new ExpenseItem("Dinner", "", "meal", Money.parse("USD 10.00"), new Date());
 		model.setItem(0, item);
 		assertEquals(item, model.getItems().get(0));
+	}
+	
+	public void testRemoveItem() {
+		assertEquals(2, model.getItems().size());
+		model.removeItem(0);
+		assertEquals(1, model.getItems().size());
+		assertEquals(item2, model.getItems().get(0));
 	}
 }

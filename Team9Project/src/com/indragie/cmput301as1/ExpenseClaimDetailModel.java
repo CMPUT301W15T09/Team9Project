@@ -68,12 +68,22 @@ public class ExpenseClaimDetailModel extends Observable {
 	}
 	
 	/**
-	 * Replaces an existing destination on an expense claim.
+	 * Replaces an existing destination on the expense claim.
 	 * @param index The index of the destination to replace.
 	 * @param destination The destination to replace it with.
 	 */
 	public void setDestination(int index, Destination destination) {
 		claim.setDestination(index, destination);
+		setChanged();
+		notifyObservers();
+	}
+	
+	/**
+	 * Removes a destination from the expense claim.
+	 * @param index The index of the destination to remove.
+	 */
+	public void removeDestination(int index) {
+		claim.removeDestination(index);
 		setChanged();
 		notifyObservers();
 	}
@@ -96,12 +106,22 @@ public class ExpenseClaimDetailModel extends Observable {
 	}
 	
 	/**
-	 * Replaces an existing item on an expense claim.
+	 * Replaces an existing item on the expense claim.
 	 * @param index The index of the item to replace.
 	 * @param item The item to replace it with.
 	 */
 	public void setItem(int index, ExpenseItem item) {
 		claim.setItem(index, item);
+		setChanged();
+		notifyObservers();
+	}
+	
+	/**
+	 * Removes an item from the expense claim.
+	 * @param index The index of the item to remove.
+	 */
+	public void removeItem(int index) {
+		claim.removeItem(index);
 		setChanged();
 		notifyObservers();
 	}
