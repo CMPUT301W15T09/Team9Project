@@ -40,7 +40,7 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 	//================================================================================
 
 	/**
-	 * Name of the claim.
+	 * Name of the user who created the claim. TODO: Make this work with the new User stuff.
 	 */
 	private String name;
 	

@@ -24,6 +24,7 @@
         </activity>
         <activity
             android:name=".ExpenseClaimDetailActivity"
+            android:label="@string/detail_title"
             android:parentActivityName=".ExpenseClaimListActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

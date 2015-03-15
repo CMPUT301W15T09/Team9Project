@@ -132,9 +132,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements Observer
 		super.onCreate(savedInstanceState);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 
-		Intent intent = getIntent();
-		claim = (ExpenseClaim)intent.getSerializableExtra(EXTRA_EXPENSE_CLAIM);
-		setTitle(claim.getName());
+		claim = (ExpenseClaim)getIntent().getSerializableExtra(EXTRA_EXPENSE_CLAIM);
 		
 		model = new ExpenseClaimDetailModel(claim);
 		model.addObserver(this);
