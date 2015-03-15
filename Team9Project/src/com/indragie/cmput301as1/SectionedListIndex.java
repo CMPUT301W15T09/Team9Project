@@ -59,4 +59,33 @@ public class SectionedListIndex {
 	public int getItemIndex() {
 		return itemIndex;
 	}
+
+	//================================================================================
+	// Object
+	//================================================================================
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + itemIndex;
+		result = prime * result + sectionIndex;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SectionedListIndex other = (SectionedListIndex) obj;
+		if (itemIndex != other.itemIndex)
+			return false;
+		if (sectionIndex != other.sectionIndex)
+			return false;
+		return true;
+	}
 }
