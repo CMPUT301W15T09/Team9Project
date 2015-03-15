@@ -10,9 +10,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
-import android.widget.Button;
 public class ManageTagsActivity extends ListActivity implements TypedObserver<List<Tag>>{
 	
 	
@@ -24,7 +22,6 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 	
 
 	private ListModel<Tag> listModel;
-	private Button addButton;
 	private int longPressedItemIndex;
 	
 
@@ -32,8 +29,6 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		
-		setupListFooterView(); //need to set up footer view first before setting up list 
 		
 		listModel = new ListModel<Tag>(TAG_FILENAME, this);
 		listModel.addObserver(this);
@@ -106,14 +101,6 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 		default:
 			return super.onOptionsItemSelected(item);
 		}
-	}
-	
-	private void setupListFooterView() {
-		View footerView = getLayoutInflater().inflate(R.layout.activity_tag_add, getListView(), false);
-
-		addButton = (Button)findViewById(R.id.button_add_tag);
-		
-		getListView().addFooterView(footerView);
 	}
 	
 	@Override

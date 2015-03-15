@@ -1,7 +1,5 @@
 package com.indragie.cmput301as1;
 
-import org.joda.money.Money;
-
 import android.os.Bundle;
 import android.widget.EditText;
 
@@ -17,10 +15,12 @@ public class TagEditActivity extends TagAddActivity {
 
 		Tag tag = (Tag)getIntent().getSerializableExtra(ManageTagsActivity.EXTRA_TAG);
 		
+		setupField(tag);
+		
 	}
 	
 	private void setupField(Tag tag) {
-		textField.setText(tag.toString());
+		textField.setText(tag.getName());
 	}
 
 }
