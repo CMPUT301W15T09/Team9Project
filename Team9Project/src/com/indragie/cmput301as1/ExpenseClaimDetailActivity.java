@@ -19,6 +19,8 @@ package com.indragie.cmput301as1;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Observable;
+import java.util.Observer;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -37,7 +39,7 @@ import com.indragie.cmput301as1.ExpenseClaim.Status;
  * Activity for viewing details of and editing an expense claim, including marking 
  * it as submitted/returned/approved and adding/deleting/editing expense items.
  */
-public class ExpenseClaimDetailActivity extends ListActivity {
+public class ExpenseClaimDetailActivity extends ListActivity implements Observer {
 	//================================================================================
 	// Constants
 	//================================================================================
@@ -103,6 +105,11 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 	private TextView amountsTextView;
 	
 	/**
+	 * Observable model for expense claim details.
+	 */
+	private ExpenseClaimDetailModel model;
+	
+	/**
 	 * Adapter that adapts expense items, destinations, and tags
 	 * to the list view.
 	 */
@@ -125,6 +132,9 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		Intent intent = getIntent();
 		claim = (ExpenseClaim)intent.getSerializableExtra(EXTRA_EXPENSE_CLAIM);
 		setTitle(claim.getName());
+		
+		model = new ExpenseClaimDetailModel(claim);
+		model.addObserver(this);
 
 		setupListHeaderView();
 		setupListFooterView();
@@ -205,8 +215,7 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 					new LongClickDeleteListener.OnDeleteListener() {
 						@Override
 						public void onDelete(int position) {
-							claim.removeItem(itemPositionForListViewPosition(position));
-							updateInterfaceForDataSetChange();
+							model.removeItem(itemPositionForListViewPosition(position));
 						}
 					}
 				)
@@ -233,23 +242,13 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 
 	private void onAddExpenseItem(Intent data) {
 		ExpenseItem item = (ExpenseItem)data.getSerializableExtra(ExpenseItemAddActivity.EXTRA_EXPENSE_ITEM);
-		claim.addItem(item);
-		
-		updateInterfaceForDataSetChange();
+		model.addItem(item);
 	}
 
 	private void onEditExpenseItem(Intent data) {
 		ExpenseItem item = (ExpenseItem)data.getSerializableExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM);
 		int position = data.getIntExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_POSITION, -1);
-		claim.setItem(position, item);
-		
-		updateInterfaceForDataSetChange();
-	}
-
-	private void updateInterfaceForDataSetChange() {
-		expenseItemsSection.setItems(claim.getItems());
-		amountsTextView.setText(claim.getSummarizedAmounts());
-		adapter.noteSectionsChanged();
+		model.setItem(position, item);
 	}
 	
 	@Override
@@ -375,6 +374,17 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 	private int itemPositionForListViewPosition(int position) {
 		// Subtract 1 for the header
 		return position - 1;
+	}
+
+	//================================================================================
+	// Observable
+	//================================================================================
+	
+	@Override
+	public void update(Observable observable, Object object) {
+		expenseItemsSection.setItems(claim.getItems());
+		amountsTextView.setText(claim.getSummarizedAmounts());
+		adapter.noteSectionsChanged();
 	}
 }
 
