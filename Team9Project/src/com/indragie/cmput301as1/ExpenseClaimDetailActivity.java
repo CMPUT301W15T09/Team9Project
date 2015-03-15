@@ -17,6 +17,7 @@
 
 package com.indragie.cmput301as1;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import android.app.ListActivity;
@@ -59,7 +60,9 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 	private DateEditText startDateField;
 	private DateEditText endDateField;
 	private TextView amountsTextView;
-	private ExpenseItemArrayAdapter adapter;
+	
+	private SectionedListAdapter<ExpenseItem> adapter;
+	private ListSection<ExpenseItem> expenseItemsSection;
 	private int longPressedItemIndex;
 
 	//================================================================================
@@ -80,7 +83,11 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		setupListFooterView();
 		setEditable(claim.isEditable());
 
-		adapter = new ExpenseItemArrayAdapter(this, claim.getItems());
+		expenseItemsSection = new ListSection<ExpenseItem>("Expense Items", claim.getItems(), new ExpenseItemViewConfigurator());
+		ArrayList<ListSection<ExpenseItem>> sections = new ArrayList<ListSection<ExpenseItem>>();
+		sections.add(expenseItemsSection);
+		XMLSectionHeaderConfigurator headerConfigurator = new XMLSectionHeaderConfigurator(R.layout.list_header, R.id.title_label);
+		adapter = new SectionedListAdapter<ExpenseItem>(this, sections, headerConfigurator);
 		setListAdapter(adapter);
 		
 		final ActionMode.Callback longClickCallback = new ActionMode.Callback() {
@@ -205,8 +212,9 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 	}
 
 	private void updateInterfaceForDataSetChange() {
+		expenseItemsSection.setItems(claim.getItems());
 		amountsTextView.setText(claim.getSummarizedAmounts());
-		adapter.notifyDataSetChanged();
+		adapter.noteSectionsChanged();
 	}
 	
 	@Override
@@ -294,14 +302,16 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 
 	@Override
 	public void onListItemClick(ListView listView, View view, int position, long id) {
-		// If the header or footer was clicked, the item will be null
 		if (listView.getItemAtPosition(position) == null) return;
-		startEditExpenseItemActivity(itemPositionForListViewPosition(position));
+		
+		int itemPosition = itemPositionForListViewPosition(position);
+		SectionedListIndex index = adapter.getSectionedIndex(itemPosition);
+		startEditExpenseItemActivity(index.getItemIndex());
 	}
 	
 	private void startEditExpenseItemActivity(int position) {
 		Intent editIntent = new Intent(this, ExpenseItemEditActivity.class);
-		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM, claim.getItems().get(position));
+		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM, expenseItemsSection.get(position));
 		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_POSITION, position);
 		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_EDITABLE, editable);
 		startActivityForResult(editIntent, EDIT_EXPENSE_ITEM_REQUEST);
