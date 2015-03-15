@@ -165,7 +165,7 @@ public class ExpenseClaimDetailController implements Observer {
 	}
 	
 	//================================================================================
-	// API
+	// Accessors
 	//================================================================================
 	
 	/**
@@ -190,10 +190,6 @@ public class ExpenseClaimDetailController implements Observer {
 		return builder.toString();
 	}
 	
-	//================================================================================
-	// Accessors
-	//================================================================================
-	
 	/**
 	 * @return The adapter used to display {@link DetailItem} objects in a {@link ListView}
 	 */
@@ -210,29 +206,17 @@ public class ExpenseClaimDetailController implements Observer {
 	}
 	
 	/**
-	 * Removes the item at the specified position.
-	 * @param position The position of the item to remove.
-	 */
-	public void remove(int position) {
-		DetailItem.ItemType type = getItemType(position);
-		SectionedListIndex index = getSectionedIndex(position);
-		switch (type) {
-		case DESTINATION:
-			model.removeDestination(index.getItemIndex());
-			break;
-		case TAG:
-			// TODO
-		case EXPENSE_ITEM:
-			model.removeItem(index.getItemIndex());
-		}
-	}
-	
-	/**
 	 * @param position The position of the item in the {@link ListView}
-	 * @return The {@link DetailItem.ItemType} corresponding to the position.
+	 * @return The {@link DetailItem.ItemType} corresponding to the position if
+	 * the item is valid, or null if the item is a section header.
 	 */
 	public DetailItem.ItemType getItemType(int position) {
-		return adapter.getTypedItem(position).getType();
+		DetailItem item = adapter.getTypedItem(position);
+		if (item == null) {
+			return null;
+		} else {
+			return item.getType();
+		}
 	}
 	
 	/**
@@ -250,6 +234,26 @@ public class ExpenseClaimDetailController implements Observer {
 	public ExpenseItem getExpenseItem(int index) {
 		return (ExpenseItem)expenseItemsSection.get(index).getModel();
 	}
+	
+	/**
+	 * Removes the item at the specified position.
+	 * @param position The position of the item to remove.
+	 */
+	public void remove(int position) {
+		DetailItem.ItemType type = getItemType(position);
+		SectionedListIndex index = getSectionedIndex(position);
+		
+		switch (type) {
+		case DESTINATION:
+			model.removeDestination(index.getItemIndex());
+			break;
+		case TAG:
+			// TODO
+		case EXPENSE_ITEM:
+			model.removeItem(index.getItemIndex());
+		}
+	}
+	
 	
 	//================================================================================
 	// Private
