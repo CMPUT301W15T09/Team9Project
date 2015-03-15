@@ -52,6 +52,7 @@
     <string name="TagName">Your tag</string>
     <string name="action_accept">Add</string>
     <string name="action_new_tag">Add New Tag</string>
-    <string name="title_activity_add_tags">Add a tag</string>
+    <string name="title_activity_add_tag">Add a tag</string>
+    <string name="title_activity_edit_tag">Edit Tag</string>
     
 </resources>

@@ -20,6 +20,9 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 	private static final int EDIT_TAG_REQUEST= 2;
 	private static final String TAG_FILENAME = "tags";
 
+	public static final String EXTRA_TAG = "com.indragie.cmput301as1.EXTRA_TAG";
+	
+
 	private ListModel<Tag> listModel;
 	private Button addButton;
 	private int longPressedItemIndex;
@@ -42,8 +45,9 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 				switch (item.getItemId()) {
 					case R.id.action_edit:
-						return false;
-						//Need to call to edit tag
+						startEditTagActivity();
+						mode.finish();
+						return true;
 					case R.id.action_delete:
 						listModel.remove(longPressedItemIndex);
 						mode.finish();
@@ -121,12 +125,13 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 		Intent addTagIntent = new Intent(this, TagAddActivity.class);
 		startActivityForResult(addTagIntent, ADD_TAG_REQUEST);
 	}
-	/*
-	private void editTagActivity() {
-		Intent editTagIntent = new Intent(this, EditTagActivity.class);
-		startActivityForResult(EditTagIntent, ADD_TAG_REQUEST);
+	
+	private void startEditTagActivity() {
+		Intent editTagIntent = new Intent(this, TagEditActivity.class);
+		editTagIntent.putExtra(EXTRA_TAG, listModel.getItems().get(longPressedItemIndex));
+		startActivityForResult(editTagIntent, EDIT_TAG_REQUEST);
 	}
-	*/
+	
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -137,7 +142,6 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 			break;
 		case EDIT_TAG_REQUEST:
 			onEditTag(data);
-			break;
 		}
 	}
 	
