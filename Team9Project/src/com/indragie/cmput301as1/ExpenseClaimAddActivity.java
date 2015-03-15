@@ -19,15 +19,17 @@ package com.indragie.cmput301as1;
 
 import java.util.Date;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.EditText;
 
 /**
  * Activity that presents a user interface for entering information to 
  * create a new expense claim.
  */
-public class ExpenseClaimAddActivity extends AddActivity {
+public class ExpenseClaimAddActivity extends Activity {
 	//================================================================================
 	// Constants
 	//================================================================================
@@ -50,6 +52,23 @@ public class ExpenseClaimAddActivity extends AddActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_claim_header);
+		ActionBarUtils.showCancelDoneActionBar(
+			this,
+			new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					setResult(RESULT_CANCELED, new Intent());
+					finish();
+				}
+			},
+			new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					setResult(RESULT_OK, constructResultIntent());
+					finish();
+				}
+			}
+		);
 
 		nameField = (EditText)findViewById(R.id.et_name);
 		descriptionField = (EditText)findViewById(R.id.et_description);
@@ -70,31 +89,15 @@ public class ExpenseClaimAddActivity extends AddActivity {
 			}
 		});
 	}
-
-	//================================================================================
-	// EditingActivity
-	//================================================================================
-
-	@Override
-	protected void onCancel() {
-		setResult(RESULT_CANCELED, new Intent());
-		finish();
-	}
-
-	@Override
-	protected void onDone() {
-		setResult(RESULT_OK, constructResultIntent());
-		finish();
-	}
-
+	
 	private Intent constructResultIntent() {
 		ExpenseClaim claim = new ExpenseClaim(
-			nameField.getText().toString(), 
-			descriptionField.getText().toString(), 
-			startDateField.getDate(), 
-			endDateField.getDate(),
-			ExpenseClaim.Status.IN_PROGRESS
-		);
+				nameField.getText().toString(), 
+				descriptionField.getText().toString(), 
+				startDateField.getDate(), 
+				endDateField.getDate(),
+				ExpenseClaim.Status.IN_PROGRESS
+				);
 
 		Intent intent = new Intent();
 		intent.putExtra(EXTRA_EXPENSE_CLAIM, claim);
