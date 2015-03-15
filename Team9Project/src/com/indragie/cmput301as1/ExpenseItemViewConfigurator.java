@@ -31,7 +31,7 @@ import com.indragie.cmput301as1.ListSection.ViewConfigurator;
  * View configurator for showing {@link ExpenseItem} in a {@link ListView} with
  * {@link SectionedListAdapter}
  */
-public class ExpenseItemViewConfigurator implements ViewConfigurator<ExpenseItem> {
+public class ExpenseItemViewConfigurator implements ViewConfigurator<ExpenseClaimDetailController.DetailItem> {
 	//================================================================================
 	// Constants
 	//================================================================================
@@ -53,7 +53,8 @@ public class ExpenseItemViewConfigurator implements ViewConfigurator<ExpenseItem
 	}
 	
 	@Override
-	public void configureView(Context context, View view, ExpenseItem item) {
+	public void configureView(Context context, View view, ExpenseClaimDetailController.DetailItem object) {
+		ExpenseItem item = (ExpenseItem)object.getModel();
 		TextView nameTextView = (TextView)view.findViewById(R.id.tv_name);
 		nameTextView.setText(item.getName());
 		

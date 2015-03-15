@@ -18,13 +18,9 @@
 package com.indragie.cmput301as1;
 
 import java.io.Serializable;
-import java.text.DateFormat;
 import java.util.Date;
 
 import org.joda.money.Money;
-
-import android.content.Context;
-import android.content.res.Resources;
 
 /**
  * Model object representing a single item on an expense claim.

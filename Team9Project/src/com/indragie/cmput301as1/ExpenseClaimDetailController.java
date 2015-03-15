@@ -18,6 +18,9 @@
 package com.indragie.cmput301as1;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -27,7 +30,7 @@ import android.content.res.Resources;
  * objects into representations suitable for display in the UI presented by
  * {@link ExpenseClaimDetailActivity}
  */
-public class ExpenseClaimDetailController {
+public class ExpenseClaimDetailController implements Observer {
 	//================================================================================
 	// Properties
 	//================================================================================
@@ -38,9 +41,93 @@ public class ExpenseClaimDetailController {
 	private Context context;
 	
 	/**
-	 * Expense claim model.
+	 * Observable model for expense claim details.
 	 */
-	private ExpenseClaim claim;
+	private ExpenseClaimDetailModel model;
+	
+	/**
+	 * Adapter that adapts expense items, destinations, and tags
+	 * to the list view.
+	 */
+	private SectionedListAdapter<DetailItem> adapter;
+	
+	/**
+	 * Section of the list view that displays destinations.
+	 */
+	private ListSection<DetailItem> destinationsSection;
+	
+	/**
+	 * Section of the list view that displays expense items.
+	 */
+	private ListSection<DetailItem> expenseItemsSection;
+	
+	//================================================================================
+	// Classes
+	//================================================================================
+	
+	/**
+	 * Class that can hold the different types of objects that are 
+	 * displayed inside the detail {@link ListView}
+	 */
+	public static class DetailItem {
+		//================================================================================
+		// Properties
+		//================================================================================
+		/**
+		 * Possible types for the item.
+		 */
+		public enum ItemType {
+			/**
+			 * Model object is an instance of {@link Destination}
+			 */
+			DESTINATION,
+			/**
+			 * Model object is an instance of {@link Tag}
+			 */
+			TAG,
+			/**
+			 * Model object is an instance of {@link ExpenseItem}
+			 */
+			EXPENSE_ITEM
+		}
+		
+		/**
+		 * The type of the item.
+		 */
+		private ItemType type;
+		
+		/**
+		 * Model object. If the type is 
+		 */
+		private Object model;
+		
+		//================================================================================
+		// Constructors
+		//================================================================================
+		
+		/**
+		 * Creates a new instance of {@link DetailItem}
+		 * @param type The type of the model object.
+		 * @param model The model object.
+		 */
+		DetailItem(ItemType type, Object model) {
+			this.type = type;
+			this.model = model;
+		}
+		
+		//================================================================================
+		// Accessors
+		//================================================================================
+		
+		public ItemType getType() {
+			return type;
+		}
+		
+		public Object getModel() {
+			return model;
+		}
+	}
+	
 	
 	//================================================================================
 	// Constructors
@@ -49,18 +136,44 @@ public class ExpenseClaimDetailController {
 	/**
 	 * Creates a new instance of {@link ExpenseClaimDetailController}
 	 * @param context The current context.
-	 * @param claim Expense claim model.
+	 * @param claim Observable model for expense claim details.
 	 */
-	public ExpenseClaimDetailController(Context context, ExpenseClaim claim) {
+	public ExpenseClaimDetailController(Context context, ExpenseClaimDetailModel model) {
 		this.context = context;
-		this.claim = claim;
+		this.model = model;
+		model.addObserver(this);
+		
+		Resources resources = context.getResources();
+		
+		destinationsSection = new ListSection<DetailItem>(
+			resources.getString(R.string.destinations_title),
+			getDestinationDetailItems(),
+			new DestinationViewConfigurator()
+		);
+		expenseItemsSection = new ListSection<DetailItem>(
+			resources.getString(R.string.items_title), 
+			getExpenseItemDetailItems(), 
+			new ExpenseItemViewConfigurator()
+		);
+		
+		ArrayList<ListSection<DetailItem>> sections = new ArrayList<ListSection<DetailItem>>();
+		sections.add(destinationsSection);
+		sections.add(expenseItemsSection);
+		
+		XMLSectionHeaderConfigurator headerConfigurator = new XMLSectionHeaderConfigurator(R.layout.list_header, R.id.title_label);
+		adapter = new SectionedListAdapter<DetailItem>(context, sections, headerConfigurator);
 	}
+	
+	//================================================================================
+	// API
+	//================================================================================
 	
 	/**
 	 * Creates a plain text representation of the expense claim;
 	 * @return Plain text representation of the expense claim suitable for sending in an email.
 	 */
 	public String getPlainText() {
+		ExpenseClaim claim = model.getExpenseClaim();
 		Resources resources = context.getResources();
 		StringBuilder builder = new StringBuilder(claim.getName() + "\n");
 		String description = claim.getDescription();
@@ -76,6 +189,53 @@ public class ExpenseClaimDetailController {
 		}
 		return builder.toString();
 	}
+	
+	//================================================================================
+	// Accessors
+	//================================================================================
+	
+	/**
+	 * @return The adapter used to display {@link DetailItem} objects in a {@link ListView}
+	 */
+	public SectionedListAdapter<DetailItem> getAdapter() {
+		return adapter;
+	}
+	
+	/**
+	 * @param position The position of the item in the {@link ListView}
+	 * @return The {@link SectionedListIndex} corresponding to the position.
+	 */
+	public SectionedListIndex getSectionedIndex(int position) {
+		return adapter.getSectionedIndex(position);
+	}
+	
+	/**
+	 * @param position The position of the item in the {@link ListView}
+	 * @return The {@link DetailItem.ItemType} corresponding to the position.
+	 */
+	public DetailItem.ItemType getItemType(int position) {
+		return adapter.getTypedItem(position).getType();
+	}
+	
+	/**
+	 * @param index The index of the {@link Destination} relative to its section.
+	 * @return The {@link Destination} at the specified index.
+	 */
+	public Destination getDestination(int index) {
+		return (Destination)destinationsSection.get(index).getModel();
+	}
+	
+	/**
+	 * @param index The index of the {@link ExpenseItem} relative to its section.
+	 * @return The {@link ExpenseItem} at the specified index.
+	 */
+	public ExpenseItem getExpenseItem(int index) {
+		return (ExpenseItem)expenseItemsSection.get(index).getModel();
+	}
+	
+	//================================================================================
+	// Private
+	//================================================================================
 	
 	private static final String BULLET = "\u2022 ";
 	private static final String INDENTED_BULLET = "\t\u25e6 ";
@@ -104,5 +264,38 @@ public class ExpenseClaimDetailController {
 	 */
 	private String attributeString(String name, String value) {
 		return INDENTED_BULLET + name + ": " + value + "\n";
+	}
+	
+	/**
+	 * @return The destinations for the expense claim, wrapped in {@link DetailItem} objects.
+	 */
+	private ArrayList<DetailItem> getDestinationDetailItems() {
+		ArrayList<DetailItem> items = new ArrayList<DetailItem>();
+		for (Destination destination : model.getExpenseClaim().getDestinations()) {
+			items.add(new DetailItem(DetailItem.ItemType.DESTINATION, destination));
+		}
+		return items;
+	}
+	
+	/**
+	 * @return The expense items for the expense claim, wrapped in {@link ExpenseItem} objects.
+	 */
+	private ArrayList<DetailItem> getExpenseItemDetailItems() {
+		ArrayList<DetailItem> items = new ArrayList<DetailItem>();
+		for (ExpenseItem item : model.getExpenseClaim().getItems()) {
+			items.add(new DetailItem(DetailItem.ItemType.EXPENSE_ITEM, item));
+		}
+		return items;
+	}
+
+	//================================================================================
+	// Observer
+	//================================================================================
+	
+	@Override
+	public void update(Observable observable, Object object) {
+		destinationsSection.setItems(getDestinationDetailItems());
+		expenseItemsSection.setItems(getExpenseItemDetailItems());
+		adapter.noteSectionsChanged();
 	}
 }
