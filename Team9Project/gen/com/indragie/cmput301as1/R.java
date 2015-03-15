@@ -103,9 +103,13 @@ public final class R {
         /**  ExpenseClaim 
          */
         public static final int description=0x7f060002;
+        /**  ExpenseClaimDetailController 
+         */
+        public static final int destinations_title=0x7f06001b;
         public static final int done_label=0x7f06000e;
         public static final int end_label=0x7f060013;
         public static final int expense_items=0x7f060005;
+        public static final int items_title=0x7f06001d;
         /**  ExpenseClaim{Edit,Add}Activity 
          */
         public static final int name_hint=0x7f060011;
@@ -116,6 +120,7 @@ public final class R {
         public static final int status_in_progress=0x7f060006;
         public static final int status_returned=0x7f060009;
         public static final int status_submitted=0x7f060007;
+        public static final int tags_title=0x7f06001c;
         public static final int total_label=0x7f06001a;
     }
     public static final class style {

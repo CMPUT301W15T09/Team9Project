@@ -17,7 +17,6 @@
 
 package com.indragie.cmput301as1;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
@@ -52,7 +51,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements Observer
 	/**
 	 * Intent key for the position of the {@link ExpenseClaim} object in the expense claims list.
 	 */
-	public static final String EXTRA_EXPENSE_CLAIM_POSITION = "com.indragie.cmput301as1.EXTRA_EXPENSE_CLAIM_POSITION";
+	public static final String EXTRA_EXPENSE_CLAIM_INDEX = "com.indragie.cmput301as1.EXTRA_EXPENSE_CLAIM_INDEX";
 	
 	/**
 	 * Request code for starting {@link ExpenseItemAddActivity}
@@ -114,17 +113,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements Observer
 	 * data for the user interface.
 	 */
 	private ExpenseClaimDetailController controller;
-	
-	/**
-	 * Adapter that adapts expense items, destinations, and tags
-	 * to the list view.
-	 */
-	private SectionedListAdapter<ExpenseItem> adapter;
-	
-	/**
-	 * Section of the list view that displays expense items.
-	 */
-	private ListSection<ExpenseItem> expenseItemsSection;
 
 	//================================================================================
 	// Activity Callbacks
@@ -141,19 +129,12 @@ public class ExpenseClaimDetailActivity extends ListActivity implements Observer
 		
 		model = new ExpenseClaimDetailModel(claim);
 		model.addObserver(this);
-		controller = new ExpenseClaimDetailController(this, claim);
-
+		controller = new ExpenseClaimDetailController(this, model);
+		
 		setupListHeaderView();
 		setupListFooterView();
 		setEditable(claim.isEditable());
-
-		expenseItemsSection = new ListSection<ExpenseItem>("Expense Items", claim.getItems(), new ExpenseItemViewConfigurator());
-		ArrayList<ListSection<ExpenseItem>> sections = new ArrayList<ListSection<ExpenseItem>>();
-		sections.add(expenseItemsSection);
-		
-		XMLSectionHeaderConfigurator headerConfigurator = new XMLSectionHeaderConfigurator(R.layout.list_header, R.id.title_label);
-		adapter = new SectionedListAdapter<ExpenseItem>(this, sections, headerConfigurator);
-		setListAdapter(adapter);
+		setListAdapter(controller.getAdapter());
 	}
 
 	/**
@@ -342,7 +323,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements Observer
 
 		Intent intent = new Intent();
 		intent.putExtra(EXTRA_EXPENSE_CLAIM, claim);
-		intent.putExtra(EXTRA_EXPENSE_CLAIM_POSITION, intent.getIntExtra(EXTRA_EXPENSE_CLAIM_POSITION, -1));
+		intent.putExtra(EXTRA_EXPENSE_CLAIM_INDEX, intent.getIntExtra(EXTRA_EXPENSE_CLAIM_INDEX, -1));
 		setResult(RESULT_OK, intent);
 		finish();
 	}
@@ -356,18 +337,27 @@ public class ExpenseClaimDetailActivity extends ListActivity implements Observer
 		if (listView.getItemAtPosition(position) == null) return;
 		
 		int itemPosition = itemPositionForListViewPosition(position);
-		SectionedListIndex index = adapter.getSectionedIndex(itemPosition);
-		startEditExpenseItemActivity(index.getItemIndex());
+		ExpenseClaimDetailController.DetailItem.ItemType type = controller.getItemType(itemPosition);
+		SectionedListIndex index = controller.getSectionedIndex(position);
+		switch (type) {
+		case DESTINATION:
+			// TODO
+			break;
+		case EXPENSE_ITEM:
+			startEditExpenseItemActivity(index.getItemIndex());
+			break;
+		default: break;
+		}
 	}
 	
 	/**
 	 * Starts the {@link EditExpenseItemActivity}
 	 * @param position The position of the {@link ExpenseItem} to edit.
 	 */
-	private void startEditExpenseItemActivity(int position) {
+	private void startEditExpenseItemActivity(int index) {
 		Intent editIntent = new Intent(this, ExpenseItemEditActivity.class);
-		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM, expenseItemsSection.get(position));
-		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_POSITION, position);
+		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM, controller.getExpenseItem(index));
+		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_POSITION, index);
 		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_EDITABLE, editable);
 		startActivityForResult(editIntent, EDIT_EXPENSE_ITEM_REQUEST);
 	}
@@ -389,9 +379,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements Observer
 	
 	@Override
 	public void update(Observable observable, Object object) {
-		expenseItemsSection.setItems(claim.getItems());
 		amountsTextView.setText(claim.getSummarizedAmounts());
-		adapter.noteSectionsChanged();
 	}
 }
 

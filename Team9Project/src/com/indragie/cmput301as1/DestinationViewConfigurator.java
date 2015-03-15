@@ -30,7 +30,7 @@ import com.indragie.cmput301as1.ListSection.ViewConfigurator;
  * View configurator for showing {@link Destination} in a {@link ListView} with
  * {@link SectionedListAdapter}
  */
-public class DestinationViewConfigurator implements ViewConfigurator<Destination> {
+public class DestinationViewConfigurator implements ViewConfigurator<ExpenseClaimDetailController.DetailItem> {
 	//================================================================================
 	// Constants
 	//================================================================================
@@ -52,7 +52,9 @@ public class DestinationViewConfigurator implements ViewConfigurator<Destination
 	}
 
 	@Override
-	public void configureView(Context context, View view, Destination destination) {
+	public void configureView(Context context, View view, ExpenseClaimDetailController.DetailItem object) {
+		Destination destination = (Destination)object.getModel();
+		
 		TextView nameTextView = (TextView)view.findViewById(android.R.id.text1);
 		nameTextView.setText(destination.getName());
 		

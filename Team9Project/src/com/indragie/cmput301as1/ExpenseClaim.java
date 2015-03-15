@@ -18,23 +18,22 @@
 package com.indragie.cmput301as1;
 
 import java.io.Serializable;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.joda.money.*;
+import org.joda.money.CurrencyUnit;
+import org.joda.money.Money;
 
-import android.content.Context;
 import android.content.res.Resources;
 
 /**
  * Model object representing an expense claim.
  */
 public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
-	private static final long serialVersionUID = 4097224167619777631L;
+	private static final long serialVersionUID = 9142980792263787924L;
 
 	//================================================================================
 	// Properties
