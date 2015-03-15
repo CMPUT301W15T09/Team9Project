@@ -49,6 +49,7 @@ public class Destination implements Serializable {
 	 */
 	public Destination(String name, String travelReason) {
 		this.name = name;
+		this.travelReason = travelReason;
 	}
 	
 	//================================================================================

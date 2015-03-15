@@ -21,7 +21,11 @@ import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -62,6 +66,11 @@ public class ExpenseClaimDetailActivity extends ListActivity implements Observer
 	 * Request code for starting {@link ExpenseItemEditActivity}
 	 */
 	private static final int EDIT_EXPENSE_ITEM_REQUEST = 2;
+	
+	/**
+	 * Index used to indicate the nonexistence of an index.
+	 */
+	private static final int NO_INDEX = -1;
 
 	//================================================================================
 	// Properties
@@ -265,6 +274,9 @@ public class ExpenseClaimDetailActivity extends ListActivity implements Observer
 		case android.R.id.home:
 			commitChangesAndFinish();
 			return true;
+		case R.id.action_add_destination:
+			buildDestinationAlertDialog().show();
+			return true;
 		case R.id.action_add_item:
 			startAddExpenseItemActivity();
 			return true;
@@ -286,6 +298,41 @@ public class ExpenseClaimDetailActivity extends ListActivity implements Observer
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+	
+	private AlertDialog buildDestinationAlertDialog() {
+		return buildDestinationAlertDialog(NO_INDEX);
+	}
+	
+	@SuppressLint("InflateParams")
+	private AlertDialog buildDestinationAlertDialog(final int index) {
+		View dialogView = getLayoutInflater().inflate(R.layout.destination_alert, null);
+		final EditText nameField = (EditText)dialogView.findViewById(R.id.et_name);
+		final EditText reasonField = (EditText)dialogView.findViewById(R.id.et_travel_reason);
+		
+		if (index != NO_INDEX) {
+			Destination destination = controller.getDestination(index);
+			nameField.setText(destination.getName());
+			reasonField.setText(destination.getTravelReason());
+		}
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder
+		.setTitle(R.string.action_add_destination)
+		.setView(dialogView)
+		.setPositiveButton(android.R.string.ok, new OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				Destination destination = new Destination(nameField.getText().toString(), reasonField.getText().toString());
+				if (index != NO_INDEX) {
+					model.setDestination(index, destination);
+				} else {
+					model.addDestination(destination);
+				}
+			}
+		})
+		.setNegativeButton(android.R.string.cancel, null);
+		return builder.create();
 	}
 	
 	/**

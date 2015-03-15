@@ -28,10 +28,12 @@
     <string name="action_add_claim">Add Claim</string>
     <string name="no_expenses">No expenses</string>
 
-    <!-- ExpenseClaim{Edit,Add}Activity -->
+    <!-- ExpenseClaim{Detail,Add}Activity -->
     <string name="name_hint">Name</string>
+    <string name="travel_reason_hint">Travel Reason</string>
     <string name="start_label">Start</string>
     <string name="end_label">End</string>
+    <string name="action_add_destination">Add Destination</string>
     <string name="action_add_item">Add Item</string>
     <string name="action_email">Email</string>
     <string name="action_mark_submitted">Mark as Submitted</string>
