@@ -271,6 +271,10 @@ public class SectionedListAdapter<T> extends BaseAdapter {
 			this.object = object;
 		}
 		
+		/**
+		 * Creates a new instance of {@link ViewConfigurator} representing a section.
+		 * @param sectionTitle The title of the section.
+		 */
 		ItemMetadata(String sectionTitle) {
 			this.isSectionHeader = true;
 			this.sectionTitle = sectionTitle;
