@@ -94,9 +94,13 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 	 * User who created this claim.
 	 */
 	private User user;
-	
+	/**
+	 * Approvers comments.
+	 */
 	private String comments;
-	
+	/**
+	 * User who returned or approved claim.
+	 */
 	private User approver;
 
 	//================================================================================
@@ -192,6 +196,26 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 	
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+	
+	public User getUser() {
+		return user;
+	}
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+
+	public User getApprover() {
+		return approver;
+	}
+
+	public void setApprover(User approver) {
+		this.approver = approver;
 	}
 
 	/**
@@ -317,27 +341,5 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 		return getStartDate().compareTo(claim.getStartDate());
 	}
 
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	public String getComments() {
-		return comments;
-	}
-
-	public void setComments(String comments) {
-		this.comments = comments;
-	}
-
-	public User getApprover() {
-		return approver;
-	}
-
-	public void setApprover(User approver) {
-		this.approver = approver;
-	}
+	
 }

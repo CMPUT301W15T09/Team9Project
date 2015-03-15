@@ -46,8 +46,8 @@ public final class R {
         public static final int action_mark_approved=0x7f090016;
         public static final int action_mark_returned=0x7f090015;
         public static final int action_mark_submitted=0x7f090017;
-        public static final int editText1=0x7f09000a;
         public static final int et_amount=0x7f09000f;
+        public static final int et_comments=0x7f09000a;
         public static final int et_date=0x7f090010;
         public static final int et_description=0x7f090003;
         public static final int et_end_date=0x7f090005;
@@ -74,8 +74,7 @@ public final class R {
     public static final class menu {
         public static final int contextual_delete=0x7f080000;
         public static final int expense_claim_edit=0x7f080001;
-        public static final int expense_claim_edit_claimant=0x7f080002;
-        public static final int expense_claim_list=0x7f080003;
+        public static final int expense_claim_list=0x7f080002;
     }
     public static final class string {
         /**  ExpenseClaimListActivity 

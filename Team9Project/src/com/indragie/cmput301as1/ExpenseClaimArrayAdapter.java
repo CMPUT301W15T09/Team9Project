@@ -63,9 +63,6 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 		statusTextView.setText(claim.getStatusString(resources));
 		statusTextView.setBackground(drawableForStatus(claim.getStatus(), resources));
 		
-		//TextView userTextView = (TextView)convertView.findViewById(R.id.tv_user);
-		//nameTextView.setText(claim.getUser().getName());
-		
 		return convertView;
 	}
 	

@@ -24,7 +24,6 @@ import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -61,11 +60,8 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		checkFirstRun();
 		
-		String name = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("name", null);
-		int id = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getInt("id", -1);
-		user = new User(name,id);
+		checkFirstRun();
 		
 		listModel = new ExpenseClaimListModel(EXPENSE_CLAIM_FILENAME, this);
 		listModel.addObserver(this);
@@ -164,11 +160,11 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	
 	public void checkFirstRun() {
 	    boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("isFirstRun", true);
-	    if (true){ //isFrirstRun 
-	        
+	    if (true){ 
 	        
 	        //http://www.androidsnippets.com/prompt-user-input-with-an-alertdialog
 	        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+	        alert.setCancelable(false);
 
 	        alert.setTitle("Username");
 	        alert.setMessage("Please enter your name:");
@@ -181,24 +177,31 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	        public void onClick(DialogInterface dialog, int whichButton) {
 	          String value = input.getText().toString();
 	          
-	          
-	          getSharedPreferences("PREFERENCE", MODE_PRIVATE)
-	           .edit()
-	          .putString("name", value)
-	          .apply();
-	          
-	          getSharedPreferences("PREFERENCE", MODE_PRIVATE)
-	           .edit()
-	           //setup as default ID will change later
-	          .putInt("id", 1)
-	          .apply();
-	          
-	          getSharedPreferences("PREFERENCE", MODE_PRIVATE)
-	          .edit()
-	          .putBoolean("isFirstRun", false)
-	          .apply();
-	          
-	          
+	          if(value != ""){
+	        	  getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+	        	  .edit()
+	        	  .putString("name", value)
+	        	  .apply();
+					  
+	        	  getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+	        	  .edit()
+	        	  //setup as default ID will change later
+	        	  .putInt("id", 1)
+	        	  .apply();
+					  
+	        	  getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+	        	  .edit()
+	        	  .putBoolean("isFirstRun", false)
+	        	  .apply();
+				  
+				
+	        	  int id = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getInt("id", -1);
+	        	  user = new User(value,id);
+	          }
+	          else{
+	        	  checkFirstRun();
+		          Toast.makeText(getApplicationContext(), "You must enter a username", Toast.LENGTH_LONG).show(); 
+	          }
 	          
 	          }
 	        });
@@ -211,6 +214,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	        });
 
 	        alert.show();
+	        
 
 	        
 	    }
