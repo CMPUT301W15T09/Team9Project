@@ -240,27 +240,6 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 		builder.deleteCharAt(builder.length() - 1);
 		return builder.toString();
 	}
-	
-	/**
-	 * Creates a plain text representation of the expense claim;
-	 * @param context Context to use for getting localized string resources.
-	 * @return Plain text representation of the expense claim suitable for sending in an email.
-	 */
-	public String getPlainText(Context context) {
-		Resources resources = context.getResources();
-		StringBuilder builder = new StringBuilder(name + "\n");
-		if (description.length() > 0) {
-			builder.append(resources.getString(R.string.description) + ": " + description + "\n");
-		}
-		DateFormat dateFormat = DateFormat.getDateInstance();
-		builder.append(resources.getString(R.string.dates) + ": " + dateFormat.format(startDate) + " - " + dateFormat.format(endDate) + "\n");
-		builder.append(resources.getString(R.string.status) + ": " + getStatusString(resources) + "\n\n");
-		builder.append(resources.getString(R.string.expense_items) + ":\n");
-		for (ExpenseItem item : items) {
-			builder.append(item.getPlainText(context));
-		}
-		return builder.toString();
-	}
 
 	//================================================================================
 	// Object

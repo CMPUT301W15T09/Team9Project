@@ -110,6 +110,12 @@ public class ExpenseClaimDetailActivity extends ListActivity implements Observer
 	private ExpenseClaimDetailModel model;
 	
 	/**
+	 * Controller for transforming model data into presentable
+	 * data for the user interface.
+	 */
+	private ExpenseClaimDetailController controller;
+	
+	/**
 	 * Adapter that adapts expense items, destinations, and tags
 	 * to the list view.
 	 */
@@ -135,6 +141,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements Observer
 		
 		model = new ExpenseClaimDetailModel(claim);
 		model.addObserver(this);
+		controller = new ExpenseClaimDetailController(this, claim);
 
 		setupListHeaderView();
 		setupListFooterView();
@@ -320,7 +327,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements Observer
 		// Originally planned to use HTML for rich text in the email, but it turns
 		// out that most email clients on Android (including K-9) don't support HTML
 		// for composing emails, so I decided to use plain text instead.
-		emailIntent.putExtra(Intent.EXTRA_TEXT, claim.getPlainText(this));
+		emailIntent.putExtra(Intent.EXTRA_TEXT, controller.getPlainText());
 		startActivity(Intent.createChooser(emailIntent, "Send Email"));
 	}
 	
