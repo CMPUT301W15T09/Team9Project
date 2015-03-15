@@ -11,8 +11,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+
+
+/**
+ * Activity for viewing the current list of tags the use has defined. 
+ * Can direct user to activities for adding or editing tags. 
+ * Allows user to remove existing tags. 
+ */
 public class ManageTagsActivity extends ListActivity implements TypedObserver<List<Tag>>{
-	
+
+	//================================================================================
+	// Constants
+	//================================================================================
 	
 	private static final int ADD_TAG_REQUEST= 1;
 	private static final int EDIT_TAG_REQUEST= 2;
@@ -20,10 +30,16 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 
 	public static final String EXTRA_TAG = "com.indragie.cmput301as1.EXTRA_TAG";
 	
+	//================================================================================
+	// Properties
+	//================================================================================
 
 	private ListModel<Tag> listModel;
 	private int longPressedItemIndex;
-	
+
+	//================================================================================
+	// Activity Callbacks
+	//================================================================================
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -108,18 +124,6 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 		setListAdapter(new TagArrayAdapter(this, tags));
 	}
 	
-	private void startAddTagActivity() {
-		Intent addTagIntent = new Intent(this, TagAddActivity.class);
-		startActivityForResult(addTagIntent, ADD_TAG_REQUEST);
-	}
-	
-	private void startEditTagActivity() {
-		Intent editTagIntent = new Intent(this, TagEditActivity.class);
-		editTagIntent.putExtra(EXTRA_TAG, listModel.getItems().get(longPressedItemIndex));
-		startActivityForResult(editTagIntent, EDIT_TAG_REQUEST);
-	}
-	
-	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode != RESULT_OK) return;
@@ -132,10 +136,25 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 		}
 	}
 	
+	//================================================================================
+	// Add/Edit a tag
+	//================================================================================
+	
+	private void startAddTagActivity() {
+		Intent addTagIntent = new Intent(this, TagAddActivity.class);
+		startActivityForResult(addTagIntent, ADD_TAG_REQUEST);
+	}
+	
 	private void onAddTag(Intent data) {
 		Tag tag = (Tag)data.getSerializableExtra(TagAddActivity.ADDED_TAG);
 		listModel.add(tag);
 		
+	}
+	
+	private void startEditTagActivity() {
+		Intent editTagIntent = new Intent(this, TagEditActivity.class);
+		editTagIntent.putExtra(EXTRA_TAG, listModel.getItems().get(longPressedItemIndex));
+		startActivityForResult(editTagIntent, EDIT_TAG_REQUEST);
 	}
 	
 	private void onEditTag(Intent data) {
