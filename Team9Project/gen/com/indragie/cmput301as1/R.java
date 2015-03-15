@@ -37,15 +37,15 @@ public final class R {
         public static final int ic_launcher=0x7f020008;
     }
     public static final class id {
-        public static final int action_add_claim=0x7f090016;
-        public static final int action_add_item=0x7f090011;
+        public static final int action_add_claim=0x7f090017;
+        public static final int action_add_item=0x7f090012;
         public static final int action_cancel=0x7f090008;
-        public static final int action_delete=0x7f090010;
+        public static final int action_delete=0x7f090011;
         public static final int action_done=0x7f090009;
-        public static final int action_email=0x7f090012;
-        public static final int action_mark_approved=0x7f090015;
-        public static final int action_mark_returned=0x7f090014;
-        public static final int action_mark_submitted=0x7f090013;
+        public static final int action_email=0x7f090013;
+        public static final int action_mark_approved=0x7f090016;
+        public static final int action_mark_returned=0x7f090015;
+        public static final int action_mark_submitted=0x7f090014;
         public static final int et_amount=0x7f09000c;
         public static final int et_date=0x7f09000d;
         public static final int et_description=0x7f090003;
@@ -54,6 +54,7 @@ public final class R {
         public static final int et_start_date=0x7f090004;
         public static final int sp_category=0x7f09000a;
         public static final int sp_currency=0x7f09000b;
+        public static final int title_label=0x7f090010;
         public static final int tv_amounts=0x7f090001;
         public static final int tv_date=0x7f09000e;
         public static final int tv_end_label=0x7f090007;
@@ -67,6 +68,7 @@ public final class R {
         public static final int activity_editing_actionbar=0x7f030002;
         public static final int activity_expense_item_add=0x7f030003;
         public static final int expense_claim_list_row=0x7f030004;
+        public static final int list_header=0x7f030005;
     }
     public static final class menu {
         public static final int contextual_delete=0x7f080000;
