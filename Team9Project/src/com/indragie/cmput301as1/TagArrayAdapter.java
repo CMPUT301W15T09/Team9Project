@@ -27,7 +27,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 /**
- * Adaptor for showing an array of {@link ExpenseItem} objects in a {@link ListView}
+ * Adaptor for showing an array of {@link Tag} objects in a {@link ListView}
  * Based on https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
  */
 public class TagArrayAdapter extends ArrayAdapter<Tag> {

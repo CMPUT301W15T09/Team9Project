@@ -8,6 +8,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
 
+/**
+ * Activity that presents a user interface for entering information to 
+ * create a new tag.
+ */
 public class TagAddActivity extends Activity{
 	
 	public static final String ADDED_TAG = "com.indragie.cmput301as1.ADDED_TAG";

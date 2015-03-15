@@ -3,6 +3,10 @@ package com.indragie.cmput301as1;
 import android.os.Bundle;
 import android.widget.EditText;
 
+/**
+ * Activity that presents a user interface for entering information to 
+ * create edit a existing tag.
+ */
 public class TagEditActivity extends TagAddActivity {
 	
 	@Override
@@ -15,11 +19,11 @@ public class TagEditActivity extends TagAddActivity {
 
 		Tag tag = (Tag)getIntent().getSerializableExtra(ManageTagsActivity.EXTRA_TAG);
 		
-		setupField(tag);
+		setuptextField(tag);
 		
 	}
 	
-	private void setupField(Tag tag) {
+	private void setuptextField(Tag tag) {
 		textField.setText(tag.getName());
 	}
 
