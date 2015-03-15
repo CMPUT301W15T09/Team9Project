@@ -3,11 +3,9 @@ package com.indragie.cmput301as1;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View.OnCreateContextMenuListener;
 import android.widget.EditText;
 
 public class TagAddActivity extends Activity{
