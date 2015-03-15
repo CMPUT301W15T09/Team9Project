@@ -105,10 +105,6 @@ public class SectionedListAdapter<T> extends BaseAdapter {
 		notifyDataSetChanged();
 	}
 	
-	//================================================================================
-	// API
-	//================================================================================
-	
 	/**
 	 * Strongly typed version of {@link #getItem(int)}
 	 * @param position The position of the item in the list.
