@@ -36,7 +36,7 @@ public class ExpenseItemViewConfigurator implements ViewConfigurator<ExpenseItem
 	// Constants
 	//================================================================================
 	
-	private static final int EXPENSE_ITEM_VIEW_CODE = 3;
+	private static final int EXPENSE_ITEM_VIEW_CODE = 1;
 	
 	//================================================================================
 	// ViewConfigurator
