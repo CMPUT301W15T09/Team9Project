@@ -386,8 +386,12 @@ public class ExpenseClaimDetailActivity extends ListActivity implements Observer
 		int itemPosition = itemPositionForListViewPosition(position);
 		ExpenseClaimDetailController.DetailItem.ItemType type = controller.getItemType(itemPosition);
 		SectionedListIndex index = controller.getSectionedIndex(position);
+		
 		switch (type) {
 		case DESTINATION:
+			buildDestinationAlertDialog(index.getItemIndex()).show();
+			break;
+		case TAG:
 			// TODO
 			break;
 		case EXPENSE_ITEM:
