@@ -385,7 +385,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements Observer
 		
 		int itemPosition = itemPositionForListViewPosition(position);
 		ExpenseClaimDetailController.DetailItem.ItemType type = controller.getItemType(itemPosition);
-		SectionedListIndex index = controller.getSectionedIndex(position);
+		SectionedListIndex index = controller.getSectionedIndex(itemPosition);
 		
 		switch (type) {
 		case DESTINATION:
