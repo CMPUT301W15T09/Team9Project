@@ -96,7 +96,9 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 	 */
 	private String buildDestinationsString(ExpenseClaim claim) {
 		List<Destination> destinations = claim.getDestinations();
-		if (destinations.size() == 0) return "";
+		if (destinations.size() == 0) {
+			return getContext().getResources().getString(R.string.no_destinations);
+		}
 		
 		StringBuilder builder = new StringBuilder();
 		for (Destination destination : destinations) {

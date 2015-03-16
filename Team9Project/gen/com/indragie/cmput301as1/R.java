@@ -107,39 +107,39 @@ public final class R {
         public static final int manage_tags=0x7f080007;
     }
     public static final class string {
-        public static final int TagName=0x7f06002b;
-        public static final int action_accept=0x7f06002c;
+        public static final int TagName=0x7f06002c;
+        public static final int action_accept=0x7f06002d;
         /**  ExpenseClaimListActivity 
          */
         public static final int action_add_claim=0x7f06000f;
-        public static final int action_add_destination=0x7f060016;
-        public static final int action_add_item=0x7f060017;
-        public static final int action_add_tag=0x7f060028;
+        public static final int action_add_destination=0x7f060017;
+        public static final int action_add_item=0x7f060018;
+        public static final int action_add_tag=0x7f060029;
         public static final int action_delete=0x7f060001;
-        public static final int action_edit=0x7f06002a;
-        public static final int action_email=0x7f060018;
-        public static final int action_manage_tags=0x7f060029;
-        public static final int action_mark_approved=0x7f06001b;
-        public static final int action_mark_returned=0x7f06001a;
-        public static final int action_mark_submitted=0x7f060019;
-        public static final int action_new_tag=0x7f06002d;
+        public static final int action_edit=0x7f06002b;
+        public static final int action_email=0x7f060019;
+        public static final int action_manage_tags=0x7f06002a;
+        public static final int action_mark_approved=0x7f06001c;
+        public static final int action_mark_returned=0x7f06001b;
+        public static final int action_mark_submitted=0x7f06001a;
+        public static final int action_new_tag=0x7f06002e;
         /**  ExpenseClaimSortActivity 
          */
-        public static final int action_settings=0x7f060030;
-        public static final int action_sort_claim=0x7f06001c;
+        public static final int action_settings=0x7f060031;
+        public static final int action_sort_claim=0x7f06001d;
         public static final int amount=0x7f06000b;
-        public static final int amount_placeholder=0x7f060022;
+        public static final int amount_placeholder=0x7f060023;
         /**  General 
          */
         public static final int app_name=0x7f060000;
-        public static final int approver=0x7f060020;
+        public static final int approver=0x7f060021;
         /**  EditingActivity 
          */
         public static final int cancel_label=0x7f06000d;
         /**  ExpenseItem 
          */
         public static final int category=0x7f06000a;
-        public static final int comments=0x7f060021;
+        public static final int comments=0x7f060022;
         public static final int date=0x7f06000c;
         public static final int dates=0x7f060003;
         /**  ExpenseClaim 
@@ -147,33 +147,34 @@ public final class R {
         public static final int description=0x7f060002;
         /**  ExpenseClaimDetailController 
          */
-        public static final int destinations_title=0x7f060024;
+        public static final int destinations_title=0x7f060025;
         /**  ExpenseClaim{Detail,Add}Activity 
          */
-        public static final int detail_title=0x7f060011;
+        public static final int detail_title=0x7f060012;
         public static final int done_label=0x7f06000e;
-        public static final int end_label=0x7f060015;
+        public static final int end_label=0x7f060016;
         public static final int expense_items=0x7f060005;
-        public static final int items_title=0x7f060026;
-        public static final int name_hint=0x7f060012;
+        public static final int items_title=0x7f060027;
+        public static final int name_hint=0x7f060013;
+        public static final int no_destinations=0x7f060011;
         public static final int no_expenses=0x7f060010;
-        public static final int sort_order=0x7f06001e;
-        public static final int sort_type=0x7f06001d;
-        public static final int start_label=0x7f060014;
+        public static final int sort_order=0x7f06001f;
+        public static final int sort_type=0x7f06001e;
+        public static final int start_label=0x7f060015;
         public static final int status=0x7f060004;
         public static final int status_approved=0x7f060008;
         public static final int status_in_progress=0x7f060006;
         public static final int status_returned=0x7f060009;
         public static final int status_submitted=0x7f060007;
-        public static final int tags_title=0x7f060025;
-        public static final int title_activity_add_tag=0x7f06002e;
-        public static final int title_activity_edit_tag=0x7f06002f;
+        public static final int tags_title=0x7f060026;
+        public static final int title_activity_add_tag=0x7f06002f;
+        public static final int title_activity_edit_tag=0x7f060030;
         /**  ManageTagsActivity 
          */
-        public static final int title_activity_manage_tags=0x7f060027;
-        public static final int total_label=0x7f060023;
-        public static final int travel_reason_hint=0x7f060013;
-        public static final int user=0x7f06001f;
+        public static final int title_activity_manage_tags=0x7f060028;
+        public static final int total_label=0x7f060024;
+        public static final int travel_reason_hint=0x7f060014;
+        public static final int user=0x7f060020;
     }
     public static final class style {
         /** 
