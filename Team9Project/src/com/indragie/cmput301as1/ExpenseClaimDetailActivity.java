@@ -143,6 +143,11 @@ public class ExpenseClaimDetailActivity extends ListActivity implements Observer
 		setEditable(claim.isEditable());
 		setListAdapter(controller.getAdapter());
 	}
+	
+	@Override
+	protected void onDestroy() {
+		model.deleteObserver(this);
+	}
 
 	/**
 	 * Sets up the header view for the list, containing the fields
