@@ -18,13 +18,12 @@
 package com.indragie.cmput301as1;
 
 import java.util.List;
-import java.util.Observable;
 
 /**
  * Model for {@link ExpenseClaimDetailActivity}, which handles displaying
  * the details for an expense claim -- destinations, tags, and expense items.
  */
-public class ExpenseClaimDetailModel extends Observable {
+public class ExpenseClaimDetailModel extends TypedObservable<Object> {
 	//================================================================================
 	// Properties
 	//================================================================================
