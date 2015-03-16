@@ -240,25 +240,20 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		getListView().addFooterView(footerView);
 	}
 	
+	/**
+	 * Sets the editable state of the entire UI.
+	 * @param editable Whether the claim is editable or not.
+	 */
 	private void setEditable(){
 		boolean UserCheck = user.getName().contentEquals(claim.getUser().getName());//SHOULD BE ID USING NAME FOR TESTING
 
 
 		if(status == Status.SUBMITTED ){
-			if(UserCheck){
-				nameField.setEnabled(!UserCheck);
-				descriptionField.setEnabled(!UserCheck);
-				startDateField.setEnabled(!UserCheck);
-				endDateField.setEnabled(!UserCheck);
-				comments.setEnabled(!UserCheck);
-			}
-			else{
-				nameField.setEnabled(false);
-				descriptionField.setEnabled(false);
-				startDateField.setEnabled(false);
-				endDateField.setEnabled(false);
-				comments.setEnabled(true);
-			}
+			nameField.setEnabled(false);
+			descriptionField.setEnabled(false);
+			startDateField.setEnabled(false);
+			endDateField.setEnabled(false);
+			comments.setEnabled(!UserCheck);
 			this.editable = false;
 		}
 		else if(status == Status.APPROVED){
@@ -275,12 +270,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			startDateField.setEnabled(UserCheck);
 			endDateField.setEnabled(UserCheck);
 			comments.setEnabled(false);
-			if(UserCheck){
-				this.editable = true;
-			}
-			else{
-				this.editable = false;
-			}
+			this.editable= UserCheck;
 		}
 	}
 	
@@ -358,54 +348,52 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);
 		boolean UserCheck = user.getName().contentEquals(claim.getUser().getName());//SHOULD BE ID USING NAME FOR TESTING
+		MenuItem add= menu.findItem(R.id.action_add_item);
+		MenuItem submit = menu.findItem(R.id.action_mark_submitted);
+		MenuItem approve = menu.findItem(R.id.action_mark_approved);
+		MenuItem returned = menu.findItem(R.id.action_mark_returned);
 
 		if (status ==Status.APPROVED){
-			menu.findItem(R.id.action_add_item).setEnabled(false);
-			menu.findItem(R.id.action_mark_submitted).setEnabled(false);
-			menu.findItem(R.id.action_mark_approved).setEnabled(false);
-			menu.findItem(R.id.action_mark_returned).setEnabled(false);
+			add.setEnabled(false);
+			submit.setEnabled(false);
+			approve.setEnabled(false);
+			returned.setEnabled(false);
 		}
 		if(status == Status.RETURNED){
 			if(UserCheck){
-				menu.findItem(R.id.action_add_item).setEnabled(true);
-				menu.findItem(R.id.action_mark_submitted).setEnabled(true);
-				menu.findItem(R.id.action_mark_approved).setEnabled(false);
-				menu.findItem(R.id.action_mark_returned).setEnabled(false);
+				add.setEnabled(true);
+				submit.setEnabled(true);
 			}
 			else{
-				menu.findItem(R.id.action_add_item).setEnabled(false);
-				menu.findItem(R.id.action_mark_submitted).setEnabled(false);
-				menu.findItem(R.id.action_mark_approved).setEnabled(false);
-				menu.findItem(R.id.action_mark_returned).setEnabled(false);
+				add.setEnabled(false);
+				submit.setEnabled(false);
 			}
+			approve.setEnabled(false);
+			returned.setEnabled(false);
 		}
 		if(status==Status.SUBMITTED){
 			if(UserCheck){
-				menu.findItem(R.id.action_add_item).setEnabled(false);
-				menu.findItem(R.id.action_mark_submitted).setEnabled(false);
-				menu.findItem(R.id.action_mark_approved).setEnabled(false);
-				menu.findItem(R.id.action_mark_returned).setEnabled(false);
+				approve.setEnabled(false);
+				returned.setEnabled(false);
 			}
 			else{
-				menu.findItem(R.id.action_add_item).setEnabled(false);
-				menu.findItem(R.id.action_mark_submitted).setEnabled(false);
-				menu.findItem(R.id.action_mark_approved).setEnabled(true);
-				menu.findItem(R.id.action_mark_returned).setEnabled(true);
+				approve.setEnabled(true);
+				returned.setEnabled(true);
 			}
+			add.setEnabled(false);
+			submit.setEnabled(false);
 		}
 		if(status== Status.IN_PROGRESS){
 			if(UserCheck){
-				menu.findItem(R.id.action_add_item).setEnabled(true);
-				menu.findItem(R.id.action_mark_submitted).setEnabled(true);
-				menu.findItem(R.id.action_mark_approved).setEnabled(false);
-				menu.findItem(R.id.action_mark_returned).setEnabled(false);
+				add.setEnabled(true);
+				submit.setEnabled(true);
 			}
 			else{
-				menu.findItem(R.id.action_add_item).setEnabled(false);
-				menu.findItem(R.id.action_mark_submitted).setEnabled(false);
-				menu.findItem(R.id.action_mark_approved).setEnabled(false);
-				menu.findItem(R.id.action_mark_returned).setEnabled(false);
+				add.setEnabled(false);
+				submit.setEnabled(false);
 			}
+			approve.setEnabled(false);
+			returned.setEnabled(false);
 		}
 		return true;
 	}
