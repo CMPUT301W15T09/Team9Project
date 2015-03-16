@@ -213,14 +213,15 @@ public class ExpenseItemAddActivity extends AddActivity {
 		startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
 	}
 	
-	/**
-	 * Resizes a .jpeg file to be under the maximum size
-	 * @param imageFileUri The Uri of the image file to be resized
-	 */
+
 	/*  Elements of scalingImage method borrowed from
 	 *  http://stackoverflow.com/questions/3331527/android-resize-a-large-bitmap-file-to-scaled-output-file
 	 *  last accessed: 03/15/15 3:29pm
 	 */ 
+	/**
+	 * Resizes a .jpeg file to be under the maximum size
+	 * @param imageFileUri The Uri of the image file to be resized
+	 */
 	public void scaleImage(Uri imageFileUri) {
 		try {
 		    final int IMAGE_MAX_SIZE = 65536; 
@@ -295,7 +296,7 @@ public class ExpenseItemAddActivity extends AddActivity {
 	
 	
 	/* 
-	 *  method startDialog borrowed from 
+	 *  Elements of method startDialog borrowed from 
 	 *  http://www.theappguruz.com/blog/android-take-photo-camera-gallery-code-sample/
 	 *  last accessed: 03/12/2015 3:02pm
 	 */

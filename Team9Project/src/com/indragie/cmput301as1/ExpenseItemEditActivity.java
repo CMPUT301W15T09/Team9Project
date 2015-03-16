@@ -60,7 +60,9 @@ public class ExpenseItemEditActivity extends ExpenseItemAddActivity {
 		ExpenseItem item = (ExpenseItem)getIntent().getSerializableExtra(EXTRA_EXPENSE_ITEM);
 		Boolean editable = intent.getBooleanExtra(EXTRA_EXPENSE_ITEM_EDITABLE, false);
 		
-		receiptFileUri = Uri.parse(item.getReceipt());
+		if (item.getReceipt() != null) {
+			receiptFileUri = Uri.parse(item.getReceipt());
+		}
 		
 		setTitle(item.getName());
 		setupFields(item, editable);
@@ -88,6 +90,7 @@ public class ExpenseItemEditActivity extends ExpenseItemAddActivity {
 		SpinnerUtils.setSelectedItem(categorySpinner, item.getCategory());
 		categorySpinner.setEnabled(editable);
 		
+		receiptButton.setClickable(editable);
 		if (receiptFileUri != null) {
 			Drawable receiptPic = Drawable.createFromPath(receiptFileUri.getPath());
 			receiptButton.setImageDrawable(receiptPic);
