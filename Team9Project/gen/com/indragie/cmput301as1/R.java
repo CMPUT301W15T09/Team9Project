@@ -11,6 +11,7 @@ public final class R {
     public static final class array {
         public static final int categories_array=0x7f040000;
         public static final int currency_array=0x7f040001;
+        public static final int receipt_dialog_array=0x7f040002;
     }
     public static final class attr {
     }
@@ -34,8 +35,8 @@ public final class R {
         public static final int ic_action_accept=0x7f020005;
         public static final int ic_action_cancel=0x7f020006;
         public static final int ic_action_discard=0x7f020007;
-        public static final int ic_launcher=0x7f020008;
-        public static final int ic_search=0x7f020009;
+        public static final int ic_action_search=0x7f020008;
+        public static final int ic_launcher=0x7f020009;
     }
     public static final class id {
         public static final int action_add_claim=0x7f090017;
@@ -88,7 +89,7 @@ public final class R {
         public static final int amount=0x7f06000b;
         /**  ExpenseItem{Edit,Add}Activity 
          */
-        public static final int amount_placeholder=0x7f060019;
+        public static final int amount_placeholder=0x7f06001d;
         /**  General 
          */
         public static final int app_name=0x7f060000;
@@ -116,7 +117,11 @@ public final class R {
         public static final int status_in_progress=0x7f060006;
         public static final int status_returned=0x7f060009;
         public static final int status_submitted=0x7f060007;
-        public static final int total_label=0x7f06001a;
+        public static final int toast_receipt_deleted=0x7f06001b;
+        public static final int toast_receipt_failed=0x7f06001a;
+        public static final int toast_receipt_nonexistent=0x7f06001c;
+        public static final int toast_receipt_success=0x7f060019;
+        public static final int total_label=0x7f06001e;
     }
     public static final class style {
         /** 

@@ -56,8 +56,7 @@ public class ExpenseItemAddActivity extends AddActivity {
 	public static final String EXTRA_EXPENSE_ITEM = "com.indragie.cmput301as1.EXPENSE_ITEM";
 	protected static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
 	protected static final int REQUEST_IMAGE_CAPTURE = 200;
-	protected final CharSequence[] dialogOptions = { "Take Photo", "Open in Gallery", 
-			"Delete Photo", "Cancel"};
+	protected String[] dialogOptions;
 
 	//================================================================================
 	// Properties
@@ -79,6 +78,7 @@ public class ExpenseItemAddActivity extends AddActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_expense_item_add);
+		dialogOptions = getResources().getStringArray(R.array.receipt_dialog_array);
 		
 		nameField = (EditText)findViewById(R.id.et_name);
 		descriptionField = (EditText)findViewById(R.id.et_description);
@@ -172,7 +172,7 @@ public class ExpenseItemAddActivity extends AddActivity {
 	 *  http://stackoverflow.com/questions/3331527/android-resize-a-large-bitmap-file-to-scaled-output-file
 	 *  last accessed: 03/15/15 3:29pm
 	 */ 
-	protected void scaleImage(Uri imageFileUri) {
+	public void scaleImage(Uri imageFileUri) {
 		try {
 		    final int IMAGE_MAX_SIZE = 65536; 
 		    InputStream fin = new FileInputStream(imageFileUri.getPath());
@@ -211,12 +211,8 @@ public class ExpenseItemAddActivity extends AddActivity {
 		           (int) y, true);
 		        bmp.recycle();
 		        bmp = scaledBitmap;
-		        
-		        /* System.gc(); 
-		         * TODO: I heard this is bad practice so I left it out
-		         * TODO: convert bitmap back to JPEG
-		         * I'm inexperienced with java so how else should i free up memory?
-		         */
+
+		        // System.gc ?
 		        
 		        fin.close();	
 		        
@@ -237,17 +233,16 @@ public class ExpenseItemAddActivity extends AddActivity {
 			receiptButton = (ImageButton) findViewById(R.id.btn_receipt);
 			Drawable receiptPic = Drawable.createFromPath(receiptFileUri.getPath());
 			receiptButton.setImageDrawable(receiptPic);
-			Toast.makeText(getApplicationContext(), "Receipt saved", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), getString(R.string.toast_receipt_success), Toast.LENGTH_SHORT).show();
 		}
 		else {
-			Toast.makeText(getApplicationContext(), "Save unsuccessful", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), getString(R.string.toast_receipt_failed), Toast.LENGTH_SHORT).show();
 		}
 	}
 	
 	//================================================================================
 	// Camera + Gallery Dialogue
 	//================================================================================
-	
 	
 	/** method startDialog borrowed from 
 	 *  http://www.theappguruz.com/blog/android-take-photo-camera-gallery-code-sample/
@@ -266,9 +261,10 @@ public class ExpenseItemAddActivity extends AddActivity {
 				}
 				
 				else if (dialogOptions[item].equals("Open in Gallery")) {
-					if (receiptFileUri.equals(null)) {
+					if (receiptFileUri == null) {
 						dialog.dismiss();
-						Toast.makeText(getApplicationContext(), "No saved photo", Toast.LENGTH_SHORT).show();
+						Toast.makeText(getApplicationContext(), 
+								getString(R.string.toast_receipt_nonexistent), Toast.LENGTH_SHORT).show();
 					}
 					else {
 						Intent intent = new Intent();
@@ -280,7 +276,9 @@ public class ExpenseItemAddActivity extends AddActivity {
 				
 				else if (dialogOptions[item].equals("Delete Photo")) {
 					receiptFileUri = null;
-					receiptButton = (ImageButton) findViewById(R.id.btn_receipt);
+					Toast.makeText(getApplicationContext(), 
+							getString(R.string.toast_receipt_deleted), Toast.LENGTH_SHORT).show();
+					receiptButton.setImageResource(R.drawable.ic_action_search);
 				}
 				
 				else if (dialogOptions[item].equals("Cancel")) {

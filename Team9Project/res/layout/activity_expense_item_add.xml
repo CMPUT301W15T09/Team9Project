@@ -67,7 +67,7 @@
         android:layout_height="0dp"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
-        android:src="@drawable/ic_search"
-        android:scaleType="centerCrop" />
+        android:src="@drawable/ic_action_search"
+        android:scaleType="fitCenter" />
 
 </LinearLayout>
