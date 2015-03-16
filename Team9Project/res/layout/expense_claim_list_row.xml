@@ -60,17 +60,5 @@
 	    android:textStyle="bold"
 	    android:textSize="14sp" />
 
-<!--	<TextView
-	    android:id="@+id/tv_user"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_alignBaseline="@+id/tv_amounts"
-	    android:layout_alignBottom="@+id/tv_amounts"
-	    android:layout_alignLeft="@+id/tv_amounts"
-	    android:layout_alignParentEnd="true"
-	    android:layout_alignStart="@id/tv_status"
-	    android:textAppearance="?android:attr/textAppearanceListItemSmall" />
-	    -->
-	    
 	
 </RelativeLayout>

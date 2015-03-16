@@ -2,12 +2,9 @@ package com.indragie.cmput301as1;
 
 import java.io.Serializable;
 
-import android.content.Context;
-
 /**
  * Model object representing a user object.
  */
-
 public class User implements Serializable {
 	
 	//================================================================================
@@ -36,14 +33,14 @@ public class User implements Serializable {
 	// Accessors
 	//================================================================================
 	/**
-	 * @return the name
+	 * @return the name of user
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * @return the id
+	 * @return the id number of user
 	 */
 	public int getId() {
 		return id;
