@@ -33,6 +33,9 @@ public class TagAddActivity extends Activity{
 	
 	public static final String ADDED_TAG = "com.indragie.cmput301as1.ADDED_TAG";
 	
+	/**
+	 * Text field for name of tag.
+	 */
 	protected EditText textField;
 
 	
@@ -70,7 +73,10 @@ public class TagAddActivity extends Activity{
 		}
 	}
 	
-	
+	/**
+	 * Calls method for adding the tag.
+	 * @return Intent that contains tag to add.
+	 */
 	protected Intent addTagIntent()  {
 		Tag tag= new Tag(textField.getText().toString());
 

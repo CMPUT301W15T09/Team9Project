@@ -31,7 +31,7 @@ public class Tag implements Serializable, Comparable<Tag>{
 	//================================================================================
 	
 	/**
-	 * Name of the tag
+	 * Name of the tag.
 	 */
 	private String name;
 	
@@ -39,6 +39,10 @@ public class Tag implements Serializable, Comparable<Tag>{
 	// Constructor
 	//================================================================================
 	
+	/**
+	 * Creates the a Tag object to represent a tag. 
+	 * @param name The name of the tag.
+	 */
 	public Tag(String name) {
 		this.name = name;
 	}
@@ -47,6 +51,10 @@ public class Tag implements Serializable, Comparable<Tag>{
 	// Accessor
 	//================================================================================
 	
+	/**
+	 * Returns the name of the tag.
+	 * @return Name of the tag.
+	 */
 	public String getName() {
 		return this.name;
 	}

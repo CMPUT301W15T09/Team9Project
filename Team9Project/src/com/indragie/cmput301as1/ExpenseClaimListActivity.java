@@ -45,7 +45,13 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	// Properties
 	//================================================================================
 	
+	/**
+	 * List model of expense claim.
+	 */
 	private ListModel<ExpenseClaim> listModel;
+	/**
+	 * Index of a item that is long pressed.
+	 */
 	private int longPressedItemIndex;
 
 	//================================================================================
@@ -115,11 +121,19 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		}
 	}
 	
+	/**
+	 * Adds a expense claim to list model from a intent.
+	 * @param data The intent to get the expense claim from.
+	 */
 	private void onAddExpenseResult(Intent data) {
 		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM);
 		listModel.add(claim);
 	}
 	
+	/**
+	 * Sets a expense claim at a sepcified position in the list model from a intent.
+	 * @param data The intent to get the expense claim from.
+	 */
 	private void onEditExpenseResult(Intent data) {
 		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM);
 		int position = data.getIntExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_POSITION, -1);
@@ -146,11 +160,17 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		}
 	}
 	
+	/**
+	 * Calls the intent to create a new expense claim.
+	 */
 	private void startAddExpenseClaimActivity() {
 		Intent addIntent = new Intent(this, ExpenseClaimAddActivity.class);
 		startActivityForResult(addIntent, ADD_EXPENSE_CLAIM_REQUEST);
 	}
 	
+	/**
+	 * Calls the intent to manage tags.
+	 */
 	private void startManageTagsActivity() {
 		Intent manageTagsIntent = new Intent(this, ManageTagsActivity.class);
 		startActivity(manageTagsIntent);
@@ -165,6 +185,10 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		startEditExpenseClaimActivity(position);
 	}
 	
+	/**
+	 * Calls the intent to edit a expense claim at a specified position.
+	 * @param position The position of the expense claim to edit.
+	 */
 	private void startEditExpenseClaimActivity(int position) {
 		Intent editIntent = new Intent(this, ExpenseClaimDetailActivity.class);
 		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM, listModel.getItems().get(position));

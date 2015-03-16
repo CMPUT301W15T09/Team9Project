@@ -39,6 +39,10 @@ public class TagEditActivity extends TagAddActivity {
 		
 	}
 	
+	/**
+	 * Sets up the textField in the activity to show specified tag.
+	 * @param tag The tag to manipulate on textField.
+	 */
 	private void setuptextField(Tag tag) {
 		textField.setText(tag.getName());
 	}
