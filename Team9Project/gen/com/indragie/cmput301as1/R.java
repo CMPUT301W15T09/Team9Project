@@ -90,26 +90,24 @@ public final class R {
         public static final int manage_tags=0x7f080006;
     }
     public static final class string {
-        public static final int TagName=0x7f060021;
-        public static final int action_accept=0x7f060022;
+        public static final int TagName=0x7f060022;
+        public static final int action_accept=0x7f060023;
         /**  ExpenseClaimListActivity 
          */
         public static final int action_add_claim=0x7f06000f;
-        public static final int action_add_item=0x7f060014;
-        public static final int action_add_tag=0x7f06001e;
+        public static final int action_add_item=0x7f060015;
+        public static final int action_add_tag=0x7f06001f;
         public static final int action_delete=0x7f060001;
-        public static final int action_edit=0x7f060020;
-        public static final int action_email=0x7f060015;
-        public static final int action_manage_tags=0x7f06001f;
-        public static final int action_mark_approved=0x7f060018;
-        public static final int action_mark_returned=0x7f060017;
-        public static final int action_mark_submitted=0x7f060016;
-        public static final int action_new_tag=0x7f060023;
-        public static final int action_settings=0x7f06001d;
+        public static final int action_edit=0x7f060021;
+        public static final int action_email=0x7f060016;
+        public static final int action_manage_tags=0x7f060020;
+        public static final int action_mark_approved=0x7f060019;
+        public static final int action_mark_returned=0x7f060018;
+        public static final int action_mark_submitted=0x7f060017;
+        public static final int action_new_tag=0x7f060024;
+        public static final int action_settings=0x7f06001e;
         public static final int amount=0x7f06000b;
-        /**  ExpenseItem{Edit,Add}Activity 
-         */
-        public static final int amount_placeholder=0x7f060019;
+        public static final int amount_placeholder=0x7f06001a;
         /**  General 
          */
         public static final int app_name=0x7f060000;
@@ -124,24 +122,25 @@ public final class R {
         /**  ExpenseClaim 
          */
         public static final int description=0x7f060002;
-        public static final int done_label=0x7f06000e;
-        public static final int end_label=0x7f060013;
-        public static final int expense_items=0x7f060005;
-        public static final int hello_world=0x7f06001c;
         /**  ExpenseClaim{Edit,Add}Activity 
          */
-        public static final int name_hint=0x7f060011;
+        public static final int detail_title=0x7f060011;
+        public static final int done_label=0x7f06000e;
+        public static final int end_label=0x7f060014;
+        public static final int expense_items=0x7f060005;
+        public static final int hello_world=0x7f06001d;
+        public static final int name_hint=0x7f060012;
         public static final int no_expenses=0x7f060010;
-        public static final int start_label=0x7f060012;
+        public static final int start_label=0x7f060013;
         public static final int status=0x7f060004;
         public static final int status_approved=0x7f060008;
         public static final int status_in_progress=0x7f060006;
         public static final int status_returned=0x7f060009;
         public static final int status_submitted=0x7f060007;
-        public static final int title_activity_add_tag=0x7f060024;
-        public static final int title_activity_edit_tag=0x7f060025;
-        public static final int title_activity_manage_tags=0x7f06001b;
-        public static final int total_label=0x7f06001a;
+        public static final int title_activity_add_tag=0x7f060025;
+        public static final int title_activity_edit_tag=0x7f060026;
+        public static final int title_activity_manage_tags=0x7f06001c;
+        public static final int total_label=0x7f06001b;
     }
     public static final class style {
         /** 
