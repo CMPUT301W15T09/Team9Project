@@ -65,6 +65,12 @@ public class ExpenseItemAddActivity extends Activity {
 	 * String array of dialog prompts.
 	 */
 	protected String[] dialogOptions;
+	
+	/**
+	 * Maximum size for receipt image files.
+	 */
+    protected static final int IMAGE_MAX_SIZE = 65536; 
+
 
 	//================================================================================
 	// Properties
@@ -151,7 +157,7 @@ public class ExpenseItemAddActivity extends Activity {
 		receiptButton.setOnClickListener(new View.OnClickListener() {	
 			@Override
 			public void onClick(View v) {
-				startDialog();				
+				startImagePickerDialog();				
 			}
 		});
 	}
@@ -226,8 +232,7 @@ public class ExpenseItemAddActivity extends Activity {
 		startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
 	}
 
-
-	/*  Elements of scalingImage method borrowed from
+	/*  Elements of the following methods borrowed from
 	 *  http://stackoverflow.com/questions/3331527/android-resize-a-large-bitmap-file-to-scaled-output-file
 	 *  last accessed: 03/15/15 3:29pm
 	 */ 
@@ -235,64 +240,83 @@ public class ExpenseItemAddActivity extends Activity {
 	 * Resizes a .jpeg file to be under the maximum size
 	 * @param imageFileUri The Uri of the image file to be resized
 	 */
-	public void scaleImage(Uri imageFileUri) {
+	public void scaleJpeg(Uri jpegFileUri) {
 		try {
 			final int IMAGE_MAX_SIZE = 65536; 
-			InputStream fin = new FileInputStream(imageFileUri.getPath());
+		    InputStream fin = new FileInputStream(jpegFileUri.getPath());
 
-			// Decode image size
-			BitmapFactory.Options options = new BitmapFactory.Options();
-			options.inJustDecodeBounds = true;
-			BitmapFactory.decodeStream(fin, null, options);
-			fin.close();
+		    // Decode image size
+		    BitmapFactory.Options options = new BitmapFactory.Options();
+		    options.inJustDecodeBounds = true;
+		    BitmapFactory.decodeStream(fin, null, options);
+		    fin.close();
 
-			int scale = 1;
-			while ((options.outWidth * options.outHeight) * (1 / Math.pow(scale, 2)) > 
-			IMAGE_MAX_SIZE) {
-				scale++;
-			}
+		    int scale = calculateScale(options, IMAGE_MAX_SIZE);
+		    
+		    if (scale > 1) {
+		    	Bitmap bmp = null;
+		    	fin = new FileInputStream(jpegFileUri.getPath());
+		    	// scale to max possible inSampleSize that still yields an image
+		        // larger than target
+		        scale--;
+		        options = new BitmapFactory.Options();
+		        options.inSampleSize = scale;
+		        bmp = BitmapFactory.decodeStream(fin, null, options);
+		        
+		        resizeBitmap(bmp);
+		        fin.close();
+		        
+		        FileOutputStream fos = new FileOutputStream(jpegFileUri.getPath());
+		        bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+		        fos.flush();
+		        fos.close();
+		    }
 
-			if (scale > 1) {
-				Bitmap bmp = null;
-				fin = new FileInputStream(imageFileUri.getPath());
-				// scale to max possible inSampleSize that still yields an image
-				// larger than target
-				scale--;
-				options = new BitmapFactory.Options();
-				options.inSampleSize = scale;
-				bmp = BitmapFactory.decodeStream(fin, null, options);
-
-				// resize to desired dimensions
-				int height = bmp.getHeight();
-				int width = bmp.getWidth();
-
-				double y = Math.sqrt(IMAGE_MAX_SIZE
-						/ (((double) width) / height));
-				double x = (y / height) * width;
-
-				Bitmap scaledBitmap = Bitmap.createScaledBitmap(bmp, (int) x, 
-						(int) y, true);
-				bmp.recycle();
-				bmp = scaledBitmap;
-
-				// System.gc ?
-
-				fin.close();	
-
-				FileOutputStream fos = new FileOutputStream(imageFileUri.getPath());
-				bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-				fos.flush();
-				fos.close();
-			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * 
+	 * @param options An options object created from the image to be resized.
+	 * @param maxSize Maximum size of a receipt image.
+	 * @return the scale factor.
+	 */
+	protected int calculateScale(BitmapFactory.Options options, int maxSize) {
+		int scale = 1;
+	    while ((options.outWidth * options.outHeight) * (1 / Math.pow(scale, 2)) > 
+	          maxSize) {
+	       scale++;
+	    }
+	    return scale;
+	}
+	
+	/**
+	 * Resizes the dimensions of the scaled bitmap.
+	 * @param bmp the bitmap to be resized.
+	 * @return the resized bitmap.
+	 */
+	protected Bitmap resizeBitmap(Bitmap bmp) {
+        // resize to desired dimensions
+		int height = bmp.getHeight();
+        int width = bmp.getWidth();
 
+        double y = Math.sqrt(IMAGE_MAX_SIZE
+                / (((double) width) / height));
+        double x = (y / height) * width;
+
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bmp, (int) x, 
+           (int) y, true);
+        bmp.recycle();
+        bmp = scaledBitmap;
+		return bmp;
+	}
+	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 		if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-			scaleImage(receiptFileUri);
+			scaleJpeg(receiptFileUri);
 			receiptButton = (ImageButton) findViewById(R.id.btn_receipt);
 			Drawable receiptPic = Drawable.createFromPath(receiptFileUri.getPath());
 			receiptButton.setImageDrawable(receiptPic);
@@ -316,7 +340,7 @@ public class ExpenseItemAddActivity extends Activity {
 	/**
 	 * Opens an alert dialog to allow the user to select a task.
 	 */
-	protected void startDialog() {
+	protected void startImagePickerDialog() {
 		AlertDialog.Builder openDialog = new AlertDialog.Builder(this);
 		openDialog.setTitle("Select an action");
 		openDialog.setItems(dialogOptions, new DialogInterface.OnClickListener() {
