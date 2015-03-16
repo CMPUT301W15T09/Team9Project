@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.indragie.cmput301as1.Tag;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public class TagsTests extends TestCase {
