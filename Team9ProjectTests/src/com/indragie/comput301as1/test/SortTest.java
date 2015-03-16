@@ -18,16 +18,17 @@ import com.indragie.cmput301as1.StartDateDescendingComparator;
 
 public class SortTest extends AndroidTestCase {
 	
-private static final String EXPENSE_CLAIM_SORT = null;
+private static final String EXPENSE_CLAIM_SORT = "com.indragie.cmput301as1.EXPENSE_CLAIM";
 	
 	@SuppressWarnings("unchecked")
-	public void testStart() {
+	public void testStart() throws InterruptedException {
 		// startDate in format (YYYY, MM, DD)
 		Date date1 = new Date(2000, 01, 01);
 		Date date2 = new Date(1995, 01, 01);
 		
 		// ExpenseClaim(name, description, startDate, endDate, status, creationDate)
 		ExpenseClaim claim1 = new ExpenseClaim(null, null, date1, null, null);
+		Thread.sleep(2000);
 		ExpenseClaim claim2 = new ExpenseClaim(null, null, date2, null, null);
 		
 		ListModel<ExpenseClaim> listmodel = new ListModel<ExpenseClaim>("claims.dat", getContext());
@@ -46,43 +47,41 @@ private static final String EXPENSE_CLAIM_SORT = null;
 		
 		// start the sorts
 		Intent data = getStartDateAscendingIntent();
-		listmodel.setComparator((Comparator<ExpenseClaim>) data.getSerializableExtra(ExpenseClaimSortActivity.EXPENSE_CLAIM_SORT));
+		Comparator<ExpenseClaim> comparator = (Comparator<ExpenseClaim>)data.getSerializableExtra(ExpenseClaimSortActivity.EXPENSE_CLAIM_SORT);
+		listmodel.setComparator(comparator);
 
-		assertNotNull(data);
+		// check to see that the comparator is not returning null
+		assertNotNull(comparator);
+		
 		// claim2 should now be in front
-		/*
-		String test1 = claims.get(0).getStartDate().toString();
-		test2 = claim2.getStartDate().toString();
-		String test4 = claims.get(1).getStartDate().toString();
-		Log.d("claimget0", test1);
-		Log.d("claimget1", test4);
-		Log.d("claim1", test3);
-		Log.d("claim2", test2);
-
-		String test5 = claims.get(0).getCreationDate().toString();
-		String test6 = claims.get(1).getCreationDate().toString();
-		Log.d("claimget0c", test5);
-		Log.d("claimget1c", test6);
-		*/
-		assertEquals(claims.get(0), claim1);
+		assertEquals(claims.get(0), claim2);
 		
 		data = getStartDateDescendingIntent();
 		listmodel.setComparator((Comparator<ExpenseClaim>) data.getSerializableExtra(ExpenseClaimSortActivity.EXPENSE_CLAIM_SORT));
 		
 		// claim1 should be first now
-		assertEquals(claims.get(1).getStartDate(),claim2.getStartDate());
+		assertEquals(claims.get(0),claim1);
 
 		data = getCreationDateDescendingIntent();
 		listmodel.setComparator((Comparator<ExpenseClaim>) data.getSerializableExtra(ExpenseClaimSortActivity.EXPENSE_CLAIM_SORT));
 				
 		// claim2 should now be in front
-		//assertEquals(claims.get(1).getCreationDate(),claim2.getCreationDate());
+		assertEquals(claims.get(0).getCreationDate(),claim2.getCreationDate());
 				
+		String test3 = claim1.getCreationDate().toString();
+		String test2 = claim2.getCreationDate().toString();	
+		String test1 = claims.get(0).getCreationDate().toString();
+		Log.d(test3, test2);
+		Log.d("claimsget0", test1);	
+		
 		data = getCreationDateAscendingIntent();
 		listmodel.setComparator((Comparator<ExpenseClaim>) data.getSerializableExtra(ExpenseClaimSortActivity.EXPENSE_CLAIM_SORT));
 				
+		String test4 = claims.get(0).getCreationDate().toString();
+		Log.d(test3, test2);
+		Log.d("claimsget0", test4);	
 		// claim1 should be first now
-		//assertEquals(claims.get(0).getCreationDate(),claim1.getCreationDate());
+		assertEquals(claims.get(0).getCreationDate(),claim1.getCreationDate());
 	}
 	
 	public Intent getStartDateAscendingIntent() {
