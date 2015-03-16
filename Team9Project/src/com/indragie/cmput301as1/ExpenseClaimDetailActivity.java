@@ -161,8 +161,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		claim = (ExpenseClaim)intent.getSerializableExtra(EXTRA_EXPENSE_CLAIM);
 		user = (User)intent.getSerializableExtra(EXTRA_EXPENSE_CLAIM_USER);
 		status = claim.getStatus();
-
-		setEditable();
 		
 		claim = (ExpenseClaim)getIntent().getSerializableExtra(EXTRA_EXPENSE_CLAIM);
 		
@@ -174,6 +172,8 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		setupListFooterView();
 		setEditable(claim.isEditable());
 		setListAdapter(controller.getAdapter());
+		
+		setEditable();
 	}
 	
 	@Override

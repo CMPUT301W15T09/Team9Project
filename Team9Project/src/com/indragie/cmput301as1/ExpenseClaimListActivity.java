@@ -25,6 +25,7 @@ import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -77,6 +78,8 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		super.onCreate(savedInstanceState);
 
 		checkFirstRun();
+		SharedPreferences prefs = getSharedPreferences("PREFERENCE", MODE_PRIVATE);
+		user = new User(prefs.getString("name", ""), prefs.getInt("id", -1));
 
 		listModel = new ListModel<ExpenseClaim>(EXPENSE_CLAIM_FILENAME, this);
 		listModel.addObserver(this);
@@ -254,9 +257,6 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 						.edit()
 						.putBoolean("isFirstRun", false)
 						.apply();
-
-						int id = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getInt("id", -1);
-						user = new User(value,id);
 					}
 					else{
 						checkFirstRun();
