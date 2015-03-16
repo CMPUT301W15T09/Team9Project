@@ -89,18 +89,18 @@ public final class R {
         public static final int amount=0x7f06000b;
         /**  ExpenseItem{Edit,Add}Activity 
          */
-        public static final int amount_placeholder=0x7f060019;
+        public static final int amount_placeholder=0x7f06001c;
         /**  General 
          */
         public static final int app_name=0x7f060000;
-        public static final int approver=0x7f06001c;
+        public static final int approver=0x7f06001a;
         /**  EditingActivity 
          */
         public static final int cancel_label=0x7f06000d;
         /**  ExpenseItem 
          */
         public static final int category=0x7f06000a;
-        public static final int comments=0x7f06001d;
+        public static final int comments=0x7f06001b;
         public static final int date=0x7f06000c;
         public static final int dates=0x7f060003;
         /**  ExpenseClaim 
@@ -119,8 +119,8 @@ public final class R {
         public static final int status_in_progress=0x7f060006;
         public static final int status_returned=0x7f060009;
         public static final int status_submitted=0x7f060007;
-        public static final int total_label=0x7f06001a;
-        public static final int user=0x7f06001b;
+        public static final int total_label=0x7f06001d;
+        public static final int user=0x7f060019;
     }
     public static final class style {
         /** 
