@@ -40,7 +40,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	//================================================================================
 	// Constants
 	//================================================================================
-	
+
 	private static final int ADD_EXPENSE_CLAIM_REQUEST = 1;
 	private static final int EDIT_EXPENSE_CLAIM_REQUEST = 2;
 	private static final String EXPENSE_CLAIM_FILENAME = "claims";
@@ -48,7 +48,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	//================================================================================
 	// Properties
 	//================================================================================
-	
+
 	private ExpenseClaimListModel listModel;
 	private int longPressedItemIndex;
 	private User user;
@@ -56,17 +56,17 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	//================================================================================
 	// Activity Callbacks
 	//================================================================================
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		checkFirstRun();
-		
+
 		listModel = new ExpenseClaimListModel(EXPENSE_CLAIM_FILENAME, this);
 		listModel.addObserver(this);
 		setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getExpenseClaims()));
-		
+
 		final ActionMode.Callback longClickCallback = new ActionMode.Callback() {
 			@Override
 			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
@@ -103,7 +103,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 			}
 		});
 	}
-	
+
 	@Override
 	public void onDestroy() {
 		listModel.deleteObserver(this);
@@ -122,12 +122,12 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 			break;
 		}
 	}
-	
+
 	private void onAddExpenseResult(Intent data) {
 		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM);
 		listModel.add(claim);
 	}
-	
+
 	private void onEditExpenseResult(Intent data) {
 		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM);
 		int position = data.getIntExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_POSITION, -1);
@@ -150,85 +150,85 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
 	private void startAddExpenseClaimActivity() {
 		Intent addIntent = new Intent(this, ExpenseClaimAddActivity.class);
 		addIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_USER, user);
 		startActivityForResult(addIntent, ADD_EXPENSE_CLAIM_REQUEST);
 	}
-	
-	
+
+
 	public void checkFirstRun() {
-	    boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("isFirstRun", true);
-	    if (isFirstRun){ 
-	        
-	        //http://www.androidsnippets.com/prompt-user-input-with-an-alertdialog
-	        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-	        alert.setCancelable(false);
+		boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("isFirstRun", true);
+		if (isFirstRun){ 
 
-	        alert.setTitle("Username");
-	        alert.setMessage("Please enter your name:");
+			//http://www.androidsnippets.com/prompt-user-input-with-an-alertdialog
+			AlertDialog.Builder alert = new AlertDialog.Builder(this);
+			alert.setCancelable(false);
 
-	        // Set an EditText view to get user input 
-	        final EditText input = new EditText(this);
-	        alert.setView(input);
+			alert.setTitle("Username");
+			alert.setMessage("Please enter your name:");
 
-	        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-	        public void onClick(DialogInterface dialog, int whichButton) {
-	          String value = input.getText().toString();
-	          
-	          if(value != ""){
-	        	  getSharedPreferences("PREFERENCE", MODE_PRIVATE)
-	        	  .edit()
-	        	  .putString("name", value)
-	        	  .apply();
-					  
-	        	  getSharedPreferences("PREFERENCE", MODE_PRIVATE)
-	        	  .edit()
-	        	  //setup as default ID will change later
-	        	  .putInt("id", 1)
-	        	  .apply();
-					  
-	        	  getSharedPreferences("PREFERENCE", MODE_PRIVATE)
-	        	  .edit()
-	        	  .putBoolean("isFirstRun", false)
-	        	  .apply();
-				  
-				
-	        	  int id = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getInt("id", -1);
-	        	  user = new User(value,id);
-	          }
-	          else{
-	        	  checkFirstRun();
-		          Toast.makeText(getApplicationContext(), "You must enter a username", Toast.LENGTH_LONG).show(); 
-	          }
-	          
-	          }
-	        });
+			// Set an EditText view to get user input 
+			final EditText input = new EditText(this);
+			alert.setView(input);
 
-	        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-	          public void onClick(DialogInterface dialog, int whichButton) {
-	            checkFirstRun();
-	            Toast.makeText(getApplicationContext(), "You must enter a username", Toast.LENGTH_LONG).show();
-	          }
-	        });
+			alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+					String value = input.getText().toString();
 
-	        alert.show();
-	        
+					if(value != ""){
+						getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+						.edit()
+						.putString("name", value)
+						.apply();
 
-	        
-	    }
+						getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+						.edit()
+						//setup as default ID will change later
+						.putInt("id", 1)
+						.apply();
+
+						getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+						.edit()
+						.putBoolean("isFirstRun", false)
+						.apply();
+
+
+						int id = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getInt("id", -1);
+						user = new User(value,id);
+					}
+					else{
+						checkFirstRun();
+						Toast.makeText(getApplicationContext(), "You must enter a username", Toast.LENGTH_LONG).show(); 
+					}
+
+				}
+			});
+
+			alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+					checkFirstRun();
+					Toast.makeText(getApplicationContext(), "You must enter a username", Toast.LENGTH_LONG).show();
+				}
+			});
+
+			alert.show();
+
+
+
+		}
 	}
 
 	//================================================================================
 	// ListView Callbacks
 	//================================================================================
-	
+
 	@Override
 	public void onListItemClick(ListView listView, View view, int position, long id) {
 		startEditExpenseClaimActivity(position);
 	}
-	
+
 	private void startEditExpenseClaimActivity(int position) {
 		Intent editIntent = new Intent(this, ExpenseClaimDetailActivity.class);
 		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM, listModel.getExpenseClaims().get(position));
@@ -240,7 +240,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	//================================================================================
 	// TypedObserver
 	//================================================================================
-	
+
 	@Override
 	public void update(TypedObservable<List<ExpenseClaim>> o, List<ExpenseClaim> claims) {
 		setListAdapter(new ExpenseClaimArrayAdapter(this, claims));

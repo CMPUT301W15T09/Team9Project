@@ -10,7 +10,6 @@ public class UserTests extends TestCase {
 	
 	public UserTests() {
 		super();
-		
 		// TODO Auto-generated constructor stub
 	}
 	protected void setUp() throws Exception {
