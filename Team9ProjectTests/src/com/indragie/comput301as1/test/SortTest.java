@@ -6,8 +6,6 @@ import java.util.List;
 
 import android.content.Intent;
 import android.test.AndroidTestCase;
-import android.util.Log;
-
 import com.indragie.cmput301as1.CreationDateAscendingComparator;
 import com.indragie.cmput301as1.CreationDateDescendingComparator;
 import com.indragie.cmput301as1.ExpenseClaim;

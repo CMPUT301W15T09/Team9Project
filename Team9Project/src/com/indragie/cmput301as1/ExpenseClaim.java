@@ -101,8 +101,9 @@ public class ExpenseClaim implements Serializable {
 	 */
 	private Date endDate;
 	
-
-	// added private variable creation date
+	/**
+	 * Creation date of the claim.
+	 */
 	private Date creationDate;
 
 	//================================================================================

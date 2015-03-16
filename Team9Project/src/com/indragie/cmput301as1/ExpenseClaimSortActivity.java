@@ -53,6 +53,10 @@ public class ExpenseClaimSortActivity extends Activity {
 		);
 	}
 	
+	/**
+	 * gets the intent for the type of sort from the user interface
+	 * @return
+	 */
 	private Intent getSortType() {
 		// now we want to grab the sort type from the spinners
 		Spinner sortTypeSpinner = (Spinner)findViewById(R.id.sort_type_spinner);
