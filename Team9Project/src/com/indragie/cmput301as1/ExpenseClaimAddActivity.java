@@ -19,8 +19,10 @@ package com.indragie.cmput301as1;
 
 import java.util.Date;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -28,7 +30,7 @@ import android.widget.TextView;
  * Activity that presents a user interface for entering information to 
  * create a new expense claim.
  */
-public class ExpenseClaimAddActivity extends AddActivity {
+public class ExpenseClaimAddActivity extends Activity {
 	//================================================================================
 	// Constants
 	//================================================================================
@@ -38,10 +40,21 @@ public class ExpenseClaimAddActivity extends AddActivity {
 	//================================================================================
 	// Properties
 	//================================================================================
-
+	/**
+	 * The name of the expense claim.
+	 */
 	private EditText nameField;
+	/**
+	 * The description of the expense claim.
+	 */
 	private EditText descriptionField;
+	/**
+	 * The start date of the expense claim.
+	 */
 	private DateEditText startDateField;
+	/**
+	 * The end date of the expense claim.
+	 */
 	private DateEditText endDateField;
 	private TextView userfield;
 	private EditText commentField;
@@ -58,6 +71,24 @@ public class ExpenseClaimAddActivity extends AddActivity {
 		
 		Intent intent = getIntent();
 		user = (User)intent.getSerializableExtra(EXTRA_EXPENSE_CLAIM_USER);
+
+		ActionBarUtils.showCancelDoneActionBar(
+			this,
+			new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					setResult(RESULT_CANCELED, new Intent());
+					finish();
+				}
+			},
+			new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					setResult(RESULT_OK, constructResultIntent());
+					finish();
+				}
+			}
+		);
 
 		nameField = (EditText)findViewById(R.id.et_name);
 		descriptionField = (EditText)findViewById(R.id.et_description);
@@ -85,23 +116,11 @@ public class ExpenseClaimAddActivity extends AddActivity {
 		commentField.setEnabled(false);
 				
 	}
-
-	//================================================================================
-	// EditingActivity
-	//================================================================================
-
-	@Override
-	protected void onCancel() {
-		setResult(RESULT_CANCELED, new Intent());
-		finish();
-	}
-
-	@Override
-	protected void onDone() {
-		setResult(RESULT_OK, constructResultIntent());
-		finish();
-	}
-
+	
+	/**
+	 * Creates a new expense claim to put into another activity.
+	 * @return The intent with the new expense claim.
+	 */
 	private Intent constructResultIntent() {
 		ExpenseClaim claim = new ExpenseClaim(
 			nameField.getText().toString(), 

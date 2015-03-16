@@ -19,8 +19,10 @@ package com.indragie.cmput301as1;
 
 import org.joda.money.*;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
 
@@ -28,7 +30,7 @@ import android.widget.Spinner;
  * Activity that presents a user interface for entering information to 
  * create a new expense item.
  */
-public class ExpenseItemAddActivity extends AddActivity {
+public class ExpenseItemAddActivity extends Activity {
 	//================================================================================
 	// Constants
 	//================================================================================
@@ -37,12 +39,29 @@ public class ExpenseItemAddActivity extends AddActivity {
 	//================================================================================
 	// Properties
 	//================================================================================
-
+	/**
+	 * Text field for name of expense item.
+	 */
 	protected EditText nameField;
+	/**
+	 * Text field for description of expense item.
+	 */
 	protected EditText descriptionField;
+	/**
+	 * Text field for amount of the expense item.
+	 */
 	protected EditText amountField;
+	/**
+	 * Text field for date of the expense item.
+	 */
 	protected DateEditText dateField;
+	/**
+	 * Spinner to select category of the expense item.
+	 */
 	protected Spinner categorySpinner;
+	/**
+	 * Spinner to select currency of the expense item.
+	 */
 	protected Spinner currencySpinner;
 
 	//================================================================================
@@ -53,6 +72,21 @@ public class ExpenseItemAddActivity extends AddActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_expense_item_add);
+		ActionBarUtils.showCancelDoneActionBar(
+			this,
+			new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					onCancel();
+				}
+			},
+			new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					onDone();
+				}
+			}
+		);
 
 		nameField = (EditText)findViewById(R.id.et_name);
 		descriptionField = (EditText)findViewById(R.id.et_description);
@@ -69,7 +103,10 @@ public class ExpenseItemAddActivity extends AddActivity {
 	//================================================================================
 	// Subclass Overrides
 	//================================================================================
-
+	/**
+	 * Creates the new expense item of the intent.
+	 * @return A intent with the expense item.
+	 */
 	protected Intent getResultIntent()  {
 		Money amount = Money.of(
 			CurrencyUnit.of(currencySpinner.getSelectedItem().toString()), 
@@ -88,17 +125,11 @@ public class ExpenseItemAddActivity extends AddActivity {
 		return intent;
 	}
 	
-	//================================================================================
-	// EditingActivity
-	//================================================================================
-
-	@Override
 	protected void onCancel() {
 		setResult(RESULT_CANCELED, new Intent());
 		finish();
 	}
 
-	@Override
 	protected void onDone() {
 		setResult(RESULT_OK, getResultIntent());
 		finish();
