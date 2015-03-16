@@ -74,42 +74,82 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	// Accessors
 	//================================================================================
 
+	/**
+	 * Gets the name.
+	 * @return The name.
+	 */
 	public String getName() {
 		return name;
 	}
-
+	
+	/**
+	 * Sets the name.
+	 * @param name The name.
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * Gets the date.
+	 * @return The date.
+	 */
 	public Date getDate() {
 		return date;
 	}
 
+	/**
+	 * Sets the date.
+	 * @param date The date.
+	 */
 	public void setDate(Date date) {
 		this.date = date;
 	}
 
+	/**
+	 * Gets the category.
+	 * @return The category.
+	 */
 	public String getCategory() {
 		return category;
 	}
 
+	/**
+	 * Sets the category.
+	 * @param category The category to set to.
+	 */
 	public void setCategory(String category) {
 		this.category = category;
 	}
 
+	/**
+	 * Gets the description.
+	 * @return The description.
+	 */
 	public String getDescription() {
 		return description;
 	}
 
+	/**
+	 * Sets the description.
+	 * @param description The description to set to.
+	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
+	
+	/**
+	 * Gets the amount of money.
+	 * @return The amount of money.
+	 */
 	public Money getAmount() {
 		return amount;
 	}
-
+	
+	/**
+	 * Sets the amount of money.
+	 * @param amount The amount to set to.
+	 */
 	public void setAmount(Money amount) {
 		this.amount = amount;
 	}
@@ -146,7 +186,8 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	//================================================================================
 	// Comparable
 	//================================================================================
-
+	
+	@Override
 	public int compareTo(ExpenseItem item) {
 		return this.getDate().compareTo(item.getDate());
 	}
