@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="receipt_dialog_array">
+        <item>Take Photo</item>
+        <item>Open in Gallery</item>
+        <item>Delete Photo</item>
+        <item>Cancel</item>
+    </string-array>
+</resources>

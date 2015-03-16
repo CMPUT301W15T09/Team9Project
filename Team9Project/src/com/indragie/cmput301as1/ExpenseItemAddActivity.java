@@ -17,14 +17,31 @@
 
 package com.indragie.cmput301as1;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.joda.money.*;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.hardware.Camera;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 /**
  * Activity that presents a user interface for entering information to 
@@ -34,35 +51,70 @@ public class ExpenseItemAddActivity extends Activity {
 	//================================================================================
 	// Constants
 	//================================================================================
+	/**
+	 * Intent key for the position of the {@link ExpenseItem} object.
+	 */
 	public static final String EXTRA_EXPENSE_ITEM = "com.indragie.cmput301as1.EXPENSE_ITEM";
+
+	/**
+	 * Request code for starting {@link Camera}.
+	 */
+	protected static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+
+	/**
+	 * String array of dialog prompts.
+	 */
+	protected String[] dialogOptions;
+	
+	/**
+	 * Maximum size for receipt image files.
+	 */
+    protected static final int IMAGE_MAX_SIZE = 65536; 
+
 
 	//================================================================================
 	// Properties
 	//================================================================================
+
 	/**
-	 * Text field for name of expense item.
+	 * Field that displays the name of the expense item.
 	 */
 	protected EditText nameField;
+
 	/**
-	 * Text field for description of expense item.
+	 * Field that displays the description of the expense item.
 	 */
 	protected EditText descriptionField;
+
 	/**
-	 * Text field for amount of the expense item.
+	 * Field that displays the cost amount of the expense item.
 	 */
 	protected EditText amountField;
+
 	/**
-	 * Text field for date of the expense item.
+	 * Field that displays the date that the expense item was incurred.
 	 */
 	protected DateEditText dateField;
+
 	/**
-	 * Spinner to select category of the expense item.
+	 * Dropdown menu that displays the category of the expense item.
 	 */
 	protected Spinner categorySpinner;
+
 	/**
-	 * Spinner to select currency of the expense item.
+	 * Dropdown menu that displays the currency of the expense item transaction.
 	 */
 	protected Spinner currencySpinner;
+
+	/**
+	 * Button that displays the receipt image taken, if any.
+	 */
+	protected ImageButton receiptButton;
+
+	/**
+	 * Uri reference of the receipt image.
+	 */
+	protected Uri receiptFileUri;
 
 	//================================================================================
 	// Activity Callbacks
@@ -72,6 +124,8 @@ public class ExpenseItemAddActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_expense_item_add);
+		dialogOptions = getResources().getStringArray(R.array.receipt_dialog_array);
+
 		ActionBarUtils.showCancelDoneActionBar(
 			this,
 			new View.OnClickListener() {
@@ -98,6 +152,14 @@ public class ExpenseItemAddActivity extends Activity {
 
 		currencySpinner = (Spinner)findViewById(R.id.sp_currency);
 		SpinnerUtils.configureSpinner(this, currencySpinner, R.array.currency_array);
+
+		receiptButton = (ImageButton) findViewById(R.id.btn_receipt);
+		receiptButton.setOnClickListener(new View.OnClickListener() {	
+			@Override
+			public void onClick(View v) {
+				startImagePickerDialog();				
+			}
+		});
 	}
 
 	//================================================================================
@@ -119,12 +181,15 @@ public class ExpenseItemAddActivity extends Activity {
 			amount,
 			dateField.getDate()
 		);
+		if (receiptFileUri != null) {
+			item.setReceipt(receiptFileUri.toString());
+		}
 
 		Intent intent = new Intent();
 		intent.putExtra(EXTRA_EXPENSE_ITEM, item);
 		return intent;
 	}
-	
+
 	protected void onCancel() {
 		setResult(RESULT_CANCELED, new Intent());
 		finish();
@@ -134,4 +199,186 @@ public class ExpenseItemAddActivity extends Activity {
 		setResult(RESULT_OK, getResultIntent());
 		finish();
 	}
+
+	//================================================================================
+	// Receipt-Image Capture and Handling
+	//================================================================================
+
+	/**
+	 * Sets up an external storage directory for receipt images and
+	 * creates a file to store a new one, then passes an intent
+	 * to a Camera application to take a photo.
+	 */
+	protected void takePhoto() {
+
+		// create folder to store receipt images
+		String folder = Environment.getExternalStorageDirectory()
+				.getAbsolutePath() + "/ExpenseReceipts";
+		File receiptFolder = new File(folder);
+		if (!receiptFolder.exists()) {
+			receiptFolder.mkdir();
+		}
+
+		// create image file Uri
+		String receiptFilePath = folder + "/"
+				+ String.valueOf(System.currentTimeMillis()) + ".jpg";
+		File receiptFile = new File(receiptFilePath);
+		receiptFileUri = Uri.fromFile(receiptFile);
+
+		// create and dispatch picture intent 
+		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, receiptFileUri);
+
+		startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+	}
+
+	/*  Elements of the following methods borrowed from
+	 *  http://stackoverflow.com/questions/3331527/android-resize-a-large-bitmap-file-to-scaled-output-file
+	 *  last accessed: 03/15/15 3:29pm
+	 */ 
+	/**
+	 * Resizes a .jpeg file to be under the maximum size
+	 * @param imageFileUri The Uri of the image file to be resized
+	 */
+	public void scaleJpeg(Uri jpegFileUri) {
+		try {
+			final int IMAGE_MAX_SIZE = 65536; 
+		    InputStream fin = new FileInputStream(jpegFileUri.getPath());
+
+		    // Decode image size
+		    BitmapFactory.Options options = new BitmapFactory.Options();
+		    options.inJustDecodeBounds = true;
+		    BitmapFactory.decodeStream(fin, null, options);
+		    fin.close();
+
+		    int scale = calculateScale(options, IMAGE_MAX_SIZE);
+		    
+		    if (scale > 1) {
+		    	Bitmap bmp = null;
+		    	fin = new FileInputStream(jpegFileUri.getPath());
+		    	// scale to max possible inSampleSize that still yields an image
+		        // larger than target
+		        scale--;
+		        options = new BitmapFactory.Options();
+		        options.inSampleSize = scale;
+		        bmp = BitmapFactory.decodeStream(fin, null, options);
+		        
+		        resizeBitmap(bmp);
+		        fin.close();
+		        
+		        FileOutputStream fos = new FileOutputStream(jpegFileUri.getPath());
+		        bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+		        fos.flush();
+		        fos.close();
+		    }
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 
+	 * @param options An options object created from the image to be resized.
+	 * @param maxSize Maximum size of a receipt image.
+	 * @return the scale factor.
+	 */
+	protected int calculateScale(BitmapFactory.Options options, int maxSize) {
+		int scale = 1;
+	    while ((options.outWidth * options.outHeight) * (1 / Math.pow(scale, 2)) > 
+	          maxSize) {
+	       scale++;
+	    }
+	    return scale;
+	}
+	
+	/**
+	 * Resizes the dimensions of the scaled bitmap.
+	 * @param bmp the bitmap to be resized.
+	 * @return the resized bitmap.
+	 */
+	protected Bitmap resizeBitmap(Bitmap bmp) {
+        // resize to desired dimensions
+		int height = bmp.getHeight();
+        int width = bmp.getWidth();
+
+        double y = Math.sqrt(IMAGE_MAX_SIZE
+                / (((double) width) / height));
+        double x = (y / height) * width;
+
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bmp, (int) x, 
+           (int) y, true);
+        bmp.recycle();
+        bmp = scaledBitmap;
+		return bmp;
+	}
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+		if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+			scaleJpeg(receiptFileUri);
+			receiptButton = (ImageButton) findViewById(R.id.btn_receipt);
+			Drawable receiptPic = Drawable.createFromPath(receiptFileUri.getPath());
+			receiptButton.setImageDrawable(receiptPic);
+			Toast.makeText(getApplicationContext(), getString(R.string.toast_receipt_success), Toast.LENGTH_SHORT).show();
+		}
+		else {
+			Toast.makeText(getApplicationContext(), getString(R.string.toast_receipt_failed), Toast.LENGTH_SHORT).show();
+		}
+	}
+
+	//================================================================================
+	// Camera + Gallery Dialogue
+	//================================================================================
+
+
+	/* 
+	 *  Elements of method startDialog borrowed from 
+	 *  http://www.theappguruz.com/blog/android-take-photo-camera-gallery-code-sample/
+	 *  last accessed: 03/12/2015 3:02pm
+	 */
+	/**
+	 * Opens an alert dialog to allow the user to select a task.
+	 */
+	protected void startImagePickerDialog() {
+		AlertDialog.Builder openDialog = new AlertDialog.Builder(this);
+		openDialog.setTitle("Select an action");
+		openDialog.setItems(dialogOptions, new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int item) {
+
+				if (dialogOptions[item].equals("Take Photo")) {
+					takePhoto();
+				}
+
+				else if (dialogOptions[item].equals("Open in Gallery")) {
+					if (receiptFileUri == null) {
+						dialog.dismiss();
+						Toast.makeText(getApplicationContext(), 
+								getString(R.string.toast_receipt_nonexistent), Toast.LENGTH_SHORT).show();
+					}
+					else {
+						Intent intent = new Intent();
+						intent.setAction(Intent.ACTION_VIEW);
+						intent.setDataAndType(receiptFileUri, "image/*");
+						startActivity(intent);
+					}
+				}
+
+				else if (dialogOptions[item].equals("Delete Photo")) {
+					receiptFileUri = null;
+					Toast.makeText(getApplicationContext(), 
+							getString(R.string.toast_receipt_deleted), Toast.LENGTH_SHORT).show();
+					receiptButton.setImageResource(R.drawable.ic_action_search);
+				}
+
+				else if (dialogOptions[item].equals("Cancel")) {
+					dialog.dismiss();
+				}
+			}
+		});
+		openDialog.show();
+	}
 }
+

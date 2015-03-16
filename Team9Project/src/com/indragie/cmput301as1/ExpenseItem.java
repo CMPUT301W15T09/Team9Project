@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2015 Indragie Karunaratne
+ * Copyright (C) 2015 Indragie Karunaratne, Brandon Williams
  * 
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -36,23 +36,32 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	 * Name of the expense item.
 	 */
 	private String name;
+	
 	/**
 	 * Date on which the expense occurred.
 	 */
 	private Date date;
+	
 	/**
 	 * Category of the expense (e.g. air fare, accommodation, etc.)
 	 */
 	private String category;
+	
 	/**
 	 * Textual description of the expense.
 	 */
 	private String description;
+	
 	/**
 	 * Encapsulates the amount spent and the unit of currency.
 	 * (Money class is from the Joda Money library)
 	 */
 	private Money amount;
+	
+	/**
+	 * String representation of a Uri of a receipt image.
+	 */
+	private String receipt;
 
 	//================================================================================
 	// Constructors
@@ -132,6 +141,21 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	/**
+	 * @return String representation of a Uri of a receipt image.
+	 */
+	public String getReceipt() {
+		return receipt;
+	}
+
+	/**
+	 * Sets the string representation of a Uri of a receipt image.
+	 * @param receipt String representation of a Uri of a receipt image.
+	 */
+	public void setReceipt(String receipt) {
+		this.receipt = receipt;
 	}
 	
 	/**

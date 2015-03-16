@@ -55,10 +55,19 @@
 
     <com.indragie.cmput301as1.DateEditText
         android:id="@+id/et_date"
-        android:labelFor="@id/et_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:gravity="center_horizontal" />
+        android:gravity="center_horizontal"
+        android:labelFor="@id/et_date" />
+
+    <ImageButton
+        android:id="@+id/btn_receipt"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:src="@drawable/ic_action_search"
+        android:scaleType="fitCenter" />
 
 </LinearLayout>

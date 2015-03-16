@@ -21,6 +21,8 @@ import org.joda.money.Money;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -28,10 +30,19 @@ import android.view.MenuItem;
  * Activity for editing the attributes of an expense item.
  */
 public class ExpenseItemEditActivity extends ExpenseItemAddActivity {
+	
 	//================================================================================
 	// Constants
 	//================================================================================
+	
+	/**
+	 * Intent key for the position of the {@link ExpenseItem} object.
+	 */
 	public static final String EXTRA_EXPENSE_ITEM_POSITION = "com.indragie.cmput301as1.EXPENSE_ITEM_POSITION";
+	
+	/**
+	 * Intent key for editting an {@link ExpenseItem} object.
+	 */
 	public static final String EXTRA_EXPENSE_ITEM_EDITABLE = "com.indragie.cmput301as1.EXPENSE_ITEM_EDITABLE";
 	
 	//================================================================================
@@ -49,8 +60,13 @@ public class ExpenseItemEditActivity extends ExpenseItemAddActivity {
 		ExpenseItem item = (ExpenseItem)getIntent().getSerializableExtra(EXTRA_EXPENSE_ITEM);
 		Boolean editable = intent.getBooleanExtra(EXTRA_EXPENSE_ITEM_EDITABLE, false);
 		
+		if (item.getReceipt() != null) {
+			receiptFileUri = Uri.parse(item.getReceipt());
+		}
+		
 		setTitle(item.getName());
 		setupFields(item, editable);
+		
 	}
 	
 	/**
@@ -78,6 +94,12 @@ public class ExpenseItemEditActivity extends ExpenseItemAddActivity {
 		
 		SpinnerUtils.setSelectedItem(categorySpinner, item.getCategory());
 		categorySpinner.setEnabled(editable);
+		
+		receiptButton.setClickable(editable);
+		if (receiptFileUri != null) {
+			Drawable receiptPic = Drawable.createFromPath(receiptFileUri.getPath());
+			receiptButton.setImageDrawable(receiptPic);
+		}
 	}
 	
 	@Override
