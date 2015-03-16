@@ -27,6 +27,7 @@
     <!-- ExpenseClaimListActivity -->
     <string name="action_add_claim">Add Claim</string>
     <string name="no_expenses">No expenses</string>
+    <string name="no_destinations">No destinations</string>
 
     <!-- ExpenseClaim{Detail,Add}Activity -->
     <string name="detail_title">Detail</string>
