@@ -66,6 +66,12 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 		return convertView;
 	}
 	
+	/**
+	 * Draws the status of the expense claim
+	 * @param status The status.
+	 * @param resources The application's resources.
+	 * @return The drawable resource.
+	 */
 	private Drawable drawableForStatus(ExpenseClaim.Status status, Resources resources) {
 		switch (status) {
 		case IN_PROGRESS:

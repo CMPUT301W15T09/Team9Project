@@ -36,10 +36,21 @@ public class ExpenseClaimAddActivity extends AddActivity {
 	//================================================================================
 	// Properties
 	//================================================================================
-
+	/**
+	 * The name of the expense claim.
+	 */
 	private EditText nameField;
+	/**
+	 * The description of the expense claim.
+	 */
 	private EditText descriptionField;
+	/**
+	 * The start date of the expense claim.
+	 */
 	private DateEditText startDateField;
+	/**
+	 * The end date of the expense claim.
+	 */
 	private DateEditText endDateField;
 
 	//================================================================================
@@ -87,6 +98,10 @@ public class ExpenseClaimAddActivity extends AddActivity {
 		finish();
 	}
 
+	/**
+	 * Creates a new expense claim to put into another activity.
+	 * @return The intent with the new expense claim.
+	 */
 	private Intent constructResultIntent() {
 		ExpenseClaim claim = new ExpenseClaim(
 			nameField.getText().toString(), 

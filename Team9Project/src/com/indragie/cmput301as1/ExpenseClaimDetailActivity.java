@@ -50,16 +50,46 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 	//================================================================================
 	// Properties
 	//================================================================================
-
+	
+	/**
+	 * Field for if editable,
+	 */
 	private Boolean editable;
+	/**
+	 * The expense claim to display detials.
+	 */
 	private ExpenseClaim claim;
+	/**
+	 * The position of the expense claim in the list activity.
+	 */
 	private int claimPosition;
+	/**
+	 * The name of the expense claim.
+	 */
 	private EditText nameField;
+	/**
+	 * The description of the expense claim.
+	 */
 	private EditText descriptionField;
+	/**
+	 * The start date of the expense claim.
+	 */
 	private DateEditText startDateField;
+	/**
+	 * The end date of the expense claim.
+	 */
 	private DateEditText endDateField;
+	/**
+	 * The total amount of the expense claim.
+	 */
 	private TextView amountsTextView;
+	/**
+	 * Array adapter for expense items.
+	 */
 	private ExpenseItemArrayAdapter adapter;
+	/**
+	 * Index of a item that is long pressed.
+	 */
 	private int longPressedItemIndex;
 
 	//================================================================================
@@ -124,7 +154,10 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 			}
 		});
 	}
-
+	
+	/**
+	 * Sets up the header of the claim and the fields for the expense claim.
+	 */
 	private void setupListHeaderView() {
 		View headerView = getLayoutInflater().inflate(R.layout.activity_claim_header, getListView(), false);
 
@@ -155,6 +188,10 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		getListView().addHeaderView(headerView);
 	}
 
+	/** 
+	 * Sets the footer of the expense claim. 
+	 * Shows the total amount.
+	 */
 	private void setupListFooterView() {
 		View footerView = getLayoutInflater().inflate(R.layout.activity_claim_footer, getListView(), false);
 
@@ -164,6 +201,10 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		getListView().addFooterView(footerView);
 	}
 
+	/**
+	 * Sets the fields to be editable or not.
+	 * @param editable If the fields are editable.
+	 */
 	private void setEditable(Boolean editable) {
 		this.editable = editable;
 
@@ -189,6 +230,10 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		}
 	}
 
+	/**
+	 * Retrieves the expense item from a intent to add to the expense claim.
+	 * @param data The intent.
+	 */
 	private void onAddExpenseItem(Intent data) {
 		ExpenseItem item = (ExpenseItem)data.getSerializableExtra(ExpenseItemAddActivity.EXTRA_EXPENSE_ITEM);
 		claim.addItem(item);
@@ -196,6 +241,10 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		updateInterfaceForDataSetChange();
 	}
 
+	/**
+	 * Retrieves the expense item from a intent to edit on the expense claim.
+	 * @param data The intent
+	 */
 	private void onEditExpenseItem(Intent data) {
 		ExpenseItem item = (ExpenseItem)data.getSerializableExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM);
 		int position = data.getIntExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_POSITION, -1);
@@ -204,6 +253,9 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		updateInterfaceForDataSetChange();
 	}
 
+	/**
+	 * Updates the interface. Sets the new total amount of money.
+	 */
 	private void updateInterfaceForDataSetChange() {
 		amountsTextView.setText(claim.getSummarizedAmounts());
 		adapter.notifyDataSetChanged();
@@ -258,11 +310,17 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		}
 	}
 	
+	/**
+	 * Calls intent to add a expense item. 
+	 */
 	private void startAddExpenseItemActivity() {
 		Intent addIntent = new Intent(this, ExpenseItemAddActivity.class);
 		startActivityForResult(addIntent, ADD_EXPENSE_ITEM_REQUEST);
 	}
 	
+	/**
+	 * Calls intent to email a claim.
+	 */
 	private void startEmailActivity() {
 		// Based on http://stackoverflow.com/a/2745702/153112
 		Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:"));
@@ -275,6 +333,10 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		startActivity(Intent.createChooser(emailIntent, "Send Email"));
 	}
 	
+	/**
+	 * Saves the claim in a intent and sets the result to ok. 
+	 * Finishes the activity.
+	 */
 	private void commitChangesAndFinish() {
 		claim.setName(nameField.getText().toString());
 		claim.setDescription(descriptionField.getText().toString());
@@ -299,6 +361,10 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		startEditExpenseItemActivity(itemPositionForListViewPosition(position));
 	}
 	
+	/**
+	 * Edits the expense item at a specified position.
+	 * @param position The position of the expense item.
+	 */
 	private void startEditExpenseItemActivity(int position) {
 		Intent editIntent = new Intent(this, ExpenseItemEditActivity.class);
 		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM, claim.getItems().get(position));
@@ -307,6 +373,11 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		startActivityForResult(editIntent, EDIT_EXPENSE_ITEM_REQUEST);
 	}
 	
+	/**
+	 * Decrements the position by 1 to account for the header
+	 * @param position The current position
+	 * @return The correct position,
+	 */
 	private int itemPositionForListViewPosition(int position) {
 		// Subtract 1 for the header
 		return position - 1;
