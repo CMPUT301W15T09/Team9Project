@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2015 Indragie Karunaratne
+ * Copyright (C) 2015 Andrew Zhong
  * 
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -14,78 +14,58 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.indragie.cmput301as1;
 
+import java.io.Serializable;
+
 /**
- * Model object that contains the section, item, and list view indices for
- * a {@link ListView} that uses a {@link SectionedListAdapter};
+ * Model object representing a tag
  */
-public class SectionedListIndex {
+public class Tag implements Serializable, Comparable<Tag>{
+	private static final long serialVersionUID = 4055130777493746380L;
+	
+
 	//================================================================================
 	// Properties
 	//================================================================================
 	
-	private int sectionIndex;
-	private int itemIndex;
+	/**
+	 * Name of the tag.
+	 */
+	private String name;
 	
 	//================================================================================
-	// Constructors
+	// Constructor
 	//================================================================================
 	
 	/**
-	 * Creates a new instance of {@link SectionedListIndex}
-	 * @param sectionIndex The index of the section.
-	 * @param itemIndex The index of the item relative to the section.
+	 * Creates the a Tag object to represent a tag. 
+	 * @param name The name of the tag.
 	 */
-	public SectionedListIndex(int sectionIndex, int itemIndex)  {
-		this.sectionIndex = sectionIndex;
-		this.itemIndex = itemIndex;
+	public Tag(String name) {
+		this.name = name;
 	}
 	
 	//================================================================================
-	// Accessors
+	// Accessor
 	//================================================================================
 	
 	/**
-	 * @return The index of the section.
+	 * Returns the name of the tag.
+	 * @return Name of the tag.
 	 */
-	public int getSectionIndex() {
-		return sectionIndex;
+	public String getName() {
+		return this.name;
 	}
 	
-	/**
-	 * @return The index of the item relative to the section.
-	 */
-	public int getItemIndex() {
-		return itemIndex;
-	}
-
 	//================================================================================
-	// Object
+	// Comparable
 	//================================================================================
 	
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + itemIndex;
-		result = prime * result + sectionIndex;
-		return result;
+	public int compareTo(Tag tag) {
+		return this.name.compareTo(tag.getName());
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		SectionedListIndex other = (SectionedListIndex) obj;
-		if (itemIndex != other.itemIndex)
-			return false;
-		if (sectionIndex != other.sectionIndex)
-			return false;
-		return true;
-	}
 }

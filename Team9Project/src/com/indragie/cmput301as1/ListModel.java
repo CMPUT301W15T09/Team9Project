@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2015 Indragie Karunaratne
+ * Copyright (C) 2015 Indragie Karunaratne, Andrew Zhong
  * 
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,7 +22,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -31,19 +30,31 @@ import java.util.List;
 import android.content.Context;
 
 /**
- * Observable model object that contains a list of {@link ExpenseClaim} objects.
- * Observers will be notified when the list is modified by adding, removing, or
- * replacing existing expense claims.
+ * Observable model that contains a list of items that can be mutated.
  */
-public class ExpenseClaimListModel extends TypedObservable<List<ExpenseClaim>> {
+public class ListModel<T extends Comparable<? super T>> extends TypedObservable<List<T>> {
 	//================================================================================
 	// Properties
 	//================================================================================
-	
-	private ArrayList<ExpenseClaim> claims;
+	/**
+	 * The filename to save to.
+	 */
 	private String fileName;
+	
+	/**
+	 * Context of the list model.
+	 */
 	private Context context;
-	private Comparator<ExpenseClaim> comparator;
+	
+	/**
+	 * Comparator used to sort items in the list.
+	 */
+	private Comparator<T> comparator;
+	
+	/**
+	 * List that backs the model.
+	 */
+	protected ArrayList<T> list;
 	
 	//================================================================================
 	// Constructors
@@ -54,10 +65,10 @@ public class ExpenseClaimListModel extends TypedObservable<List<ExpenseClaim>> {
 	 * @param fileName Name of the file used to persist the expense claims.
 	 * @param context The context used for I/O operations.
 	 */
-	public ExpenseClaimListModel(String fileName, Context context) {
+	public ListModel(String fileName, Context context) {
 		this.fileName = fileName;
 		this.context = context;
-		this.claims = load();
+		this.list = load();
 	}
 	
 	//================================================================================
@@ -65,14 +76,26 @@ public class ExpenseClaimListModel extends TypedObservable<List<ExpenseClaim>> {
 	//================================================================================
 	
 	/**
-	 * @return An unmodifiable list of expense claims.
+	 * @return An unmodifiable list of items.
 	 */
-	public List<ExpenseClaim> getExpenseClaims() {
-		return Collections.unmodifiableList(claims);
+	public List<T> getItems() {
+		return Collections.unmodifiableList(list);
 	}
 	
-	public Comparator<ExpenseClaim> getComparator() {
+	/**
+	 * @return Comparator used to sort the items.
+	 */
+	public Comparator<T> getComparator() {
 		return comparator;
+	}
+	
+	/**
+	 * Sets the comparator used to sort the items.
+	 * @param comparator The comparator used to sort the items.
+	 */
+	public void setComparator(Comparator<T> comparator) {
+		this.comparator = comparator;
+		commitClaimsMutation();
 	}
 	
 	//================================================================================
@@ -80,104 +103,109 @@ public class ExpenseClaimListModel extends TypedObservable<List<ExpenseClaim>> {
 	//================================================================================
 	
 	/**
-	 * Adds a new expense claim to the list of expense claims.
-	 * @param claim The expense claim to add.
+	 * Adds a object to the list of objects.
+	 * @param o The object to add.
 	 */
-	public void add(ExpenseClaim claim) {
-		claims.add(claim);
-		Collections.sort(claims);
+	public void add(T o) {
+		list.add(o);
 		commitClaimsMutation();
 	}
 	
+
 	/**
-	 * Removes an existing expense claim from the list of expense claims.
-	 * @param claim The expense claim to remove.
+	 * Removes an existing object from the list of objects.
+	 * @param o The object to remove.
 	 */
-	public void remove(ExpenseClaim claim) {
-		if (claims.remove(claim)) {
+	public boolean remove(T o) {
+		if (list.remove(o)) {
 			commitClaimsMutation();
+			return true;
 		}
+		return false;
 	}
 
 	
 	/**
-	 * Removes an existing expense claim from the list of expense claims.
-	 * @param index The index of the expense claim to remove.
+	 * Removes an existing object from the list of objects.
+	 * @param index The index of the object to remove.
 	 */
 	public void remove(int index) {
-		claims.remove(index);
+		list.remove(index);
 		commitClaimsMutation();
 	}
 	
 	/**
-	 * Remove all expense claims from the list of expense claims.
+	 * Remove all objects from the list of objects.
 	 */
 	public void removeAll() {
-		claims.clear();
+		list.clear();
 		commitClaimsMutation();
 	}
 	
 	/**
-	 * Replaces an existing expense claim.
-	 * @param index The index of the expense claim to replace.
-	 * @param newClaim The expense claim to replace the existing expense claim with.
+	 * Replaces an existing object.
+	 * @param index The index of the object to replace.
+	 * @param newO The new object to replace the existing object with.
 	 */
-	public void set(int index, ExpenseClaim newClaim) {
-		claims.set(index, newClaim);
-		Collections.sort(claims);
+	public void set(int index, T newO) {
+		list.set(index, newO);
 		commitClaimsMutation();
 	}
 	
 	/**
-	 * @return The number of expense claims.
+	 * @return The number of items in the list.
 	 */
 	public int count() {
-		return claims.size();
+		return list.size();
 	}
-	
-	public void setComparator(Serializable serializable) {
-		this.comparator = (Comparator<ExpenseClaim>) serializable;
-		commitClaimsMutation();
-	}
-	
-	
 	
 	//================================================================================
 	// Helpers
 	//================================================================================
 	
+	/**
+	 * Commits the changes.
+	 */
 	private void commitClaimsMutation() {
-		save(claims);
+		if (comparator != null) {
+			Collections.sort(list, comparator);
+		}
+		save(list);
 		setChanged();
-		Collections.sort(claims, comparator);
-		notifyObservers(claims);
+		notifyObservers(list);
 	}
 	
+	/**
+	 * Loads a list from a save file. 
+	 * @return A list of specified type.
+	 */
 	@SuppressWarnings("unchecked")
-	private ArrayList<ExpenseClaim> load() {
+	private ArrayList<T> load() {
 		try {
 			FileInputStream fis = context.openFileInput(fileName);
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			Object obj = ois.readObject();
 			ois.close();
 			fis.close();
-			return (ArrayList<ExpenseClaim>)obj;
+			return (ArrayList<T>)obj;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new ArrayList<ExpenseClaim>();
+			return new ArrayList<T>();
 		}
 	}
-	
-	private void save(ArrayList<ExpenseClaim> claims) {
+	/**
+	 * Saves a list into a file.
+	 * @param o The list to save.
+	 */
+	private void save(ArrayList<T> o) {
 		try {
 			FileOutputStream fos = context.openFileOutput(fileName, 0);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			oos.writeObject(claims);
+			oos.writeObject(o);
 			oos.close();
 			fos.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-
 }

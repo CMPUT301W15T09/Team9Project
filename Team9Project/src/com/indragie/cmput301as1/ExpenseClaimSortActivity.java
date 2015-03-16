@@ -1,10 +1,32 @@
+/* 
+ * Copyright (C) 2015 Jimmy Ho
+ * 
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *  
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.indragie.cmput301as1;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Spinner;
 
-public class ExpenseClaimSortActivity extends AddActivity {
+/**
+ * Presents a user interface for changing the sort mode of the expense claims.
+ */
+public class ExpenseClaimSortActivity extends Activity {
 	
 	public static final String EXPENSE_CLAIM_SORT = "com.indragie.cmput301as1.EXPENSE_CLAIM";
 
@@ -12,28 +34,32 @@ public class ExpenseClaimSortActivity extends AddActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_expense_claim_sort);
-
-	}
-	
-	@Override
-	protected void onCancel() {
-		setResult(RESULT_CANCELED, new Intent());
-		finish();
-	}
-
-	@Override
-	protected void onDone() {
-		setResult(RESULT_OK, getSortType());
-		finish();
+		ActionBarUtils.showCancelDoneActionBar(
+			this,
+			new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					setResult(RESULT_CANCELED, new Intent());
+					finish();
+				}
+			},
+			new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					setResult(RESULT_OK, getSortType());
+					finish();
+				}
+			}
+		);
 	}
 	
 	private Intent getSortType() {
 		// now we want to grab the sort type from the spinners
-		Spinner sort_type_spinner = (Spinner) findViewById(R.id.sort_type_spinner);
-		String sort_type = sort_type_spinner.getSelectedItem().toString();
+		Spinner sortTypeSpinner = (Spinner)findViewById(R.id.sort_type_spinner);
+		String sortType = sortTypeSpinner.getSelectedItem().toString();
 		
-		Spinner sort_time_spinner = (Spinner) findViewById(R.id.sort_time_spinner);
-		String sort_time = sort_time_spinner.getSelectedItem().toString();
+		Spinner sortOrderSpinner = (Spinner) findViewById(R.id.sort_order_spinner);
+		String sortOrder = sortOrderSpinner.getSelectedItem().toString();
 		
 		String type1 = "Date of Travel";
 		String type2 = "Order of Entry";
@@ -43,8 +69,8 @@ public class ExpenseClaimSortActivity extends AddActivity {
 		Intent intent = new Intent();
 		
 		// Date of Travel
-		if (type1.equals(sort_type)) {
-			if (time1.equals(sort_time)) {
+		if (type1.equals(sortType)) {
+			if (time1.equals(sortOrder)) {
 				// Ascending order
 				intent.putExtra(EXPENSE_CLAIM_SORT, new StartDateAscendingComparator());
 			} else {
@@ -52,8 +78,8 @@ public class ExpenseClaimSortActivity extends AddActivity {
 				intent.putExtra(EXPENSE_CLAIM_SORT, new StartDateDescendingComparator());
 			}
 		// Order of Entry
-		} else if (type2.equals(sort_type)) {
-			if (time1.equals(sort_time)) {
+		} else if (type2.equals(sortType)) {
+			if (time1.equals(sortOrder)) {
 				// Ascending order
 				intent.putExtra(EXPENSE_CLAIM_SORT, new CreationDateAscendingComparator());
 			} else {

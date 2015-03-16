@@ -40,7 +40,7 @@ public class SectionedListAdapter<T> extends BaseAdapter {
 	 * Used as a placeholder index for list items that are section headers and
 	 * not actual content.
 	 */
-	private static final int NOT_AN_ITEM_INDEX = -1;
+	public static final int NOT_AN_ITEM_INDEX = -1;
 	
 	//================================================================================
 	// Properties
@@ -117,6 +117,14 @@ public class SectionedListAdapter<T> extends BaseAdapter {
 		} else {
 			return metadata.object;
 		}
+	}
+	
+	/**
+	 * @param position The flattened list index.
+	 * @return The sectioned list index for a flattened list index.
+	 */
+	public SectionedListIndex getSectionedIndex(int position) {
+		return indexMapping.get(position);
 	}
 	
 	//================================================================================

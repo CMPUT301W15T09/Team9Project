@@ -52,7 +52,12 @@ public class ExpenseItemEditActivity extends ExpenseItemAddActivity {
 		setTitle(item.getName());
 		setupFields(item, editable);
 	}
-
+	
+	/**
+	 * Sets up the fields of the expense item to edit.
+	 * @param item The expense item.
+	 * @param editable Boolean if fields are editable. 
+	 */
 	private void setupFields(ExpenseItem item, Boolean editable) {
 		Money amount = item.getAmount();
 

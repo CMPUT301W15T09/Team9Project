@@ -28,6 +28,7 @@ import android.database.DataSetObserver;
 import com.indragie.cmput301as1.ListSection;
 import com.indragie.cmput301as1.ListSection.ViewConfigurator;
 import com.indragie.cmput301as1.SectionedListAdapter;
+import com.indragie.cmput301as1.SectionedListIndex;
 
 public class SectionedListAdapterTests extends AndroidTestCase {
 	private static final int HEADER_VIEW_TYPE_CODE = 0;
@@ -96,6 +97,14 @@ public class SectionedListAdapterTests extends AndroidTestCase {
 		assertEquals("Chevrolet", adapter.getItem(4));
 	}
 	
+	public void testGetTypedItem() {
+		assertEquals(null, adapter.getTypedItem(0));
+		assertEquals("Audi", adapter.getTypedItem(1));
+		assertEquals(null, adapter.getTypedItem(2));
+		assertEquals("Cadillac", adapter.getTypedItem(3));
+		assertEquals("Chevrolet", adapter.getTypedItem(4));
+	}
+	
 	public void testGetItemId() {
 		assertEquals(0, adapter.getItemId(0));
 		assertEquals(5, adapter.getItemId(5));
@@ -132,6 +141,14 @@ public class SectionedListAdapterTests extends AndroidTestCase {
 		assertFalse(adapter.isEnabled(2));
 		assertTrue(adapter.isEnabled(3));
 		assertTrue(adapter.isEnabled(4));
+	}
+	
+	public void testGetSectionedIndex() {
+		assertEquals(new SectionedListIndex(0, SectionedListAdapter.NOT_AN_ITEM_INDEX), adapter.getSectionedIndex(0));
+		assertEquals(new SectionedListIndex(0, 0), adapter.getSectionedIndex(1));
+		assertEquals(new SectionedListIndex(1, SectionedListAdapter.NOT_AN_ITEM_INDEX), adapter.getSectionedIndex(2));
+		assertEquals(new SectionedListIndex(1, 0), adapter.getSectionedIndex(3));
+		assertEquals(new SectionedListIndex(1, 1), adapter.getSectionedIndex(4));
 	}
 	
 	public void testSectionMutation() {
