@@ -19,15 +19,17 @@ package com.indragie.cmput301as1;
 
 import java.util.Date;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -38,59 +40,86 @@ import com.indragie.cmput301as1.ExpenseClaim.Status;
  * Activity for viewing details of and editing an expense claim, including marking 
  * it as submitted/returned/approved and adding/deleting/editing expense items.
  */
-public class ExpenseClaimDetailActivity extends ListActivity {
+public class ExpenseClaimDetailActivity extends ListActivity implements TypedObserver<Object> {
 	//================================================================================
 	// Constants
 	//================================================================================
+	
+	/**
+	 * Intent key for the {@link ExpenseClaim} object.
+	 */
 	public static final String EXTRA_EXPENSE_CLAIM = "com.indragie.cmput301as1.EXTRA_CLAIM";
-	public static final String EXTRA_EXPENSE_CLAIM_POSITION = "com.indragie.cmput301as1.EXTRA_EXPENSE_CLAIM_POSITION";
+	
+	/**
+	 * Intent key for the position of the {@link ExpenseClaim} object in the expense claims list.
+	 */
+	public static final String EXTRA_EXPENSE_CLAIM_INDEX = "com.indragie.cmput301as1.EXTRA_EXPENSE_CLAIM_INDEX";
+	
+	/**
+	 * Request code for starting {@link ExpenseItemAddActivity}
+	 */
 	private static final int ADD_EXPENSE_ITEM_REQUEST = 1;
+	
+	/**
+	 * Request code for starting {@link ExpenseItemEditActivity}
+	 */
 	private static final int EDIT_EXPENSE_ITEM_REQUEST = 2;
+	
+	/**
+	 * Index used to indicate the nonexistence of an index.
+	 */
+	private static final int NO_INDEX = -1;
 
 	//================================================================================
 	// Properties
 	//================================================================================
-	
+
 	/**
-	 * Field for if editable,
+	 * Whether the fields should be editable or not. This is dependent
+	 * on the status of the expense claim.
 	 */
 	private Boolean editable;
+	
 	/**
-	 * The expense claim to display detials.
+	 * The expense claim for which details are being displayed.
 	 */
 	private ExpenseClaim claim;
+	
 	/**
-	 * The position of the expense claim in the list activity.
-	 */
-	private int claimPosition;
-	/**
-	 * The name of the expense claim.
+	 * Field that displays the name of the expense claim.
 	 */
 	private EditText nameField;
+	
 	/**
-	 * The description of the expense claim.
+	 * Field that displays the description of the expense claim.
 	 */
 	private EditText descriptionField;
+	
 	/**
-	 * The start date of the expense claim.
+	 * Field that displays the start date of the expense claim.
 	 */
 	private DateEditText startDateField;
+	
 	/**
-	 * The end date of the expense claim.
+	 * Field that displays the end date of the expense claim.
 	 */
 	private DateEditText endDateField;
+	
 	/**
-	 * The total amount of the expense claim.
+	 * Field that displays the summarized amounts for the expense items.
 	 */
 	private TextView amountsTextView;
+	
 	/**
-	 * Array adapter for expense items.
+	 * Observable model for expense claim details.
 	 */
-	private ExpenseItemArrayAdapter adapter;
+	private ExpenseClaimDetailModel model;
+	
 	/**
-	 * Index of a item that is long pressed.
+	 * Controller for transforming model data into presentable
+	 * data for the user interface.
 	 */
-	private int longPressedItemIndex;
+	private ExpenseClaimDetailController controller;
 
 	//================================================================================
 	// Activity Callbacks
@@ -101,62 +130,27 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 
-		Intent intent = getIntent();
-		claim = (ExpenseClaim)intent.getSerializableExtra(EXTRA_EXPENSE_CLAIM);
-		claimPosition = intent.getIntExtra(EXTRA_EXPENSE_CLAIM_POSITION, -1);
-		setTitle(claim.getName());
-
+		claim = (ExpenseClaim)getIntent().getSerializableExtra(EXTRA_EXPENSE_CLAIM);
+		
+		model = new ExpenseClaimDetailModel(claim);
+		model.addObserver(this);
+		controller = new ExpenseClaimDetailController(this, model);
+		
 		setupListHeaderView();
 		setupListFooterView();
 		setEditable(claim.isEditable());
-
-		adapter = new ExpenseItemArrayAdapter(this, claim.getItems());
-		setListAdapter(adapter);
-		
-		final ActionMode.Callback longClickCallback = new ActionMode.Callback() {
-			@Override
-			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-				switch (item.getItemId()) {
-				case R.id.action_delete:
-					claim.removeItem(longPressedItemIndex);
-					updateInterfaceForDataSetChange();
-					mode.finish();
-					return true;
-				default:
-					return false;
-				}
-			}
-
-			@Override
-			public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-				mode.getMenuInflater().inflate(R.menu.contextual_delete, menu);
-				return true;
-			}
-
-			@Override
-			public void onDestroyActionMode(ActionMode mode) {}
-
-			@Override
-			public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-				return false;
-			}
-		};
-		getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-				if (editable) {
-					longPressedItemIndex = itemPositionForListViewPosition(position);
-					startActionMode(longClickCallback);
-					return true;
-				} else {
-					return false;
-				}
-			}
-		});
+		setListAdapter(controller.getAdapter());
+	}
+	
+	@Override
+	protected void onDestroy() {
+		model.deleteObserver(this);
+		super.onDestroy();
 	}
 	
 	/**
-	 * Sets up the header of the claim and the fields for the expense claim.
+	 * Sets up the header view for the list, containing the fields
+	 * for editing the name, description, and start/end dates.
 	 */
 	private void setupListHeaderView() {
 		View headerView = getLayoutInflater().inflate(R.layout.activity_claim_header, getListView(), false);
@@ -188,9 +182,9 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		getListView().addHeaderView(headerView);
 	}
 
-	/** 
-	 * Sets the footer of the expense claim. 
-	 * Shows the total amount.
+	/**
+	 * Sets up the footer view for the list, containing the summarized
+	 * display of the expense item amounts.
 	 */
 	private void setupListFooterView() {
 		View footerView = getLayoutInflater().inflate(R.layout.activity_claim_footer, getListView(), false);
@@ -202,8 +196,8 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 	}
 
 	/**
-	 * Sets the fields to be editable or not.
-	 * @param editable If the fields are editable.
+	 * Sets the editable state of the entire UI.
+	 * @param editable Whether the claim is editable or not.
 	 */
 	private void setEditable(Boolean editable) {
 		this.editable = editable;
@@ -213,6 +207,21 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		startDateField.setEnabled(editable);
 		endDateField.setEnabled(editable);
 		invalidateOptionsMenu();
+		
+		if (editable) {
+			getListView().setOnItemLongClickListener(
+				new LongClickDeleteListener(this, 
+					new LongClickDeleteListener.OnDeleteListener() {
+						@Override
+						public void onDelete(int position) {
+							controller.remove(itemPositionForListViewPosition(position));
+						}
+					}
+				)
+			);
+		} else {
+			getListView().setOnItemLongClickListener(null);
+		}
 	}
 
 	@Override
@@ -236,9 +245,7 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 	 */
 	private void onAddExpenseItem(Intent data) {
 		ExpenseItem item = (ExpenseItem)data.getSerializableExtra(ExpenseItemAddActivity.EXTRA_EXPENSE_ITEM);
-		claim.addItem(item);
-		
-		updateInterfaceForDataSetChange();
+		model.addItem(item);
 	}
 
 	/**
@@ -248,17 +255,7 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 	private void onEditExpenseItem(Intent data) {
 		ExpenseItem item = (ExpenseItem)data.getSerializableExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM);
 		int position = data.getIntExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_POSITION, -1);
-		claim.setItem(position, item);
-		
-		updateInterfaceForDataSetChange();
-	}
-
-	/**
-	 * Updates the interface. Sets the new total amount of money.
-	 */
-	private void updateInterfaceForDataSetChange() {
-		amountsTextView.setText(claim.getSummarizedAmounts());
-		adapter.notifyDataSetChanged();
+		model.setItem(position, item);
 	}
 	
 	@Override
@@ -287,6 +284,9 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		case android.R.id.home:
 			commitChangesAndFinish();
 			return true;
+		case R.id.action_add_destination:
+			buildDestinationAlertDialog().show();
+			return true;
 		case R.id.action_add_item:
 			startAddExpenseItemActivity();
 			return true;
@@ -310,8 +310,43 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		}
 	}
 	
+	private AlertDialog buildDestinationAlertDialog() {
+		return buildDestinationAlertDialog(NO_INDEX);
+	}
+	
+	@SuppressLint("InflateParams")
+	private AlertDialog buildDestinationAlertDialog(final int index) {
+		View dialogView = getLayoutInflater().inflate(R.layout.destination_alert, null);
+		final EditText nameField = (EditText)dialogView.findViewById(R.id.et_name);
+		final EditText reasonField = (EditText)dialogView.findViewById(R.id.et_travel_reason);
+		
+		if (index != NO_INDEX) {
+			Destination destination = controller.getDestination(index);
+			nameField.setText(destination.getName());
+			reasonField.setText(destination.getTravelReason());
+		}
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder
+		.setTitle(R.string.action_add_destination)
+		.setView(dialogView)
+		.setPositiveButton(android.R.string.ok, new OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				Destination destination = new Destination(nameField.getText().toString(), reasonField.getText().toString());
+				if (index != NO_INDEX) {
+					model.setDestination(index, destination);
+				} else {
+					model.addDestination(destination);
+				}
+			}
+		})
+		.setNegativeButton(android.R.string.cancel, null);
+		return builder.create();
+	}
+	
 	/**
-	 * Calls intent to add a expense item. 
+	 * Starts the {@link ExpenseItemAddActivity}
 	 */
 	private void startAddExpenseItemActivity() {
 		Intent addIntent = new Intent(this, ExpenseItemAddActivity.class);
@@ -319,7 +354,8 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 	}
 	
 	/**
-	 * Calls intent to email a claim.
+	 * Starts a choose activity for sending the {@link ExpenseClaim} contents
+	 * as an email.
 	 */
 	private void startEmailActivity() {
 		// Based on http://stackoverflow.com/a/2745702/153112
@@ -329,13 +365,12 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		// Originally planned to use HTML for rich text in the email, but it turns
 		// out that most email clients on Android (including K-9) don't support HTML
 		// for composing emails, so I decided to use plain text instead.
-		emailIntent.putExtra(Intent.EXTRA_TEXT, claim.getPlainText(this));
+		emailIntent.putExtra(Intent.EXTRA_TEXT, controller.getPlainText());
 		startActivity(Intent.createChooser(emailIntent, "Send Email"));
 	}
 	
 	/**
-	 * Saves the claim in a intent and sets the result to ok. 
-	 * Finishes the activity.
+	 * Saves changes made to the expense claim and finishes the activity.
 	 */
 	private void commitChangesAndFinish() {
 		claim.setName(nameField.getText().toString());
@@ -345,7 +380,7 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 
 		Intent intent = new Intent();
 		intent.putExtra(EXTRA_EXPENSE_CLAIM, claim);
-		intent.putExtra(EXTRA_EXPENSE_CLAIM_POSITION, claimPosition);
+		intent.putExtra(EXTRA_EXPENSE_CLAIM_INDEX, getIntent().getIntExtra(EXTRA_EXPENSE_CLAIM_INDEX, -1));
 		setResult(RESULT_OK, intent);
 		finish();
 	}
@@ -356,31 +391,56 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 
 	@Override
 	public void onListItemClick(ListView listView, View view, int position, long id) {
-		// If the header or footer was clicked, the item will be null
 		if (listView.getItemAtPosition(position) == null) return;
-		startEditExpenseItemActivity(itemPositionForListViewPosition(position));
+		
+		int itemPosition = itemPositionForListViewPosition(position);
+		ExpenseClaimDetailController.DetailItem.ItemType type = controller.getItemType(itemPosition);
+		SectionedListIndex index = controller.getSectionedIndex(itemPosition);
+		
+		switch (type) {
+		case DESTINATION:
+			buildDestinationAlertDialog(index.getItemIndex()).show();
+			break;
+		case TAG:
+			// TODO
+			break;
+		case EXPENSE_ITEM:
+			startEditExpenseItemActivity(index.getItemIndex());
+			break;
+		default: break;
+		}
 	}
 	
 	/**
-	 * Edits the expense item at a specified position.
-	 * @param position The position of the expense item.
+	 * Starts the {@link EditExpenseItemActivity}
+	 * @param position The position of the {@link ExpenseItem} to edit.
 	 */
-	private void startEditExpenseItemActivity(int position) {
+	private void startEditExpenseItemActivity(int index) {
 		Intent editIntent = new Intent(this, ExpenseItemEditActivity.class);
-		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM, claim.getItems().get(position));
-		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_POSITION, position);
+		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM, controller.getExpenseItem(index));
+		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_POSITION, index);
 		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_EDITABLE, editable);
 		startActivityForResult(editIntent, EDIT_EXPENSE_ITEM_REQUEST);
 	}
 	
 	/**
-	 * Decrements the position by 1 to account for the header
-	 * @param position The current position
-	 * @return The correct position,
+	 * Returns the item position from a list view position by adjusting
+	 * it to account for header and footer views.
+	 * @param position The unadjusted list view position.
+	 * @return The adjusted item position.
 	 */
 	private int itemPositionForListViewPosition(int position) {
 		// Subtract 1 for the header
 		return position - 1;
+	}
+
+	//================================================================================
+	// Observable
+	//================================================================================
+	
+	@Override
+	public void update(TypedObservable<Object> observable, Object object) {
+		amountsTextView.setText(claim.getSummarizedAmounts());
 	}
 }
 

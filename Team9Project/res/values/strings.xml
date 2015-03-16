@@ -28,11 +28,13 @@
     <string name="action_add_claim">Add Claim</string>
     <string name="no_expenses">No expenses</string>
 
-    <!-- ExpenseClaim{Edit,Add}Activity -->
+    <!-- ExpenseClaim{Detail,Add}Activity -->
     <string name="detail_title">Detail</string>
     <string name="name_hint">Name</string>
+    <string name="travel_reason_hint">Travel Reason</string>
     <string name="start_label">Start</string>
     <string name="end_label">End</string>
+    <string name="action_add_destination">Add Destination</string>
     <string name="action_add_item">Add Item</string>
     <string name="action_email">Email</string>
     <string name="action_mark_submitted">Mark as Submitted</string>
@@ -40,6 +42,11 @@
     <string name="action_mark_approved">Mark as Approved</string>
     <string name="amount_placeholder">0.00</string>
     <string name="total_label">Total</string>
+    
+    <!-- ExpenseClaimDetailController -->
+    <string name="destinations_title">Destinations</string>
+    <string name="tags_title">Tags</string>
+	<string name="items_title">Expense Items</string>
     <string name="title_activity_manage_tags">Manage Tags</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>

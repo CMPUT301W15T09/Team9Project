@@ -18,13 +18,9 @@
 package com.indragie.cmput301as1;
 
 import java.io.Serializable;
-import java.text.DateFormat;
 import java.util.Date;
 
 import org.joda.money.Money;
-
-import android.content.Context;
-import android.content.res.Resources;
 
 /**
  * Model object representing a single item on an expense claim.
@@ -153,35 +149,6 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	public void setAmount(Money amount) {
 		this.amount = amount;
 	}
-	
-	private static final String BULLET = "\u2022 ";
-	private static final String INDENTED_BULLET = "\t\u25e6 ";
-	
-	/**
-	 * Creates a plain text representation of the expense item.
-	 * @param context Context to use for getting localized string resources.
-	 * @return Plain text representation of the expense item suitable for sending in an email.
-	 */
-	public String getPlainText(Context context) {
-		Resources resources = context.getResources();
-		StringBuilder builder = new StringBuilder(BULLET + name + "\n");
-		
-		if (description.length() > 0) {
-			builder.append(attributeString(resources.getString(R.string.description), description));
-		}
-		builder.append(attributeString(resources.getString(R.string.category), category));
-		builder.append(attributeString(resources.getString(R.string.amount), amount.toString()));
-		builder.append(attributeString(resources.getString(R.string.date), DateFormat.getDateInstance().format(date)));
-		return builder.toString();
-	}
-	
-	/**
-	 * Helper function used in getPlainText() to create strings representing
-	 * each of the attributes of the expense item.
-	 */
-	private String attributeString(String name, String value) {
-		return INDENTED_BULLET + name + ": " + value + "\n";
-	}
 
 	//================================================================================
 	// Comparable
@@ -190,5 +157,60 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	@Override
 	public int compareTo(ExpenseItem item) {
 		return this.getDate().compareTo(item.getDate());
+	}
+	
+	//================================================================================
+	// Object
+	//================================================================================
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((amount == null) ? 0 : amount.hashCode());
+		result = prime * result
+				+ ((category == null) ? 0 : category.hashCode());
+		result = prime * result + ((date == null) ? 0 : date.hashCode());
+		result = prime * result
+				+ ((description == null) ? 0 : description.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ExpenseItem other = (ExpenseItem) obj;
+		if (amount == null) {
+			if (other.amount != null)
+				return false;
+		} else if (!amount.equals(other.amount))
+			return false;
+		if (category == null) {
+			if (other.category != null)
+				return false;
+		} else if (!category.equals(other.category))
+			return false;
+		if (date == null) {
+			if (other.date != null)
+				return false;
+		} else if (!date.equals(other.date))
+			return false;
+		if (description == null) {
+			if (other.description != null)
+				return false;
+		} else if (!description.equals(other.description))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
 	}
 }
