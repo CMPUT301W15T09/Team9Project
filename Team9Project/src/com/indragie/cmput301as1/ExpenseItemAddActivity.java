@@ -66,6 +66,9 @@ public class ExpenseItemAddActivity extends AddActivity {
 	 */
 	protected String[] dialogOptions;
 	
+	/**
+	 * Maximum size for receipt image files.
+	 */
     protected static final int IMAGE_MAX_SIZE = 65536; 
 
 
@@ -215,7 +218,6 @@ public class ExpenseItemAddActivity extends AddActivity {
 		
 		startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
 	}
-	
 
 	/*  Elements of the following methods borrowed from
 	 *  http://stackoverflow.com/questions/3331527/android-resize-a-large-bitmap-file-to-scaled-output-file
@@ -246,6 +248,8 @@ public class ExpenseItemAddActivity extends AddActivity {
 		        options = new BitmapFactory.Options();
 		        options.inSampleSize = scale;
 		        bmp = BitmapFactory.decodeStream(fin, null, options);
+		        
+		        resizeBitmap(bmp);
 		        fin.close();
 		        
 		        FileOutputStream fos = new FileOutputStream(jpegFileUri.getPath());
@@ -258,6 +262,12 @@ public class ExpenseItemAddActivity extends AddActivity {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param options An options object created from the image to be resized.
+	 * @param maxSize Maximum size of a receipt image.
+	 * @return the scale factor.
+	 */
 	protected int calculateScale(BitmapFactory.Options options, int maxSize) {
 		int scale = 1;
 	    while ((options.outWidth * options.outHeight) * (1 / Math.pow(scale, 2)) > 
@@ -267,6 +277,11 @@ public class ExpenseItemAddActivity extends AddActivity {
 	    return scale;
 	}
 	
+	/**
+	 * Resizes the dimensions of the scaled bitmap.
+	 * @param bmp the bitmap to be resized.
+	 * @return the resized bitmap.
+	 */
 	protected Bitmap resizeBitmap(Bitmap bmp) {
         // resize to desired dimensions
 		int height = bmp.getHeight();
