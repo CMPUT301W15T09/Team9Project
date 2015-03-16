@@ -19,6 +19,7 @@ package com.indragie.comput301as1.test;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.joda.money.Money;
 
@@ -147,6 +148,23 @@ public class ExpenseClaimTests extends TestCase {
 		assertFalse(claim.hasTag(tag1));
 		claim.addTag(tag1);
 		assertTrue(claim.hasTag(tag1));
+		
+		claim.addTag(tag2);
+		List<Tag> list = claim.getTags();
+		
+		assertNotSame(tag2, list.get(0));
+		assertEquals(tag1, list.get(0));
+		assertEquals(tag2, list.get(1));
+		
+		Tag tag3 = new Tag("ocean studies");
+		Tag tag4 = new Tag("Audi development");
+		
+		claim.replaceTag(tag2, tag3);
+		claim.replaceTag(tag1, tag4);
+		
+		assertEquals(tag3, claim.getTags().get(1));
+		assertEquals(tag4, claim.getTags().get(0));
+
 	}
 	
 	public void testGetSummarizedAmounts() {
