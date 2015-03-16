@@ -31,6 +31,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -47,28 +48,67 @@ import android.widget.Toast;
  */
 public class ExpenseItemAddActivity extends AddActivity {
 	
-	protected Uri receiptFileUri;
-
 	//================================================================================
 	// Constants
 	//================================================================================
-	
+	/**
+	 * Intent key for the position of the {@link ExpenseItem} object.
+	 */
 	public static final String EXTRA_EXPENSE_ITEM = "com.indragie.cmput301as1.EXPENSE_ITEM";
+	
+	/**
+	 * Request code for starting {@link Camera}.
+	 */
 	protected static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
-	protected static final int REQUEST_IMAGE_CAPTURE = 200;
+	
+	/**
+	 * String array of dialog prompts.
+	 */
 	protected String[] dialogOptions;
 
 	//================================================================================
 	// Properties
 	//================================================================================
 
+	/**
+	 * Field that displays the name of the expense item.
+	 */
 	protected EditText nameField;
+	
+	/**
+	 * Field that displays the description of the expense item.
+	 */
 	protected EditText descriptionField;
+	
+	/**
+	 * Field that displays the cost amount of the expense item.
+	 */
 	protected EditText amountField;
+	
+	/**
+	 * Field that displays the date that the expense item was incurred.
+	 */
 	protected DateEditText dateField;
+	
+	/**
+	 * Dropdown menu that displays the category of the expense item.
+	 */
 	protected Spinner categorySpinner;
+	
+	/**
+	 * Dropdown menu that displays the currency of the expense item transaction.
+	 */
 	protected Spinner currencySpinner;
+	
+	/**
+	 * Button that displays the receipt image taken, if any.
+	 */
 	protected ImageButton receiptButton;
+	
+	/**
+	 * Uri reference of the receipt image.
+	 */
+	protected Uri receiptFileUri;
 
 	//================================================================================
 	// Activity Callbacks
@@ -145,6 +185,11 @@ public class ExpenseItemAddActivity extends AddActivity {
 	// Receipt-Image Capture and Handling
 	//================================================================================
 	
+	/**
+	 * Sets up an external storage directory for receipt images and
+	 * creates a file to store a new one, then passes an intent
+	 * to a Camera application to take a photo.
+	 */
 	protected void takePhoto() {
 	
 		// create folder to store receipt images
@@ -168,7 +213,11 @@ public class ExpenseItemAddActivity extends AddActivity {
 		startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
 	}
 	
-	/*  Elements of scalingImage borrowed from
+	/**
+	 * Resizes a .jpeg file to be under the maximum size
+	 * @param imageFileUri The Uri of the image file to be resized
+	 */
+	/*  Elements of scalingImage method borrowed from
 	 *  http://stackoverflow.com/questions/3331527/android-resize-a-large-bitmap-file-to-scaled-output-file
 	 *  last accessed: 03/15/15 3:29pm
 	 */ 
@@ -244,9 +293,14 @@ public class ExpenseItemAddActivity extends AddActivity {
 	// Camera + Gallery Dialogue
 	//================================================================================
 	
-	/** method startDialog borrowed from 
+	
+	/* 
+	 *  method startDialog borrowed from 
 	 *  http://www.theappguruz.com/blog/android-take-photo-camera-gallery-code-sample/
 	 *  last accessed: 03/12/2015 3:02pm
+	 */
+	/**
+	 * Opens an alert dialog to allow the user to select a task.
 	 */
 	protected void startDialog() {
 		AlertDialog.Builder openDialog = new AlertDialog.Builder(this);

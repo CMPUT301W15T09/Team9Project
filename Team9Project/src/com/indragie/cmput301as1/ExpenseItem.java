@@ -40,24 +40,31 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	 * Name of the expense item.
 	 */
 	private String name;
+	
 	/**
 	 * Date on which the expense occurred.
 	 */
 	private Date date;
+	
 	/**
 	 * Category of the expense (e.g. air fare, accommodation, etc.)
 	 */
 	private String category;
+	
 	/**
 	 * Textual description of the expense.
 	 */
 	private String description;
+	
 	/**
 	 * Encapsulates the amount spent and the unit of currency.
 	 * (Money class is from the Joda Money library)
 	 */
 	private Money amount;
 	
+	/**
+	 * String representation of a Uri of a receipt image.
+	 */
 	private String receipt;
 
 	//================================================================================
