@@ -53,6 +53,9 @@
             android:name=".TagEditActivity"
             android:label="@string/title_activity_edit_tag" >
         </activity>
+        <activity 
+            android:name=".ExpenseClaimSortActivity" >
+    	</activity>
     </application>
 
 </manifest>

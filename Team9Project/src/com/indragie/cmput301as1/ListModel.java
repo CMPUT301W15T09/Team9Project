@@ -24,13 +24,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import android.content.Context;
 
-public class ListModel<T extends Comparable<? super T>> extends TypedObservable<List<T>> {
-
-
+/**
+ * Observable model that contains a list of items that can be mutated.
+ */
+public class ListModel<T> extends TypedObservable<List<T>> {
 	//================================================================================
 	// Properties
 	//================================================================================
@@ -38,12 +40,19 @@ public class ListModel<T extends Comparable<? super T>> extends TypedObservable<
 	 * The filename to save to.
 	 */
 	private String fileName;
+	
 	/**
 	 * Context of the list model.
 	 */
 	private Context context;
+	
 	/**
-	 * List of type T.
+	 * Comparator used to sort items in the list.
+	 */
+	private Comparator<T> comparator;
+	
+	/**
+	 * List that backs the model.
 	 */
 	protected ArrayList<T> list;
 	
@@ -73,6 +82,22 @@ public class ListModel<T extends Comparable<? super T>> extends TypedObservable<
 		return Collections.unmodifiableList(list);
 	}
 	
+	/**
+	 * @return Comparator used to sort the items.
+	 */
+	public Comparator<T> getComparator() {
+		return comparator;
+	}
+	
+	/**
+	 * Sets the comparator used to sort the items.
+	 * @param comparator The comparator used to sort the items.
+	 */
+	public void setComparator(Comparator<T> comparator) {
+		this.comparator = comparator;
+		commitClaimsMutation();
+	}
+	
 	//================================================================================
 	// API
 	//================================================================================
@@ -83,7 +108,6 @@ public class ListModel<T extends Comparable<? super T>> extends TypedObservable<
 	 */
 	public void add(T o) {
 		list.add(o);
-		Collections.sort(list);
 		commitClaimsMutation();
 	}
 	
@@ -99,6 +123,7 @@ public class ListModel<T extends Comparable<? super T>> extends TypedObservable<
 		}
 		return false;
 	}
+
 	
 	/**
 	 * Removes an existing object from the list of objects.
@@ -124,7 +149,6 @@ public class ListModel<T extends Comparable<? super T>> extends TypedObservable<
 	 */
 	public void set(int index, T newO) {
 		list.set(index, newO);
-		Collections.sort(list);
 		commitClaimsMutation();
 	}
 	
@@ -143,11 +167,13 @@ public class ListModel<T extends Comparable<? super T>> extends TypedObservable<
 	 * Commits the changes.
 	 */
 	private void commitClaimsMutation() {
+		if (comparator != null) {
+			Collections.sort(list, comparator);
+		}
 		save(list);
 		setChanged();
 		notifyObservers(list);
 	}
-	
 	
 	/**
 	 * Loads a list from a save file. 
@@ -182,5 +208,4 @@ public class ListModel<T extends Comparable<? super T>> extends TypedObservable<
 			e.printStackTrace();
 		}
 	}
-	
 }
