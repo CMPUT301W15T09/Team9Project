@@ -2,6 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
+        android:id="@+id/action_add_destination"
+        android:title="@string/action_add_destination"/>
+    <item
+        android:id="@+id/action_add_item"
+        android:title="@string/action_add_item"/>
+    <item
         android:id="@+id/action_email"
         android:title="@string/action_email"/>
     <item
@@ -13,10 +19,5 @@
     <item
         android:id="@+id/action_mark_submitted"
         android:title="@string/action_mark_submitted"/>
-    <item
-        android:id="@+id/action_add_item"
-        android:title="@string/action_add_item"/>
-   
-    
 
 </menu>

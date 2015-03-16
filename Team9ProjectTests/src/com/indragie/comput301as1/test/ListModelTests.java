@@ -21,22 +21,22 @@ import java.util.Date;
 
 import com.indragie.cmput301as1.ExpenseClaim;
 import com.indragie.cmput301as1.ExpenseClaimListActivity;
-import com.indragie.cmput301as1.ExpenseClaimListModel;
 import com.indragie.cmput301as1.User;
+import com.indragie.cmput301as1.ListModel;
 
 import android.test.ActivityInstrumentationTestCase2;
 
-public class ExpenseClaimListModelTests extends ActivityInstrumentationTestCase2<ExpenseClaimListActivity> {
+public class ListModelTests extends ActivityInstrumentationTestCase2<ExpenseClaimListActivity> {
 	private static final String CLAIMS_FILENAME = "claims.dat";
-	private ExpenseClaimListModel listModel;
+	private ListModel<ExpenseClaim> listModel;
 	
-	public ExpenseClaimListModelTests() {
+	public ListModelTests() {
 		super(ExpenseClaimListActivity.class);
 	}
 	
 	protected void setUp() throws Exception {
 		super.setUp();
-		listModel = new ExpenseClaimListModel(CLAIMS_FILENAME, getActivity());
+		listModel = new ListModel<ExpenseClaim>(CLAIMS_FILENAME, getActivity());
 		listModel.removeAll();
 	}
 	
@@ -50,7 +50,7 @@ public class ExpenseClaimListModelTests extends ActivityInstrumentationTestCase2
 		ExpenseClaim claim = createExpenseClaim("URoma");
 		listModel.add(claim);
 		assertEquals(1, listModel.count());
-		assertEquals(claim, listModel.getExpenseClaims().get(0));
+		assertEquals(claim, listModel.getItems().get(0));
 	}
 	
 	public void testRemoveWithObject() {
@@ -86,7 +86,7 @@ public class ExpenseClaimListModelTests extends ActivityInstrumentationTestCase2
 		
 		listModel.remove(0);
 		assertEquals(1, listModel.count());
-		assertEquals(claim2, listModel.getExpenseClaims().get(0));
+		assertEquals(claim2, listModel.getItems().get(0));
 	}
 	
 	public void testRemoveAll() {
@@ -109,23 +109,23 @@ public class ExpenseClaimListModelTests extends ActivityInstrumentationTestCase2
 		
 		listModel.add(claim1);
 		listModel.add(claim2);
-		assertEquals(claim1, listModel.getExpenseClaims().get(0));
-		assertEquals(claim2, listModel.getExpenseClaims().get(1));
+		assertEquals(claim1, listModel.getItems().get(0));
+		assertEquals(claim2, listModel.getItems().get(1));
 		
 		listModel.set(1, claim3);
-		assertEquals(claim1, listModel.getExpenseClaims().get(0));
-		assertEquals(claim3, listModel.getExpenseClaims().get(1));
+		assertEquals(claim1, listModel.getItems().get(0));
+		assertEquals(claim3, listModel.getItems().get(1));
 	}
 	
 	public void testPersistence() {
 		ExpenseClaim claim = createExpenseClaim("URoma");
 		listModel.add(claim);
 		
-		ExpenseClaimListModel sameFileListModel = new ExpenseClaimListModel(CLAIMS_FILENAME, getActivity());
+		ListModel<ExpenseClaim> sameFileListModel = new ListModel<ExpenseClaim>(CLAIMS_FILENAME, getActivity());
 		assertEquals(1, sameFileListModel.count());
-		assertEquals(claim, sameFileListModel.getExpenseClaims().get(0));
+		assertEquals(claim, sameFileListModel.getItems().get(0));
 		
-		ExpenseClaimListModel newListModel = new ExpenseClaimListModel("someotherfile.dat", getActivity());
+		ListModel<ExpenseClaim> newListModel = new ListModel<ExpenseClaim>("someotherfile.dat", getActivity());
 		assertEquals(0, newListModel.count());
 	}
 }

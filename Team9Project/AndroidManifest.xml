@@ -24,6 +24,7 @@
         </activity>
         <activity
             android:name=".ExpenseClaimDetailActivity"
+            android:label="@string/detail_title"
             android:parentActivityName=".ExpenseClaimListActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -38,8 +39,19 @@
         </activity>
         <activity android:name=".ExpenseItemAddActivity" >
         </activity>
+        <activity android:name=".ExpenseItemEditActivity" >
+        </activity>
         <activity
-            android:name=".ExpenseItemEditActivity" >
+            android:name=".ManageTagsActivity"
+            android:label="@string/title_activity_manage_tags" >
+        </activity>
+        <activity
+            android:name=".TagAddActivity"
+            android:label="@string/title_activity_add_tag" >
+        </activity>
+        <activity
+            android:name=".TagEditActivity"
+            android:label="@string/title_activity_edit_tag" >
         </activity>
     </application>
 
