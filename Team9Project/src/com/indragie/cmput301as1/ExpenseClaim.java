@@ -32,7 +32,7 @@ import android.content.res.Resources;
 /**
  * Model object representing an expense claim.
  */
-public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
+public class ExpenseClaim implements Serializable {
 	private static final long serialVersionUID = 9142980792263787924L;
 
 	//================================================================================
@@ -395,22 +395,31 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 	}
 	
 	@Override
-	public int hashCode() {
+	public int hashCode()
+	{
+
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
+				+ ((creationDate == null) ? 0 : creationDate.hashCode());
+		result = prime * result
 				+ ((description == null) ? 0 : description.hashCode());
+		result = prime * result
+				+ ((destinations == null) ? 0 : destinations.hashCode());
 		result = prime * result + ((endDate == null) ? 0 : endDate.hashCode());
 		result = prime * result + ((items == null) ? 0 : items.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result
 				+ ((startDate == null) ? 0 : startDate.hashCode());
 		result = prime * result + ((status == null) ? 0 : status.hashCode());
+		result = prime * result + ((tags == null) ? 0 : tags.hashCode());
 		return result;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(Object obj)
+	{
+
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -418,44 +427,59 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 		if (getClass() != obj.getClass())
 			return false;
 		ExpenseClaim other = (ExpenseClaim) obj;
-		if (description == null) {
+		if (creationDate == null)
+		{
+			if (other.creationDate != null)
+				return false;
+		} else if (!creationDate.equals(other.creationDate))
+			return false;
+		if (description == null)
+		{
 			if (other.description != null)
 				return false;
 		} else if (!description.equals(other.description))
 			return false;
-		if (endDate == null) {
+		if (destinations == null)
+		{
+			if (other.destinations != null)
+				return false;
+		} else if (!destinations.equals(other.destinations))
+			return false;
+		if (endDate == null)
+		{
 			if (other.endDate != null)
 				return false;
 		} else if (!endDate.equals(other.endDate))
 			return false;
-		if (items == null) {
+		if (items == null)
+		{
 			if (other.items != null)
 				return false;
 		} else if (!items.equals(other.items))
 			return false;
-		if (name == null) {
+		if (name == null)
+		{
 			if (other.name != null)
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
-		if (startDate == null) {
+		if (startDate == null)
+		{
 			if (other.startDate != null)
 				return false;
 		} else if (!startDate.equals(other.startDate))
 			return false;
 		if (status != other.status)
 			return false;
+		if (tags == null)
+		{
+			if (other.tags != null)
+				return false;
+		} else if (!tags.equals(other.tags))
+			return false;
 		return true;
 	}
 
-	//================================================================================
-	// Comparable
-	//================================================================================
 	
-	@Override
-	public int compareTo(ExpenseClaim claim) {
-		return 0;
-	}
-
 
 }

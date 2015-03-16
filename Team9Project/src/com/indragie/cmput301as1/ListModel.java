@@ -32,7 +32,7 @@ import android.content.Context;
 /**
  * Observable model that contains a list of items that can be mutated.
  */
-public class ListModel<T extends Comparable<? super T>> extends TypedObservable<List<T>> {
+public class ListModel<T> extends TypedObservable<List<T>> {
 	//================================================================================
 	// Properties
 	//================================================================================
