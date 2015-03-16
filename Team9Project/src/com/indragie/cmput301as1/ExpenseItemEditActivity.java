@@ -34,7 +34,15 @@ public class ExpenseItemEditActivity extends ExpenseItemAddActivity {
 	//================================================================================
 	// Constants
 	//================================================================================
+	
+	/**
+	 * Intent key for the position of the {@link ExpenseItem} object.
+	 */
 	public static final String EXTRA_EXPENSE_ITEM_POSITION = "com.indragie.cmput301as1.EXPENSE_ITEM_POSITION";
+	
+	/**
+	 * Intent key for editting an {@link ExpenseItem} object.
+	 */
 	public static final String EXTRA_EXPENSE_ITEM_EDITABLE = "com.indragie.cmput301as1.EXPENSE_ITEM_EDITABLE";
 	
 	//================================================================================
