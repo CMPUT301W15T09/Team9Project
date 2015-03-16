@@ -127,20 +127,20 @@ public class ExpenseItemAddActivity extends Activity {
 		dialogOptions = getResources().getStringArray(R.array.receipt_dialog_array);
 
 		ActionBarUtils.showCancelDoneActionBar(
-				this,
-				new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						onCancel();
-					}
-				},
-				new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						onDone();
-					}
+			this,
+			new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					onCancel();
 				}
-				);
+			},
+			new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					onDone();
+				}
+			}
+		);
 
 		nameField = (EditText)findViewById(R.id.et_name);
 		descriptionField = (EditText)findViewById(R.id.et_description);
@@ -171,16 +171,16 @@ public class ExpenseItemAddActivity extends Activity {
 	 */
 	protected Intent getResultIntent()  {
 		Money amount = Money.of(
-				CurrencyUnit.of(currencySpinner.getSelectedItem().toString()), 
-				Float.parseFloat(amountField.getText().toString())
-				);
+			CurrencyUnit.of(currencySpinner.getSelectedItem().toString()), 
+			Float.parseFloat(amountField.getText().toString())
+		);
 		ExpenseItem item = new ExpenseItem(
-				nameField.getText().toString(),
-				descriptionField.getText().toString(),
-				categorySpinner.getSelectedItem().toString(),
-				amount,
-				dateField.getDate()
-				);
+			nameField.getText().toString(),
+			descriptionField.getText().toString(),
+			categorySpinner.getSelectedItem().toString(),
+			amount,
+			dateField.getDate()
+		);
 		if (receiptFileUri != null) {
 			item.setReceipt(receiptFileUri.toString());
 		}
