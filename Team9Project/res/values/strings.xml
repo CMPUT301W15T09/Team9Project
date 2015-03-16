@@ -43,6 +43,9 @@
     <string name="action_sort_claim">Sort Claim</string>
     <string name="sort_type">Type of Sort: </string>
 	<string name="sort_order">Order of Sort: </string>    
+    <string name="user">User:&#160;</string>
+    <string name="approver">Approver:&#160;</string>
+    <string name="comments">Comments</string>
     <string name="amount_placeholder">0.00</string>
     <string name="total_label">Total</string>
     

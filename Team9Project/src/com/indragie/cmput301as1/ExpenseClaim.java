@@ -32,13 +32,13 @@ import android.content.res.Resources;
 /**
  * Model object representing an expense claim.
  */
-public class ExpenseClaim implements Serializable {
-	private static final long serialVersionUID = 9142980792263787924L;
 
+public class ExpenseClaim implements Serializable {
+	private static final long serialVersionUID = -3079284243806354009L;
+	
 	//================================================================================
 	// Properties
 	//================================================================================
-
 	/**
 	 * Name of the user who created the claim. TODO: Make this work with the new User stuff.
 	 */
@@ -106,17 +106,32 @@ public class ExpenseClaim implements Serializable {
 	 */
 	private Date creationDate;
 
+	/**
+	 * User who created this claim.
+	 */
+	private User user;
+	/**
+	 * Approvers comments.
+	 */
+	private String comments;
+	/**
+	 * User who returned or approved claim.
+	 */
+	private User approver;
+
 	//================================================================================
 	// Constructors
 	//================================================================================
 
-	public ExpenseClaim(String name, String description, Date startDate, Date endDate, Status status) {
+	public ExpenseClaim(String name, String description, Date startDate, Date endDate, User user, Status status) {
 		this.name = name;
 		this.description = description;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.status = status;
 		this.creationDate = new Date();
+		this.user = user;
+		this.approver = new User("", -2);
 	}
 
 	//================================================================================
@@ -300,6 +315,43 @@ public class ExpenseClaim implements Serializable {
 	}
 	
 	/**
+	 * @return The user who created the claim.
+	 */
+	public User getUser() {
+		return user;
+	}
+
+	/**
+	 * @return Approval comments for the claim.
+	 */
+	public String getComments() {
+		return comments;
+	}
+
+	/**
+	 * Sets the approval comments for the claim.
+	 * @param comments The approval comments.
+	 */
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+
+	/**
+	 * @return The user who approved the claim.
+	 */
+	public User getApprover() {
+		return approver;
+	}
+
+	/**
+	 * Sets the approver of the claim.
+	 * @param approver
+	 */
+	public void setApprover(User approver) {
+		this.approver = approver;
+	}
+	
+	/**
 	 * Adds a Tag object to the expense claim.
 	 * @param tag The tag to add.
 	 */
@@ -348,7 +400,6 @@ public class ExpenseClaim implements Serializable {
 	public List<Tag> getTags() {
 		return tags; //Does not return unmodifiable List<Tag>
 	}
-	
 
 	/**
 	 * @return If the claim has expense items, this method returns a string
@@ -480,7 +531,4 @@ public class ExpenseClaim implements Serializable {
 			return false;
 		return true;
 	}
-
-	
-
 }
