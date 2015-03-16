@@ -42,7 +42,7 @@ import com.indragie.cmput301as1.ExpenseClaim.Status;
  * Activity for viewing details of and editing an expense claim, including marking 
  * it as submitted/returned/approved and adding/deleting/editing expense items.
  */
-public class ExpenseClaimDetailActivity extends ListActivity implements Observer {
+public class ExpenseClaimDetailActivity extends ListActivity implements TypedObserver<Object> {
 	//================================================================================
 	// Constants
 	//================================================================================
@@ -432,7 +432,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements Observer
 	//================================================================================
 	
 	@Override
-	public void update(Observable observable, Object object) {
+	public void update(TypedObservable<Object> observable, Object object) {
 		amountsTextView.setText(claim.getSummarizedAmounts());
 	}
 }

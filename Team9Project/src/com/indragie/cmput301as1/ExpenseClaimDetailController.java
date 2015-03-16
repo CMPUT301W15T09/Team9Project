@@ -19,8 +19,6 @@ package com.indragie.cmput301as1;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -30,7 +28,7 @@ import android.content.res.Resources;
  * objects into representations suitable for display in the UI presented by
  * {@link ExpenseClaimDetailActivity}
  */
-public class ExpenseClaimDetailController implements Observer {
+public class ExpenseClaimDetailController implements TypedObserver<Object> {
 	//================================================================================
 	// Properties
 	//================================================================================
@@ -315,7 +313,7 @@ public class ExpenseClaimDetailController implements Observer {
 	//================================================================================
 	
 	@Override
-	public void update(Observable observable, Object object) {
+	public void update(TypedObservable<Object> observable, Object object) {
 		destinationsSection.setItems(getDestinationDetailItems());
 		expenseItemsSection.setItems(getExpenseItemDetailItems());
 		adapter.noteSectionsChanged();
