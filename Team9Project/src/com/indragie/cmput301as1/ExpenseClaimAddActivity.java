@@ -110,11 +110,10 @@ public class ExpenseClaimAddActivity extends Activity {
 		});
 		
 		userfield = (TextView)findViewById(R.id.tv_user);
-		userfield.setText(userfield.getText()+" "+user.getName());
+		userfield.append(user.getName());
 		
 		commentField = (EditText)findViewById(R.id.et_comments);
 		commentField.setEnabled(false);
-				
 	}
 	
 	/**

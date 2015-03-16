@@ -17,6 +17,8 @@
 
 package com.indragie.cmput301as1;
 
+
+import java.util.Comparator;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -43,6 +45,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 
 	private static final int ADD_EXPENSE_CLAIM_REQUEST = 1;
 	private static final int EDIT_EXPENSE_CLAIM_REQUEST = 2;
+	private static final int SORT_EXPENSE_CLAIM_REQUEST = 3;
 	private static final String EXPENSE_CLAIM_FILENAME = "claims";
 
 	//================================================================================
@@ -63,6 +66,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 * Active user.
 	 */
 	private User user;
+
 
 	//================================================================================
 	// Activity Callbacks
@@ -131,9 +135,22 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		case EDIT_EXPENSE_CLAIM_REQUEST:
 			onEditExpenseResult(data);
 			break;
+		case SORT_EXPENSE_CLAIM_REQUEST:
+			onSortExpenseResult(data);
+			break;
 		}
 	}
 	
+	/**
+	 * Changes the sorting mode based on a comparator chosen by {@link ExpenseClaimSortActivity}
+	 * @param data The intent to get the comparator from.
+	 */
+	@SuppressWarnings("unchecked")
+	private void onSortExpenseResult(Intent data) {
+		Comparator<ExpenseClaim> comparator = (Comparator<ExpenseClaim>)data.getSerializableExtra(ExpenseClaimSortActivity.EXPENSE_CLAIM_SORT);
+		listModel.setComparator(comparator);
+	}
+
 	/**
 	 * Adds a expense claim to list model from a intent.
 	 * @param data The intent to get the expense claim from.
@@ -165,6 +182,9 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		case R.id.action_add_claim:
 			startAddExpenseClaimActivity();
 			return true;
+		case R.id.action_sort_claim:
+			startSortExpenseClaimActivity();
+			return true;
 		case R.id.action_manage_tags:
 			startManageTagsActivity();
 			return true;
@@ -172,18 +192,27 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 			return super.onOptionsItemSelected(item);
 		}
 	}
+
 	
 	/**
-	 * Calls the intent to create a new expense claim.
+	 * Starts the {@link ExpenseClaimAddActivity}
 	 */
 	private void startAddExpenseClaimActivity() {
 		Intent addIntent = new Intent(this, ExpenseClaimAddActivity.class);
-		addIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_USER, user);
+		addIntent.putExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM_USER, user);
 		startActivityForResult(addIntent, ADD_EXPENSE_CLAIM_REQUEST);
 	}
 	
 	/**
-	 * Calls the intent to manage tags.
+	 * Starts the {@link ExpenseClaimSortActivity}
+	 */
+	private void startSortExpenseClaimActivity() {
+		Intent intent = new Intent(this, ExpenseClaimSortActivity.class);
+		startActivityForResult(intent, SORT_EXPENSE_CLAIM_REQUEST);
+	}
+		
+	/**
+	 * Starts the {@link ManageTagsActivity}
 	 */
 	private void startManageTagsActivity() {
 		Intent manageTagsIntent = new Intent(this, ManageTagsActivity.class);
@@ -265,6 +294,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		Intent editIntent = new Intent(this, ExpenseClaimDetailActivity.class);
 		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM, listModel.getItems().get(position));
 		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_INDEX, position);
+		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_USER, user);
 		startActivityForResult(editIntent, EDIT_EXPENSE_CLAIM_REQUEST);
 	}
 
@@ -276,4 +306,5 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	public void update(TypedObservable<List<ExpenseClaim>> o, List<ExpenseClaim> claims) {
 		setListAdapter(new ExpenseClaimArrayAdapter(this, claims));
 	}
+
 }
