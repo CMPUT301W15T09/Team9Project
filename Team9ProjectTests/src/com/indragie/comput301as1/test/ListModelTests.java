@@ -21,6 +21,7 @@ import java.util.Date;
 
 import com.indragie.cmput301as1.ExpenseClaim;
 import com.indragie.cmput301as1.ExpenseClaimListActivity;
+import com.indragie.cmput301as1.User;
 import com.indragie.cmput301as1.ListModel;
 
 import android.test.ActivityInstrumentationTestCase2;
@@ -40,7 +41,7 @@ public class ListModelTests extends ActivityInstrumentationTestCase2<ExpenseClai
 	}
 	
 	private static ExpenseClaim createExpenseClaim(String name) {
-		return new ExpenseClaim(name, null, new Date(), new Date(), ExpenseClaim.Status.IN_PROGRESS);
+		return new ExpenseClaim(name, null, new Date(), new Date(), new User("User",1),ExpenseClaim.Status.IN_PROGRESS);
 	}
 	
 	public void testAdd() {

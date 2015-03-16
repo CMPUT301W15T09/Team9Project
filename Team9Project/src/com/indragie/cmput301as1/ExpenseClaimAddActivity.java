@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 /**
  * Activity that presents a user interface for entering information to 
@@ -34,6 +35,7 @@ public class ExpenseClaimAddActivity extends Activity {
 	// Constants
 	//================================================================================
 	public static final String EXTRA_EXPENSE_CLAIM = "com.indragie.cmput301as1.EXPENSE_CLAIM";
+	public static final String EXTRA_EXPENSE_CLAIM_USER = "com.indragie.cmput301as1.EXTRA_EXPENSE_CLAIM_USER";
 
 	//================================================================================
 	// Properties
@@ -54,6 +56,9 @@ public class ExpenseClaimAddActivity extends Activity {
 	 * The end date of the expense claim.
 	 */
 	private DateEditText endDateField;
+	private TextView userfield;
+	private EditText commentField;
+	private User user;
 
 	//================================================================================
 	// Activity Callbacks
@@ -63,6 +68,10 @@ public class ExpenseClaimAddActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_claim_header);
+		
+		Intent intent = getIntent();
+		user = (User)intent.getSerializableExtra(EXTRA_EXPENSE_CLAIM_USER);
+
 		ActionBarUtils.showCancelDoneActionBar(
 			this,
 			new View.OnClickListener() {
@@ -99,6 +108,12 @@ public class ExpenseClaimAddActivity extends Activity {
 				startDateField.setMaxDate(date);
 			}
 		});
+		
+		userfield = (TextView)findViewById(R.id.tv_user);
+		userfield.append(user.getName());
+		
+		commentField = (EditText)findViewById(R.id.et_comments);
+		commentField.setEnabled(false);
 	}
 	
 	/**
@@ -111,6 +126,7 @@ public class ExpenseClaimAddActivity extends Activity {
 			descriptionField.getText().toString(), 
 			startDateField.getDate(), 
 			endDateField.getDate(),
+			user,
 			ExpenseClaim.Status.IN_PROGRESS
 		);
 
