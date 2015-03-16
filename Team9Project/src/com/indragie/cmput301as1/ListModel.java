@@ -34,9 +34,17 @@ public class ListModel<T extends Comparable<? super T>> extends TypedObservable<
 	//================================================================================
 	// Properties
 	//================================================================================
-	
+	/**
+	 * The filename to save to.
+	 */
 	private String fileName;
+	/**
+	 * Context of the list model.
+	 */
 	private Context context;
+	/**
+	 * List of type T.
+	 */
 	protected ArrayList<T> list;
 	
 	//================================================================================

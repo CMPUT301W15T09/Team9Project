@@ -49,8 +49,14 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 	//================================================================================
 	// Properties
 	//================================================================================
-
+	
+	/**
+	 * List model of tags.
+	 */
 	private ListModel<Tag> listModel;
+	/**
+	 * Index of a item that is long pressed.
+	 */
 	private int longPressedItemIndex;
 
 	//================================================================================
@@ -156,23 +162,37 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 	// Add/Edit a tag
 	//================================================================================
 	
+	/**
+	 * Starts the activity to add a tag.
+	 */
 	private void startAddTagActivity() {
 		Intent addTagIntent = new Intent(this, TagAddActivity.class);
 		startActivityForResult(addTagIntent, ADD_TAG_REQUEST);
 	}
 	
+	/**
+	 * Adds a tag to the list model from a resulting activity.
+	 * @param data The intent from resulting activity.
+	 */
 	private void onAddTag(Intent data) {
 		Tag tag = (Tag)data.getSerializableExtra(TagAddActivity.ADDED_TAG);
 		listModel.add(tag);
 		
 	}
 	
+	/**
+	 * Starts the activity to edit a tag.
+	 */
 	private void startEditTagActivity() {
 		Intent editTagIntent = new Intent(this, TagEditActivity.class);
 		editTagIntent.putExtra(EXTRA_TAG, listModel.getItems().get(longPressedItemIndex));
 		startActivityForResult(editTagIntent, EDIT_TAG_REQUEST);
 	}
 	
+	/**
+	 * Edits a tag in list model from resulting activity.
+	 * @param data The intent form resulting activity.
+	 */
 	private void onEditTag(Intent data) {
 		Tag tag = (Tag)data.getSerializableExtra(TagAddActivity.ADDED_TAG);
 		listModel.set(longPressedItemIndex, tag);

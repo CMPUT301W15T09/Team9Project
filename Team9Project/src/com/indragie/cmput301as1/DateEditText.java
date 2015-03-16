@@ -38,12 +38,33 @@ public class DateEditText extends EditText {
 	//================================================================================
 	// Properties
 	//================================================================================
+	/**
+	 * Context of the date picker.
+	 */
 	private Context context;
+	/**
+	 * The specified date format.
+	 */
 	private DateFormat dateFormat;
+	/**
+	 * Dialog of the date picker.
+	 */
 	private DatePickerDialog dialog;
+	/**
+	 * The specified date.
+	 */
 	private Date date;
+	/**
+	 * Minimum date that the specified date should be before,
+	 */
 	private Date minDate;
+	/**
+	 * Maximum date that the specified date should not be after.
+	 */
 	private Date maxDate;
+	/**
+	 * Listener for when date has changed.
+	 */
 	private OnDateChangedListener onDateChangedListener;
 	
 	//================================================================================
@@ -87,11 +108,18 @@ public class DateEditText extends EditText {
 	//================================================================================
 	// Accessors
 	//================================================================================
-	
+	/**
+	 * Gets the date.
+	 * @return The date.
+	 */
 	public Date getDate() {
 		return date;
 	}
 	
+	/**
+	 * Sets the date.
+	 * @param date The date to set to.
+	 */
 	public void setDate(Date date) {
 		this.date = date;
 		setText(dateFormat.format(date));
@@ -100,10 +128,18 @@ public class DateEditText extends EditText {
 		}
 	}
 	
+	/**
+	 * Gets the minimum date
+	 * @return The date.
+	 */
 	public Date getMinimumDate() {
 		return minDate;
 	}
 	
+	/**
+	 * Sets the minimum date.
+	 * @param minDate The date.
+	 */
 	public void setMinDate(Date minDate) {
 		this.minDate = minDate;
 		if (dialog != null) {
@@ -114,10 +150,18 @@ public class DateEditText extends EditText {
 		}
 	}
 	
+	/**
+	 * Gets the maximum date.
+	 * @return The date.
+	 */
 	public Date getMaxDate() {
 		return maxDate;
 	}
 	
+	/**
+	 * Sets the maximum date.
+	 * @param maxDate The date.
+	 */
 	public void setMaxDate(Date maxDate) {
 		this.maxDate = maxDate;
 		if (dialog != null) {
@@ -128,10 +172,18 @@ public class DateEditText extends EditText {
 		}
 	}
 	
+	/**
+	 * Returns the listener when date has changed.
+	 * @return The listener.
+	 */
 	public OnDateChangedListener getOnDateChangedListener() {
 		return onDateChangedListener;
 	}
 	
+	/**
+	 * Sets the listener of the listener.
+	 * @param listener The listener.
+	 */
 	public void setOnDateChangedListener(OnDateChangedListener listener) {
 		onDateChangedListener = listener;
 	}
