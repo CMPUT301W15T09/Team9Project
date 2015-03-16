@@ -18,41 +18,48 @@
 package com.indragie.cmput301as1;
 
 import java.io.Serializable;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.joda.money.*;
+import org.joda.money.CurrencyUnit;
+import org.joda.money.Money;
 
-import android.content.Context;
 import android.content.res.Resources;
 
 /**
  * Model object representing an expense claim.
  */
 public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
-	private static final long serialVersionUID = 4097224167619777631L;
+	private static final long serialVersionUID = 9142980792263787924L;
 
 	//================================================================================
 	// Properties
 	//================================================================================
 
 	/**
-	 * Name of the claim.
+	 * Name of the user who created the claim. TODO: Make this work with the new User stuff.
 	 */
 	private String name;
+	
 	/**
 	 * Textual description of the claim.
 	 */
 	private String description;
+	
+	/**
+	 * Destinations of travel included in the expense claim.
+	 */
+	private List<Destination> destinations = new ArrayList<Destination>();
+	
 	/**
 	 * Expense items contained in the claim.
 	 */
-	private List<ExpenseItem> items;
-	/*
+	private List<ExpenseItem> items = new ArrayList<ExpenseItem>();
+	
+	/**
 	 * Tags contained in the claim.
 	 */
 	private List<Tag> tags;
@@ -101,7 +108,6 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 	public ExpenseClaim(String name, String description, Date startDate, Date endDate, Status status) {
 		this.name = name;
 		this.description = description;
-		this.items = new ArrayList<ExpenseItem>();
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.status = status;
@@ -142,6 +148,26 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
+	public List<Destination> getDestinations() {
+		return Collections.unmodifiableList(destinations);
+	}
+	
+	public void setDestinations(List<Destination> destinations) {
+		this.destinations = destinations;
+	}
+	
+	public void addDestination(Destination destination) {
+		destinations.add(destination);
+	}
+	
+	public void setDestination(int index, Destination destination) {
+		destinations.set(index, destination);
+	}
+	
+	public void removeDestination(int index) {
+		destinations.remove(index);
+	}
 
 	/**
 	 * Retrieves the list of expense items.
@@ -167,7 +193,7 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 		items.add(item);
 		Collections.sort(items);
 	}
-	
+
 	/**
 	 * Sets a expense item at specified position.
 	 * @param position The positioned specified. 
@@ -316,7 +342,7 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 	 * items, this method returns null.
 	 */
 	public String getSummarizedAmounts() {
-		if (items.size() == 0) return null;
+		if (items.size() == 0) return "";
 
 		HashMap<CurrencyUnit, Money> unitToMoneyMap = new HashMap<CurrencyUnit, Money>();
 		for (ExpenseItem item : items) {
@@ -336,29 +362,9 @@ public class ExpenseClaim implements Serializable, Comparable<ExpenseClaim> {
 			builder.append(amount.toString());
 			builder.append("\n");
 		}
+		
 		// Remove trailing newline
 		builder.deleteCharAt(builder.length() - 1);
-		return builder.toString();
-	}
-	
-	/**
-	 * Creates a plain text representation of the expense claim;
-	 * @param context Context to use for getting localized string resources.
-	 * @return Plain text representation of the expense claim suitable for sending in an email.
-	 */
-	public String getPlainText(Context context) {
-		Resources resources = context.getResources();
-		StringBuilder builder = new StringBuilder(name + "\n");
-		if (description.length() > 0) {
-			builder.append(resources.getString(R.string.description) + ": " + description + "\n");
-		}
-		DateFormat dateFormat = DateFormat.getDateInstance();
-		builder.append(resources.getString(R.string.dates) + ": " + dateFormat.format(startDate) + " - " + dateFormat.format(endDate) + "\n");
-		builder.append(resources.getString(R.string.status) + ": " + getStatusString(resources) + "\n\n");
-		builder.append(resources.getString(R.string.expense_items) + ":\n");
-		for (ExpenseItem item : items) {
-			builder.append(item.getPlainText(context));
-		}
 		return builder.toString();
 	}
 
