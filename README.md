@@ -18,6 +18,8 @@ Original source code is from [indragiek/cmput301as1](https://github.com/indragie
 	* [http://developer.android.com/guide/topics/ui/controls/spinner.html](http://developer.android.com/guide/topics/ui/controls/spinner.html)
 * Action Bar Icons
 	* [https://developer.android.com/design/downloads/index.html](https://developer.android.com/design/downloads/index.html)
+* Gallery and Camera Dialogue
+	* [http://www.theappguruz.com/blog/android-take-photo-camera-gallery-code-sample](http://www.theappguruz.com/blog/android-take-photo-camera-gallery-code-sample)
 * Calendar Usage
 	* [http://www.mkyong.com/java/java-how-to-get-current-date-time-date-and-calender](http://www.mkyong.com/java/java-how-to-get-current-date-time-date-and-calender)
 

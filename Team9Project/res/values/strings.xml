@@ -41,6 +41,10 @@
     <string name="action_mark_submitted">Mark as Submitted</string>
     <string name="action_mark_returned">Mark as Returned</string>
     <string name="action_mark_approved">Mark as Approved</string>
+    <string name="toast_receipt_success">Save Successful</string>
+    <string name="toast_receipt_failed">Save Failed</string>
+    <string name="toast_receipt_deleted">Receipt Deleted</string>
+    <string name="toast_receipt_nonexistent">No Saved Receipt</string>
     <string name="action_sort_claim">Sort Claim</string>
     <string name="sort_type">Type of Sort: </string>
 	<string name="sort_order">Order of Sort: </string>    
