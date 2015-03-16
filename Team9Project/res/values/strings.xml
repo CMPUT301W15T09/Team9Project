@@ -40,6 +40,9 @@
     <string name="action_mark_submitted">Mark as Submitted</string>
     <string name="action_mark_returned">Mark as Returned</string>
     <string name="action_mark_approved">Mark as Approved</string>
+    <string name="user">User:&#160;</string>
+    <string name="approver">Approver:&#160;</string>
+    <string name="comments">Comments</string>
     <string name="amount_placeholder">0.00</string>
     <string name="total_label">Total</string>
     

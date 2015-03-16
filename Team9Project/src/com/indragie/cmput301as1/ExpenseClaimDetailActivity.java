@@ -49,6 +49,8 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	 * Intent key for the {@link ExpenseClaim} object.
 	 */
 	public static final String EXTRA_EXPENSE_CLAIM = "com.indragie.cmput301as1.EXTRA_CLAIM";
+	public static final String EXTRA_EXPENSE_CLAIM_POSITION = "com.indragie.cmput301as1.EXTRA_EXPENSE_CLAIM_POSITION";
+	public static final String EXTRA_EXPENSE_CLAIM_USER = "com.indragie.cmput301as1.EXTRA_EXPENSE_CLAIM_USER";
 	
 	/**
 	 * Intent key for the position of the {@link ExpenseClaim} object in the expense claims list.
@@ -109,6 +111,31 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	 * Field that displays the summarized amounts for the expense items.
 	 */
 	private TextView amountsTextView;
+
+	/**
+	 * Field that displays approver comments.
+	 */
+	private EditText comments;
+	
+	/**
+	 * Field that displays the name of the user.
+	 */
+	private TextView userField;
+	
+	/**
+	 * Field that displays the name of the approver.
+	 */
+	private TextView approverField;
+	
+	/**
+	 * The current user.
+	 */
+	private User user;
+	
+	/**
+	 * The status of the expense claim.
+	 */
+	private Status status;
 	
 	/**
 	 * Observable model for expense claim details.
@@ -130,6 +157,13 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		super.onCreate(savedInstanceState);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 
+		Intent intent = getIntent();
+		claim = (ExpenseClaim)intent.getSerializableExtra(EXTRA_EXPENSE_CLAIM);
+		user = (User)intent.getSerializableExtra(EXTRA_EXPENSE_CLAIM_USER);
+		status = claim.getStatus();
+
+		setEditable();
+		
 		claim = (ExpenseClaim)getIntent().getSerializableExtra(EXTRA_EXPENSE_CLAIM);
 		
 		model = new ExpenseClaimDetailModel(claim);
@@ -179,6 +213,17 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			}
 		});
 
+		userField = (TextView)headerView.findViewById(R.id.tv_user);
+		userField.append(claim.getUser().getName());
+
+		approverField = (TextView)headerView.findViewById(R.id.tv_approver);
+		approverField.append(claim.getApprover().getName());
+
+
+		comments = (EditText)headerView.findViewById(R.id.et_comments);
+		comments.setText(claim.getComments());
+
+
 		getListView().addHeaderView(headerView);
 	}
 
@@ -194,20 +239,48 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 
 		getListView().addFooterView(footerView);
 	}
+	
+	/**
+	 * Sets the editable state of the entire UI.
+	 * @param editable Whether the claim is editable or not.
+	 */
+	private void setEditable(){
+		boolean UserCheck = user.getName().contentEquals(claim.getUser().getName());//SHOULD BE ID USING NAME FOR TESTING
 
+
+		if(status == Status.SUBMITTED ){
+			nameField.setEnabled(false);
+			descriptionField.setEnabled(false);
+			startDateField.setEnabled(false);
+			endDateField.setEnabled(false);
+			comments.setEnabled(!UserCheck);
+			this.editable = false;
+		}
+		else if(status == Status.APPROVED){
+			nameField.setEnabled(false);
+			descriptionField.setEnabled(false);
+			startDateField.setEnabled(false);
+			endDateField.setEnabled(false);
+			comments.setEnabled(false);	
+			this.editable = false;
+		}
+		else {
+			nameField.setEnabled(UserCheck);
+			descriptionField.setEnabled(UserCheck);
+			startDateField.setEnabled(UserCheck);
+			endDateField.setEnabled(UserCheck);
+			comments.setEnabled(false);
+			this.editable= UserCheck;
+		}
+	}
+	
 	/**
 	 * Sets the editable state of the entire UI.
 	 * @param editable Whether the claim is editable or not.
 	 */
 	private void setEditable(Boolean editable) {
 		this.editable = editable;
-
-		nameField.setEnabled(editable);
-		descriptionField.setEnabled(editable);
-		startDateField.setEnabled(editable);
-		endDateField.setEnabled(editable);
 		invalidateOptionsMenu();
-		
 		if (editable) {
 			getListView().setOnItemLongClickListener(
 				new LongClickDeleteListener(this, 
@@ -264,7 +337,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		// since this is for editing and not adding.
 		commitChangesAndFinish();
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.expense_claim_edit, menu);
@@ -274,7 +347,54 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);
-		menu.findItem(R.id.action_add_item).setEnabled(editable);
+		boolean UserCheck = user.getName().contentEquals(claim.getUser().getName());//SHOULD BE ID USING NAME FOR TESTING
+		MenuItem add= menu.findItem(R.id.action_add_item);
+		MenuItem submit = menu.findItem(R.id.action_mark_submitted);
+		MenuItem approve = menu.findItem(R.id.action_mark_approved);
+		MenuItem returned = menu.findItem(R.id.action_mark_returned);
+
+		if (status ==Status.APPROVED){
+			add.setEnabled(false);
+			submit.setEnabled(false);
+			approve.setEnabled(false);
+			returned.setEnabled(false);
+		}
+		if(status == Status.RETURNED){
+			if(UserCheck){
+				add.setEnabled(true);
+				submit.setEnabled(true);
+			}
+			else{
+				add.setEnabled(false);
+				submit.setEnabled(false);
+			}
+			approve.setEnabled(false);
+			returned.setEnabled(false);
+		}
+		if(status==Status.SUBMITTED){
+			if(UserCheck){
+				approve.setEnabled(false);
+				returned.setEnabled(false);
+			}
+			else{
+				approve.setEnabled(true);
+				returned.setEnabled(true);
+			}
+			add.setEnabled(false);
+			submit.setEnabled(false);
+		}
+		if(status== Status.IN_PROGRESS){
+			if(UserCheck){
+				add.setEnabled(true);
+				submit.setEnabled(true);
+			}
+			else{
+				add.setEnabled(false);
+				submit.setEnabled(false);
+			}
+			approve.setEnabled(false);
+			returned.setEnabled(false);
+		}
 		return true;
 	}
 
@@ -299,10 +419,12 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			return true;
 		case R.id.action_mark_returned:
 			claim.setStatus(Status.RETURNED);
-			setEditable(true);
+			claim.setApprover(user);
+			setEditable();
 			return true;
 		case R.id.action_mark_approved:
 			claim.setStatus(Status.APPROVED);
+			claim.setApprover(user);
 			commitChangesAndFinish();
 			return true;
 		default:
@@ -352,7 +474,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		Intent addIntent = new Intent(this, ExpenseItemAddActivity.class);
 		startActivityForResult(addIntent, ADD_EXPENSE_ITEM_REQUEST);
 	}
-	
+
 	/**
 	 * Starts a choose activity for sending the {@link ExpenseClaim} contents
 	 * as an email.
@@ -361,14 +483,14 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		// Based on http://stackoverflow.com/a/2745702/153112
 		Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:"));
 		emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Expense Claim: " + claim.getName());
-		
+
 		// Originally planned to use HTML for rich text in the email, but it turns
 		// out that most email clients on Android (including K-9) don't support HTML
 		// for composing emails, so I decided to use plain text instead.
 		emailIntent.putExtra(Intent.EXTRA_TEXT, controller.getPlainText());
 		startActivity(Intent.createChooser(emailIntent, "Send Email"));
 	}
-	
+
 	/**
 	 * Saves changes made to the expense claim and finishes the activity.
 	 */
@@ -377,6 +499,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		claim.setDescription(descriptionField.getText().toString());
 		claim.setStartDate(startDateField.getDate());
 		claim.setEndDate(endDateField.getDate());
+		claim.setComments(comments.getText().toString());
 
 		Intent intent = new Intent();
 		intent.putExtra(EXTRA_EXPENSE_CLAIM, claim);
