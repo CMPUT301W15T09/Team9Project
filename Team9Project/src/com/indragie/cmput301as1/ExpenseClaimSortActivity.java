@@ -1,16 +1,12 @@
 package com.indragie.cmput301as1;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Spinner;
 
 public class ExpenseClaimSortActivity extends AddActivity {
 	
-	private ArrayList<ExpenseClaim> claims;
-	private ExpenseClaimArrayAdapter adapter;
+	public static final String EXPENSE_CLAIM_SORT = "com.indragie.cmput301as1.EXPENSE_CLAIM";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,48 +35,34 @@ public class ExpenseClaimSortActivity extends AddActivity {
 		Spinner sort_time_spinner = (Spinner) findViewById(R.id.sort_time_spinner);
 		String sort_time = sort_time_spinner.getSelectedItem().toString();
 		
-		adapter = ExpenseClaimListActivity.getAdapter();
-		claims = ExpenseClaimListActivity.getClaims();
-		
 		String type1 = "Date of Travel";
 		String type2 = "Order of Entry";
-		
 		String time1 = "Ascending";
 		// String time2 = "Descending";
+		
+		Intent intent = new Intent();
 		
 		// Date of Travel
 		if (type1.equals(sort_type)) {
 			if (time1.equals(sort_time)) {
 				// Ascending order
-				Collections.sort(claims, new StartDateAscendingComparator());
-				commitClaimsMutation();
+				intent.putExtra(EXPENSE_CLAIM_SORT, new StartDateAscendingComparator());
 			} else {
 				// Descending order
-				Collections.sort(claims, new StartDateDescendingComparator());
-				commitClaimsMutation();
+				intent.putExtra(EXPENSE_CLAIM_SORT, new StartDateDescendingComparator());
 			}
 		// Order of Entry
 		} else if (type2.equals(sort_type)) {
 			if (time1.equals(sort_time)) {
 				// Ascending order
-				Collections.sort(claims, new CreationDateAscendingComparator());
-				commitClaimsMutation();
+				intent.putExtra(EXPENSE_CLAIM_SORT, new CreationDateAscendingComparator());
 			} else {
 				// Descending order
-				Collections.sort(claims, new CreationDateDescendingComparator());
-				commitClaimsMutation();
+				intent.putExtra(EXPENSE_CLAIM_SORT, new CreationDateDescendingComparator());
 			}
 		}
 		
-		Intent intent = new Intent();
 		return intent;
 	}
-	
-	
-	private void commitClaimsMutation() {
-		adapter.notifyDataSetChanged();
 		
-	}
-
-	
 }
