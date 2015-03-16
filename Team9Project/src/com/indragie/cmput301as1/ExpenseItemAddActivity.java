@@ -39,12 +39,29 @@ public class ExpenseItemAddActivity extends Activity {
 	//================================================================================
 	// Properties
 	//================================================================================
-
+	/**
+	 * Text field for name of expense item.
+	 */
 	protected EditText nameField;
+	/**
+	 * Text field for description of expense item.
+	 */
 	protected EditText descriptionField;
+	/**
+	 * Text field for amount of the expense item.
+	 */
 	protected EditText amountField;
+	/**
+	 * Text field for date of the expense item.
+	 */
 	protected DateEditText dateField;
+	/**
+	 * Spinner to select category of the expense item.
+	 */
 	protected Spinner categorySpinner;
+	/**
+	 * Spinner to select currency of the expense item.
+	 */
 	protected Spinner currencySpinner;
 
 	//================================================================================
@@ -86,7 +103,10 @@ public class ExpenseItemAddActivity extends Activity {
 	//================================================================================
 	// Subclass Overrides
 	//================================================================================
-
+	/**
+	 * Creates the new expense item of the intent.
+	 * @return A intent with the expense item.
+	 */
 	protected Intent getResultIntent()  {
 		Money amount = Money.of(
 			CurrencyUnit.of(currencySpinner.getSelectedItem().toString()), 

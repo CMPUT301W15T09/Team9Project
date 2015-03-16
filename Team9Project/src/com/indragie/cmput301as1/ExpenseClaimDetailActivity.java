@@ -18,8 +18,6 @@
 package com.indragie.cmput301as1;
 
 import java.util.Date;
-import java.util.Observable;
-import java.util.Observer;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -147,8 +145,9 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	@Override
 	protected void onDestroy() {
 		model.deleteObserver(this);
+		super.onDestroy();
 	}
-
+	
 	/**
 	 * Sets up the header view for the list, containing the fields
 	 * for editing the name, description, and start/end dates.
@@ -240,11 +239,19 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		}
 	}
 
+	/**
+	 * Retrieves the expense item from a intent to add to the expense claim.
+	 * @param data The intent.
+	 */
 	private void onAddExpenseItem(Intent data) {
 		ExpenseItem item = (ExpenseItem)data.getSerializableExtra(ExpenseItemAddActivity.EXTRA_EXPENSE_ITEM);
 		model.addItem(item);
 	}
 
+	/**
+	 * Retrieves the expense item from a intent to edit on the expense claim.
+	 * @param data The intent
+	 */
 	private void onEditExpenseItem(Intent data) {
 		ExpenseItem item = (ExpenseItem)data.getSerializableExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM);
 		int position = data.getIntExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_POSITION, -1);
