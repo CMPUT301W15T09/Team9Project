@@ -66,6 +66,12 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 		return convertView;
 	}
 	
+	/**
+	 * Draws the status of the expense claim
+	 * @param status The status.
+	 * @param resources The application's resources.
+	 * @return The drawable resource.
+	 */
 	private Drawable drawableForStatus(ExpenseClaim.Status status, Resources resources) {
 		switch (status) {
 		case IN_PROGRESS:
@@ -89,12 +95,15 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 	 * for display in the UI.
 	 */
 	private String buildDestinationsString(ExpenseClaim claim) {
-		StringBuilder builder = new StringBuilder();
+		List<Destination> destinations = claim.getDestinations();
+		if (destinations.size() == 0) return "";
 		
-		for (Destination destination : claim.getDestinations()) {
+		StringBuilder builder = new StringBuilder();
+		for (Destination destination : destinations) {
 			builder.append(destination.getName());
 			builder.append("\n");
 		}
+		
 		// Remove trailing newline
 		builder.deleteCharAt(builder.length() - 1);
 		return builder.toString();
