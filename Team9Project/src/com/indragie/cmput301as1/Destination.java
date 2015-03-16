@@ -14,32 +14,42 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.indragie.cmput301as1;
 
+import java.io.Serializable;
+
 /**
- * Model object that contains the section, item, and list view indices for
- * a {@link ListView} that uses a {@link SectionedListAdapter};
+ * Model object representing a travel destination.
  */
-public class SectionedListIndex {
+public class Destination implements Serializable {
+	private static final long serialVersionUID = 88384989745470050L;
+
 	//================================================================================
 	// Properties
 	//================================================================================
+	/**
+	 * The name of the destination.
+	 */
+	private String name;
 	
-	private int sectionIndex;
-	private int itemIndex;
+	/**
+	 * The reason of travel to the destination.
+	 */
+	private String travelReason;
 	
 	//================================================================================
 	// Constructors
 	//================================================================================
 	
 	/**
-	 * Creates a new instance of {@link SectionedListIndex}
-	 * @param sectionIndex The index of the section.
-	 * @param itemIndex The index of the item relative to the section.
+	 * Creates a new instance of {@link Destination}
+	 * @param name The name of the destination.
+	 * @param travelReason The reason of travel to the destination.
 	 */
-	public SectionedListIndex(int sectionIndex, int itemIndex)  {
-		this.sectionIndex = sectionIndex;
-		this.itemIndex = itemIndex;
+	public Destination(String name, String travelReason) {
+		this.name = name;
+		this.travelReason = travelReason;
 	}
 	
 	//================================================================================
@@ -47,19 +57,35 @@ public class SectionedListIndex {
 	//================================================================================
 	
 	/**
-	 * @return The index of the section.
+	 * @return The name of the destination.
 	 */
-	public int getSectionIndex() {
-		return sectionIndex;
+	public String getName() {
+		return name;
 	}
 	
 	/**
-	 * @return The index of the item relative to the section.
+	 * Sets the name of the destination.
+	 * @param name The name of the destination.
 	 */
-	public int getItemIndex() {
-		return itemIndex;
+	public void setName(String name) {
+		this.name = name;
 	}
-
+	
+	/**
+	 * @return The reason of travel to the destination.
+	 */
+	public String getTravelReason() {
+		return travelReason;
+	}
+	
+	/**
+	 * Sets the reason of travel to the destination.
+	 * @param travelReason The reason of travel to the destination.
+	 */
+	public void setTravelReason(String travelReason) {
+		this.travelReason = travelReason;
+	}
+	
 	//================================================================================
 	// Object
 	//================================================================================
@@ -68,8 +94,9 @@ public class SectionedListIndex {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + itemIndex;
-		result = prime * result + sectionIndex;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result
+				+ ((travelReason == null) ? 0 : travelReason.hashCode());
 		return result;
 	}
 
@@ -81,11 +108,17 @@ public class SectionedListIndex {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		SectionedListIndex other = (SectionedListIndex) obj;
-		if (itemIndex != other.itemIndex)
+		Destination other = (Destination) obj;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
 			return false;
-		if (sectionIndex != other.sectionIndex)
+		if (travelReason == null) {
+			if (other.travelReason != null)
+				return false;
+		} else if (!travelReason.equals(other.travelReason))
 			return false;
 		return true;
 	}
-}
+} 

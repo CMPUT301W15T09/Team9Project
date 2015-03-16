@@ -46,8 +46,8 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 		if (convertView == null) {
 			convertView = LayoutInflater.from(getContext()).inflate(R.layout.expense_claim_list_row, parent, false);
 		}
-		TextView nameTextView = (TextView)convertView.findViewById(R.id.tv_name);
-		nameTextView.setText(claim.getName());
+		TextView destinationsTextView = (TextView)convertView.findViewById(R.id.tv_name);
+		destinationsTextView.setText(buildDestinationsString(claim));
 		
 		TextView dateTextView = (TextView)convertView.findViewById(R.id.tv_date);
 		dateTextView.setText(DateFormat.getDateInstance().format(claim.getStartDate()));
@@ -66,6 +66,12 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 		return convertView;
 	}
 	
+	/**
+	 * Draws the status of the expense claim
+	 * @param status The status.
+	 * @param resources The application's resources.
+	 * @return The drawable resource.
+	 */
 	private Drawable drawableForStatus(ExpenseClaim.Status status, Resources resources) {
 		switch (status) {
 		case IN_PROGRESS:
@@ -79,5 +85,27 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 		default:
 			return null;
 		}
+	}
+	
+	/**
+	 * Builds a string containing every destination in the specified
+	 * expense claim, each separated by a new line.
+	 * @param claim The expense claim.
+	 * @return String containing every destination in the expense claim, suitable
+	 * for display in the UI.
+	 */
+	private String buildDestinationsString(ExpenseClaim claim) {
+		List<Destination> destinations = claim.getDestinations();
+		if (destinations.size() == 0) return "";
+		
+		StringBuilder builder = new StringBuilder();
+		for (Destination destination : destinations) {
+			builder.append(destination.getName());
+			builder.append("\n");
+		}
+		
+		// Remove trailing newline
+		builder.deleteCharAt(builder.length() - 1);
+		return builder.toString();
 	}
 }

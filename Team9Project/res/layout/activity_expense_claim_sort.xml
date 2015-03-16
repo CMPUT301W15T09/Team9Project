@@ -9,23 +9,23 @@
     tools:context="com.indragie.cmput301as1.ExpenseClaimSortActivity" >
 
         <Spinner
-        android:id="@+id/sort_type_spinner"
+        android:id="@+id/sort_order_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="57dp"
-        android:entries="@array/sort_type_spinner_array"
+        android:entries="@array/sort_type_array"
         />
 
     <Spinner
         android:id="@+id/sort_time_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/sort_type_spinner"
         android:layout_marginTop="46dp" 
-        android:entries="@array/sort_time_spinner_array"
+        android:entries="@array/sort_order_array"
         />
 
     <TextView

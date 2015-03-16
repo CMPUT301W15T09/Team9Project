@@ -36,7 +36,7 @@ public class XMLSectionHeaderConfigurator implements ViewConfigurator<String> {
 	/**
 	 * Type code for section headers. Row views should not use this code.
 	 */
-	private static final int HEADER_VIEW_TYPE_CODE = -1;
+	private static final int HEADER_VIEW_TYPE_CODE = 0;
 	
 	//================================================================================
 	// Properties

@@ -3,8 +3,12 @@ package com.indragie.comput301as1.test;
 import java.util.Date;
 import java.util.List;
 
+import com.indragie.cmput301as1.CreationDateAscendingComparator;
+import com.indragie.cmput301as1.CreationDateDescendingComparator;
+import com.indragie.cmput301as1.ExpenseClaim;
 import com.indragie.cmput301as1.ExpenseClaimSortActivity;
 import com.indragie.cmput301as1.StartDateAscendingComparator;
+import com.indragie.cmput301as1.StartDateDescendingComparator;
 
 import android.content.Intent;
 import junit.framework.TestCase;
@@ -13,7 +17,6 @@ public class ExpenseClaimSortTests extends TestCase {
 	private static final String EXPENSE_CLAIM_SORT = null;
 	
 	public void testStart() {
-		
 		// startDate in format (YYYY, MM, DD)
 		Date date1 = new Date(2000, 01, 01);
 		Date date2 = new Date(1995, 01, 01);
