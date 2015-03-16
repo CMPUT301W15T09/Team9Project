@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="sort_type_array">
+        <item>Date of Travel</item>
+        <item>Order of Entry</item>
+    </string-array>
+</resources>
