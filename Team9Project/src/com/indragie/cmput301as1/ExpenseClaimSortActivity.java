@@ -38,7 +38,7 @@ public class ExpenseClaimSortActivity extends AddActivity {
 		
 		Spinner sort_time_spinner = (Spinner) findViewById(R.id.sort_time_spinner);
 		String sort_time = sort_time_spinner.getSelectedItem().toString();
-
+		
 		adapter = ExpenseClaimListActivity.getAdapter();
 		claims = ExpenseClaimListActivity.getClaims();
 		

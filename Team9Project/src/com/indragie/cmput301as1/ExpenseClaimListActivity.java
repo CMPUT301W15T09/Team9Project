@@ -43,7 +43,7 @@ public class ExpenseClaimListActivity extends ListActivity {
 	
 	private static final int ADD_EXPENSE_CLAIM_REQUEST = 1;
 	private static final int EDIT_EXPENSE_CLAIM_REQUEST = 2;
-	//private static final int SORT_EXPENSE_CLAIM_REQUEST = 3;
+	
 	private static final String EXPENSE_CLAIM_FILENAME = "claims";
 
 	//================================================================================
