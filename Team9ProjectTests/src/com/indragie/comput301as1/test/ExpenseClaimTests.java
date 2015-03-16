@@ -26,12 +26,13 @@ import com.indragie.cmput301as1.Destination;
 import com.indragie.cmput301as1.ExpenseClaim;
 import com.indragie.cmput301as1.ExpenseItem;
 import com.indragie.cmput301as1.Tag;
+import com.indragie.cmput301as1.User;
 
 import junit.framework.TestCase;
 
 public class ExpenseClaimTests extends TestCase {
 	public void testNameAccessors() {
-		ExpenseClaim claim = new ExpenseClaim("Indragie", "", new Date(), new Date(), ExpenseClaim.Status.IN_PROGRESS);
+		ExpenseClaim claim = new ExpenseClaim("Indragie", "", new Date(), new Date(), new User("", 1), ExpenseClaim.Status.IN_PROGRESS);
 		assertEquals("Indragie", claim.getName());
 		
 		claim.setName("Karunaratne");
@@ -39,7 +40,7 @@ public class ExpenseClaimTests extends TestCase {
 	}
 	
 	public void testDescriptionAccessors() {
-		ExpenseClaim claim = new ExpenseClaim("Indragie", "Some description", new Date(), new Date(), ExpenseClaim.Status.IN_PROGRESS);
+		ExpenseClaim claim = new ExpenseClaim("Indragie", "Some description", new Date(), new Date(), new User("", 1), ExpenseClaim.Status.IN_PROGRESS);
 		assertEquals("Some description", claim.getDescription());
 		
 		claim.setDescription("Another description");
@@ -47,7 +48,7 @@ public class ExpenseClaimTests extends TestCase {
 	}
 	
 	public void testDestinationsAccessors() {
-		ExpenseClaim claim = new ExpenseClaim("Indragie", "", new Date(), new Date(), ExpenseClaim.Status.IN_PROGRESS);
+		ExpenseClaim claim = new ExpenseClaim("Indragie", "", new Date(), new Date(), new User("", 1), ExpenseClaim.Status.IN_PROGRESS);
 		
 		Destination destination1 = new Destination("Rome", "");
 		Destination destination2 = new Destination("Paris", "");
@@ -74,7 +75,7 @@ public class ExpenseClaimTests extends TestCase {
 	}
 	
 	public void testItemsAccessors() {
-		ExpenseClaim claim = new ExpenseClaim("Indragie", "", new Date(), new Date(), ExpenseClaim.Status.IN_PROGRESS);
+		ExpenseClaim claim = new ExpenseClaim("Indragie", "", new Date(), new Date(), new User("", 1), ExpenseClaim.Status.IN_PROGRESS);
 		ExpenseItem item1 = new ExpenseItem("Hotel", "", "", Money.parse("USD 2000.00"), new Date());
 		ExpenseItem item2 = new ExpenseItem("Taxi", "", "", Money.parse("USD 50.00"), new Date());
 		claim.addItem(item1);
@@ -100,7 +101,7 @@ public class ExpenseClaimTests extends TestCase {
 	}
 	
 	public void testStatusAccessors() {
-		ExpenseClaim claim = new ExpenseClaim("Indragie", "", new Date(), new Date(), ExpenseClaim.Status.IN_PROGRESS);
+		ExpenseClaim claim = new ExpenseClaim("Indragie", "", new Date(), new Date(), new User("", 1), ExpenseClaim.Status.IN_PROGRESS);
 		assertEquals(ExpenseClaim.Status.IN_PROGRESS, claim.getStatus());
 		
 		claim.setStatus(ExpenseClaim.Status.APPROVED);
@@ -109,7 +110,7 @@ public class ExpenseClaimTests extends TestCase {
 	
 	public void testStartDateAccessors() {
 		Date currentDate = new Date();
-		ExpenseClaim claim = new ExpenseClaim("Indragie", "", currentDate, new Date(), ExpenseClaim.Status.IN_PROGRESS);
+		ExpenseClaim claim = new ExpenseClaim("Indragie", "", currentDate, new Date(), new User("", 1), ExpenseClaim.Status.IN_PROGRESS);
 		assertEquals(currentDate, claim.getStartDate());
 		
 		Date newDate = new Date(5000);
@@ -119,7 +120,7 @@ public class ExpenseClaimTests extends TestCase {
 	
 	public void testEndDateAccessors() {
 		Date currentDate = new Date();
-		ExpenseClaim claim = new ExpenseClaim("Indragie", "", new Date(), currentDate, ExpenseClaim.Status.IN_PROGRESS);
+		ExpenseClaim claim = new ExpenseClaim("Indragie", "", new Date(), currentDate, new User("", 1), ExpenseClaim.Status.IN_PROGRESS);
 		assertEquals(currentDate, claim.getEndDate());
 		
 		Date newDate = new Date(5000);
@@ -128,7 +129,7 @@ public class ExpenseClaimTests extends TestCase {
 	}
 	
 	public void testTagAccessors() {
-		ExpenseClaim claim = new ExpenseClaim("Indragie", "", new Date(), new Date(), ExpenseClaim.Status.IN_PROGRESS);
+		ExpenseClaim claim = new ExpenseClaim("Indragie", "", new Date(), new Date(), new User("", 1), ExpenseClaim.Status.IN_PROGRESS);
 		Tag tag1 = new Tag("business");
 		Tag tag2 = new Tag("fun");
 		claim.addTag(tag1);
@@ -149,7 +150,7 @@ public class ExpenseClaimTests extends TestCase {
 	}
 	
 	public void testGetSummarizedAmounts() {
-		ExpenseClaim claim = new ExpenseClaim("Indragie", "", new Date(), new Date(), ExpenseClaim.Status.IN_PROGRESS);
+		ExpenseClaim claim = new ExpenseClaim("Indragie", "", new Date(), new Date(), new User("", 1), ExpenseClaim.Status.IN_PROGRESS);
 		ExpenseItem item1 = new ExpenseItem("Hotel", "", "", Money.parse("USD 2000.00"), new Date());
 		ExpenseItem item2 = new ExpenseItem("Taxi", "", "", Money.parse("USD 50.00"), new Date());
 		claim.addItem(item1);
