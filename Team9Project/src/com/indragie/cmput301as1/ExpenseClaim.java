@@ -62,7 +62,7 @@ public class ExpenseClaim implements Serializable {
 	/**
 	 * Tags contained in the claim.
 	 */
-	private List<Tag> tags;
+	private List<Tag> tags = new ArrayList<Tag>();
 	
 	/**
 	 * Possible statuses for an expense claim.
@@ -179,22 +179,42 @@ public class ExpenseClaim implements Serializable {
 		this.description = description;
 	}
 	
+	/**
+	 * @return The list of destinations for the expense claim.
+	 */
 	public List<Destination> getDestinations() {
 		return Collections.unmodifiableList(destinations);
 	}
 	
+	/**
+	 * Sets the list of destinations for the expense claim.
+	 * @param destinations List of destinations.
+	 */
 	public void setDestinations(List<Destination> destinations) {
 		this.destinations = destinations;
 	}
 	
+	/**
+	 * Adds a destination to the list of destinations for the expense claim.
+	 * @param destination The destination to add.
+	 */
 	public void addDestination(Destination destination) {
 		destinations.add(destination);
 	}
 	
+	/**
+	 * Replaces an existing destination in the list of destinations for the expense claim.
+	 * @param index The index of the destination to replace.
+	 * @param destination The destination to replace it with.
+	 */
 	public void setDestination(int index, Destination destination) {
 		destinations.set(index, destination);
 	}
 	
+	/**
+	 * Removes a destination from the list of destinations for the expense claim.
+	 * @param index The index of the destination to remove.
+	 */
 	public void removeDestination(int index) {
 		destinations.remove(index);
 	}
