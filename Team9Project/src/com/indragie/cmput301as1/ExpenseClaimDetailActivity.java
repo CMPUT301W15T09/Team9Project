@@ -86,12 +86,12 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 
 		setupListHeaderView();
 		setupListFooterView();
-		
+
 		setEditable();
 
 		adapter = new ExpenseItemArrayAdapter(this, claim.getItems());
 		setListAdapter(adapter);
-		
+
 		final ActionMode.Callback longClickCallback = new ActionMode.Callback() {
 			@Override
 			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
@@ -160,22 +160,17 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 				startDateField.setMaxDate(date);
 			}
 		});
-		
+
 		userField = (TextView)headerView.findViewById(R.id.tv_user);
 		userField.append(claim.getUser().getName());
-		
+
 		approverField = (TextView)headerView.findViewById(R.id.tv_approver);
-		try{
-			approverField.append(claim.getApprover().getName());
-		}
-		catch(NullPointerException e){
-			
-		}
-		
-		
+		approverField.append(claim.getApprover().getName());
+
+
 		comments = (EditText)headerView.findViewById(R.id.et_comments);
 		comments.setText(claim.getComments());
-		
+
 
 		getListView().addHeaderView(headerView);
 	}
@@ -188,11 +183,11 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 
 		getListView().addFooterView(footerView);
 	}
-	
+
 	private void setEditable(){
 		boolean UserCheck = user.getName().contentEquals(claim.getUser().getName());//SHOULD BE ID USING NAME FOR TESTING
-		
-		
+
+
 		if(status == Status.SUBMITTED ){
 			if(UserCheck){
 				nameField.setEnabled(!UserCheck);
@@ -231,7 +226,7 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 				this.editable = false;
 			}
 		}
-		
+
 		invalidateOptionsMenu();
 
 	}
@@ -254,7 +249,7 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 	private void onAddExpenseItem(Intent data) {
 		ExpenseItem item = (ExpenseItem)data.getSerializableExtra(ExpenseItemAddActivity.EXTRA_EXPENSE_ITEM);
 		claim.addItem(item);
-		
+
 		updateInterfaceForDataSetChange();
 	}
 
@@ -262,7 +257,7 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		ExpenseItem item = (ExpenseItem)data.getSerializableExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM);
 		int position = data.getIntExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_POSITION, -1);
 		claim.setItem(position, item);
-		
+
 		updateInterfaceForDataSetChange();
 	}
 
@@ -270,14 +265,14 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		amountsTextView.setText(claim.getSummarizedAmounts());
 		adapter.notifyDataSetChanged();
 	}
-	
+
 	@Override
 	public void onBackPressed() {
 		// Changes should persist even when the back button is pressed,
 		// since this is for editing and not adding.
 		commitChangesAndFinish();
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.expense_claim_edit, menu);
@@ -288,7 +283,7 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);
 		boolean UserCheck = user.getName().contentEquals(claim.getUser().getName());//SHOULD BE ID USING NAME FOR TESTING
-		
+
 		if (status ==Status.APPROVED){
 			menu.findItem(R.id.action_add_item).setEnabled(false);
 			menu.findItem(R.id.action_mark_submitted).setEnabled(false);
@@ -370,31 +365,31 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
 	private void startAddExpenseItemActivity() {
 		Intent addIntent = new Intent(this, ExpenseItemAddActivity.class);
 		startActivityForResult(addIntent, ADD_EXPENSE_ITEM_REQUEST);
 	}
-	
+
 	private void startEmailActivity() {
 		// Based on http://stackoverflow.com/a/2745702/153112
 		Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:"));
 		emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Expense Claim: " + claim.getName());
-		
+
 		// Originally planned to use HTML for rich text in the email, but it turns
 		// out that most email clients on Android (including K-9) don't support HTML
 		// for composing emails, so I decided to use plain text instead.
 		emailIntent.putExtra(Intent.EXTRA_TEXT, claim.getPlainText(this));
 		startActivity(Intent.createChooser(emailIntent, "Send Email"));
 	}
-	
+
 	private void commitChangesAndFinish() {
 		claim.setName(nameField.getText().toString());
 		claim.setDescription(descriptionField.getText().toString());
 		claim.setStartDate(startDateField.getDate());
 		claim.setEndDate(endDateField.getDate());
 		claim.setComments(comments.getText().toString());
-		
+
 		Intent intent = new Intent();
 		intent.putExtra(EXTRA_EXPENSE_CLAIM, claim);
 		intent.putExtra(EXTRA_EXPENSE_CLAIM_POSITION, claimPosition);
@@ -412,7 +407,7 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		if (listView.getItemAtPosition(position) == null) return;
 		startEditExpenseItemActivity(itemPositionForListViewPosition(position));
 	}
-	
+
 	private void startEditExpenseItemActivity(int position) {
 		Intent editIntent = new Intent(this, ExpenseItemEditActivity.class);
 		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM, claim.getItems().get(position));
@@ -420,7 +415,7 @@ public class ExpenseClaimDetailActivity extends ListActivity {
 		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_EDITABLE, editable);
 		startActivityForResult(editIntent, EDIT_EXPENSE_ITEM_REQUEST);
 	}
-	
+
 	private int itemPositionForListViewPosition(int position) {
 		// Subtract 1 for the header
 		return position - 1;
