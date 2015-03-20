@@ -71,7 +71,6 @@ public class ExpenseItemAddActivity extends Activity {
 	 */
     protected static final int IMAGE_MAX_SIZE = 65536; 
 
-
 	//================================================================================
 	// Properties
 	//================================================================================
@@ -308,7 +307,6 @@ public class ExpenseItemAddActivity extends Activity {
 
         Bitmap scaledBitmap = Bitmap.createScaledBitmap(bmp, (int) x, 
            (int) y, true);
-        bmp.recycle();
         bmp = scaledBitmap;
 		return bmp;
 	}
