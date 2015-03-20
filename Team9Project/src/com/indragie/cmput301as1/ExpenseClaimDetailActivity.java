@@ -347,46 +347,8 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);
-		boolean UserCheck = user.getName().contentEquals(claim.getUser().getName());//SHOULD BE ID USING NAME FOR TESTING
-		MenuItem addDestination = menu.findItem(R.id.action_add_destination); 
-		MenuItem addItem = menu.findItem(R.id.action_add_item);
-		MenuItem submit = menu.findItem(R.id.action_mark_submitted);
-		MenuItem approve = menu.findItem(R.id.action_mark_approved);
-		MenuItem returned = menu.findItem(R.id.action_mark_returned);
-
-		if (status ==Status.APPROVED){
-			addDestination.setEnabled(false);
-			addItem.setEnabled(false);
-			submit.setEnabled(false);
-			approve.setEnabled(false);
-			returned.setEnabled(false);
-		}
-		if(status == Status.RETURNED || status == Status.IN_PROGRESS){
-			if(UserCheck){
-				addItem.setEnabled(true);
-				submit.setEnabled(true);
-			}
-			else{
-				addDestination.setEnabled(false);
-				addItem.setEnabled(false);
-				submit.setEnabled(false);
-			}
-			approve.setEnabled(false);
-			returned.setEnabled(false);
-		}
-		if(status==Status.SUBMITTED){
-			if(UserCheck){
-				approve.setEnabled(false);
-				returned.setEnabled(false);
-			}
-			else{
-				approve.setEnabled(true);
-				returned.setEnabled(true);
-			}
-			addDestination.setEnabled(false);
-			addItem.setEnabled(false);
-			submit.setEnabled(false);
-		}
+		setEnabledMenuFields(menu);
+		
 		return true;
 	}
 
@@ -482,6 +444,10 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		emailIntent.putExtra(Intent.EXTRA_TEXT, controller.getPlainText());
 		startActivity(Intent.createChooser(emailIntent, "Send Email"));
 	}
+	
+	private void startAddTagToClaimActivity() {
+		//Intent addTagIntent = new Intent(Intent)
+	}
 
 	/**
 	 * Saves changes made to the expense claim and finishes the activity.
@@ -498,6 +464,54 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		intent.putExtra(EXTRA_EXPENSE_CLAIM_INDEX, getIntent().getIntExtra(EXTRA_EXPENSE_CLAIM_INDEX, -1));
 		setResult(RESULT_OK, intent);
 		finish();
+	}
+	
+	/**
+	 * Sets the menu fields as enabled or not depending on status of claim.
+	 * @param menu The menu to set.
+	 */
+	public void setEnabledMenuFields(Menu menu) {
+
+		boolean UserCheck = user.getName().contentEquals(claim.getUser().getName());//SHOULD BE ID USING NAME FOR TESTING
+		MenuItem addDestination = menu.findItem(R.id.action_add_destination); 
+		MenuItem addItem = menu.findItem(R.id.action_add_item);
+		MenuItem submit = menu.findItem(R.id.action_mark_submitted);
+		MenuItem approve = menu.findItem(R.id.action_mark_approved);
+		MenuItem returned = menu.findItem(R.id.action_mark_returned);
+
+		if (status ==Status.APPROVED){
+			addDestination.setEnabled(false);
+			addItem.setEnabled(false);
+			submit.setEnabled(false);
+			approve.setEnabled(false);
+			returned.setEnabled(false);
+		}
+		if(status == Status.RETURNED || status == Status.IN_PROGRESS){
+			if(UserCheck){
+				addItem.setEnabled(true);
+				submit.setEnabled(true);
+			}
+			else{
+				addDestination.setEnabled(false);
+				addItem.setEnabled(false);
+				submit.setEnabled(false);
+			}
+			approve.setEnabled(false);
+			returned.setEnabled(false);
+		}
+		if(status==Status.SUBMITTED){
+			if(UserCheck){
+				approve.setEnabled(false);
+				returned.setEnabled(false);
+			}
+			else{
+				approve.setEnabled(true);
+				returned.setEnabled(true);
+			}
+			addDestination.setEnabled(false);
+			addItem.setEnabled(false);
+			submit.setEnabled(false);
+		}
 	}
 
 	//================================================================================
@@ -557,5 +571,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	public void update(TypedObservable<Object> observable, Object object) {
 		amountsTextView.setText(claim.getSummarizedAmounts());
 	}
+	
 }
 
