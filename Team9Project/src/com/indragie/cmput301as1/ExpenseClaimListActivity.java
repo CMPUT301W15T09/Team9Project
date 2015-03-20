@@ -20,7 +20,6 @@ package com.indragie.cmput301as1;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
