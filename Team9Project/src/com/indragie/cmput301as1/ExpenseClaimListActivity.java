@@ -20,6 +20,7 @@ package com.indragie.cmput301as1;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -48,6 +49,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private static final int EDIT_EXPENSE_CLAIM_REQUEST = 2;
 	private static final int SORT_EXPENSE_CLAIM_REQUEST = 3;
 	private static final String EXPENSE_CLAIM_FILENAME = "claims";
+	private static final String PREFERENCE = "PREFERENCE";
 
 	//================================================================================
 	// Properties
@@ -68,7 +70,6 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 */
 	private User user;
 
-
 	//================================================================================
 	// Activity Callbacks
 	//================================================================================
@@ -78,8 +79,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		super.onCreate(savedInstanceState);
 
 		checkFirstRun();
-		SharedPreferences prefs = getSharedPreferences("PREFERENCE", MODE_PRIVATE);
-		user = new User(prefs.getString("name", ""), prefs.getInt("id", -1));
+		setUserFromPreferences();
 
 		listModel = new ListModel<ExpenseClaim>(EXPENSE_CLAIM_FILENAME, this);
 		listModel.addObserver(this);
@@ -120,6 +120,11 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 				return true;
 			}
 		});
+	}
+	
+	private void setUserFromPreferences() {
+		SharedPreferences prefs = getSharedPreferences(PREFERENCE, MODE_PRIVATE);
+		user = new User(prefs.getString("name", "USER DOES NOT EXIST"), prefs.getInt("id", -1));
 	}
 
 	@Override
@@ -224,7 +229,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 
 
 	public void checkFirstRun() {
-		boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean("isFirstRun", true);
+		boolean isFirstRun = getSharedPreferences(PREFERENCE, MODE_PRIVATE).getBoolean("isFirstRun", true);
 		if (isFirstRun){ 
 			// http://www.androidsnippets.com/prompt-user-input-with-an-alertdialog
 			AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -241,22 +246,13 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 				public void onClick(DialogInterface dialog, int whichButton) {
 					String value = input.getText().toString();
 
-					if(value != ""){
-						getSharedPreferences("PREFERENCE", MODE_PRIVATE)
-						.edit()
-						.putString("name", value)
-						.apply();
-
-						getSharedPreferences("PREFERENCE", MODE_PRIVATE)
-						.edit()
-						//setup as default ID will change later
-						.putInt("id", 1)
-						.apply();
-
-						getSharedPreferences("PREFERENCE", MODE_PRIVATE)
-						.edit()
-						.putBoolean("isFirstRun", false)
-						.apply();
+					if(value != null && !value.isEmpty()){
+						SharedPreferences.Editor editor = getSharedPreferences(PREFERENCE, MODE_PRIVATE).edit();
+						editor.putString("name", value);
+						editor.putInt("id", 1);
+						editor.putBoolean("isFirstRun", false);
+						editor.apply();
+						setUserFromPreferences();
 					}
 					else{
 						checkFirstRun();

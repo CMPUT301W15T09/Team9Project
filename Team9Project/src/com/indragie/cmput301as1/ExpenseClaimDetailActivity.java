@@ -348,24 +348,27 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);
 		boolean UserCheck = user.getName().contentEquals(claim.getUser().getName());//SHOULD BE ID USING NAME FOR TESTING
-		MenuItem add= menu.findItem(R.id.action_add_item);
+		MenuItem addDestination = menu.findItem(R.id.action_add_destination); 
+		MenuItem addItem = menu.findItem(R.id.action_add_item);
 		MenuItem submit = menu.findItem(R.id.action_mark_submitted);
 		MenuItem approve = menu.findItem(R.id.action_mark_approved);
 		MenuItem returned = menu.findItem(R.id.action_mark_returned);
 
 		if (status ==Status.APPROVED){
-			add.setEnabled(false);
+			addDestination.setEnabled(false);
+			addItem.setEnabled(false);
 			submit.setEnabled(false);
 			approve.setEnabled(false);
 			returned.setEnabled(false);
 		}
-		if(status == Status.RETURNED){
+		if(status == Status.RETURNED || status == Status.IN_PROGRESS){
 			if(UserCheck){
-				add.setEnabled(true);
+				addItem.setEnabled(true);
 				submit.setEnabled(true);
 			}
 			else{
-				add.setEnabled(false);
+				addDestination.setEnabled(false);
+				addItem.setEnabled(false);
 				submit.setEnabled(false);
 			}
 			approve.setEnabled(false);
@@ -380,20 +383,9 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 				approve.setEnabled(true);
 				returned.setEnabled(true);
 			}
-			add.setEnabled(false);
+			addDestination.setEnabled(false);
+			addItem.setEnabled(false);
 			submit.setEnabled(false);
-		}
-		if(status== Status.IN_PROGRESS){
-			if(UserCheck){
-				add.setEnabled(true);
-				submit.setEnabled(true);
-			}
-			else{
-				add.setEnabled(false);
-				submit.setEnabled(false);
-			}
-			approve.setEnabled(false);
-			returned.setEnabled(false);
 		}
 		return true;
 	}
