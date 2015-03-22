@@ -23,6 +23,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.indragie.cmput301as1.ListSection.ViewConfigurator;
@@ -67,5 +68,11 @@ public class ExpenseItemViewConfigurator implements ViewConfigurator<ExpenseClai
 		TextView categoryTextView = (TextView)view.findViewById(R.id.tv_status);
 		categoryTextView.setBackground(context.getResources().getDrawable(R.drawable.bg_rounded_grey));
 		categoryTextView.setText(item.getCategory());
+		
+		ImageView receiptImageView = (ImageView)view.findViewById(R.id.iv_receipt_icon);
+		receiptImageView.setVisibility(View.INVISIBLE);
+		if (item.getReceipt() != null) {
+			receiptImageView.setVisibility(View.VISIBLE);
+		}
 	}
 }
