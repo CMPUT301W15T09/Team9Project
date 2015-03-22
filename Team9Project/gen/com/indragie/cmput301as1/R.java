@@ -58,7 +58,6 @@ public final class R {
         public static final int action_mark_approved=0x7f090024;
         public static final int action_mark_returned=0x7f090023;
         public static final int action_mark_submitted=0x7f090025;
-        public static final int action_settings=0x7f090029;
         public static final int action_sort_claim=0x7f090027;
         public static final int btn_receipt=0x7f090015;
         public static final int button_add_tag=0x7f090016;
@@ -94,11 +93,11 @@ public final class R {
         public static final int activity_expense_claim_sort=0x7f030003;
         public static final int activity_expense_item_add=0x7f030004;
         public static final int activity_tag_add=0x7f030005;
-        public static final int activity_tag_name=0x7f030006;
-        public static final int destination_alert=0x7f030007;
-        public static final int expense_claim_list_row=0x7f030008;
-        public static final int list_header=0x7f030009;
-        public static final int tag_list_row=0x7f03000a;
+        public static final int activity_tag_list=0x7f030006;
+        public static final int activity_tag_name=0x7f030007;
+        public static final int destination_alert=0x7f030008;
+        public static final int expense_claim_list_row=0x7f030009;
+        public static final int list_header=0x7f03000a;
     }
     public static final class menu {
         public static final int contextual_accept=0x7f080000;
@@ -107,8 +106,6 @@ public final class R {
         public static final int contextual_edit=0x7f080003;
         public static final int expense_claim_edit=0x7f080004;
         public static final int expense_claim_list=0x7f080005;
-        public static final int expense_claim_sort=0x7f080006;
-        public static final int manage_tags=0x7f080007;
     }
     public static final class string {
         public static final int TagName=0x7f060030;
@@ -127,9 +124,6 @@ public final class R {
         public static final int action_mark_returned=0x7f06001b;
         public static final int action_mark_submitted=0x7f06001a;
         public static final int action_new_tag=0x7f060032;
-        /**  ExpenseClaimSortActivity 
-         */
-        public static final int action_settings=0x7f060035;
         public static final int action_sort_claim=0x7f060021;
         public static final int amount=0x7f06000b;
         public static final int amount_placeholder=0x7f060027;
@@ -158,6 +152,7 @@ public final class R {
         public static final int done_label=0x7f06000e;
         public static final int end_label=0x7f060016;
         public static final int expense_items=0x7f060005;
+        public static final int hello_world=0x7f060036;
         public static final int items_title=0x7f06002b;
         public static final int name_hint=0x7f060013;
         public static final int no_destinations=0x7f060011;
@@ -176,6 +171,9 @@ public final class R {
         /**  ManageTagsActivity 
          */
         public static final int title_activity_manage_tags=0x7f06002c;
+        /**  ExpenseClaimSortActivity 
+         */
+        public static final int title_activity_tag_list=0x7f060035;
         public static final int toast_receipt_deleted=0x7f06001f;
         public static final int toast_receipt_failed=0x7f06001e;
         public static final int toast_receipt_nonexistent=0x7f060020;

@@ -7,8 +7,10 @@
     <uses-sdk
         android:minSdkVersion="17"
         android:targetSdkVersion="17" />
-    
-    <uses-permission android:name="android.permission.CAMERA" android:required="false" />    
+
+    <uses-permission
+        android:name="android.permission.CAMERA"
+        android:required="false" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
@@ -56,9 +58,12 @@
             android:name=".TagEditActivity"
             android:label="@string/title_activity_edit_tag" >
         </activity>
-        <activity 
-            android:name=".ExpenseClaimSortActivity" >
-    	</activity>
+        <activity android:name=".ExpenseClaimSortActivity" >
+        </activity>
+        <activity
+            android:name=".TagListActivity"
+            android:label="@string/title_activity_tag_list" >
+        </activity>
     </application>
 
 </manifest>
