@@ -14,11 +14,14 @@
     <string name="status_submitted">Submitted</string>
     <string name="status_approved">Approved</string>
     <string name="status_returned">Returned</string>
+    <string name="incomplete">Incomplete</string>
 
     <!-- ExpenseItem -->
     <string name="category">Category</string>
     <string name="amount">Amount</string>
     <string name="date">Date</string>
+    <string name="action_set_incomplete">Mark Item as Incomplete</string>
+    
 
     <!-- EditingActivity -->
     <string name="cancel_label">Cancel</string>
