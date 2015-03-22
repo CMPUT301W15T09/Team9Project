@@ -69,4 +69,13 @@
 	    android:src="@drawable/ic_action_camera"
 	    android:visibility="gone" />
 	
+	<ImageView 
+	    android:id="@+id/iv_incomplete_icon"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignStart="@+id/iv_receipt_icon"
+	    android:layout_below="@id/tv_amounts"
+	    android:src="@drawable/ic_action_about"
+	    android:visibility="gone"/>
+	
 </RelativeLayout>
