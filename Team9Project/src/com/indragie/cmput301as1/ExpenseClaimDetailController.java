@@ -258,7 +258,7 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 			model.removeDestination(index.getItemIndex());
 			break;
 		case TAG:
-			// TODO
+			model.removeTag(index.getItemIndex());
 		case EXPENSE_ITEM:
 			model.removeItem(index.getItemIndex());
 		}

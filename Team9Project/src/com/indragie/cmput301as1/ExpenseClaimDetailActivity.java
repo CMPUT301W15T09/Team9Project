@@ -68,6 +68,10 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	private static final int EDIT_EXPENSE_ITEM_REQUEST = 2;
 	
 	/**
+	 * Request code for starting {@link TagListActivity}
+	 */
+	private static final int ADD_TAG_REQUEST = 3;
+	/**
 	 * Index used to indicate the nonexistence of an index.
 	 */
 	private static final int NO_INDEX = -1;
@@ -307,6 +311,9 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		case EDIT_EXPENSE_ITEM_REQUEST:
 			onEditExpenseItem(data);
 			break;
+		case ADD_TAG_REQUEST:
+			onAddTag(data);
+			break;
 		default:
 			break;
 		}
@@ -323,13 +330,23 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 
 	/**
 	 * Retrieves the expense item from a intent to edit on the expense claim.
-	 * @param data The intent
+	 * @param data The intent.
 	 */
 	private void onEditExpenseItem(Intent data) {
 		ExpenseItem item = (ExpenseItem)data.getSerializableExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM);
 		int position = data.getIntExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_POSITION, -1);
 		model.setItem(position, item);
 	}
+	
+	/**
+	 * Retrieves the tag from intent to add to the expense claim.
+	 * @param data The intent.
+	 */
+	private void onAddTag(Intent data) {
+		Tag tag = (Tag)data.getSerializableExtra(TagListActivity.TAG_TO_ADD);
+		model.addTag(tag);
+	}
+
 	
 	@Override
 	public void onBackPressed() {
@@ -363,6 +380,9 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			return true;
 		case R.id.action_add_item:
 			startAddExpenseItemActivity();
+			return true;
+		case R.id.action_add_tag:
+			startAddTagToClaimActivity();
 			return true;
 		case R.id.action_email:
 			startEmailActivity();
@@ -430,6 +450,14 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	}
 
 	/**
+	 * Starts the {@link TagListActivity}
+	 */
+	private void startAddTagToClaimActivity() {
+		Intent addTagIntent = new Intent(this, TagListActivity.class);
+		startActivityForResult(addTagIntent, ADD_TAG_REQUEST);
+	}
+	
+	/**
 	 * Starts a choose activity for sending the {@link ExpenseClaim} contents
 	 * as an email.
 	 */
@@ -443,10 +471,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		// for composing emails, so I decided to use plain text instead.
 		emailIntent.putExtra(Intent.EXTRA_TEXT, controller.getPlainText());
 		startActivity(Intent.createChooser(emailIntent, "Send Email"));
-	}
-	
-	private void startAddTagToClaimActivity() {
-		//Intent addTagIntent = new Intent(Intent)
 	}
 
 	/**
@@ -475,6 +499,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		boolean UserCheck = user.getName().contentEquals(claim.getUser().getName());//SHOULD BE ID USING NAME FOR TESTING
 		MenuItem addDestination = menu.findItem(R.id.action_add_destination); 
 		MenuItem addItem = menu.findItem(R.id.action_add_item);
+		MenuItem addTag = menu.findItem(R.id.action_add_tag);
 		MenuItem submit = menu.findItem(R.id.action_mark_submitted);
 		MenuItem approve = menu.findItem(R.id.action_mark_approved);
 		MenuItem returned = menu.findItem(R.id.action_mark_returned);
@@ -482,18 +507,22 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		if (status ==Status.APPROVED){
 			addDestination.setEnabled(false);
 			addItem.setEnabled(false);
+			addTag.setEnabled(false);
 			submit.setEnabled(false);
 			approve.setEnabled(false);
 			returned.setEnabled(false);
 		}
 		if(status == Status.RETURNED || status == Status.IN_PROGRESS){
 			if(UserCheck){
+				addDestination.setEnabled(true);
 				addItem.setEnabled(true);
+				addTag.setEnabled(true);
 				submit.setEnabled(true);
 			}
 			else{
 				addDestination.setEnabled(false);
 				addItem.setEnabled(false);
+				addTag.setEnabled(false);
 				submit.setEnabled(false);
 			}
 			approve.setEnabled(false);
@@ -510,6 +539,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			}
 			addDestination.setEnabled(false);
 			addItem.setEnabled(false);
+			addTag.setEnabled(false);
 			submit.setEnabled(false);
 		}
 	}
@@ -531,7 +561,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			buildDestinationAlertDialog(index.getItemIndex()).show();
 			break;
 		case TAG:
-			// TODO
+			// TODO 
 			break;
 		case EXPENSE_ITEM:
 			startEditExpenseItemActivity(index.getItemIndex());
