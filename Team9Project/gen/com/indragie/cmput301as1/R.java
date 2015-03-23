@@ -125,6 +125,8 @@ public final class R {
         public static final int action_add_destination=0x7f060019;
         public static final int action_add_item=0x7f06001a;
         public static final int action_add_tag=0x7f06002f;
+        public static final int action_cancel=0x7f06003a;
+        public static final int action_confirm=0x7f060039;
         public static final int action_delete=0x7f060001;
         public static final int action_edit=0x7f060031;
         public static final int action_email=0x7f06001b;
@@ -138,6 +140,8 @@ public final class R {
          */
         public static final int action_settings=0x7f060037;
         public static final int action_sort_claim=0x7f060023;
+        public static final int alert_submit_message=0x7f06003b;
+        public static final int alert_submit_title=0x7f060038;
         public static final int amount=0x7f06000c;
         public static final int amount_placeholder=0x7f060029;
         /**  General 

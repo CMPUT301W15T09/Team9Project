@@ -362,7 +362,6 @@ public class ExpenseItemAddActivity extends Activity {
 	// Camera + Gallery Dialogue
 	//================================================================================
 
-
 	/* 
 	 *  Elements of method startDialog borrowed from 
 	 *  http://www.theappguruz.com/blog/android-take-photo-camera-gallery-code-sample/
