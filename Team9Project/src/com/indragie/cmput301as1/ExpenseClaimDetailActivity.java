@@ -406,8 +406,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			startEmailActivity();
 			return true;
 		case R.id.action_mark_submitted:
-			claim.setStatus(Status.SUBMITTED);
-			commitChangesAndFinish();
+			startSubmitAlertDialog();
 			return true;
 		case R.id.action_mark_returned:
 			claim.setStatus(Status.RETURNED);
@@ -422,6 +421,34 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+	
+	private void startSubmitAlertDialog() {
+		AlertDialog.Builder openDialog = new AlertDialog.Builder(this);
+		openDialog.setTitle(R.string.alert_submit_title);
+		
+		for (ExpenseItem expense : model.getItems()) {
+			if (expense.isIncomplete()) {
+				openDialog.setMessage(R.string.alert_submit_message);
+				break;
+			}
+		}
+		
+		openDialog.setPositiveButton(R.string.action_confirm, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				claim.setStatus(Status.SUBMITTED);
+				commitChangesAndFinish();
+			}
+		});
+		
+		openDialog.setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+		openDialog.show();
 	}
 	
 	private AlertDialog buildDestinationAlertDialog() {
