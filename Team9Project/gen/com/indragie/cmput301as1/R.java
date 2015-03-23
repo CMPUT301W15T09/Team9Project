@@ -113,7 +113,7 @@ public final class R {
         public static final int expense_claim_edit=0x7f080004;
         public static final int expense_claim_list=0x7f080005;
         public static final int expense_claim_sort=0x7f080006;
-        public static final int expense_item_incomplete=0x7f080007;
+        public static final int expense_item_edit=0x7f080007;
         public static final int manage_tags=0x7f080008;
     }
     public static final class string {
