@@ -20,7 +20,7 @@ package com.indragie.cmput301as1;
 /**
  * Uniquely identifies an object in an ElasticSearch database.
  */
-public class ElasticSearchObjectID {
+public class ElasticSearchDocumentID {
 	//================================================================================
 	// Properties
 	//================================================================================
@@ -44,12 +44,12 @@ public class ElasticSearchObjectID {
 	//================================================================================
 	
 	/**
-	 * Creates a new instance of {@link ElasticSearchObjectID}
+	 * Creates a new instance of {@link ElasticSearchDocumentID}
 	 * @param index The name of the index.
 	 * @param type The name of the type.
 	 * @param id The unique ID of the object.
 	 */
-	public ElasticSearchObjectID(String index, String type, String id) {
+	public ElasticSearchDocumentID(String index, String type, String id) {
 		this.index = index;
 		this.type = type;
 		this.id = id;
@@ -102,7 +102,7 @@ public class ElasticSearchObjectID {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ElasticSearchObjectID other = (ElasticSearchObjectID) obj;
+		ElasticSearchDocumentID other = (ElasticSearchDocumentID) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
