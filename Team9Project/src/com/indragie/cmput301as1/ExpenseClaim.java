@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
@@ -121,13 +122,13 @@ public class ExpenseClaim implements Serializable {
 	/**
 	 * Unique Expense Claim ID
 	 */
-	private int ExpenseID;
+	private String ExpenseID;
 
 	//================================================================================
 	// Constructors
 	//================================================================================
 
-	public ExpenseClaim(String name, String description, Date startDate, Date endDate, User user, Status status, int ExpenseID) {
+	public ExpenseClaim(String name, String description, Date startDate, Date endDate, User user, Status status) {
 		this.name = name;
 		this.description = description;
 		this.startDate = startDate;
@@ -136,7 +137,11 @@ public class ExpenseClaim implements Serializable {
 		this.creationDate = new Date();
 		this.user = user;
 		this.approver = new User("", -2);
-		this.ExpenseID = ExpenseID;
+		this.ExpenseID = UUID.randomUUID().toString();
+		
+		// add the id to the user list of expense claim ids
+		user.addClaimIDList(ExpenseID);
+		
 	}
 
 	//================================================================================
@@ -147,7 +152,7 @@ public class ExpenseClaim implements Serializable {
 	 * get the Expense Claim ID
 	 * @return
 	 */
-	public int getExpenseID() {
+	public String getExpenseID() {
 		return ExpenseID;
 	}
 	
@@ -155,7 +160,7 @@ public class ExpenseClaim implements Serializable {
 	 * set the Expense Claim ID
 	 * @param ExpenseID
 	 */
-	public void setExpenseID(int ExpenseID) {
+	public void setExpenseID(String ExpenseID) {
 		this.ExpenseID = ExpenseID;
 	}
 	

@@ -18,6 +18,7 @@
 package com.indragie.cmput301as1;
 
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -89,6 +90,12 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 				switch (item.getItemId()) {
 				case R.id.action_delete:
+					// add code to remove the id from the user list too
+					List<ExpenseClaim> list = listModel.getItems();
+					ExpenseClaim claim = list.get(longPressedItemIndex);
+					String id = claim.getExpenseID();
+					user.removeClaimIDList(id);
+					
 					listModel.remove(longPressedItemIndex);
 					mode.finish();
 					return true;

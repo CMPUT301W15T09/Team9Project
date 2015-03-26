@@ -17,6 +17,7 @@
 package com.indragie.cmput301as1;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Model object representing a user object.
@@ -32,6 +33,7 @@ public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String name;
 	private int id;
+	private List<String> claimIDlist;
 	
 	
 	//================================================================================
@@ -62,7 +64,27 @@ public class User implements Serializable {
 		return id;
 	}
 	
-
+	/**
+	 * @return the list of expense claim ids
+	 */
+	public List<String> getClaimIDList() {
+		return claimIDlist;
+	}
 	
+	/**
+	 * adds an id to the list of expense claim ids
+	 * @param id
+	 */
+	public void addClaimIDList(String id) {
+		this.claimIDlist.add(id);
+	}
+	
+	/**
+	 * removes and id from the list of expense claim ids
+	 * @param id
+	 */
+	public void removeClaimIDList(String id) {
+		this.claimIDlist.remove(id);
+	}
 
 }

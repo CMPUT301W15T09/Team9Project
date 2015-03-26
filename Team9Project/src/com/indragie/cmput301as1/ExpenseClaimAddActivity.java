@@ -122,20 +122,15 @@ public class ExpenseClaimAddActivity extends Activity {
 	 * @return The intent with the new expense claim.
 	 */
 	private Intent constructResultIntent() {
-		int id = ExpenseClaimID.getExpenseID();
 		ExpenseClaim claim = new ExpenseClaim(
 			nameField.getText().toString(), 
 			descriptionField.getText().toString(), 
 			startDateField.getDate(), 
 			endDateField.getDate(),
 			user,
-			ExpenseClaim.Status.IN_PROGRESS,
-			id
+			ExpenseClaim.Status.IN_PROGRESS
 		);
 		
-		//Toast.makeText(this, Integer.toString(id), Toast.LENGTH_LONG).show();
-		id ++;
-		ExpenseClaimID.setExpenseID(id);
 		Intent intent = new Intent();
 		intent.putExtra(EXTRA_EXPENSE_CLAIM, claim);
 		return intent;
