@@ -26,13 +26,13 @@ import com.squareup.okhttp.Response;
  * Interface for being notified when a request sent via the {@link ElasticSearchAPIClient}
  * succeeds or fails.
  */
-public interface ElasticSearchCallback<T> {
+public interface ElasticSearchCallback<T extends ElasticSearchDocument> {
 	/**
 	 * Called when the request succeeds.
 	 * @param request The request for which the callback is being called for.
 	 * @param response The HTTP response.
-	 * @param document If the request was a GET request, document will be
-	 * the model object deserialized from JSON; otherwise, it will be null.
+	 * @param document See documentation in {@link ElasticSearchAPIClient} for details
+	 * on what this parameter will contain.
 	 */
 	public void onSuccess(Request request, Response response, T document);
 	
