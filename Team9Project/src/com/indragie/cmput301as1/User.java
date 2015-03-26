@@ -34,7 +34,7 @@ public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String name;
 	private int id;
-	private List<String> claimIDlist = new ArrayList<String>();
+	private List<String> claimIDlist;
 	
 	
 	//================================================================================
@@ -44,7 +44,7 @@ public class User implements Serializable {
 	public User(String name, int id){
 		this.name = name;
 		this.id = id;
-		
+		this.claimIDlist = new ArrayList<String>();
 	}
 
 	
