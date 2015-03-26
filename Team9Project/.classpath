@@ -3,11 +3,11 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="gen"/>
 	<classpathentry exported="true" kind="lib" path="/cshome/jph/CMPUT 301/Team9Project/Team9Project/libs/android-support-v4.jar"/>
 	<classpathentry exported="true" kind="lib" path="/cshome/jph/CMPUT 301/Team9Project/Team9Project/libs/joda-money-0.10.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="/cshome/jph/CMPUT 301/Team9Project/Team9Project/libs/okhttp-2.3.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="/cshome/jph/CMPUT 301/Team9Project/Team9Project/libs/okio-1.3.0.jar"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
