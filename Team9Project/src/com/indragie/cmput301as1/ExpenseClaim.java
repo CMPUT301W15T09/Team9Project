@@ -140,7 +140,7 @@ public class ExpenseClaim implements Serializable {
 		this.ExpenseID = UUID.randomUUID().toString();
 		
 		// add the id to the user list of expense claim ids
-		user.addClaimIDList(ExpenseID);
+		user.addClaimID(ExpenseID);
 		
 	}
 

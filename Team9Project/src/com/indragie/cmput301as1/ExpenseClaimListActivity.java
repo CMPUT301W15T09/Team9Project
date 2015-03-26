@@ -94,7 +94,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 					List<ExpenseClaim> list = listModel.getItems();
 					ExpenseClaim claim = list.get(longPressedItemIndex);
 					String id = claim.getExpenseID();
-					user.removeClaimIDList(id);
+					user.removeClaimID(id);
 					
 					listModel.remove(longPressedItemIndex);
 					mode.finish();

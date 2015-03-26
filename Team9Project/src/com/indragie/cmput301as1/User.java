@@ -17,6 +17,7 @@
 package com.indragie.cmput301as1;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,7 +34,7 @@ public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String name;
 	private int id;
-	private List<String> claimIDlist;
+	private List<String> claimIDlist = new ArrayList<String>();
 	
 	
 	//================================================================================
@@ -75,7 +76,7 @@ public class User implements Serializable {
 	 * adds an id to the list of expense claim ids
 	 * @param id
 	 */
-	public void addClaimIDList(String id) {
+	public void addClaimID(String id) {
 		this.claimIDlist.add(id);
 	}
 	
@@ -83,7 +84,7 @@ public class User implements Serializable {
 	 * removes and id from the list of expense claim ids
 	 * @param id
 	 */
-	public void removeClaimIDList(String id) {
+	public void removeClaimID(String id) {
 		this.claimIDlist.remove(id);
 	}
 
