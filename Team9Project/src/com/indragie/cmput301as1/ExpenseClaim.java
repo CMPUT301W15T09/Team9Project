@@ -118,12 +118,16 @@ public class ExpenseClaim implements Serializable {
 	 * User who returned or approved claim.
 	 */
 	private User approver;
+	/**
+	 * Unique Expense Claim ID
+	 */
+	private int ExpenseID;
 
 	//================================================================================
 	// Constructors
 	//================================================================================
 
-	public ExpenseClaim(String name, String description, Date startDate, Date endDate, User user, Status status) {
+	public ExpenseClaim(String name, String description, Date startDate, Date endDate, User user, Status status, int ExpenseID) {
 		this.name = name;
 		this.description = description;
 		this.startDate = startDate;
@@ -132,17 +136,41 @@ public class ExpenseClaim implements Serializable {
 		this.creationDate = new Date();
 		this.user = user;
 		this.approver = new User("", -2);
+		this.ExpenseID = ExpenseID;
 	}
 
 	//================================================================================
 	// Accessors
 	//================================================================================
 	
-	// modified for creation date
+	/**
+	 * get the Expense Claim ID
+	 * @return
+	 */
+	public int getExpenseID() {
+		return ExpenseID;
+	}
+	
+	/**
+	 * set the Expense Claim ID
+	 * @param ExpenseID
+	 */
+	public void setExpenseID(int ExpenseID) {
+		this.ExpenseID = ExpenseID;
+	}
+	
+	/**
+	 * get the creation date of expense claim
+	 * @return
+	 */
 	public Date getCreationDate() {
 		return creationDate;
 	}
 	
+	/**
+	 * set the creation date of expense claim
+	 * @param creationDate
+	 */
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
 	}
