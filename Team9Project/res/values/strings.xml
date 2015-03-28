@@ -4,6 +4,7 @@
     <!-- General -->
     <string name="app_name">karunara-expenses</string>
     <string name="action_delete">Delete</string>
+    <string name="action_confirm_prefix">Are you sure you want to </string>
 
     <!-- ExpenseClaim -->
     <string name="description">Description</string>
@@ -29,6 +30,7 @@
 
     <!-- ExpenseClaimListActivity -->
     <string name="action_add_claim">Add Claim</string>
+    <string name="action_delete_claim_confirm">Are you sure you want to delete this claim?</string>
     <string name="no_expenses">No expenses</string>
     <string name="no_destinations">No destinations</string>
 
@@ -44,6 +46,8 @@
     <string name="action_mark_submitted">Mark as Submitted</string>
     <string name="action_mark_returned">Mark as Returned</string>
     <string name="action_mark_approved">Mark as Approved</string>
+    <string name="action_delete_dest_confirm">Are you sure you want to delete this destination?</string>
+    <string name="action_delete_item_confirm">Are you sure you want to delete this expense?</string>
     <string name="toast_receipt_success">Save Successful</string>
     <string name="toast_receipt_failed">Save Failed</string>
     <string name="toast_receipt_deleted">Receipt Deleted</string>
