@@ -62,6 +62,16 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	 * String representation of a Uri of a receipt image.
 	 */
 	private String receipt;
+	
+	/**
+	 * Longitude coordinate of geolocation attached to this item. 
+	 */
+	private Double longitude;
+	
+	/**
+	 * Latitude coordinate of geolocation attached to this item. 
+	 */
+	private Double latitude;
 
 	//================================================================================
 	// Constructors
@@ -172,6 +182,36 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	 */
 	public void setAmount(Money amount) {
 		this.amount = amount;
+	}
+	
+	/**
+	 * @return The longitude attached to this expense item. 
+	 */
+	public Double getLongitude() {
+		return longitude;
+	}
+	
+	/**
+	 * Sets the longitude for the geolocation of the expense item.
+	 * @param longitude The coordinates in type double.
+	 */
+	public void setLongitude(Double longitude) {
+		this.longitude = longitude;
+	}
+
+	/**
+	 * @return The latitude attached to this expense item. 
+	 */
+	public Double getLatitude() {
+		return latitude;
+	}
+	
+	/**
+	 * Sets the latitude for the geolocation of the expense item.
+	 * @param latitude The coordinates in type double.
+	 */
+	public void setLatitude(Double latitude) {
+		this.latitude = latitude;
 	}
 
 	//================================================================================
