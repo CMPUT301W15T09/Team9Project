@@ -53,12 +53,56 @@ public class ElasticSearchAPIClientTest extends TestCase
 		server.enqueue(response);
 		
 		TestDocument document = new TestDocument("Indragie Karunaratne", 3);
-		TestDocument resultDocument = client.add(document).execute();
-		assertEquals(document, resultDocument);
+		assertEquals(document, client.add(document).execute());
 		
 		RecordedRequest request = server.takeRequest();
 		assertEquals("/test/doc/100", request.getPath());
 		assertEquals("POST", request.getMethod());
+	}
+	
+	public void testGet() throws InterruptedException, RequestFailedException, IOException {
+		MockResponse response = new MockResponse()
+			.addHeader("Content-Type", "application/json; charset=utf-8")
+			.addHeader("Cache-Control", "no-cache")
+			.setBody("{\"_index\":\"test\",\"_type\":\"doc\",\"_id\":\"100\",\"_version\":1,\"found\":true,\"_source\":{\"name\":\"Indragie Karunaratne\",\"year\":3}}");
+		server.enqueue(response);
+		
+		TestDocument document = new TestDocument("Indragie Karunaratne", 3);
+		assertEquals(document, client.get(new ElasticSearchDocumentID("test", "doc", "100")).execute());
+		
+		RecordedRequest request = server.takeRequest();
+		assertEquals("/test/doc/100", request.getPath());
+		assertEquals("GET", request.getMethod());
+	}
+	
+	public void testUpdate() throws InterruptedException, RequestFailedException, IOException {
+		MockResponse response = new MockResponse()
+    		.addHeader("Content-Type", "application/json; charset=utf-8")
+    		.addHeader("Cache-Control", "no-cache")
+    		.setBody("{\"_index\":\"test\",\"_type\":\"doc\",\"_id\":\"100\",\"_version\":2,\"created\":false}");
+		server.enqueue(response);
+		
+		TestDocument document = new TestDocument("Indragie Karunaratne", 4);
+		assertEquals(document, client.update(document).execute());
+		
+		RecordedRequest request = server.takeRequest();
+		assertEquals("/test/doc/100", request.getPath());
+		assertEquals("PUT", request.getMethod());
+	}
+	
+	public void testDelete() throws InterruptedException, RequestFailedException, IOException {
+		MockResponse response = new MockResponse()
+			.addHeader("Content-Type", "application/json; charset=utf-8")
+			.addHeader("Cache-Control", "no-cache")
+			.setBody("{\"_index\":\"test\",\"_type\":\"doc\",\"_id\":\"100\",\"_version\":2,\"found\":true}");
+		server.enqueue(response);
+		
+		TestDocument document = new TestDocument("Indragie Karunaratne", 3);
+		assertEquals(null, client.delete(document).execute());
+		
+		RecordedRequest request = server.takeRequest();
+		assertEquals("/test/doc/100", request.getPath());
+		assertEquals("DELETE", request.getMethod());
 	}
 	
 	private class TestDocument implements ElasticSearchDocument {
