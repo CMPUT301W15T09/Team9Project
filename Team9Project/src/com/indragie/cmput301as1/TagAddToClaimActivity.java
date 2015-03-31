@@ -17,7 +17,7 @@ public class TagAddToClaimActivity extends ListActivity implements TypedObserver
 	// Constants
 	//================================================================================
 	
-	private static final String TAG_FILENAME = "tags";
+	protected static final String TAG_FILENAME = "tags";
 
 	public static final String TAG_TO_ADD = "com.indragie.cmput301as1.TAG_TO_ADD";
 	
@@ -28,11 +28,11 @@ public class TagAddToClaimActivity extends ListActivity implements TypedObserver
 	/**
 	 * List model of tags.
 	 */
-	private ListModel<Tag> listModel;
+	protected ListModel<Tag> listModel;
 	/**
 	 * Index of a item that is long pressed.
 	 */
-	private int pressedItemIndex;
+	protected int pressedItemIndex;
 
 	//================================================================================
 	// Activity Callbacks
