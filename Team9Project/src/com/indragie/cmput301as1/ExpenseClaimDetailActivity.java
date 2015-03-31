@@ -68,7 +68,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	private static final int EDIT_EXPENSE_ITEM_REQUEST = 2;
 	
 	/**
-	 * Request code for starting {@link TagListActivity}
+	 * Request code for starting {@link TagAddToClaimActivity}
 	 */
 	private static final int ADD_TAG_REQUEST = 3;
 	/**
@@ -343,8 +343,12 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	 * @param data The intent.
 	 */
 	private void onAddTag(Intent data) {
-		Tag tag = (Tag)data.getSerializableExtra(TagListActivity.TAG_TO_ADD);
+		Tag tag = (Tag)data.getSerializableExtra(TagAddToClaimActivity.TAG_TO_ADD);
 		model.addTag(tag);
+	}
+	
+	
+	private void onEditTag(Intent data) {
 	}
 
 	
@@ -450,10 +454,10 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	}
 
 	/**
-	 * Starts the {@link TagListActivity}
+	 * Starts the {@link TagAddToClaimActivity}
 	 */
 	private void startAddTagToClaimActivity() {
-		Intent addTagIntent = new Intent(this, TagListActivity.class);
+		Intent addTagIntent = new Intent(this, TagAddToClaimActivity.class);
 		startActivityForResult(addTagIntent, ADD_TAG_REQUEST);
 	}
 	
