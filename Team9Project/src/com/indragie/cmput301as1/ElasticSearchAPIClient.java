@@ -314,9 +314,9 @@ public class ElasticSearchAPIClient {
 	/**
 	 * Adds a document to the index.
 	 * @param document Document model object to add to the index.
+	 * @return API call representing this request.
 	 * @note The document returned by executing the call will be the same as the one passed
 	 * into this method.
-	 * @return API call representing this request.
 	 */
 	public <T extends ElasticSearchDocument> APICall<T> add(T document) {
 		try {
@@ -334,11 +334,12 @@ public class ElasticSearchAPIClient {
 	 * Retrieves a document from the index.
 	 * @param docID The document ID of the document to retrieve.
 	 * @param callback Callback object to be called upon success or failure. 
-	 * @note When {@link ElasticSearchCallback#onSuccess(Request, Response, T)} is called,
-	 * the document argument will be the document model object, deserialized from JSON.
+	 * @return API call representing this request.
+	 * @note The document returned by executing the call will be the document model object, 
+	 * deserialized from JSON.
 	 */
-	public <T extends ElasticSearchDocument> void get(ElasticSearchDocumentID docID, APICallback<T> callback) {
-
+	public <T extends ElasticSearchDocument> APICall<T> get(ElasticSearchDocumentID docID) {
+		return null;
 	}
 
 	/**
@@ -346,22 +347,23 @@ public class ElasticSearchAPIClient {
 	 * @param newDocument The updated version of the document. This will be used to 
 	 * replace the existing document with the same document ID.
 	 * @param callback Callback object to be called upon success or failure.
-	 * @note When {@link ElasticSearchCallback#onSuccess(Request, Response, T)} is called, 
-	 * the document argument will be the same as the newDocument argument passed to this method.
+	 * @return API call representing this request.
+	 * @note The document returned by executing the call will be the same as the newDocument 
+	 * argument passed to this method.
 	 */
-	public <T extends ElasticSearchDocument> void update(T newDocument, APICallback<T> callback) {
-
+	public <T extends ElasticSearchDocument> APICall<T> update(T newDocument) {
+		return null;
 	}
 
 	/**
 	 * Deletes an existing document from the index.
 	 * @param document The document to delete.
 	 * @param callback Callback object to be called upon success or failure.
-	 * @note When {@link ElasticSearchCallback#onSuccess(Request, Response, T)} is called, 
-	 * the document argument will be null.
+	 * @return API call representing this request.
+	 * @note The document returned by executing the call will be null.
 	 */
-	public <T extends ElasticSearchDocument> void delete(T document, APICallback<T> callback) {
-
+	public <T extends ElasticSearchDocument> APICall<T> delete(T document) {
+		return null;
 	}
 
 	//================================================================================
