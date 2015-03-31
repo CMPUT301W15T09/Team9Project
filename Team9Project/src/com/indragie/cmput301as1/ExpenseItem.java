@@ -62,6 +62,11 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	 * String representation of a Uri of a receipt image.
 	 */
 	private String receipt;
+	/**
+	 * Incompleteness indicator.
+	 */
+	private boolean incomplete;
+
 
 	//================================================================================
 	// Constructors
@@ -73,6 +78,7 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 		this.category = category;
 		this.amount = amount;
 		this.date = date;
+		this.incomplete = false;
 	}
 
 	//================================================================================
@@ -172,6 +178,22 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	 */
 	public void setAmount(Money amount) {
 		this.amount = amount;
+	}
+	
+	/**
+	 * Checks if incomplete. 
+	 * @return incomplete
+	 */
+	public boolean isIncomplete() {
+		return incomplete;
+	}
+
+	/**
+	 * Sets the incompleteness flag of the claim.
+	 * @param incomplete
+	 */
+	public void setIncomplete(boolean incomplete) {
+		this.incomplete = incomplete;
 	}
 
 	//================================================================================
