@@ -245,6 +245,10 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 		return (ExpenseItem)expenseItemsSection.get(index).getModel();
 	}
 	
+	/**
+	 * @param index The index of the {@link Tag} relative to its section.
+	 * @return The {@link Tag} at the specified index.
+	 */
 	public Tag getTag(int index) {
 		return (Tag)tagsSection.get(index).getModel();
 	}

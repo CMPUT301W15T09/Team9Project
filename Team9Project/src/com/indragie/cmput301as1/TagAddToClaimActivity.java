@@ -47,7 +47,7 @@ public class TagAddToClaimActivity extends ListActivity implements TypedObserver
 	 */
 	protected ListModel<Tag> listModel;
 	/**
-	 * Index of a item that is long pressed.
+	 * Index of a item that is pressed.
 	 */
 	protected int pressedItemIndex;
 
@@ -122,7 +122,7 @@ public class TagAddToClaimActivity extends ListActivity implements TypedObserver
 	}
 	
 	/**
-	 * Sets intent as canceled so no changes are made. 
+	 * Sets intent as canceled so no changes are made when home button pressed.
 	 */
 	protected void onHome() {
 		setResult(RESULT_CANCELED, new Intent());

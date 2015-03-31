@@ -76,6 +76,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	 * Request code for start {@link TagEditToClaimActivity}
 	 */
 	private static final int EDIT_TAG_REQUEST = 4;
+	
 	/**
 	 * Index used to indicate the nonexistence of an index.
 	 */
@@ -355,7 +356,10 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		model.addTag(tag);
 	}
 	
-	
+	/**
+	 * Retrieves the tag from intent to edit on the expense claim.
+	 * @param data The intent.
+	 */
 	private void onEditTag(Intent data) {
 		Tag tag = (Tag)data.getSerializableExtra(TagAddToClaimActivity.TAG_TO_ADD);
 		int position = data.getIntExtra(TagEditToClaimActivity.EXTRA_TAG_POSITION, -1);
@@ -421,6 +425,10 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		}
 	}
 	
+	/**
+	 * Alert dialog that warns about no index.
+	 * @return The alert dialog.
+	 */
 	private AlertDialog buildDestinationAlertDialog() {
 		return buildDestinationAlertDialog(NO_INDEX);
 	}
@@ -597,6 +605,10 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		startActivityForResult(editIntent, EDIT_EXPENSE_ITEM_REQUEST);
 	}
 	
+	/**
+	 * Starts the {@link TagEditToClaimActivity}
+	 * @param index The index of the {@link Tag} to edit.
+	 */
 	private void startEditTagActivity(int index) {
 		Intent editTagIntent = new Intent(this, TagEditToClaimActivity.class);
 		editTagIntent.putExtra(TagEditToClaimActivity.EXTRA_TAG_POSITION, index);
