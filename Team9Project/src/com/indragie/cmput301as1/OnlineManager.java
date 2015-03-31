@@ -27,11 +27,11 @@ import com.squareup.okhttp.Response;
 
 import android.content.Context;
 
-public class OnlineManager {
+public class OnlineManager<T extends ElasticSearchDocument> {
 
 	private static LinkedList<APICall<ElasticSearchDocument>> stack = new LinkedList<APICall<ElasticSearchDocument>>(); 
 	
-	public void enqueueCall(ElasticSearchAPIClient.APICall<ElasticSearchDocument> call) {
+	public void enqueueCall(APICall<T> call) {
 		stack.add(call);
 		checkForNetwork();
 	}
@@ -47,7 +47,7 @@ public class OnlineManager {
 				// removes and returns the first item from the ll
 				APICall<ElasticSearchDocument> call = stack.removeFirst();
 				// now do something with the call
-				call.enqueue(new ElasticSearchAPIClient.APICallback<T>() {
+				call.enqueue(new APICallback<T>() {
 				    @Override
 				    public void onFailure(Request request, Response response, IOException e) {
 
