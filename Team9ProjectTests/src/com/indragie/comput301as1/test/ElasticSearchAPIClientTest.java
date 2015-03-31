@@ -17,67 +17,97 @@
 
 package com.indragie.comput301as1.test;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.IOException;
 
 import com.indragie.cmput301as1.ElasticSearchAPIClient;
-import com.indragie.cmput301as1.ElasticSearchCallback;
+import com.indragie.cmput301as1.ElasticSearchAPIClient.RequestFailedException;
 import com.indragie.cmput301as1.ElasticSearchDocument;
 import com.indragie.cmput301as1.ElasticSearchDocumentID;
+import com.squareup.okhttp.mockwebserver.*;
 
 import junit.framework.TestCase;
 
-
 public class ElasticSearchAPIClientTest extends TestCase 
 {
+	private ElasticSearchAPIClient client;
+	private MockWebServer server;
 	
-	private URL test;
-	
-	// create the URL link to the 301 software site
+	@Override
 	protected void setUp() throws Exception {
-		super.setUp();
-		try
-		{
-			test = new URL("http://cmput301.softwareprocess.es:8080/");
-		} catch (MalformedURLException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		server = new MockWebServer();
+		server.start();
+		client = new ElasticSearchAPIClient(server.getUrl("/"));
 	}
 	
-	
-	public class ElasticSearchModel implements ElasticSearchDocument {
-		private String index;
-		private String type;
-		private String id;
-		
-		public ElasticSearchDocumentID getObjectID() {
-			return new ElasticSearchDocumentID("testing", "type", "abc123");
-		}
-		
-		public ElasticSearchModel(String index, String type, String id) {
-			this.index = index;
-			this.type = type;
-			this.id = id;
-		}
+	@Override
+	protected void tearDown() throws Exception {
+		server.shutdown();
+		super.tearDown();
 	}
 	
-	public void testadd() throws InterruptedException{
-		ElasticSearchModel esmodel = new ElasticSearchModel("testing","type","abc123");
-		ElasticSearchAPIClient api = new ElasticSearchAPIClient(test);
+	public void testAdd() throws InterruptedException, RequestFailedException, IOException {
+		MockResponse response = new MockResponse()
+	    	.addHeader("Content-Type", "application/json; charset=utf-8")
+	    	.addHeader("Cache-Control", "no-cache")
+	    	.setBody("{\"_index\":\"test\",\"_type\":\"doc\",\"_id\":\"100\",\"_version\":1,\"created\":true}");
+		server.enqueue(response);
 		
-		ElasticSearchCallback<ElasticSearchDocument> callback = null;
+		TestDocument document = new TestDocument("Indragie Karunaratne", 3);
+		TestDocument resultDocument = client.add(document).execute();
+		assertEquals(document, resultDocument);
 		
-		api.add(esmodel, callback);
-		Thread.sleep(3000);
-		
-		// check to see if the ids match to see if the api model added the id
-		ElasticSearchDocumentID model = esmodel.getObjectID();
-		String id = model.getID();
-		
-		assertEquals(id, "something");
+		RecordedRequest request = server.takeRequest();
+		assertEquals("/test/doc/100", request.getPath());
+		assertEquals("POST", request.getMethod());
 	}
 	
-	
+	private class TestDocument implements ElasticSearchDocument {
+		private String name;
+		private int year;
+		
+		TestDocument(String name, int year) {
+			this.name = name;
+			this.year = year;
+		}
+		
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + getOuterType().hashCode();
+			result = prime * result + ((name == null) ? 0 : name.hashCode());
+			result = prime * result + year;
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			TestDocument other = (TestDocument) obj;
+			if (!getOuterType().equals(other.getOuterType()))
+				return false;
+			if (name == null) {
+				if (other.name != null)
+					return false;
+			} else if (!name.equals(other.name))
+				return false;
+			if (year != other.year)
+				return false;
+			return true;
+		}
+		
+		private ElasticSearchAPIClientTest getOuterType() {
+			return ElasticSearchAPIClientTest.this;
+		}
+		
+		@Override
+		public ElasticSearchDocumentID getDocumentID() {
+			return new ElasticSearchDocumentID("test", "doc", "100");
+		}
+	}
 }
