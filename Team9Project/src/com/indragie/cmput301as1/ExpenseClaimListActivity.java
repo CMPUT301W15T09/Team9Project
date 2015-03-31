@@ -21,6 +21,8 @@ package com.indragie.cmput301as1;
 import java.util.Comparator;
 import java.util.List;
 
+import com.indragie.cmput301as1.ExpenseClaim.Status;
+
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
@@ -89,7 +91,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 				switch (item.getItemId()) {
 				case R.id.action_delete:
-					listModel.remove(longPressedItemIndex);
+					startDeleteAlertDialog();
 					mode.finish();
 					return true;
 				default:
@@ -270,6 +272,29 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 
 			alert.show();
 		}
+	}
+	
+	/**
+	 * Prompts the user for confirmation in response to deleting an expense claim.
+	 */
+	public void startDeleteAlertDialog() {
+		AlertDialog.Builder openDialog = new AlertDialog.Builder(this);
+		openDialog.setTitle(R.string.action_delete_claim_confirm);
+		
+		openDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				listModel.remove(longPressedItemIndex);
+			}
+		});
+		
+		openDialog.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+		openDialog.show();
 	}
 
 	//================================================================================
