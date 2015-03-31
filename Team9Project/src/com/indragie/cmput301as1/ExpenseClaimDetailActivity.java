@@ -71,6 +71,11 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	 * Request code for starting {@link TagAddToClaimActivity}
 	 */
 	private static final int ADD_TAG_REQUEST = 3;
+	
+	/**
+	 * Request code for start {@link TagEditToClaimActivity}
+	 */
+	private static final int EDIT_TAG_REQUEST = 4;
 	/**
 	 * Index used to indicate the nonexistence of an index.
 	 */
@@ -314,6 +319,9 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		case ADD_TAG_REQUEST:
 			onAddTag(data);
 			break;
+		case EDIT_TAG_REQUEST:
+			onEditTag(data);
+			break;
 		default:
 			break;
 		}
@@ -349,6 +357,9 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	
 	
 	private void onEditTag(Intent data) {
+		Tag tag = (Tag)data.getSerializableExtra(TagAddToClaimActivity.TAG_TO_ADD);
+		int position = data.getIntExtra(TagEditToClaimActivity.EXTRA_TAG_POSITION, -1);
+		model.setTag(position, tag);
 	}
 
 	
@@ -565,7 +576,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			buildDestinationAlertDialog(index.getItemIndex()).show();
 			break;
 		case TAG:
-			// TODO 
+			startEditTagActivity(index.getItemIndex());
 			break;
 		case EXPENSE_ITEM:
 			startEditExpenseItemActivity(index.getItemIndex());
@@ -586,6 +597,12 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		startActivityForResult(editIntent, EDIT_EXPENSE_ITEM_REQUEST);
 	}
 	
+	private void startEditTagActivity(int index) {
+		Intent editTagIntent = new Intent(this, TagEditToClaimActivity.class);
+		editTagIntent.putExtra(TagEditToClaimActivity.EXTRA_TAG_POSITION, index);
+		startActivityForResult(editTagIntent, EDIT_TAG_REQUEST);
+	}
+
 	/**
 	 * Returns the item position from a list view position by adjusting
 	 * it to account for header and footer views.

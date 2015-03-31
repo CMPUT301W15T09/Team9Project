@@ -59,7 +59,8 @@ public final class R {
         public static final int action_mark_approved=0x7f090025;
         public static final int action_mark_returned=0x7f090024;
         public static final int action_mark_submitted=0x7f090026;
-        public static final int action_settings=0x7f09002a;
+        public static final int action_replace_tag=0x7f09002a;
+        public static final int action_settings=0x7f09002b;
         public static final int action_sort_claim=0x7f090028;
         public static final int btn_receipt=0x7f090015;
         public static final int button_add_tag=0x7f090016;
@@ -109,7 +110,8 @@ public final class R {
         public static final int contextual_edit=0x7f080004;
         public static final int expense_claim_edit=0x7f080005;
         public static final int expense_claim_list=0x7f080006;
-        public static final int tag_edit_to_claim=0x7f080007;
+        public static final int replace_tag=0x7f080007;
+        public static final int tag_edit_to_claim=0x7f080008;
     }
     public static final class string {
         public static final int TagName=0x7f060030;
@@ -129,6 +131,7 @@ public final class R {
         public static final int action_mark_returned=0x7f06001b;
         public static final int action_mark_submitted=0x7f06001a;
         public static final int action_new_tag=0x7f060032;
+        public static final int action_replace_tag=0x7f06003a;
         public static final int action_settings=0x7f060039;
         public static final int action_sort_claim=0x7f060021;
         public static final int amount=0x7f06000b;

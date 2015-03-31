@@ -76,5 +76,6 @@
     <string name="action_add_tag_to_claim">Add Tag to Claim</string>
     <string name="title_activity_tag_edit_to_claim">TagEditToClaimActivity</string>
     <string name="action_settings">Settings</string>
+    <string name="action_replace_tag">Replace Tag</string>
 
 </resources>

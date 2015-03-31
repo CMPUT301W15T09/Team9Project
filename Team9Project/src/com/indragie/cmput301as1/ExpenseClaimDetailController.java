@@ -266,6 +266,7 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 			break;
 		case EXPENSE_ITEM:
 			model.removeItem(index.getItemIndex());
+			break;
 		}
 	}
 	
