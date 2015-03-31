@@ -160,9 +160,9 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 		);
 		
 		tagsSection = new ListSection<DetailItem>(
-				resources.getString(R.string.tags_title),
-				getTagDetailItems(),
-				new TagViewConfigurator()
+			resources.getString(R.string.tags_title),
+			getTagDetailItems(),
+			new TagViewConfigurator()
 		);
 		
 		ArrayList<ListSection<DetailItem>> sections = new ArrayList<ListSection<DetailItem>>();
@@ -245,6 +245,10 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 		return (ExpenseItem)expenseItemsSection.get(index).getModel();
 	}
 	
+	public Tag getTag(int index) {
+		return (Tag)tagsSection.get(index).getModel();
+	}
+	
 	/**
 	 * Removes the item at the specified position.
 	 * @param position The position of the item to remove.
@@ -259,6 +263,7 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 			break;
 		case TAG:
 			model.removeTag(index.getItemIndex());
+			break;
 		case EXPENSE_ITEM:
 			model.removeItem(index.getItemIndex());
 		}
@@ -339,6 +344,7 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 	public void update(TypedObservable<Object> observable, Object object) {
 		destinationsSection.setItems(getDestinationDetailItems());
 		expenseItemsSection.setItems(getExpenseItemDetailItems());
+		tagsSection.setItems(getTagDetailItems());
 		adapter.noteSectionsChanged();
 	}
 }

@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 
-public class TagListActivity extends ListActivity implements TypedObserver<List<Tag>>{
+public class TagAddToClaimActivity extends ListActivity implements TypedObserver<List<Tag>>{
 
 	//================================================================================
 	// Constants
@@ -32,7 +32,7 @@ public class TagListActivity extends ListActivity implements TypedObserver<List<
 	/**
 	 * Index of a item that is long pressed.
 	 */
-	private int longPressedItemIndex;
+	private int pressedItemIndex;
 
 	//================================================================================
 	// Activity Callbacks
@@ -48,11 +48,11 @@ public class TagListActivity extends ListActivity implements TypedObserver<List<
 		setListAdapter(new TagArrayAdapter(this, listModel.getItems()));
 		
 		
-		final ActionMode.Callback longClickCallback = new ActionMode.Callback() {
+		final ActionMode.Callback clickCallback = new ActionMode.Callback() {
 			@Override
 			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 				switch (item.getItemId()) {
-					case R.id.action_accept:
+					case R.id.action_add_tag_to_claim_string:
 						setResult(RESULT_OK, getTagSelected());
 						finish();
 						return true;
@@ -63,7 +63,7 @@ public class TagListActivity extends ListActivity implements TypedObserver<List<
 
 			@Override
 			public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-				mode.getMenuInflater().inflate(R.menu.contextual_accept, menu);
+				mode.getMenuInflater().inflate(R.menu.add_tag_to_claim, menu);
 				return true;
 			}
 
@@ -76,12 +76,11 @@ public class TagListActivity extends ListActivity implements TypedObserver<List<
 			}
 		};
 
-		getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+		getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-				longPressedItemIndex = position;
-				startActionMode(longClickCallback);
-				return true;
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				pressedItemIndex = position;
+				startActionMode(clickCallback);
 			}
 		});
 				
@@ -105,14 +104,21 @@ public class TagListActivity extends ListActivity implements TypedObserver<List<
 		setListAdapter(new TagArrayAdapter(this, tags));
 	}
 	
+	/**
+	 * Sets intent as canceled so no changes are made. 
+	 */
 	protected void onHome() {
 		setResult(RESULT_CANCELED, new Intent());
 		finish();
 	}
 	
+	/**
+	 * Puts the selected tag in a returned intent.
+	 * @return Intent with information about position of item. 
+	 */
 	protected Intent getTagSelected() {
 		Intent intent = new Intent();
-		intent.putExtra(TAG_TO_ADD, listModel.getItems().get(longPressedItemIndex));
+		intent.putExtra(TAG_TO_ADD, listModel.getItems().get(pressedItemIndex));
 		return intent;
 	}
 	
