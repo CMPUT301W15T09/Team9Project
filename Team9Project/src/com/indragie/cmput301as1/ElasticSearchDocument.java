@@ -25,5 +25,5 @@ public interface ElasticSearchDocument {
 	 * @return A unique identifier for the document. This identifier must
 	 * uniquely identify the document within its document type.
 	 */
-	public ElasticSearchDocumentID getObjectID();
+	public ElasticSearchDocumentID getDocumentID();
 }
