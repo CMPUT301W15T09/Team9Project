@@ -621,10 +621,12 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		
 		switch (type) {
 		case DESTINATION:
-			buildDestinationAlertDialog(index.getItemIndex()).show();
+			if(status == Status.RETURNED || status == Status.IN_PROGRESS)
+				buildDestinationAlertDialog(index.getItemIndex()).show();
 			break;
 		case TAG:
-			startEditTagActivity(index.getItemIndex());
+			if(status == Status.RETURNED || status == Status.IN_PROGRESS)
+				startEditTagActivity(index.getItemIndex());
 			break;
 		case EXPENSE_ITEM:
 			startEditExpenseItemActivity(index.getItemIndex());
