@@ -48,9 +48,8 @@ public class ElasticSearchAPIClientTests extends TestCase
 	
 	public void testAdd() throws InterruptedException, RequestFailedException, IOException {
 		MockResponse response = new MockResponse()
-	    	.addHeader("Content-Type", "application/json; charset=utf-8")
-	    	.addHeader("Cache-Control", "no-cache")
-	    	.setBody("{\"_index\":\"test\",\"_type\":\"doc\",\"_id\":\"100\",\"_version\":1,\"created\":true}");
+			.addHeader("Content-Type", "application/json; charset=utf-8")
+			.setBody("{\"_index\":\"test\",\"_type\":\"doc\",\"_id\":\"100\",\"_version\":1,\"created\":true}");
 		server.enqueue(response);
 		
 		TestDocument document = new TestDocument("Indragie Karunaratne", 3);
@@ -64,7 +63,6 @@ public class ElasticSearchAPIClientTests extends TestCase
 	public void testGet() throws InterruptedException, RequestFailedException, IOException {
 		MockResponse response = new MockResponse()
 			.addHeader("Content-Type", "application/json; charset=utf-8")
-			.addHeader("Cache-Control", "no-cache")
 			.setBody("{\"_index\":\"test\",\"_type\":\"doc\",\"_id\":\"100\",\"_version\":1,\"found\":true,\"_source\":{\"name\":\"Indragie Karunaratne\",\"year\":3}}");
 		server.enqueue(response);
 		
@@ -78,9 +76,8 @@ public class ElasticSearchAPIClientTests extends TestCase
 	
 	public void testUpdate() throws InterruptedException, RequestFailedException, IOException {
 		MockResponse response = new MockResponse()
-    		.addHeader("Content-Type", "application/json; charset=utf-8")
-    		.addHeader("Cache-Control", "no-cache")
-    		.setBody("{\"_index\":\"test\",\"_type\":\"doc\",\"_id\":\"100\",\"_version\":2,\"created\":false}");
+			.addHeader("Content-Type", "application/json; charset=utf-8")
+			.setBody("{\"_index\":\"test\",\"_type\":\"doc\",\"_id\":\"100\",\"_version\":2,\"created\":false}");
 		server.enqueue(response);
 		
 		TestDocument document = new TestDocument("Indragie Karunaratne", 4);
@@ -94,7 +91,6 @@ public class ElasticSearchAPIClientTests extends TestCase
 	public void testDelete() throws InterruptedException, RequestFailedException, IOException {
 		MockResponse response = new MockResponse()
 			.addHeader("Content-Type", "application/json; charset=utf-8")
-			.addHeader("Cache-Control", "no-cache")
 			.setBody("{\"_index\":\"test\",\"_type\":\"doc\",\"_id\":\"100\",\"_version\":2,\"found\":true}");
 		server.enqueue(response);
 		
