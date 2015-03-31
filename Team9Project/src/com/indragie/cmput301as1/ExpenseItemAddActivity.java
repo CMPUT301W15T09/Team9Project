@@ -23,11 +23,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.joda.money.*;
+import org.joda.money.CurrencyUnit;
+import org.joda.money.Money;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -37,6 +38,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -114,6 +117,11 @@ public class ExpenseItemAddActivity extends Activity {
 	 * Uri reference of the receipt image.
 	 */
 	protected Uri receiptFileUri;
+	
+	/**
+	 * Incompleteness flag.
+	 */
+	protected boolean incomplete;
 
 	//================================================================================
 	// Activity Callbacks
@@ -159,6 +167,30 @@ public class ExpenseItemAddActivity extends Activity {
 				startImagePickerDialog();				
 			}
 		});
+		
+		incomplete = false;
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.expense_item_edit, menu);
+		menu.findItem(R.id.action_set_incomplete).setChecked(incomplete); 
+		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch(item.getItemId()) {
+		case android.R.id.home:
+			onDone();
+			return true;
+		case R.id.action_set_incomplete:
+			item.setChecked(!item.isChecked());
+			incomplete ^= true;
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 
 	//================================================================================
@@ -183,6 +215,7 @@ public class ExpenseItemAddActivity extends Activity {
 		if (receiptFileUri != null) {
 			item.setReceipt(receiptFileUri.toString());
 		}
+		item.setIncomplete(incomplete);
 
 		Intent intent = new Intent();
 		intent.putExtra(EXTRA_EXPENSE_ITEM, item);
@@ -328,7 +361,6 @@ public class ExpenseItemAddActivity extends Activity {
 	//================================================================================
 	// Camera + Gallery Dialogue
 	//================================================================================
-
 
 	/* 
 	 *  Elements of method startDialog borrowed from 

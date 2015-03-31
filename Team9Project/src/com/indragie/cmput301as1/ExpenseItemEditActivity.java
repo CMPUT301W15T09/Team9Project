@@ -24,7 +24,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.view.Menu;
 
 /**
  * Activity for editing the attributes of an expense item.
@@ -41,9 +41,18 @@ public class ExpenseItemEditActivity extends ExpenseItemAddActivity {
 	public static final String EXTRA_EXPENSE_ITEM_POSITION = "com.indragie.cmput301as1.EXPENSE_ITEM_POSITION";
 	
 	/**
-	 * Intent key for editting an {@link ExpenseItem} object.
+	 * Intent key for editing an {@link ExpenseItem} object.
 	 */
 	public static final String EXTRA_EXPENSE_ITEM_EDITABLE = "com.indragie.cmput301as1.EXPENSE_ITEM_EDITABLE";
+	
+	//================================================================================
+	// Properties
+	//================================================================================
+	
+	/**
+	 * Flag for setting the activity fields as editable or not.
+	 */
+	private static boolean editable;
 	
 	//================================================================================
 	// Activity Callbacks
@@ -58,15 +67,14 @@ public class ExpenseItemEditActivity extends ExpenseItemAddActivity {
 
 		Intent intent = getIntent();
 		ExpenseItem item = (ExpenseItem)getIntent().getSerializableExtra(EXTRA_EXPENSE_ITEM);
-		Boolean editable = intent.getBooleanExtra(EXTRA_EXPENSE_ITEM_EDITABLE, false);
-		
+		editable = intent.getBooleanExtra(EXTRA_EXPENSE_ITEM_EDITABLE, false);
 		if (item.getReceipt() != null) {
 			receiptFileUri = Uri.parse(item.getReceipt());
 		}
+		incomplete = item.isIncomplete();
 		
 		setTitle(item.getName());
 		setupFields(item, editable);
-		
 	}
 	
 	/**
@@ -102,17 +110,14 @@ public class ExpenseItemEditActivity extends ExpenseItemAddActivity {
 		}
 	}
 	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			onDone();
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
-	}
 	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.expense_item_edit, menu);
+		menu.findItem(R.id.action_set_incomplete).setChecked(incomplete).setEnabled(editable); 
+		return true;
+	}
+
 	@Override
 	public void onBackPressed() {
 		// Changes should persist even when the back button is pressed,

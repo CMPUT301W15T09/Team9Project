@@ -157,6 +157,8 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	 * data for the user interface.
 	 */
 	private ExpenseClaimDetailController controller;
+	
+	private int longPressedItemPosition;
 
 	//================================================================================
 	// Activity Callbacks
@@ -171,19 +173,17 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		claim = (ExpenseClaim)intent.getSerializableExtra(EXTRA_EXPENSE_CLAIM);
 		user = (User)intent.getSerializableExtra(EXTRA_EXPENSE_CLAIM_USER);
 		status = claim.getStatus();
-		
-		claim = (ExpenseClaim)getIntent().getSerializableExtra(EXTRA_EXPENSE_CLAIM);
-		
+				
 		model = new ExpenseClaimDetailModel(claim);
 		model.addObserver(this);
 		controller = new ExpenseClaimDetailController(this, model);
 		
 		setupListHeaderView();
 		setupListFooterView();
-		setEditable(claim.isEditable());
 		setListAdapter(controller.getAdapter());
 		
 		setEditable();
+		setDeletable();
 	}
 	
 	@Override
@@ -252,26 +252,16 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	
 	/**
 	 * Sets the editable state of the entire UI.
-	 * @param editable Whether the claim is editable or not.
 	 */
 	private void setEditable(){
-		boolean UserCheck = user.getName().contentEquals(claim.getUser().getName());//SHOULD BE ID USING NAME FOR TESTING
+		boolean UserCheck = user.getName().contentEquals(claim.getUser().getName()); //SHOULD BE ID USING NAME FOR TESTING
 
-
-		if(status == Status.SUBMITTED ){
+		if(status == Status.SUBMITTED || status == Status.APPROVED ){
 			nameField.setEnabled(false);
 			descriptionField.setEnabled(false);
 			startDateField.setEnabled(false);
 			endDateField.setEnabled(false);
-			comments.setEnabled(!UserCheck);
-			this.editable = false;
-		}
-		else if(status == Status.APPROVED){
-			nameField.setEnabled(false);
-			descriptionField.setEnabled(false);
-			startDateField.setEnabled(false);
-			endDateField.setEnabled(false);
-			comments.setEnabled(false);	
+			comments.setEnabled(status != Status.APPROVED);
 			this.editable = false;
 		}
 		else {
@@ -282,31 +272,31 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			comments.setEnabled(false);
 			this.editable= UserCheck;
 		}
+		invalidateOptionsMenu();
 	}
 	
 	/**
 	 * Sets the editable state of the entire UI.
 	 * @param editable Whether the claim is editable or not.
 	 */
-	private void setEditable(Boolean editable) {
-		this.editable = editable;
-		invalidateOptionsMenu();
+	private void setDeletable() {
 		if (editable) {
 			getListView().setOnItemLongClickListener(
-				new LongClickDeleteListener(this, 
-					new LongClickDeleteListener.OnDeleteListener() {
-						@Override
-						public void onDelete(int position) {
-							controller.remove(itemPositionForListViewPosition(position));
+				new LongClickDeleteListener(this, new LongClickDeleteListener.OnDeleteListener() {
+					@Override
+					public void onDelete(int position) {
+						if (getListView().getItemAtPosition(position) == null) {
+							return;
 						}
+						longPressedItemPosition = itemPositionForListViewPosition(position);
+						ExpenseClaimDetailController.DetailItem.ItemType type = controller.getItemType(longPressedItemPosition);
+						startDeleteAlertDialog(type);
 					}
-				)
-			);
-		} else {
-			getListView().setOnItemLongClickListener(null);
+				}
+			));
 		}
 	}
-
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode != RESULT_OK) return;
@@ -407,8 +397,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			startEmailActivity();
 			return true;
 		case R.id.action_mark_submitted:
-			claim.setStatus(Status.SUBMITTED);
-			commitChangesAndFinish();
+			startSubmitAlertDialog();
 			return true;
 		case R.id.action_mark_returned:
 			claim.setStatus(Status.RETURNED);
@@ -423,6 +412,38 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+	
+	/**
+	 * Prompts the user for confirmation in response to marking an expense as submitted, additionally 
+	 * the user will be notified if any incomplete expense items exist under the claim.
+	 */
+	private void startSubmitAlertDialog() {
+		AlertDialog.Builder openDialog = new AlertDialog.Builder(this);
+		openDialog.setTitle(R.string.alert_submit_title);
+		
+		for (ExpenseItem expense : model.getItems()) {
+			if (expense.isIncomplete()) {
+				openDialog.setMessage(R.string.alert_submit_message);
+				break;
+			}
+		}
+		
+		openDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				claim.setStatus(Status.SUBMITTED);
+				commitChangesAndFinish();
+			}
+		});
+		
+		openDialog.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+		openDialog.show();
 	}
 	
 	/**
@@ -462,6 +483,39 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		})
 		.setNegativeButton(android.R.string.cancel, null);
 		return builder.create();
+	}
+	
+	/**
+	 * Prompts the user for confirmation in response to deleting items in the activity.
+	 */
+	public void startDeleteAlertDialog(ExpenseClaimDetailController.DetailItem.ItemType type) {
+		AlertDialog.Builder openDialog = new AlertDialog.Builder(this);
+		switch (type) {
+		case DESTINATION:
+			openDialog.setTitle(R.string.action_delete_dest_confirm);
+			break;
+		case TAG:
+			openDialog.setTitle(R.string.action_delete_tag_confirm);
+			break;
+		case EXPENSE_ITEM:
+			openDialog.setTitle(R.string.action_delete_item_confirm);
+			break;
+		default: break;
+		}
+		openDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				controller.remove(longPressedItemPosition);
+			}
+		});
+		
+		openDialog.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+		openDialog.show();
 	}
 	
 	/**
