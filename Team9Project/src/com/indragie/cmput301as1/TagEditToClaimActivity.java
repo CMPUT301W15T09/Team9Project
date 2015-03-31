@@ -22,8 +22,6 @@ import android.os.Bundle;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 
 public class TagEditToClaimActivity extends TagAddToClaimActivity {
 	
@@ -32,7 +30,7 @@ public class TagEditToClaimActivity extends TagAddToClaimActivity {
 	//================================================================================
 	
 	/**
-	 * Intent key for the position of the {@link ExpenseItem} object.
+	 * Intent key for the position of the {@link Tag} object.
 	 */
 	public static final String EXTRA_TAG_POSITION = "com.indragie.cmput301as1.TAG_POSITION";
 	
@@ -43,12 +41,7 @@ public class TagEditToClaimActivity extends TagAddToClaimActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-		
-		listModel = new ListModel<Tag>(TAG_FILENAME, this);
-		listModel.addObserver(this);
-		setListAdapter(new TagArrayAdapter(this, listModel.getItems()));
-		
+		setUpActionBarAndModel();
 		
 		final ActionMode.Callback clickCallback = new ActionMode.Callback() {
 			@Override
@@ -78,14 +71,7 @@ public class TagEditToClaimActivity extends TagAddToClaimActivity {
 			}
 		};
 
-		getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				pressedItemIndex = position;
-				startActionMode(clickCallback);
-			}
-		});
-				
+		setUpItemClickListener(clickCallback);		
 		
 	}
 

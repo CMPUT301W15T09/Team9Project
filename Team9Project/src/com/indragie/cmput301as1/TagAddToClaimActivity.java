@@ -23,6 +23,7 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ActionMode;
+import android.view.ActionMode.Callback;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,8 +35,14 @@ public class TagAddToClaimActivity extends ListActivity implements TypedObserver
 	// Constants
 	//================================================================================
 	
+	/**
+	 * Filename for storing tags.
+	 */
 	protected static final String TAG_FILENAME = "tags";
-
+	
+	/**
+	 * Intent key for the {@link Tag} object.
+	 */
 	public static final String TAG_TO_ADD = "com.indragie.cmput301as1.TAG_TO_ADD";
 	
 	//================================================================================
@@ -58,12 +65,7 @@ public class TagAddToClaimActivity extends ListActivity implements TypedObserver
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-		
-		listModel = new ListModel<Tag>(TAG_FILENAME, this);
-		listModel.addObserver(this);
-		setListAdapter(new TagArrayAdapter(this, listModel.getItems()));
-		
+		setUpActionBarAndModel();
 		
 		final ActionMode.Callback clickCallback = new ActionMode.Callback() {
 			@Override
@@ -92,7 +94,27 @@ public class TagAddToClaimActivity extends ListActivity implements TypedObserver
 				return false;
 			}
 		};
-
+		
+		setUpItemClickListener(clickCallback);
+		
+	}
+	
+	/**
+	 * Sets up the action bar and ListModel to use.
+	 */
+	protected void setUpActionBarAndModel() {
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		
+		listModel = new ListModel<Tag>(TAG_FILENAME, this);
+		listModel.addObserver(this);
+		setListAdapter(new TagArrayAdapter(this, listModel.getItems()));
+	}
+	
+	/**
+	 * Sets up the item click listener for when a tag is selected.
+	 * @param clickCallback The Callback for when selected.
+	 */
+	protected void setUpItemClickListener(final Callback clickCallback) {
 		getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -100,8 +122,6 @@ public class TagAddToClaimActivity extends ListActivity implements TypedObserver
 				startActionMode(clickCallback);
 			}
 		});
-				
-		
 	}
 	
 	@Override
