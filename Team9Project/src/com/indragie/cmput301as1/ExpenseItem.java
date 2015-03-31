@@ -181,6 +181,7 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	}
 	
 	/**
+	 * Checks if incomplete. 
 	 * @return incomplete
 	 */
 	public boolean isIncomplete() {
