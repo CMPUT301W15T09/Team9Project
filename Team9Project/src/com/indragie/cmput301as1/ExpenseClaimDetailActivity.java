@@ -581,7 +581,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		MenuItem approve = menu.findItem(R.id.action_mark_approved);
 		MenuItem returned = menu.findItem(R.id.action_mark_returned);
 
-		if (status ==Status.APPROVED){
+		if (status == Status.APPROVED){
 			addDestination.setEnabled(false);
 			addItem.setEnabled(false);
 			addTag.setEnabled(false);
@@ -590,30 +590,16 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			returned.setEnabled(false);
 		}
 		if(status == Status.RETURNED || status == Status.IN_PROGRESS){
-			if(UserCheck){
-				addDestination.setEnabled(true);
-				addItem.setEnabled(true);
-				addTag.setEnabled(true);
-				submit.setEnabled(true);
-			}
-			else{
-				addDestination.setEnabled(false);
-				addItem.setEnabled(false);
-				addTag.setEnabled(false);
-				submit.setEnabled(false);
-			}
+			addDestination.setEnabled(UserCheck);
+			addItem.setEnabled(UserCheck);
+			addTag.setEnabled(UserCheck);
+			submit.setEnabled(UserCheck);
 			approve.setEnabled(false);
 			returned.setEnabled(false);
 		}
-		if(status==Status.SUBMITTED){
-			if(UserCheck){
-				approve.setEnabled(false);
-				returned.setEnabled(false);
-			}
-			else{
-				approve.setEnabled(true);
-				returned.setEnabled(true);
-			}
+		if(status == Status.SUBMITTED){
+			approve.setEnabled(!UserCheck);
+			returned.setEnabled(!UserCheck);
 			addDestination.setEnabled(false);
 			addItem.setEnabled(false);
 			addTag.setEnabled(false);
