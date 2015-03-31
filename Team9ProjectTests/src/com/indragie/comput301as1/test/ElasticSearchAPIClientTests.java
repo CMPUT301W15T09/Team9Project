@@ -1,5 +1,6 @@
 /* 
  * Copyright (C) 2015 Jimmy Ho
+ * Copyright (C) 2015 Indragie Karunaratne
  * 
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,7 +28,7 @@ import com.squareup.okhttp.mockwebserver.*;
 
 import junit.framework.TestCase;
 
-public class ElasticSearchAPIClientTest extends TestCase 
+public class ElasticSearchAPIClientTests extends TestCase 
 {
 	private ElasticSearchAPIClient client;
 	private MockWebServer server;
