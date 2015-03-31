@@ -35,6 +35,7 @@ public class ElasticSearchAPIClientTests extends TestCase
 	
 	@Override
 	protected void setUp() throws Exception {
+		super.setUp();
 		server = new MockWebServer();
 		server.start();
 		client = new ElasticSearchAPIClient(server.getUrl("/"));
