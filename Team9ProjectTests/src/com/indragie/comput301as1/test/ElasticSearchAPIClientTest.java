@@ -68,7 +68,7 @@ public class ElasticSearchAPIClientTest extends TestCase
 		server.enqueue(response);
 		
 		TestDocument document = new TestDocument("Indragie Karunaratne", 3);
-		assertEquals(document, client.get(new ElasticSearchDocumentID("test", "doc", "100")).execute());
+		assertEquals(document, client.get(new ElasticSearchDocumentID("test", "doc", "100"), TestDocument.class).execute());
 		
 		RecordedRequest request = server.takeRequest();
 		assertEquals("/test/doc/100", request.getPath());
@@ -118,7 +118,6 @@ public class ElasticSearchAPIClientTest extends TestCase
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = prime * result + getOuterType().hashCode();
 			result = prime * result + ((name == null) ? 0 : name.hashCode());
 			result = prime * result + year;
 			return result;
@@ -133,8 +132,6 @@ public class ElasticSearchAPIClientTest extends TestCase
 			if (getClass() != obj.getClass())
 				return false;
 			TestDocument other = (TestDocument) obj;
-			if (!getOuterType().equals(other.getOuterType()))
-				return false;
 			if (name == null) {
 				if (other.name != null)
 					return false;
@@ -143,10 +140,6 @@ public class ElasticSearchAPIClientTest extends TestCase
 			if (year != other.year)
 				return false;
 			return true;
-		}
-		
-		private ElasticSearchAPIClientTest getOuterType() {
-			return ElasticSearchAPIClientTest.this;
 		}
 		
 		@Override

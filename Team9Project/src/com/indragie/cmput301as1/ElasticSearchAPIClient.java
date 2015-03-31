@@ -18,6 +18,7 @@
 package com.indragie.cmput301as1;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -29,6 +30,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
@@ -108,7 +110,7 @@ public class ElasticSearchAPIClient {
 	 * model from an HTTP response.
 	 * @param <T> The type of the document.
 	 */
-	private interface DocumentDeserializer<T> {
+	private interface DocumentDeserializer<T extends ElasticSearchDocument> {
 		/**
 		 * Creates an ElasticSearch document from an HTTP response.
 		 * @param response The HTTP response.
@@ -253,7 +255,7 @@ public class ElasticSearchAPIClient {
 	 * original document from the factory method.
 	 * @param <T> The type of the document.
 	 */
-	private class IdentityDocumentDeserializer<T> implements DocumentDeserializer<T> {
+	private class IdentityDocumentDeserializer<T extends ElasticSearchDocument> implements DocumentDeserializer<T> {
 		/** The original document */
 		private T document;
 
@@ -276,7 +278,19 @@ public class ElasticSearchAPIClient {
 	 * ElasticSearch API response and converts it to a document model object.
 	 * @param <T> The type of the document.
 	 */
-	private class JSONDocumentDeserializer<T> implements DocumentDeserializer<T> {
+	private class JSONDocumentDeserializer<T extends ElasticSearchDocument> implements DocumentDeserializer<T> {
+		/** The type of the document */
+		private Type documentType;
+		
+		/**
+		 * Creates a new instance of {@link JSONDocumentDeserializer}
+		 * @param documentType The type of the document. Passing this in as a
+		 * parameter is an ugly hack to work around type erasure.
+		 */
+		JSONDocumentDeserializer(Type documentType) {
+			this.documentType = documentType;
+		}
+		
 		@Override
 		public T documentFromResponse(Response response) {
 			JsonParser parser = new JsonParser();
@@ -285,8 +299,7 @@ public class ElasticSearchAPIClient {
 				if (rootElement.isJsonObject()) {
 					JsonObject rootObject = rootElement.getAsJsonObject();
 					JsonElement sourceElement = rootObject.get("_source");
-					Type docType = new TypeToken<T>() {}.getType();
-					return gson.fromJson(sourceElement, docType);
+					return gson.fromJson(sourceElement, documentType);
 				}
 			} catch (JsonSyntaxException e) {
 				e.printStackTrace();
@@ -320,26 +333,44 @@ public class ElasticSearchAPIClient {
 	 */
 	public <T extends ElasticSearchDocument> APICall<T> add(T document) {
 		try {
+			Type docType = new TypeToken<T>() {}.getType();
+			String json = gson.toJson(document, docType);
 			Request request = new Request.Builder()
 				.url(constructDocumentURL(document.getDocumentID()))
-				.post(RequestBody.create(MEDIA_TYPE_JSON, documentToJSON(document)))
+				.post(RequestBody.create(MEDIA_TYPE_JSON, json))
 				.build();
 			return new APICall<T>(client.newCall(request), new IdentityDocumentDeserializer<T>(document));
 		} catch (MalformedURLException e) {
+			// This should never really happen because the URL is constructed internally,
+			// and it isn't possible to pass anything for the components of the 
+			// ElasticSearchDocumentID that would cause it to fail when constructing
+			// the URL.
+			e.printStackTrace();
 			return null;
 		}
 	}
 
 	/**
 	 * Retrieves a document from the index.
-	 * @param docID The document ID of the document to retrieve.
+	 * @param documentID The document ID of the document to retrieve.
+	 * @param documentType The type of the document. This is an ugly hack to work around
+	 * type erasure.
 	 * @param callback Callback object to be called upon success or failure. 
 	 * @return API call representing this request.
 	 * @note The document returned by executing the call will be the document model object, 
 	 * deserialized from JSON.
 	 */
-	public <T extends ElasticSearchDocument> APICall<T> get(ElasticSearchDocumentID docID) {
-		return null;
+	public <T extends ElasticSearchDocument> APICall<T> get(ElasticSearchDocumentID documentID, Type documentType) {
+		try {
+			Request request = new Request.Builder()
+				.url(constructDocumentURL(documentID))
+				.get()
+				.build();
+			return new APICall<T>(client.newCall(request), new JSONDocumentDeserializer<T>(documentType));
+		} catch (MalformedURLException e) {
+			// See comment in add() about this exception.
+			return null;
+		}
 	}
 
 	/**
@@ -352,7 +383,22 @@ public class ElasticSearchAPIClient {
 	 * argument passed to this method.
 	 */
 	public <T extends ElasticSearchDocument> APICall<T> update(T newDocument) {
-		return null;
+		try {
+			JsonElement docElement = gson.getAdapter(new TypeToken<T>() {}).toJsonTree(newDocument);
+			JsonObject rootElement = new JsonObject();
+			rootElement.add("doc", docElement);
+			String json = rootElement.toString();
+			
+			Request request = new Request.Builder()
+				.url(constructDocumentURL(newDocument.getDocumentID()))
+				.put(RequestBody.create(MEDIA_TYPE_JSON, json))
+				.build();
+			return new APICall<T>(client.newCall(request), new IdentityDocumentDeserializer<T>(newDocument));
+		} catch (MalformedURLException e) {
+			// See comment in add() about this exception.
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	/**
@@ -363,7 +409,17 @@ public class ElasticSearchAPIClient {
 	 * @note The document returned by executing the call will be null.
 	 */
 	public <T extends ElasticSearchDocument> APICall<T> delete(T document) {
-		return null;
+		try {
+			Request request = new Request.Builder()
+				.url(constructDocumentURL(document.getDocumentID()))
+				.delete()
+				.build();
+			return new APICall<T>(client.newCall(request), null);
+		} catch (MalformedURLException e) {
+			// See comment in add() about this exception.
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	//================================================================================
@@ -380,15 +436,5 @@ public class ElasticSearchAPIClient {
 		String tokens[] = new String[] { docID.getIndex(), docID.getType(), docID.getID() };
 		String path = "/" + TextUtils.join("/", tokens);
 		return new URL(baseURL, path);
-	}
-
-	/**
-	 * Converts a document model object to JSON for use with the ElasticSearch API.
-	 * @param document The document model object.
-	 * @return JSON representation of the document as a string.
-	 */
-	private <T extends ElasticSearchDocument> String documentToJSON(T document) {
-		Type docType = new TypeToken<T>() {}.getType();
-		return gson.toJson(document, docType);
 	}
 }
