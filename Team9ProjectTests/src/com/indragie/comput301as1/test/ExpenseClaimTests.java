@@ -159,8 +159,8 @@ public class ExpenseClaimTests extends TestCase {
 		Tag tag3 = new Tag("ocean studies");
 		Tag tag4 = new Tag("Audi development");
 		
-		claim.replaceTag(tag2, tag3);
-		claim.replaceTag(tag1, tag4);
+		claim.setTag(1, tag3);
+		claim.setTag(0, tag4);
 		
 		assertEquals(tag3, claim.getTags().get(1));
 		assertEquals(tag4, claim.getTags().get(0));

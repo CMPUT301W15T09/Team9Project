@@ -60,7 +60,6 @@ public class TagAddActivity extends Activity{
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_accept:
-			addTagIntent();
 			setResult(RESULT_OK, addTagIntent());
 			finish();
 			return true;

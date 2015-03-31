@@ -409,8 +409,9 @@ public class ExpenseClaim implements Serializable {
 	 * @param oldTag The old Tag object you wish to remove. 
 	 * @param newTag The new Tag object you wish to replace the old one with.
 	 */
-	public void replaceTag(Tag oldTag, Tag newTag) {
-		tags.set(tags.indexOf(oldTag), newTag);
+	public void setTag(int index, Tag newTag) {
+		tags.set(index, newTag);
+		Collections.sort(tags);
 	}
 	
 	/**

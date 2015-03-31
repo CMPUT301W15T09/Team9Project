@@ -33,7 +33,7 @@ import android.widget.TextView;
 public class TagArrayAdapter extends ArrayAdapter<Tag> {
 	
 	public TagArrayAdapter(Context context, List<Tag> tags) {
-		super(context, R.layout.tag_list_row, tags);
+		super(context, android.R.layout.simple_list_item_1, tags);
 	}
 	
 	@Override
@@ -41,9 +41,9 @@ public class TagArrayAdapter extends ArrayAdapter<Tag> {
 		Tag tags = getItem(position);
 		
 		if (convertView == null) {
-			convertView = LayoutInflater.from(getContext()).inflate(R.layout.tag_list_row, parent, false);
+			convertView = LayoutInflater.from(getContext()).inflate(android.R.layout.simple_list_item_1, parent, false);
 		}
-		TextView nameTextView = (TextView)convertView.findViewById(R.id.tv_name);
+		TextView nameTextView = (TextView)convertView.findViewById(android.R.id.text1);
 		nameTextView.setText(tags.getName().toString());
 		
 		return convertView;

@@ -135,4 +135,42 @@ public class ExpenseClaimDetailModel extends TypedObservable<Object> {
 		setChanged();
 		notifyObservers();
 	}
+	
+	/**
+	 * @return The tags for the expense claim.
+	 */
+	public List<Tag> getTags() {
+		return claim.getTags();
+	}
+	
+	/**
+	 * Adds a tag to the expense claim.
+	 * @param tag The tag to add.
+	 */
+	public void addTag(Tag tag) {
+		claim.addTag(tag);
+		setChanged();
+		notifyObservers();
+	}
+	
+	/**
+	 * Replaces an existing tag on the expense claim.
+	 * @param index The index of the tag to replace.
+	 * @param tag The tag to replace it with.
+	 */
+	public void setTag(int index, Tag tag) {
+		claim.setTag(index, tag);
+		setChanged();
+		notifyObservers();
+	}
+	
+	/**
+	 * Removes a tag from the expense claim.
+	 * @param index The index of the tag to remove.
+	 */
+	public void removeTag(int index) {
+		claim.removeTag(index);
+		setChanged();
+		notifyObservers();
+	}
 }
