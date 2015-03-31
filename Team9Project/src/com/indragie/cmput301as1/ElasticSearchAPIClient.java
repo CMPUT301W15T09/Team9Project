@@ -30,6 +30,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
@@ -75,7 +76,7 @@ public class ElasticSearchAPIClient {
 	 * Interface for being notified when a request sent via the {@link ElasticSearchAPIClient}
 	 * succeeds or fails.
 	 */
-	public interface Callback<T extends ElasticSearchDocument> {
+	public interface APICallback<T extends ElasticSearchDocument> {
 		/**
 		 * Called when the request succeeds.
 		 * @param request The request for which the callback is being called for.
@@ -103,11 +104,11 @@ public class ElasticSearchAPIClient {
 	}
 
 	/**
-	 * Interface for an object that can create an ElasticSearch document
-	 * from an HTTP response.
+	 * Interface for an object that can deserialize an ElasticSearch document
+	 * model from an HTTP response.
 	 * @param <T> The type of the document.
 	 */
-	private interface DocumentFactory<T> {
+	private interface DocumentDeserializer<T> {
 		/**
 		 * Creates an ElasticSearch document from an HTTP response.
 		 * @param response The HTTP response.
@@ -116,12 +117,143 @@ public class ElasticSearchAPIClient {
 		T documentFromResponse(Response response);
 	}
 
+	//================================================================================
+	// Classes
+	//================================================================================
+	
+	/**
+	 * An exception that is thrown when an HTTP request to the ElasticSearch API fails.
+	 */
+	public class RequestFailedException extends Exception {
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * The HTTP response that caused this exception.
+		 */
+		private Response response;
+		
+		/**
+		 * Creates a new instance of {@link RequestFailedException}
+		 * @param message The exception message.
+		 * @param response The HTTP response that caused this exception.
+		 */
+		public RequestFailedException(String message, Response response) {
+			super(message);
+			this.response = response;
+		}
+		
+		/**
+		 * @return The HTTP response that caused this exception.
+		 */
+		public Response getResponse() {
+			return response;
+		}
+	}
+	
+	/**
+	 * Wraps {@link com.squareup.okhttp.Call} with additional logic for deserializing
+	 * the document from JSON.
+	 * @param <T> The type of the document.
+	 */
+	public class APICall<T extends ElasticSearchDocument> {
+		//================================================================================
+		// Properties
+		//================================================================================
+		/**
+		 * The underlying {@link com.squareup.okhttp.Call} instance.
+		 */
+		private Call call;
+		
+		/**
+		 * Optional deserializer used to deserialize a document from JSON.
+		 */
+		private DocumentDeserializer<T> deserializer;
+		
+		//================================================================================
+		// Constructors
+		//================================================================================
+		/**
+		 * Creates a new instance of {@link APICall}
+		 * @param call The underlying {@link com.squareup.okhttp.Call} instance.
+		 * @param deserializer Optional deserializer used to deserialize a document from JSON.
+		 */
+		protected APICall(Call call, DocumentDeserializer<T> deserializer) {
+			this.call = call;
+			this.deserializer = deserializer;
+		}
+		
+		//================================================================================
+		// API
+		//================================================================================
+		/**
+		 * Cancels the request, if possible.
+		 */
+		public void cancel() {
+			call.cancel();
+		}
+		
+		/**
+		 * @return Whether the call has been canceled.
+		 */
+		public boolean isCanceled() {
+			return call.isCanceled();
+		}
+		
+		/**
+		 * Schedules the request to be executed at some point in the future.
+		 * @param callback Callback to call with either an HTTP response or a failure exception.
+		 * If you {@link #cancel()} a request before it completes the callback will not be invoked.
+		 */
+		public void enqueue(final APICallback<T> callback) {
+			call.enqueue(new Callback() {
+				@Override
+				public void onFailure(Request request, IOException e) {
+					callback.onFailure(request, null, e);
+				}
+
+				@Override
+				public void onResponse(Response response) throws IOException {
+					if (response.isSuccessful()) {
+						T document = null;
+						if (deserializer != null) {
+							document = deserializer.documentFromResponse(response);
+						}
+						callback.onSuccess(response, document);
+					} else {
+						callback.onFailure(response.request(), response, null);
+					}
+				}
+			});
+		}
+		
+		/**
+		 * Invokes the request immediately, and blocks until the response can be processed or is in error.
+		 * @note This is primarily used for unit testing purposes. Applications should almost always
+		 * use the asynchronous API via the {@link #enqueue(APICallback)} method.
+		 * @return The deserialized document or `null` if no document was deserialized.
+		 * @throws RequestFailedException when the HTTP request fails.
+		 * @throws IOException when the request fails to execute.
+		 */
+		public T execute() throws RequestFailedException, IOException {
+			Response response = call.execute();
+			if (response.isSuccessful()) {
+				T document = null;
+				if (deserializer != null) {
+					document = deserializer.documentFromResponse(response);
+				}
+				return document;
+			} else {
+				throw new RequestFailedException("HTTP request failed", response);
+			}
+		}
+	}
+	
 	/**
 	 * A document factory that does nothing with the response and returns the 
 	 * original document from the factory method.
 	 * @param <T> The type of the document.
 	 */
-	private class IdentityDocumentFactory<T> implements DocumentFactory<T> {
+	private class IdentityDocumentDeserializer<T> implements DocumentDeserializer<T> {
 		/** The original document */
 		private T document;
 
@@ -129,7 +261,7 @@ public class ElasticSearchAPIClient {
 		 * Creates a new instance of {@link ElasticSearchIdentityDocumentFactory<T>}
 		 * @param document The original document.
 		 */
-		IdentityDocumentFactory(T document) {
+		IdentityDocumentDeserializer(T document) {
 			this.document = document;
 		}
 
@@ -140,11 +272,11 @@ public class ElasticSearchAPIClient {
 	}
 
 	/**
-	 * A document factory that extracts the source JSON document from the
+	 * A document deserializer that extracts the source JSON document from the
 	 * ElasticSearch API response and converts it to a document model object.
 	 * @param <T> The type of the document.
 	 */
-	private class JSONDocumentFactory<T> implements DocumentFactory<T> {
+	private class JSONDocumentDeserializer<T> implements DocumentDeserializer<T> {
 		@Override
 		public T documentFromResponse(Response response) {
 			JsonParser parser = new JsonParser();
@@ -156,7 +288,6 @@ public class ElasticSearchAPIClient {
 					Type docType = new TypeToken<T>() {}.getType();
 					return gson.fromJson(sourceElement, docType);
 				}
-
 			} catch (JsonSyntaxException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -183,20 +314,19 @@ public class ElasticSearchAPIClient {
 	/**
 	 * Adds a document to the index.
 	 * @param document Document model object to add to the index.
-	 * @param callback Callback object to be called upon success or failure.
-	 * @throws MalformedURLException 
-	 * @note When {@link ElasticSearchCallback#onSuccess(Request, Response, T)} is called, 
-	 * the document parameter will be the same as the document argument passed to this method.
+	 * @note The document returned by executing the call will be the same as the one passed
+	 * into this method.
+	 * @return API call representing this request.
 	 */
-	public <T extends ElasticSearchDocument> void add(T document, Callback<T> callback) {
+	public <T extends ElasticSearchDocument> APICall<T> add(T document) {
 		try {
 			Request request = new Request.Builder()
-			.url(constructDocumentURL(document.getDocumentID()))
-			.post(RequestBody.create(MEDIA_TYPE_JSON, documentToJSON(document)))
-			.build();
-			client.newCall(request).enqueue(wrapCallback(callback, new IdentityDocumentFactory<T>(document)));
+				.url(constructDocumentURL(document.getDocumentID()))
+				.post(RequestBody.create(MEDIA_TYPE_JSON, documentToJSON(document)))
+				.build();
+			return new APICall<T>(client.newCall(request), new IdentityDocumentDeserializer<T>(document));
 		} catch (MalformedURLException e) {
-			callback.onFailure(null, null, e);
+			return null;
 		}
 	}
 
@@ -207,7 +337,7 @@ public class ElasticSearchAPIClient {
 	 * @note When {@link ElasticSearchCallback#onSuccess(Request, Response, T)} is called,
 	 * the document argument will be the document model object, deserialized from JSON.
 	 */
-	public <T extends ElasticSearchDocument> void get(ElasticSearchDocumentID docID, ElasticSearchCallback<T> callback) {
+	public <T extends ElasticSearchDocument> void get(ElasticSearchDocumentID docID, APICallback<T> callback) {
 
 	}
 
@@ -219,7 +349,7 @@ public class ElasticSearchAPIClient {
 	 * @note When {@link ElasticSearchCallback#onSuccess(Request, Response, T)} is called, 
 	 * the document argument will be the same as the newDocument argument passed to this method.
 	 */
-	public <T extends ElasticSearchDocument> void update(T newDocument, ElasticSearchCallback<T> callback) {
+	public <T extends ElasticSearchDocument> void update(T newDocument, APICallback<T> callback) {
 
 	}
 
@@ -230,43 +360,14 @@ public class ElasticSearchAPIClient {
 	 * @note When {@link ElasticSearchCallback#onSuccess(Request, Response, T)} is called, 
 	 * the document argument will be null.
 	 */
-	public <T extends ElasticSearchDocument> void delete(T document, ElasticSearchCallback<T> callback) {
+	public <T extends ElasticSearchDocument> void delete(T document, APICallback<T> callback) {
 
 	}
 
 	//================================================================================
 	// Private
 	//================================================================================
-
-	/**
-	 * Wraps {@link ElasticSearchAPIClient.Callback} in {@link com.squareup.okhttp.Callback}
-	 * @param callback The callback to wrap.
-	 * @param documentFactory An optional document factory for deserializing a document from
-	 * an HTTP response.
-	 * @return The callback wrapped in an instance of {@link com.squareup.okhttp.Callback}
-	 */
-	private <T extends ElasticSearchDocument> com.squareup.okhttp.Callback wrapCallback(final Callback<T> callback, final DocumentFactory<T> documentFactory) {
-		return new com.squareup.okhttp.Callback() {
-			@Override
-			public void onFailure(Request request, IOException e) {
-				callback.onFailure(request, null, e);
-			}
-
-			@Override
-			public void onResponse(Response response) throws IOException {
-				if (response.isSuccessful()) {
-					T document = null;
-					if (documentFactory != null) {
-						document = documentFactory.documentFromResponse(response);
-					}
-					callback.onSuccess(response, document);
-				} else {
-					callback.onFailure(response.request(), response, null);
-				}
-			}
-		};
-	}
-
+	
 	/**
 	 * Constructs the ElasticSearch URL for a document.
 	 * @param docID The ID of the document.
