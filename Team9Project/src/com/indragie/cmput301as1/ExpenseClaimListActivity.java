@@ -21,8 +21,6 @@ package com.indragie.cmput301as1;
 import java.util.Comparator;
 import java.util.List;
 
-import com.indragie.cmput301as1.ExpenseClaim.Status;
-
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
@@ -170,7 +168,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	}
 	
 	/**
-	 * Sets a expense claim at a sepcified position in the list model from a intent.
+	 * Sets a expense claim at a specified position in the list model from a intent.
 	 * @param data The intent to get the expense claim from.
 	 */
 	private void onEditExpenseResult(Intent data) {
@@ -281,14 +279,14 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		AlertDialog.Builder openDialog = new AlertDialog.Builder(this);
 		openDialog.setTitle(R.string.action_delete_claim_confirm);
 		
-		openDialog.setPositiveButton(R.string.action_confirm, new DialogInterface.OnClickListener() {
+		openDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				listModel.remove(longPressedItemIndex);
 			}
 		});
 		
-		openDialog.setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
+		openDialog.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.dismiss();

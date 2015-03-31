@@ -177,7 +177,6 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 	private void onAddTag(Intent data) {
 		Tag tag = (Tag)data.getSerializableExtra(TagAddActivity.ADDED_TAG);
 		listModel.add(tag);
-		
 	}
 	
 	/**
