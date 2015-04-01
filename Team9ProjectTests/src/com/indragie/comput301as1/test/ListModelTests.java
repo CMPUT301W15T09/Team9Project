@@ -19,16 +19,36 @@ package com.indragie.comput301as1.test;
 
 import java.util.Date;
 
+import com.indragie.cmput301as1.CollectionMutation;
+import com.indragie.cmput301as1.InsertionCollectionMutation;
+import com.indragie.cmput301as1.RemovalCollectionMutation;
+import com.indragie.cmput301as1.UpdateCollectionMutation;
 import com.indragie.cmput301as1.ExpenseClaim;
 import com.indragie.cmput301as1.ExpenseClaimListActivity;
+import com.indragie.cmput301as1.TypedObservable;
+import com.indragie.cmput301as1.TypedObserver;
 import com.indragie.cmput301as1.User;
 import com.indragie.cmput301as1.ListModel;
 
 import android.test.ActivityInstrumentationTestCase2;
 
 public class ListModelTests extends ActivityInstrumentationTestCase2<ExpenseClaimListActivity> {
+	private class TestObserver<T> implements TypedObserver<CollectionMutation<T>> {
+		private CollectionMutation<T> mutation;
+		
+		@Override
+		public void update(TypedObservable<CollectionMutation<T>> observable, CollectionMutation<T> mutation) {
+			this.mutation = mutation;
+		}
+		
+		public CollectionMutation<T> getMutation() {
+			return mutation;
+		}
+	}
+	
 	private static final String CLAIMS_FILENAME = "claims.dat";
 	private ListModel<ExpenseClaim> listModel;
+	private TestObserver<ExpenseClaim> observer;
 	
 	public ListModelTests() {
 		super(ExpenseClaimListActivity.class);
@@ -38,6 +58,8 @@ public class ListModelTests extends ActivityInstrumentationTestCase2<ExpenseClai
 		super.setUp();
 		listModel = new ListModel<ExpenseClaim>(CLAIMS_FILENAME, getActivity());
 		listModel.removeAll();
+		observer = new TestObserver<ExpenseClaim>();
+		listModel.addObserver(observer);
 	}
 	
 	private static ExpenseClaim createExpenseClaim(String name) {
@@ -51,6 +73,11 @@ public class ListModelTests extends ActivityInstrumentationTestCase2<ExpenseClai
 		listModel.add(claim);
 		assertEquals(1, listModel.count());
 		assertEquals(claim, listModel.getItems().get(0));
+		
+		CollectionMutation<ExpenseClaim> mutation = observer.getMutation();
+		assertEquals(CollectionMutation.MutationType.INSERT, mutation.getMutationType());
+		assertEquals(claim, ((InsertionCollectionMutation<ExpenseClaim>)mutation).getObject());
+		assertEquals(0, ((InsertionCollectionMutation<ExpenseClaim>)mutation).getIndex());
 	}
 	
 	public void testRemoveWithObject() {
@@ -62,6 +89,11 @@ public class ListModelTests extends ActivityInstrumentationTestCase2<ExpenseClai
 		
 		listModel.remove(claim);
 		assertEquals(0, listModel.count());
+		
+		CollectionMutation<ExpenseClaim> mutation = observer.getMutation();
+		assertEquals(CollectionMutation.MutationType.REMOVE, mutation.getMutationType());
+		assertEquals(claim, ((RemovalCollectionMutation<ExpenseClaim>)mutation).getObject());
+		assertEquals(0, ((RemovalCollectionMutation<ExpenseClaim>)mutation).getIndex());
 	}
 	
 	public void testRemoveWithNonexistentObject() {
@@ -73,6 +105,9 @@ public class ListModelTests extends ActivityInstrumentationTestCase2<ExpenseClai
 		
 		listModel.remove(createExpenseClaim("Maui"));
 		assertEquals(1, listModel.count());
+		
+		CollectionMutation<ExpenseClaim> mutation = observer.getMutation();
+		assertEquals(CollectionMutation.MutationType.INSERT, mutation.getMutationType());
 	}
 	
 	public void testRemoveWithIndex() {
@@ -87,6 +122,11 @@ public class ListModelTests extends ActivityInstrumentationTestCase2<ExpenseClai
 		listModel.remove(0);
 		assertEquals(1, listModel.count());
 		assertEquals(claim2, listModel.getItems().get(0));
+		
+		CollectionMutation<ExpenseClaim> mutation = observer.getMutation();
+		assertEquals(CollectionMutation.MutationType.REMOVE, mutation.getMutationType());
+		assertEquals(claim1, ((RemovalCollectionMutation<ExpenseClaim>)mutation).getObject());
+		assertEquals(0, ((RemovalCollectionMutation<ExpenseClaim>)mutation).getIndex());
 	}
 	
 	public void testRemoveAll() {
