@@ -25,8 +25,12 @@ Original source code is from [indragiek/cmput301as1](https://github.com/indragie
 
 ### Libraries Used
 
+* [Android Support Library](http://developer.android.com/tools/support-library/index.html) v4
+* [Gson](https://code.google.com/p/google-gson/) 2.3.1
 * [Joda Money](http://www.joda.org/joda-money/) 0.10.0
-* Android Support Library v4 (automatically included by Eclipse)
+* [OkHttp](http://square.github.io/okhttp/) 2.3.0
+	* [Okio](https://github.com/square/okio) 1.3.0
+	* [MockWebServer](https://github.com/square/okhttp/tree/master/mockwebserver) 2.3.0
 
 ### License
 
