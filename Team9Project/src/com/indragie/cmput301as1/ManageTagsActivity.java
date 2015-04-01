@@ -16,8 +16,6 @@
  */
 package com.indragie.cmput301as1;
 
-import java.util.List;
-
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,7 +32,7 @@ import android.widget.AdapterView;
  * Can direct user to activities for adding or editing tags. 
  * Allows user to remove existing tags. 
  */
-public class ManageTagsActivity extends ListActivity implements TypedObserver<List<Tag>>{
+public class ManageTagsActivity extends ListActivity implements TypedObserver<CollectionMutation<Tag>>{
 
 	//================================================================================
 	// Constants
@@ -142,8 +140,8 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 	}
 	
 	@Override
-	public void update(TypedObservable<List<Tag>> o, List<Tag> tags) {
-		setListAdapter(new TagArrayAdapter(this, tags));
+	public void update(TypedObservable<CollectionMutation<Tag>> observable, CollectionMutation<Tag> mutation) {
+		setListAdapter(new TagArrayAdapter(this, listModel.getItems()));
 	}
 	
 	@Override

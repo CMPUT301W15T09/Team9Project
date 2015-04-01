@@ -155,6 +155,12 @@ public class ListModelTests extends ActivityInstrumentationTestCase2<ExpenseClai
 		listModel.set(1, claim3);
 		assertEquals(claim1, listModel.getItems().get(0));
 		assertEquals(claim3, listModel.getItems().get(1));
+		
+		CollectionMutation<ExpenseClaim> mutation = observer.getMutation();
+		assertEquals(CollectionMutation.MutationType.UPDATE, mutation.getMutationType());
+		assertEquals(claim2, ((UpdateCollectionMutation<ExpenseClaim>)mutation).getOldObject());
+		assertEquals(claim3, ((UpdateCollectionMutation<ExpenseClaim>)mutation).getNewObject());
+		assertEquals(1, ((UpdateCollectionMutation<ExpenseClaim>)mutation).getIndex());
 	}
 	
 	public void testPersistence() {
