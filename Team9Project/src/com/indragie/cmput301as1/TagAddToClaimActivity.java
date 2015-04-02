@@ -185,7 +185,7 @@ public class TagAddToClaimActivity extends ListActivity implements TypedObserver
 	/**
 	 * Starts the activity to add a tag.
 	 */
-	protected void startAddTagActivity() {
+	private void startAddTagActivity() {
 		Intent addTagIntent = new Intent(this, TagAddActivity.class);
 		startActivityForResult(addTagIntent, ADD_TAG_REQUEST);
 	}
