@@ -115,6 +115,7 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 	/**
 	 * Sets intent as OK no matter what happens.
 	 */
+	@Override
 	protected void onHome() {
 		Intent intent = new Intent();
 		Bundle bundle = new Bundle();
@@ -152,7 +153,11 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 		updateTagsInClaims(oldTag, newTag);
 	}
 	
-	
+	/**
+	 * Updates the old tag in the claims with the new tag
+	 * @param oldTag The old tag to update.
+	 * @param newTag The new tag.
+	 */
 	private void updateTagsInClaims(Tag oldTag, Tag newTag) {
 		for (ExpenseClaim claim: claimList) {
 			if(claim.hasTag(oldTag)) {
