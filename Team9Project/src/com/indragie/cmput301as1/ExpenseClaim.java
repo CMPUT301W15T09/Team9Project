@@ -425,6 +425,10 @@ public class ExpenseClaim implements Serializable, ElasticSearchDocument {
 		Collections.sort(tags);
 	}
 	
+	public void setTag(Tag oldTag, Tag newTag) {
+		
+	}
+	
 	/**
 	 * Gets the entire list of tags in a expense claim.
 	 * @return A List of Tag objects.
