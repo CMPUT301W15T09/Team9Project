@@ -24,7 +24,6 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 
-
 /**
  * Activity for viewing the current list of tags the use has defined. 
  * Can direct user to activities for adding or editing tags. 
@@ -120,22 +119,20 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 	 * @param data The intent form resulting activity.
 	 */
 	private void onEditTag(Intent data) {
-		Tag tag = (Tag)data.getSerializableExtra(TagAddActivity.ADDED_TAG);
+		Tag newTag = (Tag)data.getSerializableExtra(TagAddActivity.ADDED_TAG);
 		
 		Tag editedTag = listModel.getItems().get(pressedItemIndex);
 		
-		listModel.set(pressedItemIndex, tag);
+		listModel.set(pressedItemIndex, newTag);
 		
-		
-		ListModel claimListModel = new ListModel<ExpenseClaim>(EXPENSE_CLAIM_FILENAME, this);
+		ListModel<ExpenseClaim> claimListModel = new ListModel<ExpenseClaim>(EXPENSE_CLAIM_FILENAME, this);
 		List<ExpenseClaim> list = claimListModel.getItems();
-		/*
+		
 		for (ExpenseClaim claim: list) {
 			if(claim.hasTag(editedTag)) {
-				claim.setTag(index, newTag);
+				claim.setTag(editedTag, newTag);
 			}
 		}
-		*/
+		
 	}
-
 }
