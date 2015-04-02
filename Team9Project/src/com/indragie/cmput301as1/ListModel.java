@@ -85,6 +85,9 @@ public class ListModel<T extends Serializable> extends TypedObservable<List<T>> 
 		return Collections.unmodifiableList(list);
 	}
 	
+	/**
+	 * @return A ArrayList of the items.
+	 */
 	public ArrayList<T> getArrayList() {
 		return list;
 	}

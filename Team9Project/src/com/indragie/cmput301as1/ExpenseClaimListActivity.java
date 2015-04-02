@@ -181,6 +181,10 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		listModel.set(position, claim);
 	}
 	
+	/**
+	 * Sets the list used in ListModel to the returned list of expense claims from the intent. 
+	 * @param data The intent to get the list of expense claims from. 
+	 */
 	@SuppressWarnings("unchecked")
 	private void onManageTagsResult(Intent data) {
 		Bundle bundle = data.getExtras();
