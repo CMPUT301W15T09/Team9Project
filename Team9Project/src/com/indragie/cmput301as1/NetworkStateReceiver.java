@@ -27,6 +27,7 @@ import android.util.Log;
 public class NetworkStateReceiver extends BroadcastReceiver {
 
 	// http://stackoverflow.com/questions/12157130/internet-listener-android-example
+	// we come into this code once we get connection / lose connection
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		Log.d("app","Network connectivity change");
@@ -34,6 +35,8 @@ public class NetworkStateReceiver extends BroadcastReceiver {
 	        NetworkInfo ni=(NetworkInfo) intent.getExtras().get(ConnectivityManager.EXTRA_NETWORK_INFO);
 	        if(ni!=null && ni.getState()==NetworkInfo.State.CONNECTED) {
 	            Log.i("app","Network "+ni.getTypeName()+" connected");
+	            OnlineManager onlineManager = new OnlineManager();
+	            // get pull from server then push it online
 	        }
 	     }
 	     if(intent.getExtras().getBoolean(ConnectivityManager.EXTRA_NO_CONNECTIVITY,Boolean.FALSE)) {
