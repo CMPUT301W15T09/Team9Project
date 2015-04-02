@@ -29,36 +29,57 @@ import android.content.Context;
 
 public class OnlineManager<T extends ElasticSearchDocument> {
 
-	private static LinkedList<APICall<ElasticSearchDocument>> stack = new LinkedList<APICall<ElasticSearchDocument>>(); 
+	private LinkedList<ElasticSearchAPIClient.APICall<T>> stack = new LinkedList<ElasticSearchAPIClient.APICall<T>>(); 
 	
-	public void enqueueCall(APICall<T> call) {
+	public void enqueueCall(ElasticSearchAPIClient.APICall<T> call) {
 		stack.add(call);
 		checkForNetwork();
 	}
 	
 	private Context context;
+	private int retry = 0;
 	
 	private void checkForNetwork() {
+		
 		if (NetworkStateReceiver.isNetworkAvailable(context) == true) {
 			// we are connected so then we want to go through with our stack calls
 			
-			// while there is something inside of the stack
-			while (stack.size() > 0) {
-				// removes and returns the first item from the ll
-				APICall<ElasticSearchDocument> call = stack.removeFirst();
-				// now do something with the call
-				call.enqueue(new APICallback<T>() {
-				    @Override
-				    public void onFailure(Request request, Response response, IOException e) {
+			// removes and returns the first item from the ll
+			APICall<T> call = stack.getFirst();
+			// now do something with the call
+			call.enqueue(new ElasticSearchAPIClient.APICallback<T>() {
+				@Override
+				public void onFailure(Request request, Response response, IOException e) {
+					// on failure you want to check the network
+					if (NetworkStateReceiver.isNetworkAvailable(context)==false) {
+						// if network is down, wait for it
+						
+						
+					} else {
+						// the network is up but it has failed still
+						retry++;
+						// try again after a set amount of time
+						try {
+							Thread.sleep(retry*100);
+							checkForNetwork();
+						} catch (InterruptedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+				}
 
-				    }
-
-				    @Override
-				    public void onSuccess(Response response, T document) {
-				    
-				    }
-				});
-			}
+				@Override
+				public void onSuccess(Response response, T document) {
+				    // on success you want to recall if there is still something in the stack
+					retry = 0; // reset the retry attempt number
+					// remove the call from the stack
+					stack.removeFirst();
+					if (stack.size()>0) {
+						checkForNetwork();
+					}
+				}
+			});
 		}
 	}
 }
