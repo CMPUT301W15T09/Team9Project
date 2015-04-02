@@ -426,7 +426,9 @@ public class ExpenseClaim implements Serializable, ElasticSearchDocument {
 	}
 	
 	public void setTag(Tag oldTag, Tag newTag) {
-		
+		int index = tags.indexOf(oldTag);
+		tags.set(index, newTag);
+		Collections.sort(tags);
 	}
 	
 	/**
