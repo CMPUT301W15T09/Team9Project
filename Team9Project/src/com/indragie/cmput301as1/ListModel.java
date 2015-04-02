@@ -39,6 +39,7 @@ public class ListModel<T extends Serializable> extends TypedObservable<List<T>> 
 	//================================================================================
 	// Properties
 	//================================================================================
+	
 	/**
 	 * The filename to save to.
 	 */
@@ -120,7 +121,6 @@ public class ListModel<T extends Serializable> extends TypedObservable<List<T>> 
 		list.add(o);
 		commitClaimsMutation();
 	}
-	
 
 	/**
 	 * Removes an existing object from the list of objects.
@@ -134,7 +134,6 @@ public class ListModel<T extends Serializable> extends TypedObservable<List<T>> 
 		return false;
 	}
 
-	
 	/**
 	 * Removes an existing object from the list of objects.
 	 * @param index The index of the object to remove.

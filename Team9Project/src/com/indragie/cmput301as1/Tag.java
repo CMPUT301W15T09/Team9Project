@@ -71,7 +71,6 @@ public class Tag implements Serializable, Comparable<Tag>{
 	// Object
 	//================================================================================
 
-
 	@Override
 	public int hashCode()
 	{
