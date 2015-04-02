@@ -35,8 +35,6 @@ public class NetworkStateReceiver extends BroadcastReceiver {
 	        NetworkInfo ni=(NetworkInfo) intent.getExtras().get(ConnectivityManager.EXTRA_NETWORK_INFO);
 	        if(ni!=null && ni.getState()==NetworkInfo.State.CONNECTED) {
 	            Log.i("app","Network "+ni.getTypeName()+" connected");
-	            OnlineManager onlineManager = new OnlineManager();
-	            // get pull from server then push it online
 	        }
 	     }
 	     if(intent.getExtras().getBoolean(ConnectivityManager.EXTRA_NO_CONNECTIVITY,Boolean.FALSE)) {

@@ -24,10 +24,14 @@ import com.indragie.cmput301as1.ElasticSearchAPIClient.APICall;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
-public class OnlineManager<T extends ElasticSearchDocument>{
+public class OnlineManager<T extends ElasticSearchDocument> extends BroadcastReceiver{
 
 	private LinkedList<ElasticSearchAPIClient.APICall<T>> stack = new LinkedList<ElasticSearchAPIClient.APICall<T>>(); 
 	
@@ -85,5 +89,21 @@ public class OnlineManager<T extends ElasticSearchDocument>{
 			});
 		}
 	}
+	// http://stackoverflow.com/questions/12157130/internet-listener-android-example
+		// we come into this code once we get connection / lose connection
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Log.d("app","Network connectivity change");
+		     if(intent.getExtras()!=null) {
+		        NetworkInfo ni=(NetworkInfo) intent.getExtras().get(ConnectivityManager.EXTRA_NETWORK_INFO);
+		        if(ni!=null && ni.getState()==NetworkInfo.State.CONNECTED) {
+		            Log.i("app","Network "+ni.getTypeName()+" connected");
+		            checkForNetwork();
+		        }
+		     }
+		     if(intent.getExtras().getBoolean(ConnectivityManager.EXTRA_NO_CONNECTIVITY,Boolean.FALSE)) {
+		            Log.d("app","There's no network connectivity");
+		     }
+		}
 
 }
