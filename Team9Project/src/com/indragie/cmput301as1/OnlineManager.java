@@ -21,13 +21,13 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 import com.indragie.cmput301as1.ElasticSearchAPIClient.APICall;
-import com.indragie.cmput301as1.ElasticSearchAPIClient.APICallback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import android.content.Context;
+import android.util.Log;
 
-public class OnlineManager<T extends ElasticSearchDocument> {
+public class OnlineManager<T extends ElasticSearchDocument>{
 
 	private LinkedList<ElasticSearchAPIClient.APICall<T>> stack = new LinkedList<ElasticSearchAPIClient.APICall<T>>(); 
 	
@@ -39,7 +39,9 @@ public class OnlineManager<T extends ElasticSearchDocument> {
 	private Context context;
 	private int retry = 0;
 	
-	private void checkForNetwork() {
+	// use new methods of pull and then push it into the server
+	
+	public void checkForNetwork() {
 		
 		if (NetworkStateReceiver.isNetworkAvailable(context) == true) {
 			// we are connected so then we want to go through with our stack calls
@@ -52,7 +54,7 @@ public class OnlineManager<T extends ElasticSearchDocument> {
 				public void onFailure(Request request, Response response, IOException e) {
 					// on failure you want to check the network
 					if (NetworkStateReceiver.isNetworkAvailable(context)==false) {
-						// if network is down, wait for it
+						// if network is down, wait for connection
 						
 						
 					} else {
@@ -75,6 +77,7 @@ public class OnlineManager<T extends ElasticSearchDocument> {
 					retry = 0; // reset the retry attempt number
 					// remove the call from the stack
 					stack.removeFirst();
+					Log.d("test", "worked");
 					if (stack.size()>0) {
 						checkForNetwork();
 					}
@@ -82,4 +85,5 @@ public class OnlineManager<T extends ElasticSearchDocument> {
 			});
 		}
 	}
+
 }
