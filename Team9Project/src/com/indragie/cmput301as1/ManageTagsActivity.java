@@ -121,18 +121,22 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 	private void onEditTag(Intent data) {
 		Tag newTag = (Tag)data.getSerializableExtra(TagAddActivity.ADDED_TAG);
 		
-		Tag editedTag = listModel.getItems().get(pressedItemIndex);
+		Tag oldTag = listModel.getItems().get(pressedItemIndex);
 		
 		listModel.set(pressedItemIndex, newTag);
 		
+		updateTagsInClaims(oldTag, newTag);
+	}
+	
+	
+	private void updateTagsInClaims(Tag oldTag, Tag newTag) {
 		ListModel<ExpenseClaim> claimListModel = new ListModel<ExpenseClaim>(EXPENSE_CLAIM_FILENAME, this);
 		List<ExpenseClaim> list = claimListModel.getItems();
 		
 		for (ExpenseClaim claim: list) {
-			if(claim.hasTag(editedTag)) {
-				claim.setTag(editedTag, newTag);
+			if(claim.hasTag(oldTag)) {
+				claim.setTag(oldTag, newTag);
 			}
 		}
-		
 	}
 }
