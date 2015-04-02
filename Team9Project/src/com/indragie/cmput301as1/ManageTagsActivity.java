@@ -67,6 +67,9 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 						mode.finish();
 						return true;
 					case R.id.action_delete:
+						Tag tag = getTagAt(pressedItemIndex);
+						deleteTagInClaims(tag);
+						
 						listModel.remove(pressedItemIndex);
 						mode.finish();
 						return true;
@@ -125,7 +128,6 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 		finish();
 	}
 	
-	
 	//================================================================================
 	// Edit a tag
 	//================================================================================
@@ -135,7 +137,7 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 	 */
 	private void startEditTagActivity() {
 		Intent editTagIntent = new Intent(this, TagEditActivity.class);
-		editTagIntent.putExtra(EXTRA_TAG, listModel.getItems().get(pressedItemIndex));
+		editTagIntent.putExtra(EXTRA_TAG, getTagAt(pressedItemIndex));
 		startActivityForResult(editTagIntent, EDIT_TAG_REQUEST);
 	}
 	 	
@@ -146,7 +148,7 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 	private void onEditTag(Intent data) {
 		Tag newTag = (Tag)data.getSerializableExtra(TagAddActivity.ADDED_TAG);
 		
-		Tag oldTag = listModel.getItems().get(pressedItemIndex);
+		Tag oldTag = getTagAt(pressedItemIndex);
 		
 		listModel.set(pressedItemIndex, newTag);
 		
@@ -165,4 +167,13 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 			}
 		}
 	}
+	
+	private void deleteTagInClaims(Tag tag) {
+		for(ExpenseClaim claim: claimList) {
+			if(claim.hasTag(tag)) {
+				claim.removeTag(tag);
+			}
+		}
+	}
+	
 }

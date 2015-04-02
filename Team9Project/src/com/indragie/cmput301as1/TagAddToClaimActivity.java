@@ -196,7 +196,7 @@ public class TagAddToClaimActivity extends ListActivity implements TypedObserver
 	 */
 	protected Intent getTagSelected() {
 		Intent intent = new Intent();
-		intent.putExtra(TAG_TO_ADD, listModel.getItems().get(pressedItemIndex));
+		intent.putExtra(TAG_TO_ADD, getTagAt(pressedItemIndex));
 		return intent;
 	}
 	
@@ -206,6 +206,10 @@ public class TagAddToClaimActivity extends ListActivity implements TypedObserver
 	protected void onHome() {
 		setResult(RESULT_CANCELED, new Intent());
 		finish();
+	}
+	
+	protected Tag getTagAt(int pressedItemIndex) {
+		return listModel.getItems().get(pressedItemIndex);
 	}
 	
 }
