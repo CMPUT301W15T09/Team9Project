@@ -16,6 +16,8 @@
  */
 package com.indragie.cmput301as1;
 
+import java.util.List;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ActionMode;
@@ -37,6 +39,9 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 	private static final int EDIT_TAG_REQUEST= 2;
 
 	public static final String EXTRA_TAG = "com.indragie.cmput301as1.EXTRA_TAG";
+	
+	//Added
+	private static final String EXPENSE_CLAIM_FILENAME = "claims";
 
 	//================================================================================
 	// Activity Callbacks
@@ -116,7 +121,21 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 	 */
 	private void onEditTag(Intent data) {
 		Tag tag = (Tag)data.getSerializableExtra(TagAddActivity.ADDED_TAG);
+		
+		Tag editedTag = listModel.getItems().get(pressedItemIndex);
+		
 		listModel.set(pressedItemIndex, tag);
+		
+		
+		ListModel claimListModel = new ListModel<ExpenseClaim>(EXPENSE_CLAIM_FILENAME, this);
+		List<ExpenseClaim> list = claimListModel.getItems();
+		/*
+		for (ExpenseClaim claim: list) {
+			if(claim.hasTag(editedTag)) {
+				claim.setTag(index, newTag);
+			}
+		}
+		*/
 	}
 
 }
