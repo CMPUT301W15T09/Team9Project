@@ -29,6 +29,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,9 +40,9 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 /**
- * An activity that presents a list of expense claims.
+ * An activity that initializes tab fragments for displaying claims.
  */
-public class ExpenseClaimListActivity extends ListActivity implements TypedObserver<List<ExpenseClaim>> {
+public class ExpenseClaimListActivity extends FragmentActivity implements TypedObserver<List<ExpenseClaim>> {
 	//================================================================================
 	// Constants
 	//================================================================================
@@ -250,7 +251,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 
 	public void checkFirstRun() {
 		boolean isFirstRun = getSharedPreferences(PREFERENCE, MODE_PRIVATE).getBoolean("isFirstRun", true);
-		if (isFirstRun){ 
+		if (true){ 
 			// http://www.androidsnippets.com/prompt-user-input-with-an-alertdialog
 			AlertDialog.Builder alert = new AlertDialog.Builder(this);
 			alert.setCancelable(false);
@@ -343,7 +344,8 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 
 	@Override
 	public void update(TypedObservable<List<ExpenseClaim>> o, List<ExpenseClaim> claims) {
-		setListAdapter(new ExpenseClaimArrayAdapter(this, claims));
+		//setListAdapter(new ExpenseClaimArrayAdapter(this, claims));
+		//Toast.makeText(getApplicationContext(), "EXPENSE CLAIM", Toast.LENGTH_LONG).show();
 	}
 
 }
