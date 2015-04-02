@@ -245,7 +245,10 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		startActivityForResult(manageTagsIntent, MANAGE_TAGS_REQUEST);
 	}
 
-
+	/**
+	 * Checks for the first run of the program on the device. 
+	 * If it is, we create a new user. 
+	 */
 	public void checkFirstRun() {
 		boolean isFirstRun = getSharedPreferences(PREFERENCE, MODE_PRIVATE).getBoolean("isFirstRun", true);
 		if (isFirstRun){ 
