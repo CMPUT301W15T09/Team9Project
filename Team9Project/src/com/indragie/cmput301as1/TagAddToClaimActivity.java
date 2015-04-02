@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.view.ActionMode;
 import android.view.ActionMode.Callback;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -34,6 +35,8 @@ public class TagAddToClaimActivity extends ListActivity implements TypedObserver
 	//================================================================================
 	// Constants
 	//================================================================================
+	
+	protected static final int ADD_TAG_REQUEST= 1;
 	
 	/**
 	 * Filename for storing tags.
@@ -124,12 +127,27 @@ public class TagAddToClaimActivity extends ListActivity implements TypedObserver
 		});
 	}
 	
+	//================================================================================
+	// Activity Callbacks
+	//================================================================================
+	
+	@Override 
+	public boolean onCreateOptionsMenu(Menu menu){
+		super.onCreateOptionsMenu(menu);
+
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.contextual_add,menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			onHome();
-			finish();
+			return true;
+		case R.id.action_add_tag:
+			startAddTagActivity();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -141,12 +159,35 @@ public class TagAddToClaimActivity extends ListActivity implements TypedObserver
 		setListAdapter(new TagArrayAdapter(this, tags));
 	}
 	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode != RESULT_OK) return;
+		switch (requestCode) {
+		case ADD_TAG_REQUEST:
+			onAddTag(data);
+			break;
+		}
+	}
+	
+	//================================================================================
+	// Add/Get a tag
+	//================================================================================
+	
 	/**
-	 * Sets intent as canceled so no changes are made when home button pressed.
+	 * Adds a tag to the list model from a resulting activity.
+	 * @param data The intent from resulting activity.
 	 */
-	protected void onHome() {
-		setResult(RESULT_CANCELED, new Intent());
-		finish();
+	protected void onAddTag(Intent data) {
+		Tag tag = (Tag)data.getSerializableExtra(TagAddActivity.ADDED_TAG);
+		listModel.add(tag);
+	}
+	
+	/**
+	 * Starts the activity to add a tag.
+	 */
+	protected void startAddTagActivity() {
+		Intent addTagIntent = new Intent(this, TagAddActivity.class);
+		startActivityForResult(addTagIntent, ADD_TAG_REQUEST);
 	}
 	
 	/**
@@ -157,6 +198,14 @@ public class TagAddToClaimActivity extends ListActivity implements TypedObserver
 		Intent intent = new Intent();
 		intent.putExtra(TAG_TO_ADD, listModel.getItems().get(pressedItemIndex));
 		return intent;
+	}
+	
+	/**
+	 * Sets intent as canceled so no changes are made when home button pressed.
+	 */
+	protected void onHome() {
+		setResult(RESULT_CANCELED, new Intent());
+		finish();
 	}
 	
 }
