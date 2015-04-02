@@ -25,7 +25,6 @@ import java.io.Serializable;
 public class Tag implements Serializable, Comparable<Tag>{
 	private static final long serialVersionUID = 4055130777493746380L;
 	
-
 	//================================================================================
 	// Properties
 	//================================================================================

@@ -16,7 +16,7 @@
  */
 package com.indragie.cmput301as1;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -39,13 +39,19 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 
 	public static final String EXTRA_TAG = "com.indragie.cmput301as1.EXTRA_TAG";
 	
-	//Added
-	private static final String EXPENSE_CLAIM_FILENAME = "claims";
+	public static final String CLAIM_LIST = "com.indragie.cmput301as1.CLAIM_LIST";
+	
+	//================================================================================
+	// Properties
+	//================================================================================
+	
+	private ArrayList<ExpenseClaim> claimList;
 
 	//================================================================================
 	// Activity Callbacks
 	//================================================================================
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -87,6 +93,11 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 
 		setUpItemClickListener(clickCallback);
 		
+		Intent intent = getIntent();
+		Bundle bundle = intent.getExtras();
+		
+		claimList = (ArrayList<ExpenseClaim>)bundle.get(CLAIM_LIST);
+		
 	}
 	
 	@Override
@@ -101,6 +112,19 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 		}
 	}
 	
+	/**
+	 * Sets intent as OK no matter what happens.
+	 */
+	protected void onHome() {
+		Intent intent = new Intent();
+		Bundle bundle = new Bundle();
+		bundle.putSerializable(CLAIM_LIST, claimList);
+		intent.putExtras(bundle);
+		setResult(RESULT_OK, intent);
+		finish();
+	}
+	
+	
 	//================================================================================
 	// Edit a tag
 	//================================================================================
@@ -113,7 +137,7 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 		editTagIntent.putExtra(EXTRA_TAG, listModel.getItems().get(pressedItemIndex));
 		startActivityForResult(editTagIntent, EDIT_TAG_REQUEST);
 	}
-	
+	 	
 	/**
 	 * Edits a tag in list model from resulting activity.
 	 * @param data The intent form resulting activity.
@@ -130,10 +154,7 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 	
 	
 	private void updateTagsInClaims(Tag oldTag, Tag newTag) {
-		ListModel<ExpenseClaim> claimListModel = new ListModel<ExpenseClaim>(EXPENSE_CLAIM_FILENAME, this);
-		List<ExpenseClaim> list = claimListModel.getItems();
-		
-		for (ExpenseClaim claim: list) {
+		for (ExpenseClaim claim: claimList) {
 			if(claim.hasTag(oldTag)) {
 				claim.setTag(oldTag, newTag);
 			}

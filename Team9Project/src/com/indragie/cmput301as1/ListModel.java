@@ -22,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,7 +33,9 @@ import android.content.Context;
 /**
  * Observable model that contains a list of items that can be mutated.
  */
-public class ListModel<T> extends TypedObservable<List<T>> {
+public class ListModel<T extends Serializable> extends TypedObservable<List<T>> implements Serializable{
+	private static final long serialVersionUID = 5371138997651829224L;
+
 	//================================================================================
 	// Properties
 	//================================================================================
@@ -80,6 +83,10 @@ public class ListModel<T> extends TypedObservable<List<T>> {
 	 */
 	public List<T> getItems() {
 		return Collections.unmodifiableList(list);
+	}
+	
+	public ArrayList<T> getArrayList() {
+		return list;
 	}
 	
 	/**
@@ -157,6 +164,11 @@ public class ListModel<T> extends TypedObservable<List<T>> {
 	 */
 	public int count() {
 		return list.size();
+	}
+	
+	public void replaceList(ArrayList<T> list) {
+		this.list = list;
+		commitClaimsMutation();
 	}
 	
 	//================================================================================
