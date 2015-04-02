@@ -21,6 +21,8 @@ package com.indragie.cmput301as1;
 import java.util.Comparator;
 import java.util.List;
 
+import android.app.ActionBar;
+import android.app.ActionBar.Tab;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
@@ -78,9 +80,28 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		super.onCreate(savedInstanceState);
 
 		checkFirstRun();
-		setUserFromPreferences();
+		
+		ActionBar actionBar = getActionBar();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-		listModel = new ListModel<ExpenseClaim>(EXPENSE_CLAIM_FILENAME, this);
+		actionBar.setDisplayShowTitleEnabled(true);
+
+		/* Creating ANDROID Tab */
+		Tab tab = actionBar.newTab()
+			.setText("Claims")
+			.setTabListener(new ClaimTabListener<ClaimTabFragment>(this, "Claims", ClaimTabFragment.class));
+
+		actionBar.addTab(tab);
+
+		/* Creating APPLE Tab */
+		tab = actionBar.newTab()
+			.setText("Approval")
+			.setTabListener(new ClaimTabListener<ApprovalTabFragment>(this, "Approval", ApprovalTabFragment.class));
+
+		actionBar.addTab(tab);;
+
+
+		/*listModel = new ListModel<ExpenseClaim>(EXPENSE_CLAIM_FILENAME, this);
 		listModel.addObserver(this);
 		setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems()));
 		
@@ -118,7 +139,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 				startActionMode(longClickCallback);
 				return true;
 			}
-		});
+		});*/
 	}
 	
 	private void setUserFromPreferences() {
@@ -126,14 +147,14 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		user = new User(prefs.getString("name", "USER DOES NOT EXIST"), prefs.getInt("id", -1));
 	}
 
-	@Override
+	/*@Override
 	public void onDestroy() {
 		listModel.deleteObserver(this);
 		super.onDestroy();
 	}
 
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	/*@Override
+	/*protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode != RESULT_OK) return;
 		switch (requestCode) {
 		case ADD_EXPENSE_CLAIM_REQUEST:
@@ -152,7 +173,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 * Changes the sorting mode based on a comparator chosen by {@link ExpenseClaimSortActivity}
 	 * @param data The intent to get the comparator from.
 	 */
-	@SuppressWarnings("unchecked")
+	/*@SuppressWarnings("unchecked")
 	private void onSortExpenseResult(Intent data) {
 		Comparator<ExpenseClaim> comparator = (Comparator<ExpenseClaim>)data.getSerializableExtra(ExpenseClaimSortActivity.EXPENSE_CLAIM_SORT);
 		listModel.setComparator(comparator);
@@ -162,7 +183,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 * Adds a expense claim to list model from a intent.
 	 * @param data The intent to get the expense claim from.
 	 */
-	private void onAddExpenseResult(Intent data) {
+	/*private void onAddExpenseResult(Intent data) {
 		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM);
 		listModel.add(claim);
 	}
@@ -171,13 +192,13 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 * Sets a expense claim at a specified position in the list model from a intent.
 	 * @param data The intent to get the expense claim from.
 	 */
-	private void onEditExpenseResult(Intent data) {
+	/*private void onEditExpenseResult(Intent data) {
 		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM);
 		int position = data.getIntExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_INDEX, -1);
 		listModel.set(position, claim);
 	}
 
-	@Override
+	/*@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.expense_claim_list, menu);
 		return super.onCreateOptionsMenu(menu);
@@ -199,12 +220,12 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
+*/
 	
 	/**
 	 * Starts the {@link ExpenseClaimAddActivity}
 	 */
-	private void startAddExpenseClaimActivity() {
+	/*private void startAddExpenseClaimActivity() {
 		Intent addIntent = new Intent(this, ExpenseClaimAddActivity.class);
 		addIntent.putExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM_USER, user);
 		startActivityForResult(addIntent, ADD_EXPENSE_CLAIM_REQUEST);
@@ -213,7 +234,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	/**
 	 * Starts the {@link ExpenseClaimSortActivity}
 	 */
-	private void startSortExpenseClaimActivity() {
+	/*private void startSortExpenseClaimActivity() {
 		Intent intent = new Intent(this, ExpenseClaimSortActivity.class);
 		startActivityForResult(intent, SORT_EXPENSE_CLAIM_REQUEST);
 	}
@@ -221,10 +242,10 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	/**
 	 * Starts the {@link ManageTagsActivity}
 	 */
-	private void startManageTagsActivity() {
+	/*private void startManageTagsActivity() {
 		Intent manageTagsIntent = new Intent(this, ManageTagsActivity.class);
 		startActivity(manageTagsIntent);
-	}
+	}*/
 
 
 	public void checkFirstRun() {
@@ -275,7 +296,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	/**
 	 * Prompts the user for confirmation in response to deleting an expense claim.
 	 */
-	public void startDeleteAlertDialog() {
+	/*public void startDeleteAlertDialog() {
 		AlertDialog.Builder openDialog = new AlertDialog.Builder(this);
 		openDialog.setTitle(R.string.action_delete_claim_confirm);
 		
@@ -293,28 +314,28 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 			}
 		});
 		openDialog.show();
-	}
+	}*/
 
 	//================================================================================
 	// ListView Callbacks
 	//================================================================================
 
-	@Override
+	/*@Override
 	public void onListItemClick(ListView listView, View view, int position, long id) {
 		startEditExpenseClaimActivity(position);
-	}
+	}*/
 	
 	/**
 	 * Calls the intent to edit a expense claim at a specified position.
 	 * @param position The position of the expense claim to edit.
 	 */
-	private void startEditExpenseClaimActivity(int position) {
+	/*private void startEditExpenseClaimActivity(int position) {
 		Intent editIntent = new Intent(this, ExpenseClaimDetailActivity.class);
 		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM, listModel.getItems().get(position));
 		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_INDEX, position);
 		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_USER, user);
 		startActivityForResult(editIntent, EDIT_EXPENSE_CLAIM_REQUEST);
-	}
+	}*/
 
 	//================================================================================
 	// TypedObserver
