@@ -167,12 +167,11 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 	 */
 	private void updateTagsInClaims(Tag oldTag, Tag newTag) {
 		for (ExpenseClaim claim: claimList) {
-			if(claim.getStatus() == Status.RETURNED || claim.getStatus() == Status.IN_PROGRESS) {
-				if(claim.hasTag(oldTag)) {
-					listChanged = true;
-					claim.setTag(oldTag, newTag);
-				}
+			if(claim.hasTag(oldTag)) {
+				listChanged = true;
+				claim.setTag(oldTag, newTag);
 			}
+		
 		}
 
 	}
@@ -183,11 +182,9 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 	 */
 	private void deleteTagInClaims(Tag tag) {
 		for(ExpenseClaim claim: claimList) {
-			if(claim.getStatus() == Status.RETURNED || claim.getStatus() == Status.IN_PROGRESS) {
-				if(claim.hasTag(tag)) {
-					listChanged = true;
-					claim.removeTag(tag);
-				}
+			if(claim.hasTag(tag)) {
+				listChanged = true;
+				claim.removeTag(tag);
 			}
 		}
 	}
