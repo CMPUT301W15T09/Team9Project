@@ -87,7 +87,7 @@ public class ExpenseClaimListActivity extends FragmentActivity implements TypedO
 
 	public void checkFirstRun() {
 		boolean isFirstRun = getSharedPreferences(PREFERENCE, MODE_PRIVATE).getBoolean("isFirstRun", true);
-		if (true){ 
+		if (isFirstRun){ 
 			// http://www.androidsnippets.com/prompt-user-input-with-an-alertdialog
 			AlertDialog.Builder alert = new AlertDialog.Builder(this);
 			alert.setCancelable(false);
