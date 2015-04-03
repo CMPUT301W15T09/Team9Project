@@ -56,11 +56,6 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private ListModel<ExpenseClaim> listModel;
 	
 	/**
-	 * Index of a item that is long pressed.
-	 */
-	private int longPressedItemIndex;
-	
-	/**
 	 * Manages the user and associated preferences.
 	 */
 	private UserManager userManager;
