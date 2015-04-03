@@ -26,6 +26,10 @@ import android.content.SharedPreferences;
  * Manages the creation and registration of users.
  */
 public class UserManager {
+	//================================================================================
+	// Constants
+	//================================================================================
+	
 	/**
 	 * Preference key used to store the JSON data for the active user.
 	 */
@@ -35,6 +39,10 @@ public class UserManager {
 	 * Name of the preference file used to store user preferences.
 	 */
 	private static final String PREFS_NAME = "user_preferences";
+	
+	//================================================================================
+	// Properties
+	//================================================================================
 	
 	/**
 	 * Used to read and write from the preference file.
@@ -51,6 +59,10 @@ public class UserManager {
 	 */
 	private Gson gson = new Gson();
 	
+	//================================================================================
+	// Constructors
+	//================================================================================
+	
 	/**
 	 * Creates a new instance of {@link UserManager}
 	 * @param context The current context.
@@ -58,6 +70,10 @@ public class UserManager {
 	public UserManager(Context context) {
 		this.preferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 	}
+	
+	//================================================================================
+	// Accessors
+	//================================================================================
 	
 	/**
 	 * @return The active user, or null if there is no active user.
