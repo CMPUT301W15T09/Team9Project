@@ -17,7 +17,7 @@
 
 package com.indragie.cmput301as1;
 
-
+import java.util.ArrayList;
 import java.util.Comparator;
 
 import android.app.AlertDialog;
@@ -46,6 +46,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private static final int ADD_EXPENSE_CLAIM_REQUEST = 1;
 	private static final int EDIT_EXPENSE_CLAIM_REQUEST = 2;
 	private static final int SORT_EXPENSE_CLAIM_REQUEST = 3;
+	private static final int MANAGE_TAGS_REQUEST = 4;
 	private static final String EXPENSE_CLAIM_FILENAME = "claims";
 	private static final String PREFERENCE = "PREFERENCE";
 
@@ -144,6 +145,9 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		case SORT_EXPENSE_CLAIM_REQUEST:
 			onSortExpenseResult(data);
 			break;
+		case MANAGE_TAGS_REQUEST:
+			onManageTagsResult(data);
+			break;
 		}
 	}
 	
@@ -174,6 +178,16 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM);
 		int position = data.getIntExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_INDEX, -1);
 		listModel.set(position, claim);
+	}
+	
+	/**
+	 * Sets the list used in ListModel to the returned list of expense claims from the intent. 
+	 * @param data The intent to get the list of expense claims from. 
+	 */
+	@SuppressWarnings("unchecked")
+	private void onManageTagsResult(Intent data) {
+		ArrayList<ExpenseClaim> claimList = (ArrayList<ExpenseClaim>)data.getSerializableExtra(ManageTagsActivity.CLAIM_LIST);
+		listModel.replaceList(claimList);
 	}
 
 	@Override
@@ -222,10 +236,14 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 */
 	private void startManageTagsActivity() {
 		Intent manageTagsIntent = new Intent(this, ManageTagsActivity.class);
-		startActivity(manageTagsIntent);
+		manageTagsIntent.putExtra(ManageTagsActivity.CLAIM_LIST, listModel.getArrayList());
+		startActivityForResult(manageTagsIntent, MANAGE_TAGS_REQUEST);
 	}
 
-
+	/**
+	 * Checks for the first run of the program on the device. 
+	 * If it is, we create a new user. 
+	 */
 	public void checkFirstRun() {
 		boolean isFirstRun = getSharedPreferences(PREFERENCE, MODE_PRIVATE).getBoolean("isFirstRun", true);
 		if (isFirstRun){ 

@@ -576,7 +576,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		boolean UserCheck = user.getName().contentEquals(claim.getUser().getName());//SHOULD BE ID USING NAME FOR TESTING
 		MenuItem addDestination = menu.findItem(R.id.action_add_destination); 
 		MenuItem addItem = menu.findItem(R.id.action_add_item);
-		MenuItem addTag = menu.findItem(R.id.action_add_tag);
 		MenuItem submit = menu.findItem(R.id.action_mark_submitted);
 		MenuItem approve = menu.findItem(R.id.action_mark_approved);
 		MenuItem returned = menu.findItem(R.id.action_mark_returned);
@@ -584,7 +583,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		if (status == Status.APPROVED){
 			addDestination.setEnabled(false);
 			addItem.setEnabled(false);
-			addTag.setEnabled(false);
 			submit.setEnabled(false);
 			approve.setEnabled(false);
 			returned.setEnabled(false);
@@ -592,7 +590,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		if(status == Status.RETURNED || status == Status.IN_PROGRESS){
 			addDestination.setEnabled(UserCheck);
 			addItem.setEnabled(UserCheck);
-			addTag.setEnabled(UserCheck);
 			submit.setEnabled(UserCheck);
 			approve.setEnabled(false);
 			returned.setEnabled(false);
@@ -602,7 +599,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			returned.setEnabled(!UserCheck);
 			addDestination.setEnabled(false);
 			addItem.setEnabled(false);
-			addTag.setEnabled(false);
 			submit.setEnabled(false);
 		}
 	}
@@ -625,8 +621,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 				buildDestinationAlertDialog(index.getItemIndex()).show();
 			break;
 		case TAG:
-			if(status == Status.RETURNED || status == Status.IN_PROGRESS)
-				startEditTagActivity(index.getItemIndex());
+			startEditTagActivity(index.getItemIndex());
 			break;
 		case EXPENSE_ITEM:
 			startEditExpenseItemActivity(index.getItemIndex());
