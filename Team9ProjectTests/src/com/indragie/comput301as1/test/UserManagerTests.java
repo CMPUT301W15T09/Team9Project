@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2015 Nic Carroll, Indragie Karunaratne
+ * Copyright (C) 2015 Indragie Karunaratne
  * 
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,14 +17,23 @@
 
 package com.indragie.comput301as1.test;
 
-import junit.framework.TestCase;
-
 import com.indragie.cmput301as1.User;
+import com.indragie.cmput301as1.UserManager;
 
-public class UserTests extends TestCase {
-	public void testAccessors(){
-		User user = new User("Nic");
-		assertNotNull(user.getDocumentID());
-		assertEquals("Nic", user.getName());
+import android.test.AndroidTestCase;
+
+public class UserManagerTests extends AndroidTestCase {
+	public void testActiveUser() {
+		UserManager manager = new UserManager(getContext());
+		assertNull(manager.getActiveUser());
+		
+		User user = new User("Indragie Karunaratne");
+		manager.setActiveUser(user);
+		assertEquals(user, manager.getActiveUser());
+		
+		// UserManager for the same Context should be accessing the
+		// same shared data.
+		UserManager anotherManager = new UserManager(getContext());
+		assertEquals(user, anotherManager.getActiveUser());
 	}
 }
