@@ -67,7 +67,6 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	 */
 	private boolean incomplete;
 
-
 	//================================================================================
 	// Constructors
 	//================================================================================

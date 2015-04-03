@@ -20,18 +20,21 @@ package com.indragie.cmput301as1;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.ActionMode;
 import android.view.ActionMode.Callback;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ListView;
 
 public class TagAddToClaimActivity extends ListActivity implements TypedObserver<CollectionMutation<Tag>>{
 
 	//================================================================================
 	// Constants
 	//================================================================================
+	
+	protected static final int ADD_TAG_REQUEST= 1;
 	
 	/**
 	 * Filename for storing tags.
@@ -59,42 +62,11 @@ public class TagAddToClaimActivity extends ListActivity implements TypedObserver
 	//================================================================================
 	// Activity Callbacks
 	//================================================================================
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setUpActionBarAndModel();
-		
-		final ActionMode.Callback clickCallback = new ActionMode.Callback() {
-			@Override
-			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-				switch (item.getItemId()) {
-					case R.id.action_add_tag_to_claim_string:
-						setResult(RESULT_OK, getTagSelected());
-						finish();
-						return true;
-					default:
-						return false;
-				}
-			}
-
-			@Override
-			public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-				mode.getMenuInflater().inflate(R.menu.add_tag_to_claim, menu);
-				return true;
-			}
-
-			@Override
-			public void onDestroyActionMode(ActionMode mode) {}
-
-			@Override
-			public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-				return false;
-			}
-		};
-		
-		setUpItemClickListener(clickCallback);
-		
 	}
 	
 	/**
@@ -122,12 +94,23 @@ public class TagAddToClaimActivity extends ListActivity implements TypedObserver
 		});
 	}
 	
+	@Override 
+	public boolean onCreateOptionsMenu(Menu menu){
+		super.onCreateOptionsMenu(menu);
+
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.contextual_add,menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			onHome();
-			finish();
+			return true;
+		case R.id.action_add_tag:
+			startAddTagActivity();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -139,6 +122,53 @@ public class TagAddToClaimActivity extends ListActivity implements TypedObserver
 		setListAdapter(new TagArrayAdapter(this, listModel.getItems()));
 	}
 	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode != RESULT_OK) return;
+		switch (requestCode) {
+		case ADD_TAG_REQUEST:
+			onAddTag(data);
+			break;
+		}
+	}
+	
+	@Override
+	public void onListItemClick(ListView listView, View view, int position, long id) {
+		setResult(RESULT_OK, getTagSelected(position));
+		finish();
+	}
+	
+	//================================================================================
+	// Add/Get a tag
+	//================================================================================
+	
+	/**
+	 * Adds a tag to the list model from a resulting activity.
+	 * @param data The intent from resulting activity.
+	 */
+	protected void onAddTag(Intent data) {
+		Tag tag = (Tag)data.getSerializableExtra(TagAddActivity.ADDED_TAG);
+		listModel.add(tag);
+	}
+	
+	/**
+	 * Starts the activity to add a tag.
+	 */
+	private void startAddTagActivity() {
+		Intent addTagIntent = new Intent(this, TagAddActivity.class);
+		startActivityForResult(addTagIntent, ADD_TAG_REQUEST);
+	}
+	
+	/**
+	 * Puts the selected tag in a returned intent.
+	 * @return Intent with information about position of item. 
+	 */
+	protected Intent getTagSelected(int position) {
+		Intent intent = new Intent();
+		intent.putExtra(TAG_TO_ADD, getTagAt(position));
+		return intent;
+	}
+	
 	/**
 	 * Sets intent as canceled so no changes are made when home button pressed.
 	 */
@@ -148,13 +178,12 @@ public class TagAddToClaimActivity extends ListActivity implements TypedObserver
 	}
 	
 	/**
-	 * Puts the selected tag in a returned intent.
-	 * @return Intent with information about position of item. 
+	 * Gets tag a specified position
+	 * @param position The position of the tag in the listView.
+	 * @return The Tag.
 	 */
-	protected Intent getTagSelected() {
-		Intent intent = new Intent();
-		intent.putExtra(TAG_TO_ADD, listModel.getItems().get(pressedItemIndex));
-		return intent;
+	protected Tag getTagAt(int position) {
+		return listModel.getItems().get(position);
 	}
 	
 }

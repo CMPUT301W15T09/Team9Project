@@ -16,62 +16,58 @@
  */
 package com.indragie.cmput301as1;
 
-import android.app.ListActivity;
+
+import java.util.ArrayList;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ActionMode;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-
 
 /**
  * Activity for viewing the current list of tags the use has defined. 
  * Can direct user to activities for adding or editing tags. 
  * Allows user to remove existing tags. 
  */
-public class ManageTagsActivity extends ListActivity implements TypedObserver<CollectionMutation<Tag>>{
+
+public class ManageTagsActivity extends TagAddToClaimActivity{
 
 	//================================================================================
 	// Constants
 	//================================================================================
 	
-	private static final int ADD_TAG_REQUEST= 1;
 	private static final int EDIT_TAG_REQUEST= 2;
-	private static final String TAG_FILENAME = "tags";
 
 	public static final String EXTRA_TAG = "com.indragie.cmput301as1.EXTRA_TAG";
+	
+	public static final String CLAIM_LIST = "com.indragie.cmput301as1.CLAIM_LIST";
 	
 	//================================================================================
 	// Properties
 	//================================================================================
 	
-	/**
-	 * List model of tags.
-	 */
-	private ListModel<Tag> listModel;
-	/**
-	 * Index of a item that is long pressed.
-	 */
-	private int longPressedItemIndex;
-
+	private ArrayList<ExpenseClaim> claimList;
+	
+	Boolean listChanged;
+	
 	//================================================================================
 	// Activity Callbacks
 	//================================================================================
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
 		
-		listModel = new ListModel<Tag>(TAG_FILENAME, this);
-		listModel.addObserver(this);
-		setListAdapter(new TagArrayAdapter(this, listModel.getItems()));
+		setUpActionBarAndModel();
 		
+		Intent intent = getIntent();
 		
-		final ActionMode.Callback longClickCallback = new ActionMode.Callback() {
+		claimList = (ArrayList<ExpenseClaim>)intent.getSerializableExtra(CLAIM_LIST);
+		listChanged = false;
+		
+		final ActionMode.Callback clickCallback = new ActionMode.Callback() {
 			@Override
 			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 				switch (item.getItemId()) {
@@ -80,7 +76,10 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Co
 						mode.finish();
 						return true;
 					case R.id.action_delete:
-						listModel.remove(longPressedItemIndex);
+						Tag tag = getTagAt(pressedItemIndex);
+						deleteTagInClaims(tag);
+						
+						listModel.remove(pressedItemIndex);
 						mode.finish();
 						return true;
 					default:
@@ -104,44 +103,7 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Co
 			}
 		};
 
-		getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-				longPressedItemIndex = position;
-				startActionMode(longClickCallback);
-				return true;
-			}
-		});
-				
-		
-	}
-	
-	@Override 
-	public boolean onCreateOptionsMenu(Menu menu){
-		super.onCreateOptionsMenu(menu);
-
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.contextual_add,menu);
-		return super.onCreateOptionsMenu(menu);
-	}
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.action_add_tag:
-			startAddTagActivity();
-			return true;
-		case android.R.id.home:
-			finish();
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
-	}
-	
-	@Override
-	public void update(TypedObservable<CollectionMutation<Tag>> observable, CollectionMutation<Tag> mutation) {
-		setListAdapter(new TagArrayAdapter(this, listModel.getItems()));
+		setUpItemClickListener(clickCallback);
 	}
 	
 	@Override
@@ -156,43 +118,73 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Co
 		}
 	}
 	
-	//================================================================================
-	// Add/Edit a tag
-	//================================================================================
-	
 	/**
-	 * Starts the activity to add a tag.
+	 * Starts intent to return.
 	 */
-	private void startAddTagActivity() {
-		Intent addTagIntent = new Intent(this, TagAddActivity.class);
-		startActivityForResult(addTagIntent, ADD_TAG_REQUEST);
+	@Override
+	protected void onHome() {
+		Intent intent = new Intent();
+		if(listChanged) {
+			intent.putExtra(CLAIM_LIST, claimList);
+			setResult(RESULT_OK, intent);
+		} else {
+			setResult(RESULT_CANCELED, intent);
+		}
+		finish();
 	}
 	
-	/**
-	 * Adds a tag to the list model from a resulting activity.
-	 * @param data The intent from resulting activity.
-	 */
-	private void onAddTag(Intent data) {
-		Tag tag = (Tag)data.getSerializableExtra(TagAddActivity.ADDED_TAG);
-		listModel.add(tag);
-	}
+	//================================================================================
+	// Edit a tag
+	//================================================================================
 	
 	/**
 	 * Starts the activity to edit a tag.
 	 */
 	private void startEditTagActivity() {
 		Intent editTagIntent = new Intent(this, TagEditActivity.class);
-		editTagIntent.putExtra(EXTRA_TAG, listModel.getItems().get(longPressedItemIndex));
+		editTagIntent.putExtra(EXTRA_TAG, getTagAt(pressedItemIndex));
 		startActivityForResult(editTagIntent, EDIT_TAG_REQUEST);
 	}
-	
+	 	
 	/**
 	 * Edits a tag in list model from resulting activity.
 	 * @param data The intent form resulting activity.
 	 */
 	private void onEditTag(Intent data) {
-		Tag tag = (Tag)data.getSerializableExtra(TagAddActivity.ADDED_TAG);
-		listModel.set(longPressedItemIndex, tag);
+		Tag newTag = (Tag)data.getSerializableExtra(TagAddActivity.ADDED_TAG);
+		Tag oldTag = getTagAt(pressedItemIndex);
+		
+		listModel.set(pressedItemIndex, newTag);
+		updateTagsInClaims(oldTag, newTag);
 	}
+	
+	/**
+	 * Update the old tag with the new tag in claims that are returned or in progress.
+	 * @param oldTag The old tag to update.
+	 * @param newTag The new tag.
+	 */
+	private void updateTagsInClaims(Tag oldTag, Tag newTag) {
+		for (ExpenseClaim claim: claimList) {
+			if(claim.hasTag(oldTag)) {
+				listChanged = true;
+				claim.setTag(oldTag, newTag);
+			}
+		
+		}
 
+	}
+	
+	/**
+	 * Deletes the removed tag in claims that are returned or in progress.
+	 * @param tag Tag to remove in claims.
+	 */
+	private void deleteTagInClaims(Tag tag) {
+		for(ExpenseClaim claim: claimList) {
+			if(claim.hasTag(tag)) {
+				listChanged = true;
+				claim.removeTag(tag);
+			}
+		}
+	}
+	
 }

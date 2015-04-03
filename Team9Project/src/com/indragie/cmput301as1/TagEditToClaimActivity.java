@@ -19,9 +19,6 @@ package com.indragie.cmput301as1;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.ActionMode;
-import android.view.Menu;
-import android.view.MenuItem;
 
 public class TagEditToClaimActivity extends TagAddToClaimActivity {
 	
@@ -43,41 +40,11 @@ public class TagEditToClaimActivity extends TagAddToClaimActivity {
 		super.onCreate(savedInstanceState);
 		setUpActionBarAndModel();
 		
-		final ActionMode.Callback clickCallback = new ActionMode.Callback() {
-			@Override
-			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-				switch (item.getItemId()) {
-					case R.id.action_replace_tag:
-						setResult(RESULT_OK, getTagSelected());
-						finish();
-						return true;
-					default:
-						return false;
-				}
-			}
-
-			@Override
-			public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-				mode.getMenuInflater().inflate(R.menu.replace_tag, menu);
-				return true;
-			}
-
-			@Override
-			public void onDestroyActionMode(ActionMode mode) {}
-
-			@Override
-			public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-				return false;
-			}
-		};
-
-		setUpItemClickListener(clickCallback);		
-		
 	}
 
 	@Override
-	protected Intent getTagSelected() {
-		Intent intent = super.getTagSelected();
+	protected Intent getTagSelected(int position) {
+		Intent intent = super.getTagSelected(position);
 		intent.putExtra(EXTRA_TAG_POSITION, getIntent().getIntExtra(EXTRA_TAG_POSITION, -1));
 		return intent;
 	}

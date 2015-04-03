@@ -164,6 +164,15 @@ public class ExpenseClaimTests extends TestCase {
 		
 		assertEquals(tag3, claim.getTags().get(1));
 		assertEquals(tag4, claim.getTags().get(0));
+		
+		Tag tag5 = new Tag("Hot springs");
+		Tag tag6 = new Tag("vacation");
+		
+		claim.setTag(tag4, tag5);
+		claim.setTag(tag3, tag6);
+		
+		assertEquals(tag5, claim.getTags().get(0));
+		assertEquals(tag6, claim.getTags().get(1));
 
 	}
 	
