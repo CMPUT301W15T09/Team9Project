@@ -51,7 +51,7 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 	
 	private ArrayList<ExpenseClaim> claimList;
 	
-	private ArrayList<ExpenseClaim> changedList;
+	Boolean listChanged;
 	
 	//================================================================================
 	// Activity Callbacks
@@ -67,7 +67,7 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 		Intent intent = getIntent();
 		
 		claimList = (ArrayList<ExpenseClaim>)intent.getSerializableExtra(CLAIM_LIST);
-		changedList = new ArrayList<ExpenseClaim>();
+		listChanged = false;
 		
 		final ActionMode.Callback clickCallback = new ActionMode.Callback() {
 			@Override
@@ -126,11 +126,11 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 	@Override
 	protected void onHome() {
 		Intent intent = new Intent();
-		if(changedList.isEmpty()) {
-			setResult(RESULT_CANCELED, intent);
-		} else {
+		if(listChanged) {
 			intent.putExtra(CLAIM_LIST, claimList);
 			setResult(RESULT_OK, intent);
+		} else {
+			setResult(RESULT_CANCELED, intent);
 		}
 		finish();
 	}
@@ -169,7 +169,7 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 		for (ExpenseClaim claim: claimList) {
 			if(claim.getStatus() == Status.RETURNED || claim.getStatus() == Status.IN_PROGRESS) {
 				if(claim.hasTag(oldTag)) {
-					changedList.add(claim);
+					listChanged = true;
 					claim.setTag(oldTag, newTag);
 					/*
 					if(newList.contains(claim)) {
@@ -232,6 +232,8 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 		for(ExpenseClaim claim: claimList) {
 			if(claim.getStatus() == Status.RETURNED || claim.getStatus() == Status.IN_PROGRESS) {
 				if(claim.hasTag(tag)) {
+					listChanged = true;
+					claim.removeTag(tag);
 					/*
 					if(newList.contains(claim)) {
 						int index = newList.indexOf(claim);

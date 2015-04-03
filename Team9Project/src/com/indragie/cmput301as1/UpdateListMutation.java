@@ -22,37 +22,37 @@ import java.util.List;
 public class UpdateListMutation<T> extends CollectionMutation<T> {
 
 	/**
-	 * The old object (pre-update)
+	 * The old list of objects (pre-update)
 	 */
-	private List<T> oldObject;
+	private List<T> oldList;
 	
 	/**
-	 * The new object (post-update)
+	 * The new list of objects (post-update)
 	 */
-	private List<T> newObject;
+	private List<T> newList;
 	
 	/**
 	 * Creates a new instance of {@link UpdateCollectionMutation<T>}
-	 * @param oldObject The old object (pre-update)
-	 * @param newObject The new object (post-update)
+	 * @param oldObject The old list of objects (pre-update)
+	 * @param newObject The new list of objects (post-update)
 	 */
-	public UpdateListMutation(List<T> oldObject, List<T> newObject) {
+	public UpdateListMutation(List<T> oldList, List<T> newList) {
 		super(MutationType.UPDATE);
-		this.oldObject = oldObject;
-		this.newObject = newObject;
+		this.oldList = oldList;
+		this.newList = newList;
 	}
 	
 	/**
 	 * @return The old object (pre-update)
 	 */
-	public List<T> getOldObject() {
-		return oldObject;
+	public List<T> getOldList() {
+		return oldList;
 	}
 	
 	/**
 	 * @return The new object (post-update)
 	 */
-	public List<T> getNewObject() {
-		return newObject;
+	public List<T> getNewList() {
+		return newList;
 	}
 }
