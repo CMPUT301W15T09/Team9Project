@@ -187,8 +187,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 */
 	@SuppressWarnings("unchecked")
 	private void onManageTagsResult(Intent data) {
-		Bundle bundle = data.getExtras();
-		ArrayList<ExpenseClaim> list = (ArrayList<ExpenseClaim>)bundle.get(ManageTagsActivity.CLAIM_LIST);
+		ArrayList<ExpenseClaim> list = (ArrayList<ExpenseClaim>)data.getSerializableExtra(ManageTagsActivity.CLAIM_LIST);
 		listModel.replaceList(list);	
 	}
 
@@ -238,10 +237,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 */
 	private void startManageTagsActivity() {
 		Intent manageTagsIntent = new Intent(this, ManageTagsActivity.class);
-		Bundle bundle = new Bundle();
-		bundle.putSerializable(ManageTagsActivity.CLAIM_LIST, listModel.getArrayList());
-		manageTagsIntent.putExtras(bundle);
-		//manageTagsIntent.putExtra(ManageTagsActivity.CLAIM_LIST, listModel);
+		manageTagsIntent.putExtra(ManageTagsActivity.CLAIM_LIST, listModel.getArrayList());
 		startActivityForResult(manageTagsIntent, MANAGE_TAGS_REQUEST);
 	}
 
