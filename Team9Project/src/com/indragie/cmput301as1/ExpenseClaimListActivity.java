@@ -17,7 +17,7 @@
 
 package com.indragie.cmput301as1;
 
-
+import java.util.ArrayList;
 import java.util.Comparator;
 
 import android.app.AlertDialog;
@@ -25,11 +25,9 @@ import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -45,6 +43,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private static final int ADD_EXPENSE_CLAIM_REQUEST = 1;
 	private static final int EDIT_EXPENSE_CLAIM_REQUEST = 2;
 	private static final int SORT_EXPENSE_CLAIM_REQUEST = 3;
+	private static final int MANAGE_TAGS_REQUEST = 4;
 	private static final String EXPENSE_CLAIM_FILENAME = "claims";
 
 	//================================================================================
@@ -83,41 +82,12 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		listModel.addObserver(this);
 		setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems()));
 		
-		final ActionMode.Callback longClickCallback = new ActionMode.Callback() {
+		getListView().setOnItemLongClickListener(new LongClickDeleteListener(this, new LongClickDeleteListener.OnDeleteListener() {
 			@Override
-			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-				switch (item.getItemId()) {
-				case R.id.action_delete:
-					startDeleteAlertDialog();
-					mode.finish();
-					return true;
-				default:
-					return false;
-				}
+			public void onDelete(int position) {
+				showDeleteAlertDialog(position);
 			}
-
-			@Override
-			public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-				mode.getMenuInflater().inflate(R.menu.contextual_delete, menu);
-				return true;
-			}
-
-			@Override
-			public void onDestroyActionMode(ActionMode mode) {}
-
-			@Override
-			public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-				return false;
-			}
-		};
-		getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-				longPressedItemIndex = position;
-				startActionMode(longClickCallback);
-				return true;
-			}
-		});
+		}));
 	}
 
 	@Override
@@ -138,6 +108,9 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 			break;
 		case SORT_EXPENSE_CLAIM_REQUEST:
 			onSortExpenseResult(data);
+			break;
+		case MANAGE_TAGS_REQUEST:
+			onManageTagsResult(data);
 			break;
 		}
 	}
@@ -169,6 +142,16 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM);
 		int position = data.getIntExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_INDEX, -1);
 		listModel.set(position, claim);
+	}
+	
+	/**
+	 * Sets the list used in ListModel to the returned list of expense claims from the intent. 
+	 * @param data The intent to get the list of expense claims from. 
+	 */
+	@SuppressWarnings("unchecked")
+	private void onManageTagsResult(Intent data) {
+		ArrayList<ExpenseClaim> claimList = (ArrayList<ExpenseClaim>)data.getSerializableExtra(ManageTagsActivity.CLAIM_LIST);
+		listModel.replaceList(claimList);
 	}
 
 	@Override
@@ -217,7 +200,8 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 */
 	private void startManageTagsActivity() {
 		Intent manageTagsIntent = new Intent(this, ManageTagsActivity.class);
-		startActivity(manageTagsIntent);
+		manageTagsIntent.putExtra(ManageTagsActivity.CLAIM_LIST, listModel.getArrayList());
+		startActivityForResult(manageTagsIntent, MANAGE_TAGS_REQUEST);
 	}
 	
 	/**
@@ -248,15 +232,16 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	
 	/**
 	 * Prompts the user for confirmation in response to deleting an expense claim.
+	 * @param index The index of the expense claim to remove.
 	 */
-	public void startDeleteAlertDialog() {
+	public void showDeleteAlertDialog(final int index) {
 		AlertDialog.Builder openDialog = new AlertDialog.Builder(this);
 		openDialog.setTitle(R.string.action_delete_claim_confirm);
 		
 		openDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				listModel.remove(longPressedItemIndex);
+				listModel.remove(index);
 			}
 		});
 		
@@ -298,5 +283,4 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	public void update(TypedObservable<CollectionMutation<ExpenseClaim>> observable, CollectionMutation<ExpenseClaim> mutation) {
 		setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems()));
 	}
-
 }

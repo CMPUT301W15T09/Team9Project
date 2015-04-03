@@ -22,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,10 +33,13 @@ import android.content.Context;
 /**
  * Observable model that contains a list of items that can be mutated.
  */
-public class ListModel<T> extends TypedObservable<CollectionMutation<T>> {
+public class ListModel<T extends Serializable> extends TypedObservable<CollectionMutation<T>> implements Serializable{
+	private static final long serialVersionUID = 5371138997651829224L;
+
 	//================================================================================
 	// Properties
 	//================================================================================
+	
 	/**
 	 * The filename to save to.
 	 */
@@ -83,6 +87,13 @@ public class ListModel<T> extends TypedObservable<CollectionMutation<T>> {
 	}
 	
 	/**
+	 * @return A ArrayList of the items.
+	 */
+	public ArrayList<T> getArrayList() {
+		return list;
+	}
+	
+	/**
 	 * @return Comparator used to sort the items.
 	 */
 	public Comparator<T> getComparator() {
@@ -110,7 +121,7 @@ public class ListModel<T> extends TypedObservable<CollectionMutation<T>> {
 		list.add(object);
 		mutate(new InsertionCollectionMutation<T>(list.size() - 1, object));
 	}
-	
+
 	/**
 	 * Removes an existing object from the list of objects.
 	 * @param o The object to remove.
@@ -124,7 +135,6 @@ public class ListModel<T> extends TypedObservable<CollectionMutation<T>> {
 		return false;
 	}
 
-	
 	/**
 	 * Removes an existing object from the list of objects.
 	 * @param index The index of the object to remove.
@@ -155,6 +165,14 @@ public class ListModel<T> extends TypedObservable<CollectionMutation<T>> {
 	 */
 	public int count() {
 		return list.size();
+	}
+	
+	/**
+	 * Replaces the current list of the ListModel.
+	 * @param list The list to replace with.
+	 */
+	public void replaceList(ArrayList<T> list) {
+		mutate(new UpdateListMutation<T>(this.list = list, list));
 	}
 	
 	//================================================================================
