@@ -18,6 +18,8 @@ package com.indragie.cmput301as1;
 
 import java.util.ArrayList;
 
+import com.indragie.cmput301as1.ExpenseClaim.Status;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ActionMode;
@@ -97,9 +99,8 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 		setUpItemClickListener(clickCallback);
 		
 		Intent intent = getIntent();
-		Bundle bundle = intent.getExtras();
 		
-		claimList = (ArrayList<ExpenseClaim>)bundle.get(CLAIM_LIST);
+		claimList = (ArrayList<ExpenseClaim>)intent.getSerializableExtra(CLAIM_LIST);
 		
 	}
 	
@@ -121,9 +122,7 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 	@Override
 	protected void onHome() {
 		Intent intent = new Intent();
-		Bundle bundle = new Bundle();
-		bundle.putSerializable(CLAIM_LIST, claimList);
-		intent.putExtras(bundle);
+		intent.putExtra(CLAIM_LIST, claimList);
 		setResult(RESULT_OK, intent);
 		finish();
 	}
@@ -162,16 +161,20 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 	 */
 	private void updateTagsInClaims(Tag oldTag, Tag newTag) {
 		for (ExpenseClaim claim: claimList) {
-			if(claim.hasTag(oldTag)) {
-				claim.setTag(oldTag, newTag);
+			if(claim.getStatus() == Status.RETURNED || claim.getStatus() == Status.IN_PROGRESS) {
+				if(claim.hasTag(oldTag)) {
+					claim.setTag(oldTag, newTag);
+				}
 			}
 		}
 	}
 	
 	private void deleteTagInClaims(Tag tag) {
 		for(ExpenseClaim claim: claimList) {
-			if(claim.hasTag(tag)) {
-				claim.removeTag(tag);
+			if(claim.getStatus() == Status.RETURNED || claim.getStatus() == Status.IN_PROGRESS) {
+				if(claim.hasTag(tag)) {
+					claim.removeTag(tag);
+				}
 			}
 		}
 	}

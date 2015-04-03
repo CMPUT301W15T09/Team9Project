@@ -17,10 +17,14 @@
 
 package com.indragie.cmput301as1;
 
+import java.io.Serializable;
+
 /**
  * Uniquely identifies an object in an ElasticSearch database.
  */
-public class ElasticSearchDocumentID {
+public class ElasticSearchDocumentID implements Serializable {
+	private static final long serialVersionUID = -1486832517997319621L;
+
 	//================================================================================
 	// Properties
 	//================================================================================
