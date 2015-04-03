@@ -171,57 +171,10 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 				if(claim.hasTag(oldTag)) {
 					listChanged = true;
 					claim.setTag(oldTag, newTag);
-					/*
-					if(newList.contains(claim)) {
-						System.out.println("Not supposed to enter here");
-						int index = newList.indexOf(claim);
-						claim.setTag(oldTag, newTag);
-						newList.set(index, claim);
-					} else {
-						ExpenseClaim a = claim;
-						System.out.println("The original tags");
-						for(Tag tag: claim.getTags()) {
-							System.out.println(tag.getName());
-						}
-						changedList.add(a);
-						claim.setTag(oldTag, newTag);
-						System.out.println("Checking the changed list of tags ");
-						for(int i = 0; i < changedList.size(); i++) {
-							for(Tag tag: changedList.get(i).getTags()) {
-								System.out.println(tag.getName());
-							}
-						}
-						System.out.println("Checking the expense claim 'a'  of tags ");
-		
-						for(Tag tag: a.getTags()) {
-							System.out.println(tag.getName());
-						}
-					
-					
-						System.out.println("The new tags");
-						for(Tag tag:claim.getTags()) {
-							System.out.println(tag.getName());
-						}
-						newList.add(claim);
-					}
-					*/
 				}
 			}
 		}
-		/*
-		System.out.println("At the end of the update");
-		for(int i = 0; i < changedList.size(); i++) {
-			for(Tag tag: changedList.get(i).getTags()) {
-				System.out.println(tag.getName());
-			}
-		}
-		System.out.println("The new tags");
-		for(int i = 0; i < newList.size(); i++) {
-			for(Tag tag: newList.get(i).getTags()) {
-				System.out.println(tag.getName());
-			}
-		}
-		*/
+
 	}
 	
 	/**
@@ -234,17 +187,6 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 				if(claim.hasTag(tag)) {
 					listChanged = true;
 					claim.removeTag(tag);
-					/*
-					if(newList.contains(claim)) {
-						int index = newList.indexOf(claim);
-						claim.removeTag(tag);
-						newList.set(index, claim);
-					} else {
-						changedList.add(claim);
-						claim.removeTag(tag);
-						newList.add(claim);
-					}
-					*/
 				}
 			}
 		}

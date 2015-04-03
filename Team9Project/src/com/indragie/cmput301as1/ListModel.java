@@ -167,12 +167,10 @@ public class ListModel<T extends Serializable> extends TypedObservable<Collectio
 		return list.size();
 	}
 	
-	public void set(T oldObject, T newObject) {
-		int index = list.indexOf(oldObject);
-		System.out.println(list.get(index).getClass());
-		mutate(new UpdateCollectionMutation<T>(index, list.set(index, newObject), newObject));
-	}
-	
+	/**
+	 * Replaces the current list of the ListModel.
+	 * @param list The list to replace with.
+	 */
 	public void replaceList(ArrayList<T> list) {
 		mutate(new UpdateListMutation<T>(this.list = list, list));
 	}
