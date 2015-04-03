@@ -50,7 +50,9 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 	//================================================================================
 	
 	private ArrayList<ExpenseClaim> claimList;
-
+	
+	private ArrayList<ExpenseClaim> changedList;
+	
 	//================================================================================
 	// Activity Callbacks
 	//================================================================================
@@ -61,6 +63,11 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 		super.onCreate(savedInstanceState);
 		
 		setUpActionBarAndModel();
+		
+		Intent intent = getIntent();
+		
+		claimList = (ArrayList<ExpenseClaim>)intent.getSerializableExtra(CLAIM_LIST);
+		changedList = new ArrayList<ExpenseClaim>();
 		
 		final ActionMode.Callback clickCallback = new ActionMode.Callback() {
 			@Override
@@ -99,10 +106,6 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 		};
 
 		setUpItemClickListener(clickCallback);
-		
-		Intent intent = getIntent();
-		
-		claimList = (ArrayList<ExpenseClaim>)intent.getSerializableExtra(CLAIM_LIST);
 	}
 	
 	@Override
@@ -123,8 +126,12 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 	@Override
 	protected void onHome() {
 		Intent intent = new Intent();
-		intent.putExtra(CLAIM_LIST, claimList);
-		setResult(RESULT_OK, intent);
+		if(changedList.isEmpty()) {
+			setResult(RESULT_CANCELED, intent);
+		} else {
+			intent.putExtra(CLAIM_LIST, claimList);
+			setResult(RESULT_OK, intent);
+		}
 		finish();
 	}
 	
@@ -147,11 +154,9 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 	 */
 	private void onEditTag(Intent data) {
 		Tag newTag = (Tag)data.getSerializableExtra(TagAddActivity.ADDED_TAG);
-		
 		Tag oldTag = getTagAt(pressedItemIndex);
 		
 		listModel.set(pressedItemIndex, newTag);
-		
 		updateTagsInClaims(oldTag, newTag);
 	}
 	
@@ -164,10 +169,59 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 		for (ExpenseClaim claim: claimList) {
 			if(claim.getStatus() == Status.RETURNED || claim.getStatus() == Status.IN_PROGRESS) {
 				if(claim.hasTag(oldTag)) {
+					changedList.add(claim);
 					claim.setTag(oldTag, newTag);
+					/*
+					if(newList.contains(claim)) {
+						System.out.println("Not supposed to enter here");
+						int index = newList.indexOf(claim);
+						claim.setTag(oldTag, newTag);
+						newList.set(index, claim);
+					} else {
+						ExpenseClaim a = claim;
+						System.out.println("The original tags");
+						for(Tag tag: claim.getTags()) {
+							System.out.println(tag.getName());
+						}
+						changedList.add(a);
+						claim.setTag(oldTag, newTag);
+						System.out.println("Checking the changed list of tags ");
+						for(int i = 0; i < changedList.size(); i++) {
+							for(Tag tag: changedList.get(i).getTags()) {
+								System.out.println(tag.getName());
+							}
+						}
+						System.out.println("Checking the expense claim 'a'  of tags ");
+		
+						for(Tag tag: a.getTags()) {
+							System.out.println(tag.getName());
+						}
+					
+					
+						System.out.println("The new tags");
+						for(Tag tag:claim.getTags()) {
+							System.out.println(tag.getName());
+						}
+						newList.add(claim);
+					}
+					*/
 				}
 			}
 		}
+		/*
+		System.out.println("At the end of the update");
+		for(int i = 0; i < changedList.size(); i++) {
+			for(Tag tag: changedList.get(i).getTags()) {
+				System.out.println(tag.getName());
+			}
+		}
+		System.out.println("The new tags");
+		for(int i = 0; i < newList.size(); i++) {
+			for(Tag tag: newList.get(i).getTags()) {
+				System.out.println(tag.getName());
+			}
+		}
+		*/
 	}
 	
 	/**
@@ -178,7 +232,17 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 		for(ExpenseClaim claim: claimList) {
 			if(claim.getStatus() == Status.RETURNED || claim.getStatus() == Status.IN_PROGRESS) {
 				if(claim.hasTag(tag)) {
-					claim.removeTag(tag);
+					/*
+					if(newList.contains(claim)) {
+						int index = newList.indexOf(claim);
+						claim.removeTag(tag);
+						newList.set(index, claim);
+					} else {
+						changedList.add(claim);
+						claim.removeTag(tag);
+						newList.add(claim);
+					}
+					*/
 				}
 			}
 		}
