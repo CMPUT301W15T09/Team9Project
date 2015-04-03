@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
@@ -33,12 +34,21 @@ import android.content.res.Resources;
  * Model object representing an expense claim.
  */
 
-public class ExpenseClaim implements Serializable {
+public class ExpenseClaim implements Serializable, ElasticSearchDocument {
 	private static final long serialVersionUID = -3079284243806354009L;
 	
 	//================================================================================
 	// Properties
 	//================================================================================
+	/**
+	 * Unique document ID.
+	 */
+	private ElasticSearchDocumentID documentID = new ElasticSearchDocumentID(
+		ElasticSearchConfiguration.INDEX_NAME, 
+		"expense_claim", 
+		UUID.randomUUID().toString()
+	);
+	
 	/**
 	 * Name of the user who created the claim. TODO: Make this work with the new User stuff.
 	 */
@@ -110,10 +120,12 @@ public class ExpenseClaim implements Serializable {
 	 * User who created this claim.
 	 */
 	private User user;
+	
 	/**
 	 * Approvers comments.
 	 */
 	private String comments;
+	
 	/**
 	 * User who returned or approved claim.
 	 */
@@ -453,6 +465,14 @@ public class ExpenseClaim implements Serializable {
 		// Remove trailing newline
 		builder.deleteCharAt(builder.length() - 1);
 		return builder.toString();
+	}
+	
+	//================================================================================
+	// ElasticSearchDocument
+	//================================================================================
+	
+	public ElasticSearchDocumentID getDocumentID() {
+		return documentID;
 	}
 
 	//================================================================================
