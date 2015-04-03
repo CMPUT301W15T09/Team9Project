@@ -16,6 +16,7 @@
  */
 package com.indragie.cmput301as1;
 
+
 import java.util.ArrayList;
 
 import com.indragie.cmput301as1.ExpenseClaim.Status;
@@ -31,6 +32,7 @@ import android.view.MenuItem;
  * Can direct user to activities for adding or editing tags. 
  * Allows user to remove existing tags. 
  */
+
 public class ManageTagsActivity extends TagAddToClaimActivity{
 
 	//================================================================================
@@ -101,7 +103,6 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 		Intent intent = getIntent();
 		
 		claimList = (ArrayList<ExpenseClaim>)intent.getSerializableExtra(CLAIM_LIST);
-		
 	}
 	
 	@Override

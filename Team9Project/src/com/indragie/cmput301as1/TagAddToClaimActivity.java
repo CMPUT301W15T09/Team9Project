@@ -17,8 +17,6 @@
 
 package com.indragie.cmput301as1;
 
-import java.util.List;
-
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,7 +28,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-public class TagAddToClaimActivity extends ListActivity implements TypedObserver<List<Tag>>{
+public class TagAddToClaimActivity extends ListActivity implements TypedObserver<CollectionMutation<Tag>>{
 
 	//================================================================================
 	// Constants
@@ -120,8 +118,8 @@ public class TagAddToClaimActivity extends ListActivity implements TypedObserver
 	}
 	
 	@Override
-	public void update(TypedObservable<List<Tag>> o, List<Tag> tags) {
-		setListAdapter(new TagArrayAdapter(this, tags));
+	public void update(TypedObservable<CollectionMutation<Tag>> observable, CollectionMutation<Tag> mutation) {
+		setListAdapter(new TagArrayAdapter(this, listModel.getItems()));
 	}
 	
 	@Override

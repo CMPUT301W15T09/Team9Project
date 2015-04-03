@@ -19,7 +19,6 @@ package com.indragie.cmput301as1;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -39,7 +38,7 @@ import android.widget.Toast;
 /**
  * An activity that presents a list of expense claims.
  */
-public class ExpenseClaimListActivity extends ListActivity implements TypedObserver<List<ExpenseClaim>> {
+public class ExpenseClaimListActivity extends ListActivity implements TypedObserver<CollectionMutation<ExpenseClaim>> {
 	//================================================================================
 	// Constants
 	//================================================================================
@@ -339,8 +338,8 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	//================================================================================
 
 	@Override
-	public void update(TypedObservable<List<ExpenseClaim>> o, List<ExpenseClaim> claims) {
-		setListAdapter(new ExpenseClaimArrayAdapter(this, claims));
+	public void update(TypedObservable<CollectionMutation<ExpenseClaim>> observable, CollectionMutation<ExpenseClaim> mutation) {
+		setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems()));
 	}
 
 }
