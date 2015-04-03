@@ -11,6 +11,6 @@ public class ApprovalTabFragment extends BaseTabFragment {
 	@Override
 	public void load(){
 		listModel = new ListModel<ExpenseClaim>(EXPENSE_APPROVAL_FILENAME, getActivity());
-		listModel.addObserver((TypedObserver<List<ExpenseClaim>>) getActivity());
+		listModel.addObserver((TypedObserver<CollectionMutation<ExpenseClaim>>) getActivity());
 	}
 }

@@ -23,7 +23,7 @@ import android.widget.ListView;
 
  
 
-public class BaseTabFragment extends ListFragment implements TypedObserver<List<ExpenseClaim>> {
+public class BaseTabFragment extends ListFragment implements TypedObserver<CollectionMutation<ExpenseClaim>> {
  
     protected static final String EXPENSE_CLAIM_FILENAME = "claims";
     protected static final String EXPENSE_APPROVAL_FILENAME = "approval";
@@ -272,10 +272,6 @@ public class BaseTabFragment extends ListFragment implements TypedObserver<List<
 	// TypedObserver
 	//================================================================================
 	
-	@Override
-	public void update(TypedObservable<List<ExpenseClaim>> o, List<ExpenseClaim> claims) {
-		refresh();
-	}
 	
 	public void refresh(){
 		setListAdapter(new ExpenseClaimArrayAdapter(getActivity(), listModel.getItems()));
@@ -283,6 +279,13 @@ public class BaseTabFragment extends ListFragment implements TypedObserver<List<
 	}
 	
 	public void load(){
+	}
+
+	@Override
+	public void update(TypedObservable<CollectionMutation<ExpenseClaim>> o,
+			CollectionMutation<ExpenseClaim> arg) {
+		// TODO Auto-generated method stub
+		
 	}
 	
  

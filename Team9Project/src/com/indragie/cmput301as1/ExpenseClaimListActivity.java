@@ -19,6 +19,7 @@ package com.indragie.cmput301as1;
 
 
 import java.util.List;
+
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.AlertDialog;
@@ -33,7 +34,7 @@ import android.widget.Toast;
  * An activity that initializes tab fragments for displaying claims.
  */
 
-public class ExpenseClaimListActivity extends FragmentActivity implements TypedObserver<List<ExpenseClaim>> {
+public class ExpenseClaimListActivity extends FragmentActivity implements TypedObserver<CollectionMutation<ExpenseClaim>> {
 
 	//================================================================================
 	// Constants
@@ -136,8 +137,10 @@ public class ExpenseClaimListActivity extends FragmentActivity implements TypedO
 	//================================================================================
 
 	@Override
-	public void update(TypedObservable<List<ExpenseClaim>> o, List<ExpenseClaim> claims) {
-
+	public void update(TypedObservable<CollectionMutation<ExpenseClaim>> o,
+			CollectionMutation<ExpenseClaim> arg) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
