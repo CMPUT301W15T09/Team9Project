@@ -26,6 +26,7 @@ import android.widget.ListView;
 public class BaseTabFragment extends ListFragment implements TypedObserver<List<ExpenseClaim>> {
  
     protected static final String EXPENSE_CLAIM_FILENAME = "claims";
+    protected static final String EXPENSE_APPROVAL_FILENAME = "approval";
     private static final String PREFERENCE = "PREFERENCE";
 	private static final int ADD_EXPENSE_CLAIM_REQUEST = 1;
 	private static final int EDIT_EXPENSE_CLAIM_REQUEST = 2;
@@ -46,8 +47,7 @@ public class BaseTabFragment extends ListFragment implements TypedObserver<List<
 
 	/** An array of items to display in ArrayList */
     
-    @SuppressWarnings("unchecked")
-	@Override
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     	
     	setUserFromPreferences();
@@ -109,45 +109,14 @@ public class BaseTabFragment extends ListFragment implements TypedObserver<List<
 			}
 		});
     }
- 
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-    
-    public void startDeleteAlertDialog() {
-		AlertDialog.Builder openDialog = new AlertDialog.Builder(getActivity());
-		openDialog.setTitle(R.string.action_delete_claim_confirm);
-		
-		openDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				listModel.remove(longPressedItemIndex);
-				refresh();
-			}
-		});
-		
-		openDialog.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-			}
-		});
-		openDialog.show();
-	}
-    
-    @Override
-	public void onListItemClick(ListView listView, View view, int position, long id) {
-		startEditExpenseClaimActivity(position);
-	}
     
     @Override
 	public void onDestroy() {
 		listModel.deleteObserver(this);
 		super.onDestroy();
 	}
-
-	@SuppressWarnings("static-access")
+    
+    @SuppressWarnings("static-access")
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode != getActivity().RESULT_OK) return;
@@ -163,8 +132,8 @@ public class BaseTabFragment extends ListFragment implements TypedObserver<List<
 			break;
 		}
 	}
-	
-	/**
+    
+    /**
 	 * Changes the sorting mode based on a comparator chosen by {@link ExpenseClaimSortActivity}
 	 * @param data The intent to get the comparator from.
 	 */
@@ -196,13 +165,7 @@ public class BaseTabFragment extends ListFragment implements TypedObserver<List<
 		refresh();
 	}
 	
-    
-    private void setUserFromPreferences() {
-    	SharedPreferences prefs = this.getActivity().getSharedPreferences(PREFERENCE, Context.MODE_PRIVATE);
-		user = new User(prefs.getString("name", "USER DOES NOT EXIST"), prefs.getInt("id", -1));
-	}
-    
-    @Override
+	@Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater item) {
     	getActivity().getMenuInflater().inflate(R.menu.expense_claim_list, menu);
 		super.onCreateOptionsMenu(menu, item);
@@ -224,7 +187,6 @@ public class BaseTabFragment extends ListFragment implements TypedObserver<List<
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
 	
 	/**
 	 * Starts the {@link ExpenseClaimAddActivity}
@@ -250,8 +212,50 @@ public class BaseTabFragment extends ListFragment implements TypedObserver<List<
 		Intent manageTagsIntent = new Intent(getActivity(), ManageTagsActivity.class);
 		startActivity(manageTagsIntent);
 	}
+    
+	/**
+	 * Prompts the user for confirmation in response to deleting an expense claim.
+	 */
+    public void startDeleteAlertDialog() {
+		AlertDialog.Builder openDialog = new AlertDialog.Builder(getActivity());
+		openDialog.setTitle(R.string.action_delete_claim_confirm);
+		
+		openDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				listModel.remove(longPressedItemIndex);
+				refresh();
+			}
+		});
+		
+		openDialog.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+		openDialog.show();
+	}
+    
+    private void setUserFromPreferences() {
+    	SharedPreferences prefs = this.getActivity().getSharedPreferences(PREFERENCE, Context.MODE_PRIVATE);
+		user = new User(prefs.getString("name", "USER DOES NOT EXIST"), prefs.getInt("id", -1));
+	}
+    
+    
+
 	
-  
+	
+	
+	//================================================================================
+	// ListView Callbacks
+	//================================================================================
+
+    @Override
+	public void onListItemClick(ListView listView, View view, int position, long id) {
+		startEditExpenseClaimActivity(position);
+	}
+	
 	/**
 	 * Calls the intent to edit a expense claim at a specified position.
 	 * @param position The position of the expense claim to edit.
@@ -264,13 +268,16 @@ public class BaseTabFragment extends ListFragment implements TypedObserver<List<
 		startActivityForResult(editIntent, EDIT_EXPENSE_CLAIM_REQUEST);
 	}
 	
+	//================================================================================
+	// TypedObserver
+	//================================================================================
+	
 	@Override
 	public void update(TypedObservable<List<ExpenseClaim>> o, List<ExpenseClaim> claims) {
-		setListAdapter(new ExpenseClaimArrayAdapter(getActivity(), claims));
+		refresh();
 	}
 	
 	public void refresh(){
-		listModel.notifyObservers();
 		setListAdapter(new ExpenseClaimArrayAdapter(getActivity(), listModel.getItems()));
 		
 	}

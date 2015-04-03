@@ -105,7 +105,7 @@ public class TagAddToClaimActivity extends ListActivity implements TypedObserver
 	protected void setUpActionBarAndModel() {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		
-		listModel = new ListModel<Tag>(TAG_FILENAME, this, 0);
+		listModel = new ListModel<Tag>(TAG_FILENAME, this);
 		listModel.addObserver(this);
 		setListAdapter(new TagArrayAdapter(this, listModel.getItems()));
 	}

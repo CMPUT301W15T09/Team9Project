@@ -36,7 +36,7 @@ public class ListModelTests extends ActivityInstrumentationTestCase2<ExpenseClai
 	
 	protected void setUp() throws Exception {
 		super.setUp();
-		listModel = new ListModel<ExpenseClaim>(CLAIMS_FILENAME, getActivity(),1);
+		listModel = new ListModel<ExpenseClaim>(CLAIMS_FILENAME, getActivity());
 		listModel.removeAll();
 	}
 	
@@ -121,11 +121,11 @@ public class ListModelTests extends ActivityInstrumentationTestCase2<ExpenseClai
 		ExpenseClaim claim = createExpenseClaim("URoma");
 		listModel.add(claim);
 		
-		ListModel<ExpenseClaim> sameFileListModel = new ListModel<ExpenseClaim>(CLAIMS_FILENAME, getActivity(),1);
+		ListModel<ExpenseClaim> sameFileListModel = new ListModel<ExpenseClaim>(CLAIMS_FILENAME, getActivity());
 		assertEquals(1, sameFileListModel.count());
 		assertEquals(claim, sameFileListModel.getItems().get(0));
 		
-		ListModel<ExpenseClaim> newListModel = new ListModel<ExpenseClaim>("someotherfile.dat", getActivity(),1);
+		ListModel<ExpenseClaim> newListModel = new ListModel<ExpenseClaim>("someotherfile.dat", getActivity());
 		assertEquals(0, newListModel.count());
 	}
 }

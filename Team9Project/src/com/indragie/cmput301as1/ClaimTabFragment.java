@@ -7,9 +7,10 @@ import java.util.List;
 public class ClaimTabFragment extends BaseTabFragment {
  
     
+	@SuppressWarnings("unchecked")
 	@Override
 	public void load(){
-		listModel = new ListModel<ExpenseClaim>(EXPENSE_CLAIM_FILENAME, getActivity(), 2);
+		listModel = new ListModel<ExpenseClaim>(EXPENSE_CLAIM_FILENAME, getActivity());
 		listModel.addObserver((TypedObserver<List<ExpenseClaim>>) getActivity());
 	}
 

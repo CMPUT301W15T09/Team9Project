@@ -25,19 +25,14 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.widget.Toast;
 
 /**
  * Observable model that contains a list of items that can be mutated.
  */
 public class ListModel<T> extends TypedObservable<List<T>> {
-	private static final int MODE_PRIVATE = 0;
-
 	//================================================================================
 	// Properties
 	//================================================================================
@@ -71,10 +66,10 @@ public class ListModel<T> extends TypedObservable<List<T>> {
 	 * @param fileName Name of the file used to persist the expense claims.
 	 * @param context The context used for I/O operations.
 	 */
-	public ListModel(String fileName, Context context, int type) {
+	public ListModel(String fileName, Context context) {
 		this.fileName = fileName;
 		this.context = context;
-		this.list = load(type);
+		this.list = load();
 		
 	}
 	
@@ -187,35 +182,13 @@ public class ListModel<T> extends TypedObservable<List<T>> {
 	 * @return A list of specified type.
 	 */
 	@SuppressWarnings("unchecked")
-	private ArrayList<T> load(int type) {
+	private ArrayList<T> load() {
 		try {
 			FileInputStream fis = context.openFileInput(fileName);
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			Object obj = ois.readObject();
-			ArrayList<ExpenseClaim> claims = ((ArrayList<ExpenseClaim>) obj);
-			ArrayList<ExpenseClaim> approval = new ArrayList<ExpenseClaim>();
 			ois.close();
 			fis.close();
-			
-			if(type != 0){
-				SharedPreferences prefs = context.getSharedPreferences("PREFERENCE", MODE_PRIVATE);
-				User user = new User(prefs.getString("name", "USER DOES NOT EXIST"), prefs.getInt("id", -1));
-				int i = 0;
-				for(Iterator<ExpenseClaim> iterator = claims.iterator(); iterator.hasNext();){
-					ExpenseClaim c = iterator.next();
-					i++;
-					if(c.getUser().getName().contentEquals(user.getName())){
-						approval.add(c);
-						iterator.remove();
-					}
-					
-							
-				}
-				if(type == 1)
-					obj = claims;
-				else
-					obj = approval;
-			}
 			
 			return (ArrayList<T>)obj;
 		} catch (Exception e) {

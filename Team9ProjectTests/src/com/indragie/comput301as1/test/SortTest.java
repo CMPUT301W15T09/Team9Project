@@ -29,7 +29,7 @@ private static final String EXPENSE_CLAIM_SORT = "com.indragie.cmput301as1.EXPEN
 		Thread.sleep(2000);
 		ExpenseClaim claim2 = new ExpenseClaim(null, null, date2, null, null, null);
 		
-		ListModel<ExpenseClaim> listmodel = new ListModel<ExpenseClaim>("claims_test.dat", getContext(),1);
+		ListModel<ExpenseClaim> listmodel = new ListModel<ExpenseClaim>("claims_test.dat", getContext());
 		listmodel.removeAll();
 		
 		/*

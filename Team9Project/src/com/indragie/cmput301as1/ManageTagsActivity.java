@@ -68,7 +68,7 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 		super.onCreate(savedInstanceState);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		
-		listModel = new ListModel<Tag>(TAG_FILENAME, this, 0);
+		listModel = new ListModel<Tag>(TAG_FILENAME, this);
 		listModel.addObserver(this);
 		setListAdapter(new TagArrayAdapter(this, listModel.getItems()));
 		
