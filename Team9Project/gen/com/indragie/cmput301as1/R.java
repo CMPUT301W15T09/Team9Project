@@ -496,27 +496,27 @@ containing a value of this type.
         public static final int powered_by_google_light=0x7f02002d;
     }
     public static final class id {
-        public static final int action_accept=0x7f0c0035;
-        public static final int action_add_claim=0x7f0c003f;
-        public static final int action_add_destination=0x7f0c0039;
-        public static final int action_add_item=0x7f0c003a;
-        public static final int action_add_tag=0x7f0c0036;
+        public static final int action_accept=0x7f0c0036;
+        public static final int action_add_claim=0x7f0c0040;
+        public static final int action_add_destination=0x7f0c003a;
+        public static final int action_add_item=0x7f0c003b;
+        public static final int action_add_tag=0x7f0c0037;
         public static final int action_cancel=0x7f0c0023;
-        public static final int action_delete=0x7f0c0037;
+        public static final int action_delete=0x7f0c0038;
         public static final int action_done=0x7f0c0024;
-        public static final int action_edit=0x7f0c0038;
-        public static final int action_email=0x7f0c003b;
-        public static final int action_manage_tags=0x7f0c0041;
-        public static final int action_mark_approved=0x7f0c003d;
-        public static final int action_mark_returned=0x7f0c003c;
-        public static final int action_mark_submitted=0x7f0c003e;
-        public static final int action_settings=0x7f0c0042;
-        public static final int action_sort_claim=0x7f0c0040;
+        public static final int action_edit=0x7f0c0039;
+        public static final int action_email=0x7f0c003c;
+        public static final int action_manage_tags=0x7f0c0042;
+        public static final int action_mark_approved=0x7f0c003e;
+        public static final int action_mark_returned=0x7f0c003d;
+        public static final int action_mark_submitted=0x7f0c003f;
+        public static final int action_settings=0x7f0c0043;
+        public static final int action_sort_claim=0x7f0c0041;
         public static final int adjust_height=0x7f0c0000;
         public static final int adjust_width=0x7f0c0001;
         public static final int book_now=0x7f0c0010;
         public static final int btn_receipt=0x7f0c002d;
-        public static final int button_add_tag=0x7f0c002e;
+        public static final int button_add_tag=0x7f0c002f;
         public static final int buyButton=0x7f0c000c;
         public static final int buy_now=0x7f0c0011;
         public static final int buy_with_google=0x7f0c0012;
@@ -529,12 +529,13 @@ containing a value of this type.
         public static final int et_end_date=0x7f0c001d;
         public static final int et_name=0x7f0c001a;
         public static final int et_start_date=0x7f0c001c;
-        public static final int et_travel_reason=0x7f0c0030;
+        public static final int et_travel_reason=0x7f0c0031;
         public static final int grayscale=0x7f0c0015;
         public static final int holo_dark=0x7f0c0007;
         public static final int holo_light=0x7f0c0008;
         public static final int hybrid=0x7f0c0003;
-        public static final int iv_receipt_icon=0x7f0c0033;
+        public static final int iv_receipt_icon=0x7f0c0034;
+        public static final int map=0x7f0c002e;
         public static final int match_parent=0x7f0c000e;
         public static final int monochrome=0x7f0c0016;
         public static final int none=0x7f0c0002;
@@ -551,16 +552,16 @@ containing a value of this type.
         public static final int sp_category=0x7f0c0029;
         public static final int sp_currency=0x7f0c002a;
         public static final int strict_sandbox=0x7f0c000b;
-        public static final int tagNameEditText=0x7f0c002f;
+        public static final int tagNameEditText=0x7f0c0030;
         public static final int terrain=0x7f0c0006;
-        public static final int title_label=0x7f0c0034;
+        public static final int title_label=0x7f0c0035;
         public static final int tv_amounts=0x7f0c0019;
         public static final int tv_approver=0x7f0c0021;
-        public static final int tv_date=0x7f0c0031;
+        public static final int tv_date=0x7f0c0032;
         public static final int tv_end_label=0x7f0c001f;
         public static final int tv_name=0x7f0c0018;
         public static final int tv_start_label=0x7f0c001e;
-        public static final int tv_status=0x7f0c0032;
+        public static final int tv_status=0x7f0c0033;
         public static final int tv_user=0x7f0c0020;
         public static final int wrap_content=0x7f0c000f;
     }
@@ -573,12 +574,13 @@ containing a value of this type.
         public static final int activity_editing_actionbar=0x7f030002;
         public static final int activity_expense_claim_sort=0x7f030003;
         public static final int activity_expense_item_add=0x7f030004;
-        public static final int activity_tag_add=0x7f030005;
-        public static final int activity_tag_name=0x7f030006;
-        public static final int destination_alert=0x7f030007;
-        public static final int expense_claim_list_row=0x7f030008;
-        public static final int list_header=0x7f030009;
-        public static final int tag_list_row=0x7f03000a;
+        public static final int activity_geolocation_add=0x7f030005;
+        public static final int activity_tag_add=0x7f030006;
+        public static final int activity_tag_name=0x7f030007;
+        public static final int destination_alert=0x7f030008;
+        public static final int expense_claim_list_row=0x7f030009;
+        public static final int list_header=0x7f03000a;
+        public static final int tag_list_row=0x7f03000b;
     }
     public static final class menu {
         public static final int contextual_accept=0x7f0b0000;
@@ -588,7 +590,8 @@ containing a value of this type.
         public static final int expense_claim_edit=0x7f0b0004;
         public static final int expense_claim_list=0x7f0b0005;
         public static final int expense_claim_sort=0x7f0b0006;
-        public static final int manage_tags=0x7f0b0007;
+        public static final int geolocation_add=0x7f0b0007;
+        public static final int manage_tags=0x7f0b0008;
     }
     public static final class raw {
         public static final int gtm_analytics=0x7f040000;
@@ -753,6 +756,7 @@ containing a value of this type.
         public static final int done_label=0x7f060034;
         public static final int end_label=0x7f06003c;
         public static final int expense_items=0x7f06002b;
+        public static final int hello_world=0x7f06005d;
         public static final int items_title=0x7f060051;
         public static final int name_hint=0x7f060039;
         public static final int no_destinations=0x7f060037;
@@ -770,6 +774,7 @@ containing a value of this type.
         public static final int tags_title=0x7f060050;
         public static final int title_activity_add_tag=0x7f060059;
         public static final int title_activity_edit_tag=0x7f06005a;
+        public static final int title_activity_geolocation_add=0x7f06005c;
         /**  ManageTagsActivity 
          */
         public static final int title_activity_manage_tags=0x7f060052;
