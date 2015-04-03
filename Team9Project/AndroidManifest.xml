@@ -8,8 +8,12 @@
         android:minSdkVersion="17"
         android:targetSdkVersion="17" />
     
-    <uses-permission android:name="android.permission.CAMERA" android:required="false" />    
+    <uses-permission 
+        android:name="android.permission.CAMERA" 
+        android:required="false" />    
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name=""/>
 
     <application
         android:allowBackup="true"
@@ -59,6 +63,14 @@
         <activity 
             android:name=".ExpenseClaimSortActivity" >
     	</activity>
+    	
+         <meta-data
+    		android:name="com.google.android.gms.version"
+    		android:value="@integer/google_play_services_version" />
+        
+        <meta-data
+    		android:name="com.google.android.geo.API_KEY"
+    		android:value="AIzaSyDJPENkmVgWX2wbGr6JvgTpGwPWjfnNUkI"/>
     </application>
 
 </manifest>
