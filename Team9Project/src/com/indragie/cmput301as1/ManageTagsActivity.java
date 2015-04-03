@@ -19,8 +19,6 @@ package com.indragie.cmput301as1;
 
 import java.util.ArrayList;
 
-import com.indragie.cmput301as1.ExpenseClaim.Status;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ActionMode;
