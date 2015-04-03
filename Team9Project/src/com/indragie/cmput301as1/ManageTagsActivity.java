@@ -121,7 +121,7 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 	}
 	
 	/**
-	 * Sets intent as OK no matter what happens.
+	 * Starts intent to return.
 	 */
 	@Override
 	protected void onHome() {
