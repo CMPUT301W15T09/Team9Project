@@ -155,7 +155,7 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 	}
 	
 	/**
-	 * Updates the old tag in the claims with the new tag
+	 * Update the old tag with the new tag in claims that are returned or in progress.
 	 * @param oldTag The old tag to update.
 	 * @param newTag The new tag.
 	 */
@@ -169,6 +169,10 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 		}
 	}
 	
+	/**
+	 * Deletes the removed tag in claims that are returned or in progress.
+	 * @param tag Tag to remove in claims.
+	 */
 	private void deleteTagInClaims(Tag tag) {
 		for(ExpenseClaim claim: claimList) {
 			if(claim.getStatus() == Status.RETURNED || claim.getStatus() == Status.IN_PROGRESS) {
