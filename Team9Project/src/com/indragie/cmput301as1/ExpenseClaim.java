@@ -120,6 +120,7 @@ public class ExpenseClaim implements Serializable, ElasticSearchDocument {
 	 * User who created this claim.
 	 */
 	private User user;
+	
 	/**
 	 * Approvers comments.
 	 */

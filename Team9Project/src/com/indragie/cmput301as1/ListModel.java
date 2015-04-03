@@ -33,7 +33,7 @@ import android.content.Context;
 /**
  * Observable model that contains a list of items that can be mutated.
  */
-public class ListModel<T extends Serializable> extends TypedObservable<List<T>> implements Serializable{
+public class ListModel<T extends Serializable> extends TypedObservable<CollectionMutation<T>> implements Serializable{
 	private static final long serialVersionUID = 5371138997651829224L;
 
 	//================================================================================
@@ -106,7 +106,7 @@ public class ListModel<T extends Serializable> extends TypedObservable<List<T>> 
 	 */
 	public void setComparator(Comparator<T> comparator) {
 		this.comparator = comparator;
-		commitClaimsMutation();
+		mutate(null); // TODO: Handle this better
 	}
 	
 	//================================================================================
@@ -115,11 +115,11 @@ public class ListModel<T extends Serializable> extends TypedObservable<List<T>> 
 	
 	/**
 	 * Adds a object to the list of objects.
-	 * @param o The object to add.
+	 * @param object The object to add.
 	 */
-	public void add(T o) {
-		list.add(o);
-		commitClaimsMutation();
+	public void add(T object) {
+		list.add(object);
+		mutate(new InsertionCollectionMutation<T>(list.size() - 1, object));
 	}
 
 	/**
@@ -127,8 +127,9 @@ public class ListModel<T extends Serializable> extends TypedObservable<List<T>> 
 	 * @param o The object to remove.
 	 */
 	public boolean remove(T o) {
-		if (list.remove(o)) {
-			commitClaimsMutation();
+		int index = list.indexOf(o);
+		if (index != -1) {
+			remove(index);
 			return true;
 		}
 		return false;
@@ -139,8 +140,7 @@ public class ListModel<T extends Serializable> extends TypedObservable<List<T>> 
 	 * @param index The index of the object to remove.
 	 */
 	public void remove(int index) {
-		list.remove(index);
-		commitClaimsMutation();
+		mutate(new RemovalCollectionMutation<T>(index, list.remove(index)));
 	}
 	
 	/**
@@ -148,17 +148,16 @@ public class ListModel<T extends Serializable> extends TypedObservable<List<T>> 
 	 */
 	public void removeAll() {
 		list.clear();
-		commitClaimsMutation();
+		mutate(null); // TODO: Handle this better
 	}
 	
 	/**
 	 * Replaces an existing object.
 	 * @param index The index of the object to replace.
-	 * @param newO The new object to replace the existing object with.
+	 * @param newObject The new object to replace the existing object with.
 	 */
-	public void set(int index, T newO) {
-		list.set(index, newO);
-		commitClaimsMutation();
+	public void set(int index, T newObject) {
+		mutate(new UpdateCollectionMutation<T>(index, list.set(index, newObject), newObject));
 	}
 	
 	/**
@@ -170,7 +169,7 @@ public class ListModel<T extends Serializable> extends TypedObservable<List<T>> 
 	
 	public void replaceList(ArrayList<T> list) {
 		this.list = list;
-		commitClaimsMutation();
+		mutate(null); //TODO: FIX THIS TO REPLACE THE LIST
 	}
 	
 	//================================================================================
@@ -180,13 +179,14 @@ public class ListModel<T extends Serializable> extends TypedObservable<List<T>> 
 	/**
 	 * Commits the changes.
 	 */
-	private void commitClaimsMutation() {
+	private void mutate(CollectionMutation<T> mutation) {
+		setChanged();
+		notifyObservers(mutation);
+		
 		if (comparator != null) {
 			Collections.sort(list, comparator);
 		}
 		save(list);
-		setChanged();
-		notifyObservers(list);
 	}
 	
 	/**
