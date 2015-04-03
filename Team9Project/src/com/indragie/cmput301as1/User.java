@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2015 Nic Carroll
+ * Copyright (C) 2015 Nic Carroll, Indragie Karunaratne
  * 
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,52 +17,63 @@
 package com.indragie.cmput301as1;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * Model object representing a user object.
  */
-public class User implements Serializable {
-	
+public class User implements Serializable, ElasticSearchDocument {
+	private static final long serialVersionUID = 9042593982087737387L;
+
 	//================================================================================
 	// Properties
 	//================================================================================
 	/**
-	 * 
+	 * Unique document ID.
 	 */
-	private static final long serialVersionUID = 1L;
+	private ElasticSearchDocumentID documentID = new ElasticSearchDocumentID(
+		ElasticSearchConfiguration.INDEX_NAME, 
+		"user", 
+		UUID.randomUUID().toString()
+	);
+	
+	/**
+	 * The user's name.
+	 */
 	private String name;
-	private int id;
-	
-	
+
 	//================================================================================
 	// Constructors
 	//================================================================================
-	
-	public User(String name, int id){
-		this.name = name;
-		this.id = id;
-		
-	}
 
+	/**
+	 * Creates a new instance of {@link User}
+	 * @param name The user's name.
+	 */
+	public User(String name){
+		this.name = name;
+	}
 	
 	//================================================================================
 	// Accessors
 	//================================================================================
+	
 	/**
-	 * @return the name of user
+	 * @return The name of user.
 	 */
 	public String getName() {
 		return name;
 	}
-
-	/**
-	 * @return the id number of user
+	
+	//================================================================================
+	// ElasticSearchDocument
+	//================================================================================
+	
+	/* (non-Javadoc)
+	 * @see com.indragie.cmput301as1.ElasticSearchDocument#getDocumentID()
 	 */
-	public int getId() {
-		return id;
+	@Override
+	public ElasticSearchDocumentID getDocumentID() {
+		return documentID;
 	}
-	
-
-	
-
 }
