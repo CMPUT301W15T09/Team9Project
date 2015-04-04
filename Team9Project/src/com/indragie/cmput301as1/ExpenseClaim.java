@@ -28,6 +28,8 @@ import java.util.UUID;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 
+import com.google.gson.annotations.SerializedName;
+
 import android.content.res.Resources;
 
 /**
@@ -37,6 +39,11 @@ import android.content.res.Resources;
 public class ExpenseClaim implements Serializable, ElasticSearchDocument {
 	private static final long serialVersionUID = -3079284243806354009L;
 	
+	/**
+	 * Type used for indexing on ElasticSearch.
+	 */
+	public static final String ELASTIC_SEARCH_TYPE = "expense_claim";
+	
 	//================================================================================
 	// Properties
 	//================================================================================
@@ -45,7 +52,7 @@ public class ExpenseClaim implements Serializable, ElasticSearchDocument {
 	 */
 	private ElasticSearchDocumentID documentID = new ElasticSearchDocumentID(
 		ElasticSearchConfiguration.INDEX_NAME, 
-		"expense_claim", 
+		ELASTIC_SEARCH_TYPE,
 		UUID.randomUUID().toString()
 	);
 	

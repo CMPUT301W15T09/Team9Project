@@ -23,6 +23,11 @@ import java.io.Serializable;
  */
 public class User implements Serializable, ElasticSearchDocument {
 	private static final long serialVersionUID = -5731747178226322124L;
+	
+	/**
+	 * Type used for indexing on ElasticSearch.
+	 */
+	public static final String ELASTIC_SEARCH_TYPE = "user";
 
 	//================================================================================
 	// Properties
@@ -51,7 +56,7 @@ public class User implements Serializable, ElasticSearchDocument {
 		this.name = name;
 		this.documentID = new ElasticSearchDocumentID(
 			ElasticSearchConfiguration.INDEX_NAME, 
-			"user", 
+			ELASTIC_SEARCH_TYPE,
 			identifier
 		);
 	}
