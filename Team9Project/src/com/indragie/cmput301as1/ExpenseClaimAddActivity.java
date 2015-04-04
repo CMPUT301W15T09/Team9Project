@@ -129,6 +129,10 @@ public class ExpenseClaimAddActivity extends Activity {
 			user,
 			ExpenseClaim.Status.IN_PROGRESS
 		);
+		
+		OnlineManager<ExpenseClaim> onlineManager = new OnlineManager<ExpenseClaim>(this);
+		ElasticSearchAPIClient apiClient = new ElasticSearchAPIClient(ElasticSearchConfiguration.getBaseURL()); 
+		onlineManager.enqueueCall(apiClient.add(claim));
 
 		Intent intent = new Intent();
 		intent.putExtra(EXTRA_EXPENSE_CLAIM, claim);

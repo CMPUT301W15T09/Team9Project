@@ -33,7 +33,13 @@ import android.util.Log;
 
 public class OnlineManager<T extends ElasticSearchDocument> extends BroadcastReceiver{
 
-	private LinkedList<ElasticSearchAPIClient.APICall<T>> stack = new LinkedList<ElasticSearchAPIClient.APICall<T>>(); 
+	private LinkedList<ElasticSearchAPIClient.APICall<T>> stack = new LinkedList<ElasticSearchAPIClient.APICall<T>>();
+	private Context context;
+
+	public OnlineManager(Context context) {
+		super();
+		this.context = context;
+	}
 
 	/**
 	 * adds a call to the stack. Then attempts to execute it.
@@ -43,8 +49,6 @@ public class OnlineManager<T extends ElasticSearchDocument> extends BroadcastRec
 		stack.add(call);
 		attemptNextAPICall();
 	}
-
-	private Context context;
 
 	/**
 	 * checks for APICalls in the stack and for network connection then executes the APICall
@@ -79,13 +83,14 @@ public class OnlineManager<T extends ElasticSearchDocument> extends BroadcastRec
 						// on success you want to recall if there is still something in the stack
 						// remove the call from the stack
 						stack.removeFirst();
-						Log.d("test", "worked");
+						Log.d("test", "worked2");
 						if (stack.size()>0) {
 							attemptNextAPICall();
 						}
 					}
 				});
 			}
+			Log.d("test", "no internet");
 		}
 	}
 
@@ -95,10 +100,10 @@ public class OnlineManager<T extends ElasticSearchDocument> extends BroadcastRec
 	public void onReceive(Context context, Intent intent) {
 		Log.d("app","Network connectivity change");
 		if(intent.getExtras()!=null) {
-			@SuppressWarnings("deprecation")
 			NetworkInfo ni=(NetworkInfo) intent.getExtras().get(ConnectivityManager.EXTRA_NETWORK_INFO);
 			if(ni!=null && ni.getState()==NetworkInfo.State.CONNECTED) {
 				Log.i("app","Network "+ni.getTypeName()+" connected");
+				Log.d("test", "reconnected");
 				attemptNextAPICall();
 			}
 		}
