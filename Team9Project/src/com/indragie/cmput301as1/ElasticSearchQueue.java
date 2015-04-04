@@ -18,7 +18,7 @@
 package com.indragie.cmput301as1;
 
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import android.content.Context;
 import android.net.NetworkInfo;
@@ -65,13 +65,13 @@ public class ElasticSearchQueue<T extends ElasticSearchDocument> implements Type
 	/**
 	 * The queue of API calls to execute.
 	 */
-	private LinkedList<QueueItem> queue = new LinkedList<QueueItem>();
+	private ConcurrentLinkedQueue<QueueItem> queue = new ConcurrentLinkedQueue<QueueItem>();
 	
 	/**
 	 * Used to receive updates when the network state changes.
 	 */
 	private NetworkStateListener networkListener;
-
+	
 	//================================================================================
 	// Constructors
 	//================================================================================
@@ -94,10 +94,10 @@ public class ElasticSearchQueue<T extends ElasticSearchDocument> implements Type
 	 */
 	@Override
 	public void update(TypedObservable<State> observable, State state) {
-		if (state != State.CONNECTED) return;
-		
-		Log.v(LOG_TAG, "Network connection became available. Retrying pending requests.");
-		attemptNextAPICall();
+		if (state == State.CONNECTED) {
+			Log.v(LOG_TAG, "Network connection became available. Retrying pending requests.");
+			attemptNextAPICall();
+		}
 	}
 	
 	//================================================================================
@@ -119,12 +119,12 @@ public class ElasticSearchQueue<T extends ElasticSearchDocument> implements Type
 	private void attemptNextAPICall() {
 		if (queue.size() == 0 || networkListener.getNetworkState() != State.CONNECTED) return;
 		
-		final QueueItem item = queue.getFirst();
+		final QueueItem item = queue.peek();
 		final ElasticSearchAPIClient.APICallback<T> callback = item.callback;
 		item.call.enqueue(new ElasticSearchAPIClient.APICallback<T>() {
 			@Override
 			public void onSuccess(Response response, T document) {
-				queue.removeFirst();
+				queue.poll();
 				if (callback != null) {
 					callback.onSuccess(response, document);
 				}
@@ -142,7 +142,7 @@ public class ElasticSearchQueue<T extends ElasticSearchDocument> implements Type
 				// be retried.
 				if (response != null) {
 					Log.v(LOG_TAG, "Request failed with response " + response.toString());
-					queue.removeFirst();
+					queue.poll();
 					if (callback != null) {
 						callback.onFailure(request, response, e);
 					}
