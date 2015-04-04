@@ -21,7 +21,7 @@ import android.content.Context;
 /**
  * Encapsulates shared state for the application-wide session.
  */
-public class Session {
+public class Session implements TypedObserver<CollectionMutation<ExpenseClaim>> {
 	//================================================================================
 	// Constants
 	//================================================================================
@@ -85,6 +85,16 @@ public class Session {
 	 */
 	private ListModel<ExpenseClaim> reviewalClaims;
 	
+	/**
+	 * Used to queue up API calls (automatic retry, etc.)
+	 */
+	private ElasticSearchQueue requestQueue = new ElasticSearchQueue();
+	
+	/**
+	 * Used to make API calls to the ElasticSearch servers.
+	 */
+	private ElasticSearchAPIClient apiClient = new ElasticSearchAPIClient(ElasticSearchConfiguration.getBaseURL());
+	
 	//================================================================================
 	// Constructors
 	//================================================================================
@@ -97,8 +107,12 @@ public class Session {
 	public Session(Context context, User user) {
 		this.user = user;
 		this.context = context;
-		this.ownedClaims = new ListModel<ExpenseClaim>(modelFilename(OWNED_CLAIMS_FILENAME_PREFIX, user), context);
-		this.reviewalClaims = new ListModel<ExpenseClaim>(modelFilename(REVIEWAL_CLAIMS_FILENAME_PREFIX, user), context);
+		
+		ownedClaims = new ListModel<ExpenseClaim>(modelFilename(OWNED_CLAIMS_FILENAME_PREFIX, user), context);
+		ownedClaims.addObserver(this);
+		
+		reviewalClaims = new ListModel<ExpenseClaim>(modelFilename(REVIEWAL_CLAIMS_FILENAME_PREFIX, user), context);
+		reviewalClaims.addObserver(this);
 	}
 	
 	/**
@@ -131,5 +145,30 @@ public class Session {
 	 */
 	public ListModel<ExpenseClaim> getReviewalClaims() {
 		return reviewalClaims;
+	}
+	
+	//================================================================================
+	// TypedObserver<CollectionMutation<ExpenseClaim>>
+	//================================================================================
+	
+	/* (non-Javadoc)
+	 * @see com.indragie.cmput301as1.TypedObserver#update(com.indragie.cmput301as1.TypedObservable, java.lang.Object)
+	 */
+	@Override
+	public void update(TypedObservable<CollectionMutation<ExpenseClaim>> observable,
+			CollectionMutation<ExpenseClaim> mutation) {
+		ElasticSearchAPIClient.APICall<ExpenseClaim> call = null;
+		switch (mutation.getMutationType()) {
+		case INSERT:
+			call = apiClient.add(((InsertionCollectionMutation<ExpenseClaim>)mutation).getObject());
+			break;
+		case REMOVE:
+			call = apiClient.delete(((RemovalCollectionMutation<ExpenseClaim>)mutation).getObject());
+			break;
+		case UPDATE:
+			call = apiClient.update(((UpdateCollectionMutation<ExpenseClaim>)mutation).getNewObject());
+			break;
+		}
+		requestQueue.enqueueCall(call, null);
 	}
 }
