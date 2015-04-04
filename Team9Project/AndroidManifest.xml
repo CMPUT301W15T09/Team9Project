@@ -7,6 +7,10 @@
     <uses-sdk
         android:minSdkVersion="17"
         android:targetSdkVersion="17" />
+    
+    <permission
+        android:name="com.indragie.cmput301as1.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" />
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -20,7 +24,6 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.perm" />
 
     <application
         android:allowBackup="true"
@@ -69,18 +72,14 @@
         </activity>
         <activity android:name=".ExpenseClaimSortActivity" >
         </activity>
-
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDJPENkmVgWX2wbGr6JvgTpGwPWjfnNUkI" />
-
-        <activity
+ 		<activity
             android:name=".GeolocationAddActivity"
             android:label="@string/title_activity_geolocation_add" >
         </activity>
+        
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDJPENkmVgWX2wbGr6JvgTpGwPWjfnNUkI" />
     </application>
 
 </manifest>

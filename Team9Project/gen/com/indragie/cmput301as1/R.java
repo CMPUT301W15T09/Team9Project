@@ -574,7 +574,7 @@ containing a value of this type.
         public static final int activity_editing_actionbar=0x7f030002;
         public static final int activity_expense_claim_sort=0x7f030003;
         public static final int activity_expense_item_add=0x7f030004;
-        public static final int activity_geolocation_add=0x7f030005;
+        public static final int activity_geolocation=0x7f030005;
         public static final int activity_tag_add=0x7f030006;
         public static final int activity_tag_name=0x7f030007;
         public static final int destination_alert=0x7f030008;
@@ -590,7 +590,7 @@ containing a value of this type.
         public static final int expense_claim_edit=0x7f0b0004;
         public static final int expense_claim_list=0x7f0b0005;
         public static final int expense_claim_sort=0x7f0b0006;
-        public static final int geolocation_add=0x7f0b0007;
+        public static final int geolocation=0x7f0b0007;
         public static final int manage_tags=0x7f0b0008;
     }
     public static final class raw {
