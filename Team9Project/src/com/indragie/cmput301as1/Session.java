@@ -88,7 +88,7 @@ public class Session implements TypedObserver<CollectionMutation<ExpenseClaim>> 
 	/**
 	 * Used to queue up API calls (automatic retry, etc.)
 	 */
-	private ElasticSearchQueue requestQueue = new ElasticSearchQueue();
+	private ElasticSearchQueue<ExpenseClaim> requestQueue;
 	
 	/**
 	 * Used to make API calls to the ElasticSearch servers.
@@ -113,6 +113,8 @@ public class Session implements TypedObserver<CollectionMutation<ExpenseClaim>> 
 		
 		reviewalClaims = new ListModel<ExpenseClaim>(modelFilename(REVIEWAL_CLAIMS_FILENAME_PREFIX, user), context);
 		reviewalClaims.addObserver(this);
+		
+		requestQueue = new ElasticSearchQueue<ExpenseClaim>(context);
 	}
 	
 	/**
