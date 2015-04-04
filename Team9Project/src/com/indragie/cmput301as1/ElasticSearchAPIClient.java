@@ -283,14 +283,14 @@ public class ElasticSearchAPIClient {
 	 */
 	private class JSONDocumentDeserializer<T extends ElasticSearchDocument> implements Deserializer<T> {
 		/** The type of the document */
-		private Type documentType;
+		private Class<T> documentType;
 		
 		/**
 		 * Creates a new instance of {@link JSONDocumentDeserializer}
 		 * @param documentType The type of the document. Passing this in as a
 		 * parameter is an ugly hack to work around type erasure.
 		 */
-		JSONDocumentDeserializer(Type documentType) {
+		JSONDocumentDeserializer(Class<T> documentType) {
 			this.documentType = documentType;
 		}
 		
@@ -323,14 +323,14 @@ public class ElasticSearchAPIClient {
 	 */
 	private class SearchHitDeserializer<T extends ElasticSearchDocument> implements Deserializer<List<T>> {
 		/** The type of the document */
-		private Type documentType;
+		private Class<T> documentType;
 		
 		/**
 		 * Creates a new instance of {@link SearchHitDeserializer}
 		 * @param documentType The type of the document. Passing this in as a
 		 * parameter is an ugly hack to work around type erasure.
 		 */
-		SearchHitDeserializer(Type documentType) {
+		SearchHitDeserializer(Class<T> documentType) {
 			this.documentType = documentType;
 		}
 
@@ -432,7 +432,7 @@ public class ElasticSearchAPIClient {
 	 * @note The document returned by executing the call will be the document model object, 
 	 * deserialized from JSON.
 	 */
-	public <T extends ElasticSearchDocument> APICall<T> get(ElasticSearchDocumentID documentID, Type documentType) {
+	public <T extends ElasticSearchDocument> APICall<T> get(ElasticSearchDocumentID documentID, Class<T> documentType) {
 		try {
 			Request request = new Request.Builder()
 				.url(constructDocumentURL(documentID))
@@ -492,6 +492,19 @@ public class ElasticSearchAPIClient {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	/** 
+	 * Performs a search query.
+	 * @param index The index to search in.
+	 * @param type The type of document to search for.
+	 * @param queryJSON The search query in JSON format.
+	 * @param documentType The type of the document. This is an ugly hack to work around
+	 * type erasure.
+	 * @return API call representing this request.
+	 */
+	public <T extends ElasticSearchDocument> APICall<List<T>> search(String index, String type, String queryJSON, Class<T> documentType) {
+		return null;
 	}
 
 	//================================================================================
