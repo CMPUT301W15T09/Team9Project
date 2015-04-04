@@ -299,10 +299,6 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		openDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				OnlineManager<ExpenseClaim> onlineManager = new OnlineManager<ExpenseClaim>(ExpenseClaimListActivity.this);
-				ElasticSearchAPIClient apiClient = new ElasticSearchAPIClient(ElasticSearchConfiguration.getBaseURL()); 
-				onlineManager.enqueueCall(apiClient.delete(listModel.getItems().get(longPressedItemIndex)));
-				
 				listModel.remove(longPressedItemIndex);
 			}
 		});

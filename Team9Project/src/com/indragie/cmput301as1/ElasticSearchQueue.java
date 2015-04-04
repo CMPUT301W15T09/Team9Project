@@ -31,12 +31,12 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
-public class OnlineManager<T extends ElasticSearchDocument> extends BroadcastReceiver{
+public class ElasticSearchQueue<T extends ElasticSearchDocument> extends BroadcastReceiver{
 
 	private LinkedList<ElasticSearchAPIClient.APICall<T>> stack = new LinkedList<ElasticSearchAPIClient.APICall<T>>();
 	private Context context;
 
-	public OnlineManager(Context context) {
+	public ElasticSearchQueue(Context context) {
 		super();
 		this.context = context;
 	}
