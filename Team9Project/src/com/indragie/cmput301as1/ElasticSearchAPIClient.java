@@ -20,9 +20,11 @@ package com.indragie.cmput301as1;
 import android.text.TextUtils;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -303,8 +305,7 @@ public class ElasticSearchAPIClient {
 			try {
 				JsonElement rootElement = parser.parse(response.body().string());
 				if (rootElement.isJsonObject()) {
-					JsonObject rootObject = rootElement.getAsJsonObject();
-					JsonElement sourceElement = rootObject.get("_source");
+					JsonElement sourceElement = rootElement.getAsJsonObject().get("_source");
 					return gson.fromJson(sourceElement, documentType);
 				}
 			} catch (JsonSyntaxException e) {
@@ -344,22 +345,23 @@ public class ElasticSearchAPIClient {
 			try {
 				rootElement = parser.parse(response.body().string());
 				if (rootElement.isJsonObject()) {
-					JsonObject rootObject = rootElement.getAsJsonObject();
-					JsonElement hitsElement = rootObject.get("hits");
-					if (hitsElement.isJsonArray()) {
-						JsonArray hitsArray = hitsElement.getAsJsonArray();
-						ArrayList<T> models = new ArrayList<T>();
-						for (JsonElement element : hitsArray) {
-							if (element.isJsonObject()) {
-								JsonObject docObject = element.getAsJsonObject();
-								JsonElement sourceElement = docObject.get("_source");
-								T model = gson.fromJson(sourceElement, documentType);
-								if (model != null) {
-									models.add(model);
+					JsonElement outerHitsElement = rootElement.getAsJsonObject().get("hits");
+					if (outerHitsElement.isJsonObject()) {
+						JsonElement hitsElement = outerHitsElement.getAsJsonObject().get("hits");
+						if (hitsElement.isJsonArray()) {
+							ArrayList<T> models = new ArrayList<T>();
+							for (JsonElement element : hitsElement.getAsJsonArray()) {
+								if (element.isJsonObject()) {
+									JsonObject docObject = element.getAsJsonObject();
+									JsonElement sourceElement = docObject.get("_source");
+									T model = gson.fromJson(sourceElement, documentType);
+									if (model != null) {
+										models.add(model);
+									}
 								}
 							}
+							return models;
 						}
-						return models;
 					}
 				}
 			} catch (JsonSyntaxException e) {
@@ -504,6 +506,25 @@ public class ElasticSearchAPIClient {
 	 * @return API call representing this request.
 	 */
 	public <T extends ElasticSearchDocument> APICall<List<T>> search(String index, String type, String queryJSON, Class<T> documentType) {
+		try {
+			String tokens[] = new String[] { 
+				URLEncoder.encode(index, "UTF-8"), 
+				URLEncoder.encode(type, "UTF-8"),
+				"_search"
+			};
+			String path = "/" + TextUtils.join("/", tokens);
+			Request request = new Request.Builder()
+				.url(new URL(baseURL, path))
+				.get()
+				.build();
+			return new APICall<List<T>>(client.newCall(request), new SearchHitDeserializer<T>(documentType));
+		} catch (UnsupportedEncodingException e) {
+			// Shouldn't happen, we know UTF-8 is valid
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			// See comment in add()
+			e.printStackTrace();
+		}
 		return null;
 	}
 
@@ -518,8 +539,18 @@ public class ElasticSearchAPIClient {
 	 * @throws MalformedURLException If the URL could not be constructed.
 	 */
 	private URL constructDocumentURL(ElasticSearchDocumentID docID) throws MalformedURLException {
-		String tokens[] = new String[] { docID.getIndex(), docID.getType(), docID.getID() };
-		String path = "/" + TextUtils.join("/", tokens);
-		return new URL(baseURL, path);
+		try {
+			String tokens[] = new String[] { 
+				URLEncoder.encode(docID.getIndex(), "UTF-8"), 
+				URLEncoder.encode(docID.getType(), "UTF-8"),
+				URLEncoder.encode(docID.getID(), "UTF-8") 
+			};
+			String path = "/" + TextUtils.join("/", tokens);
+			return new URL(baseURL, path);
+		} catch (UnsupportedEncodingException e) {
+			// This shouldn't happen, we know UTF-8 is valid.
+			e.printStackTrace();
+			return null;
+		}
 	}
 }
