@@ -20,36 +20,96 @@ package com.indragie.cmput301as1;
 import java.io.IOException;
 import java.util.LinkedList;
 
-import com.indragie.cmput301as1.ElasticSearchAPIClient.APICall;
+import android.content.Context;
+import android.net.NetworkInfo;
+import android.net.NetworkInfo.State;
+import android.util.Log;
+
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
-
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.util.Log;
 
 /**
  * Handles queueing of requests and automatic retry of failed requests.
  */
-public class ElasticSearchQueue<T extends ElasticSearchDocument> extends BroadcastReceiver{
-
-	private LinkedList<ElasticSearchAPIClient.APICall<T>> stack = new LinkedList<ElasticSearchAPIClient.APICall<T>>();
-	private Context context;
-
-	public ElasticSearchQueue(Context context) {
-		super();
-		this.context = context;
+public class ElasticSearchQueue<T extends ElasticSearchDocument> implements TypedObserver<NetworkInfo.State> {
+	//================================================================================
+	// Classes
+	//================================================================================
+	
+	/**
+	 * Tag used for all logging from {@link ElasticSearchQueue}
+	 */
+	private static final String LOG_TAG = "es_queue";
+	
+	//================================================================================
+	// Classes
+	//================================================================================
+	
+	/**
+	 * Container class for an API call and corresponding callback.
+	 */
+	private class QueueItem {
+		ElasticSearchAPIClient.APICall<T> call;
+		ElasticSearchAPIClient.APICallback<T> callback;
+		
+		QueueItem(ElasticSearchAPIClient.APICall<T> call, ElasticSearchAPIClient.APICallback<T> callback) {
+			this.call = call;
+			this.callback = callback;
+		}
 	}
+	
+	//================================================================================
+	// Properties
+	//================================================================================
+	
+	/**
+	 * The queue of API calls to execute.
+	 */
+	private LinkedList<QueueItem> queue = new LinkedList<QueueItem>();
+	
+	/**
+	 * Used to receive updates when the network state changes.
+	 */
+	private NetworkStateListener networkListener;
+
+	//================================================================================
+	// Constructors
+	//================================================================================
+	
+	/**
+	 * Creates a new instance of {@link ElasticSearchQueue}
+	 * @param context The current context.
+	 */
+	public ElasticSearchQueue(Context context) {
+		networkListener = new NetworkStateListener(context);
+		networkListener.getObservable().addObserver(this);
+	}
+	
+	//================================================================================
+	// TypedObserver<NetworkState.info>
+	//================================================================================
+	
+	/* (non-Javadoc)
+	 * @see com.indragie.cmput301as1.TypedObserver#update(com.indragie.cmput301as1.TypedObservable, java.lang.Object)
+	 */
+	@Override
+	public void update(TypedObservable<State> observable, State state) {
+		if (state != State.CONNECTED) return;
+		
+		Log.v(LOG_TAG, "Network connection became available. Retrying pending requests.");
+		attemptNextAPICall();
+	}
+	
+	//================================================================================
+	// API
+	//================================================================================
 
 	/**
 	 * adds a call to the stack. Then attempts to execute it.
 	 * @param APICall<T>
 	 */
 	public void enqueueCall(ElasticSearchAPIClient.APICall<T> call, ElasticSearchAPIClient.APICallback<T> callback) {
-		stack.add(call);
+		queue.add(new QueueItem(call, callback));
 		attemptNextAPICall();
 	}
 
@@ -57,68 +117,39 @@ public class ElasticSearchQueue<T extends ElasticSearchDocument> extends Broadca
 	 * checks for APICalls in the stack and for network connection then executes the APICall
 	 */
 	private void attemptNextAPICall() {
-		// if there is something inside of the stack, do this, else do nothing
-		if (stack.size() > 0) {	
-
-			if (isNetworkAvailable(context)) {
-				// we are connected so then we want to go through with our stack calls
-				APICall<T> call = stack.getFirst();
-
-				// now do something with the call
-				call.enqueue(new ElasticSearchAPIClient.APICallback<T>() {
-					@Override
-					public void onFailure(Request request, Response response, IOException e) {
-						// if response is not null then it means that server returned a bad HTTP status code
-						// otherwise the response is null which means connection has been lost
-						if (response!=null) {
-							stack.removeFirst();
-							try {
-								throw new Exception("Bad HTTP status code");
-							} catch (Exception e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
-						} 
-					}
-
-					@Override
-					public void onSuccess(Response response, T document) {
-						// on success you want to recall if there is still something in the stack
-						// remove the call from the stack
-						stack.removeFirst();
-						Log.d("test", "worked2");
-						if (stack.size()>0) {
-							attemptNextAPICall();
-						}
-					}
-				});
-			}
-			Log.d("test", "no internet");
-		}
-	}
-
-	// http://stackoverflow.com/questions/12157130/internet-listener-android-example
-	// we come into this code once we get connection / lose connection
-	@Override
-	public void onReceive(Context context, Intent intent) {
-		Log.d("app","Network connectivity change");
-		if(intent.getExtras()!=null) {
-			NetworkInfo ni=(NetworkInfo) intent.getExtras().get(ConnectivityManager.EXTRA_NETWORK_INFO);
-			if(ni!=null && ni.getState()==NetworkInfo.State.CONNECTED) {
-				Log.i("app","Network "+ni.getTypeName()+" connected");
-				Log.d("test", "reconnected");
+		if (queue.size() == 0 || networkListener.getNetworkState() != State.CONNECTED) return;
+		
+		final QueueItem item = queue.getFirst();
+		final ElasticSearchAPIClient.APICallback<T> callback = item.callback;
+		item.call.enqueue(new ElasticSearchAPIClient.APICallback<T>() {
+			@Override
+			public void onSuccess(Response response, T document) {
+				queue.removeFirst();
+				if (callback != null) {
+					callback.onSuccess(response, document);
+				}
 				attemptNextAPICall();
 			}
-		}
-		if(intent.getExtras().getBoolean(ConnectivityManager.EXTRA_NO_CONNECTIVITY,Boolean.FALSE)) {
-			Log.d("app","There's no network connectivity");
-		}
-	}
 
-	// http://stackoverflow.com/questions/4238921/detect-whether-there-is-an-internet-connection-available-on-android
-	public boolean isNetworkAvailable(Context context) {
-		ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-		return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+			@Override
+			public void onFailure(Request request, Response response, IOException e) {
+				// Check if the request executed but failed (bad HTTP status code)
+				// This scenario cannot be handled, so the API call should be discarded
+				// and the failure callback should be called.
+				//
+				// The other scenario is that the request did not execute at all, likely
+				// due to some connectivity issue. In this case, the request should
+				// be retried.
+				if (response != null) {
+					Log.v(LOG_TAG, "Request failed with response " + response.toString());
+					queue.removeFirst();
+					if (callback != null) {
+						callback.onFailure(request, response, e);
+					}
+				} else {
+					Log.v(LOG_TAG, "Request failed with exception " + e.toString());
+				}
+			}
+		});
 	}
 }
