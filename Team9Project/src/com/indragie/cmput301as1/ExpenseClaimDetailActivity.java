@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2015 Indragie Karunaratne
+ * Copyright (C) 2015 Indragie Karunaratne, Andrew Zhong
  * 
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -158,6 +158,9 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	 */
 	private ExpenseClaimDetailController controller;
 	
+	/**
+	 * Position of a long pressed item.
+	 */
 	private int longPressedItemPosition;
 
 	//================================================================================
@@ -277,15 +280,8 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	
 	/**
 	 * Sets the editable state of the entire UI.
-	 * @param editable Whether the claim is editable or not.
 	 */
 	private void setDeletable() {
-		/*
-		boolean status = false;
-		if((!editable && getListView().getItemAtPosition(position).getClass() != Tag.class)) {
-			status = true;
-		}
-		*/
 		getListView().setOnItemLongClickListener(
 			new LongClickDeleteListener(this, new LongClickDeleteListener.OnDeleteListener() {
 				@Override
@@ -501,6 +497,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	
 	/**
 	 * Prompts the user for confirmation in response to deleting items in the activity.
+	 * @param type The ItemType of the DetailItem.
 	 */
 	public void startDeleteAlertDialog(ExpenseClaimDetailController.DetailItem.ItemType type) {
 		AlertDialog.Builder openDialog = new AlertDialog.Builder(this);

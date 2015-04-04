@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2015 Indragie Karunaratne
+ * Copyright (C) 2015 Indragie Karunaratne, Andrew Zhong
  * 
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -47,6 +47,9 @@ public class LongClickDeleteListener implements AdapterView.OnItemLongClickListe
 	 */
 	private OnDeleteListener onDeleteListener;
 
+	/**
+	 * Set status when a long clicked item is detected.
+	 */
 	private SetStatus setStatus;
 	
 	//================================================================================
@@ -64,8 +67,15 @@ public class LongClickDeleteListener implements AdapterView.OnItemLongClickListe
 		public void onDelete(int position);
 	}
 	
+	/**
+	 * Interface for setting the status of a long clicked item to be deleted.
+	 */
 	public interface SetStatus {
-		
+		/**
+		 * Called when long click is detected for a item.
+		 * @param position The position of the item long clicked.
+		 * @return The status if the delete should happen.
+		 */
 		public boolean set(int position);
 	}
 	
