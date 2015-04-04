@@ -65,7 +65,7 @@ public class ElasticSearchAPIClient {
 	/**
 	 * Used for serializing objects to and from JSON.
 	 */
-	private Gson gson = new Gson();
+	private Gson gson;
 
 	//================================================================================
 	// Interfaces
@@ -315,7 +315,17 @@ public class ElasticSearchAPIClient {
 	 * @param baseURL The URL to the ElasticSearch instance.
 	 */
 	public ElasticSearchAPIClient(URL baseURL) {
+		this(baseURL, new Gson());
+	}
+	
+	/**
+	 * Creates a new instance of {@link ElasticSearchAPIClient}
+	 * @param baseURL The URL to the ElasticSearch instance.
+	 * @param gson JSON serializer.
+	 */
+	public ElasticSearchAPIClient(URL baseURL, Gson gson) {
 		this.baseURL = baseURL;
+		this.gson = gson;
 	}
 
 	//================================================================================
