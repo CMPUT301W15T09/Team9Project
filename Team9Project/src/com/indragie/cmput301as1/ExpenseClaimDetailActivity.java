@@ -243,11 +243,11 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	 */
 	private void setupListFooterView() {
 		View footerView = getLayoutInflater().inflate(R.layout.activity_claim_footer, getListView(), false);
-
+		
 		amountsTextView = (TextView)footerView.findViewById(R.id.tv_amounts);
 		amountsTextView.setText(claim.getSummarizedAmounts());
-
-		getListView().addFooterView(footerView);
+		
+		getListView().addFooterView(footerView, null, false);
 	}
 	
 	/**
