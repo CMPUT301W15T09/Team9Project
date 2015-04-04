@@ -74,7 +74,7 @@ public class LongClickDeleteListener implements AdapterView.OnItemLongClickListe
 		/**
 		 * Called when long click is detected for a item.
 		 * @param position The position of the item long clicked.
-		 * @return The status if the delete should happen.
+		 * @return The status if the long click should happen.
 		 */
 		public boolean set(int position);
 	}
@@ -87,6 +87,7 @@ public class LongClickDeleteListener implements AdapterView.OnItemLongClickListe
 	 * Creates a new instance of {@link LongClickDeleteListener}
 	 * @param activity The parent activity.
 	 * @param onDeleteListener Listener that is notified when a long clicked item is deleted.
+	 * @param setStatus Sets the status of whether the long click should happen.
 	 */
 	public LongClickDeleteListener(Activity activity, OnDeleteListener onDeleteListener, SetStatus setStatus) {
 		this.activity = activity;

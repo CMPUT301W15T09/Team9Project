@@ -291,7 +291,8 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 					ExpenseClaimDetailController.DetailItem.ItemType type = getTypeAt(position);
 					startDeleteAlertDialog(type);
 				}
-			}, new LongClickDeleteListener.SetStatus() {
+			}, 
+			new LongClickDeleteListener.SetStatus() {
 				@Override
 				public boolean set(int position) {
 					ExpenseClaimDetailController.DetailItem.ItemType type = getTypeAt(position);
