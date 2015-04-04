@@ -27,7 +27,7 @@ public class UserManagerTests extends AndroidTestCase {
 		UserManager manager = new UserManager(getContext());
 		assertNull(manager.getActiveUser());
 		
-		User user = new User("Indragie Karunaratne");
+		User user = new User("test_id", "Indragie Karunaratne");
 		manager.setActiveUser(user);
 		assertEquals(user, manager.getActiveUser());
 		

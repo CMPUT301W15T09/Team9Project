@@ -23,7 +23,7 @@ import com.indragie.cmput301as1.User;
 
 public class UserTests extends TestCase {
 	public void testAccessors(){
-		User user = new User("Nic");
+		User user = new User("test_id", "Nic");
 		assertNotNull(user.getDocumentID());
 		assertEquals("Nic", user.getName());
 	}

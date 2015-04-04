@@ -64,7 +64,7 @@ public class ListModelTests extends ActivityInstrumentationTestCase2<ExpenseClai
 	}
 	
 	private static ExpenseClaim createExpenseClaim(String name) {
-		return new ExpenseClaim(name, null, new Date(), new Date(), new User("User"), ExpenseClaim.Status.IN_PROGRESS);
+		return new ExpenseClaim(name, null, new Date(), new Date(), new User("test_id", "Test User"), ExpenseClaim.Status.IN_PROGRESS);
 	}
 	
 	public void testAdd() {

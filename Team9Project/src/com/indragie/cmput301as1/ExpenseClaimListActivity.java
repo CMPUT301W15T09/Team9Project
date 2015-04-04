@@ -31,6 +31,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.provider.Settings.Secure;
 
 /**
  * An activity that presents a list of expense claims.
@@ -54,11 +55,6 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 * List model of expense claim.
 	 */
 	private ListModel<ExpenseClaim> listModel;
-	
-	/**
-	 * Index of a item that is long pressed.
-	 */
-	private int longPressedItemIndex;
 	
 	/**
 	 * Manages the user and associated preferences.
@@ -223,7 +219,9 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 				if (name == null || name.isEmpty()) {
 					Toast.makeText(getApplicationContext(), R.string.user_alert_error, Toast.LENGTH_LONG).show();
 				} else {
-					userManager.setActiveUser(new User(name));
+					// Device specific identifier
+					String androidID = Secure.getString(getContentResolver(), Secure.ANDROID_ID); 
+					userManager.setActiveUser(new User(androidID, name));
 				}
 			}
 		});
