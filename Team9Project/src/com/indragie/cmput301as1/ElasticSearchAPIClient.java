@@ -18,6 +18,7 @@
 package com.indragie.cmput301as1;
 
 import android.text.TextUtils;
+
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
@@ -75,15 +76,15 @@ public class ElasticSearchAPIClient {
 	 * Interface for being notified when a request sent via the {@link ElasticSearchAPIClient}
 	 * succeeds or fails.
 	 */
-	public interface APICallback<T extends ElasticSearchDocument> {
+	public interface APICallback<T> {
 		/**
 		 * Called when the request succeeds.
 		 * @param request The request for which the callback is being called for.
 		 * @param response The HTTP response.
-		 * @param document See documentation in {@link ElasticSearchAPIClient} for details
+		 * @param model See documentation in {@link ElasticSearchAPIClient} for details
 		 * on what this parameter will contain.
 		 */
-		public void onSuccess(Response response, T document);
+		public void onSuccess(Response response, T model);
 
 		/**
 		 * Called when the request fails.
@@ -103,17 +104,16 @@ public class ElasticSearchAPIClient {
 	}
 
 	/**
-	 * Interface for an object that can deserialize an ElasticSearch document
-	 * model from an HTTP response.
-	 * @param <T> The type of the document.
+	 * Interface for an object that can deserialize a model object from an HTTP response.
+	 * @param <T> The type of the model object.
 	 */
-	private interface DocumentDeserializer<T extends ElasticSearchDocument> {
+	private interface Deserializer<T> {
 		/**
-		 * Creates an ElasticSearch document from an HTTP response.
+		 * Creates a model object from an ElasticSearch API response.
 		 * @param response The HTTP response.
-		 * @return An ElasticSearch document.
+		 * @return A model object.
 		 */
-		T documentFromResponse(Response response);
+		T modelFromResponse(Response response);
 	}
 
 	//================================================================================
@@ -151,10 +151,10 @@ public class ElasticSearchAPIClient {
 	
 	/**
 	 * Wraps {@link com.squareup.okhttp.Call} with additional logic for deserializing
-	 * the document from JSON.
-	 * @param <T> The type of the document.
+	 * a model object from JSON.
+	 * @param <T> The type of the model object.
 	 */
-	public class APICall<T extends ElasticSearchDocument> {
+	public class APICall<T> {
 		//================================================================================
 		// Properties
 		//================================================================================
@@ -164,9 +164,9 @@ public class ElasticSearchAPIClient {
 		private Call call;
 		
 		/**
-		 * Optional deserializer used to deserialize a document from JSON.
+		 * Optional deserializer used to deserialize a model object from JSON.
 		 */
-		private DocumentDeserializer<T> deserializer;
+		private Deserializer<T> deserializer;
 		
 		//================================================================================
 		// Constructors
@@ -174,9 +174,9 @@ public class ElasticSearchAPIClient {
 		/**
 		 * Creates a new instance of {@link APICall}
 		 * @param call The underlying {@link com.squareup.okhttp.Call} instance.
-		 * @param deserializer Optional deserializer used to deserialize a document from JSON.
+		 * @param deserializer Optional deserializer used to deserialize a model object from JSON.
 		 */
-		protected APICall(Call call, DocumentDeserializer<T> deserializer) {
+		protected APICall(Call call, Deserializer<T> deserializer) {
 			this.call = call;
 			this.deserializer = deserializer;
 		}
@@ -213,11 +213,11 @@ public class ElasticSearchAPIClient {
 				@Override
 				public void onResponse(Response response) throws IOException {
 					if (response.isSuccessful()) {
-						T document = null;
+						T model = null;
 						if (deserializer != null) {
-							document = deserializer.documentFromResponse(response);
+							model = deserializer.modelFromResponse(response);
 						}
-						callback.onSuccess(response, document);
+						callback.onSuccess(response, model);
 					} else {
 						callback.onFailure(response.request(), response, null);
 					}
@@ -229,18 +229,18 @@ public class ElasticSearchAPIClient {
 		 * Invokes the request immediately, and blocks until the response can be processed or is in error.
 		 * @note This is primarily used for unit testing purposes. Applications should almost always
 		 * use the asynchronous API via the {@link #enqueue(APICallback)} method.
-		 * @return The deserialized document or `null` if no document was deserialized.
+		 * @return The deserialized model or `null` if no model was deserialized.
 		 * @throws RequestFailedException when the HTTP request fails.
 		 * @throws IOException when the request fails to execute.
 		 */
 		public T execute() throws RequestFailedException, IOException {
 			Response response = call.execute();
 			if (response.isSuccessful()) {
-				T document = null;
+				T model = null;
 				if (deserializer != null) {
-					document = deserializer.documentFromResponse(response);
+					model = deserializer.modelFromResponse(response);
 				}
-				return document;
+				return model;
 			} else {
 				throw new RequestFailedException("HTTP request failed", response);
 			}
@@ -248,34 +248,34 @@ public class ElasticSearchAPIClient {
 	}
 	
 	/**
-	 * A document factory that does nothing with the response and returns the 
-	 * original document from the factory method.
-	 * @param <T> The type of the document.
+	 * A deserializer that does nothing with the response and returns the 
+	 * original model.
+	 * @param <T> The type of the model.
 	 */
-	private class IdentityDocumentDeserializer<T extends ElasticSearchDocument> implements DocumentDeserializer<T> {
-		/** The original document */
-		private T document;
+	private class IdentityDeserializer<T> implements Deserializer<T> {
+		/** The original model */
+		private T model;
 
 		/**
-		 * Creates a new instance of {@link ElasticSearchIdentityDocumentFactory<T>}
-		 * @param document The original document.
+		 * Creates a new instance of {@link IdentityDeserializer<T>}
+		 * @param model The original model.
 		 */
-		IdentityDocumentDeserializer(T document) {
-			this.document = document;
+		IdentityDeserializer(T model) {
+			this.model = model;
 		}
 
 		@Override
-		public T documentFromResponse(Response response) {
-			return document;
+		public T modelFromResponse(Response response) {
+			return model;
 		}
 	}
 
 	/**
 	 * A document deserializer that extracts the source JSON document from the
-	 * ElasticSearch API response and converts it to a document model object.
+	 * ElasticSearch API response and converts it to a model object.
 	 * @param <T> The type of the document.
 	 */
-	private class JSONDocumentDeserializer<T extends ElasticSearchDocument> implements DocumentDeserializer<T> {
+	private class JSONDocumentDeserializer<T extends ElasticSearchDocument> implements Deserializer<T> {
 		/** The type of the document */
 		private Type documentType;
 		
@@ -289,7 +289,7 @@ public class ElasticSearchAPIClient {
 		}
 		
 		@Override
-		public T documentFromResponse(Response response) {
+		public T modelFromResponse(Response response) {
 			JsonParser parser = new JsonParser();
 			try {
 				JsonElement rootElement = parser.parse(response.body().string());
@@ -346,7 +346,7 @@ public class ElasticSearchAPIClient {
 				.url(constructDocumentURL(document.getDocumentID()))
 				.post(RequestBody.create(MEDIA_TYPE_JSON, json))
 				.build();
-			return new APICall<T>(client.newCall(request), new IdentityDocumentDeserializer<T>(document));
+			return new APICall<T>(client.newCall(request), new IdentityDeserializer<T>(document));
 		} catch (MalformedURLException e) {
 			// This should never really happen because the URL is constructed internally,
 			// and it isn't possible to pass anything for the components of the 
@@ -400,7 +400,7 @@ public class ElasticSearchAPIClient {
 				.url(constructDocumentURL(newDocument.getDocumentID()))
 				.put(RequestBody.create(MEDIA_TYPE_JSON, json))
 				.build();
-			return new APICall<T>(client.newCall(request), new IdentityDocumentDeserializer<T>(newDocument));
+			return new APICall<T>(client.newCall(request), new IdentityDeserializer<T>(newDocument));
 		} catch (MalformedURLException e) {
 			// See comment in add() about this exception.
 			e.printStackTrace();
