@@ -164,44 +164,40 @@ public class ListModelTests extends ActivityInstrumentationTestCase2<ExpenseClai
 		assertEquals(1, ((UpdateCollectionMutation<ExpenseClaim>)mutation).getIndex());
 	}
 	
-	public void testGet() {
-		ArrayList<ExpenseClaim> claims = new ArrayList<ExpenseClaim>();
+	public void testGetItems() {
 		ExpenseClaim claim1 = createExpenseClaim("Beijing");
 		ExpenseClaim claim2 = createExpenseClaim("Shanghai");
 		
-		claims.add(claim1);
-		assertFalse("Did not get the same ArrayList", listModel.getArrayList().equals(claims));
+		assertEquals(0, listModel.getItems().size());
 		
 		listModel.add(claim1);
-		assertEquals(claims, listModel.getArrayList());
+		assertEquals(1, listModel.getItems().size());
+		assertEquals(claim1, listModel.getItems().get(0));
 		
-		claims.add(claim2);
 		listModel.add(claim2);
-		assertEquals(claims, listModel.getArrayList());
+		assertEquals(2, listModel.getItems().size());
+		assertEquals(claim1, listModel.getItems().get(0));
+		assertEquals(claim2, listModel.getItems().get(1));
 	}
 	
 	public void testReplace() {
 		ExpenseClaim claim1 = createExpenseClaim("Beijing");
 		ExpenseClaim claim2 = createExpenseClaim("Shanghai");
 		listModel.add(claim1);
-
-		ArrayList<ExpenseClaim> oldClaims = new ArrayList<ExpenseClaim>();
-		oldClaims.add(claim1);
-		oldClaims.add(claim2);
-		assertFalse("Not the same ArrayList after replacing", listModel.getArrayList().equals(oldClaims));
 		
-		listModel.replaceList(oldClaims);
-		assertEquals(oldClaims, listModel.getArrayList());
+		assertEquals(1, listModel.getItems().size());
+		assertEquals(claim1, listModel.getItems().get(0));
 		
-		ExpenseClaim claim3 = createExpenseClaim("Britain");
 		ArrayList<ExpenseClaim> newClaims = new ArrayList<ExpenseClaim>();
-		newClaims.add(claim3);
+		newClaims.add(claim2);
 		
-		listModel.replaceList(newClaims);
-		assertEquals(newClaims, listModel.getArrayList());
+		listModel.replace(newClaims);
+		assertEquals(1, listModel.getItems().size());
+		assertEquals(claim2, listModel.getItems().get(0));
 		
+		listModel.replace(new ArrayList<ExpenseClaim>());
+		assertEquals(0, listModel.count());
 	}
-	
 	
 	public void testPersistence() {
 		ExpenseClaim claim = createExpenseClaim("URoma");

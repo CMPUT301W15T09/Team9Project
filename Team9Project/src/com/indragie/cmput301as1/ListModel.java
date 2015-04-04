@@ -58,7 +58,7 @@ public class ListModel<T extends Serializable> extends TypedObservable<Collectio
 	/**
 	 * List that backs the model.
 	 */
-	protected ArrayList<T> list;
+	private ArrayList<T> list;
 	
 	//================================================================================
 	// Constructors
@@ -84,13 +84,6 @@ public class ListModel<T extends Serializable> extends TypedObservable<Collectio
 	 */
 	public List<T> getItems() {
 		return Collections.unmodifiableList(list);
-	}
-	
-	/**
-	 * @return A ArrayList of the items.
-	 */
-	public ArrayList<T> getArrayList() {
-		return list;
 	}
 	
 	/**
