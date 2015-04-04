@@ -280,21 +280,35 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	 * @param editable Whether the claim is editable or not.
 	 */
 	private void setDeletable() {
-		if (editable) {
-			getListView().setOnItemLongClickListener(
-				new LongClickDeleteListener(this, new LongClickDeleteListener.OnDeleteListener() {
-					@Override
-					public void onDelete(int position) {
-						if (getListView().getItemAtPosition(position) == null) {
-							return;
-						}
-						longPressedItemPosition = itemPositionForListViewPosition(position);
-						ExpenseClaimDetailController.DetailItem.ItemType type = controller.getItemType(longPressedItemPosition);
-						startDeleteAlertDialog(type);
-					}
-				}
-			));
+		/*
+		boolean status = false;
+		if((!editable && getListView().getItemAtPosition(position).getClass() != Tag.class)) {
+			status = true;
 		}
+		*/
+		getListView().setOnItemLongClickListener(
+			new LongClickDeleteListener(this, new LongClickDeleteListener.OnDeleteListener() {
+				@Override
+				public void onDelete(int position) {
+					if (getListView().getItemAtPosition(position) == null)
+						return;
+					longPressedItemPosition = itemPositionForListViewPosition(position);
+					ExpenseClaimDetailController.DetailItem.ItemType type = controller.getItemType(longPressedItemPosition);
+					startDeleteAlertDialog(type);
+				}
+			}, new LongClickDeleteListener.SetStatus() {
+				
+				@Override
+				public boolean set(int position) {
+					longPressedItemPosition = itemPositionForListViewPosition(position);
+					ExpenseClaimDetailController.DetailItem.ItemType type = controller.getItemType(longPressedItemPosition);
+					if (editable ||type == ExpenseClaimDetailController.DetailItem.ItemType.TAG) {
+						return true;
+					}
+					return false;
+				}
+			}
+		));
 	}
 	
 	@Override
