@@ -6,16 +6,14 @@
     android:paddingBottom="8dp"
     android:paddingLeft="12dp"
     android:paddingRight="12dp"
-    android:paddingTop="8dp" 
-    android:longClickable="false">
+    android:paddingTop="8dp" >
 
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/total_label"
-        android:textAppearance="?android:attr/textAppearanceListItem" 
-        android:longClickable="false" />
+        android:textAppearance="?android:attr/textAppearanceListItem"  />
 
     <TextView
         android:id="@+id/tv_amounts"
@@ -25,7 +23,6 @@
         android:layout_weight="1"
         android:gravity="end"
         android:hint="@string/amount_placeholder"
-        android:textAppearance="?android:attr/textAppearanceListItemSmall"
-        android:longClickable="false" />
+        android:textAppearance="?android:attr/textAppearanceListItemSmall" />
     
 </LinearLayout>
