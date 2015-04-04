@@ -28,15 +28,15 @@ import android.test.AndroidTestCase;
 public class SessionTests extends AndroidTestCase {
 	public void testSingleton() {
 		assertNull(Session.getSharedSession());
-		User user = new User("Indragie Karunaratne");
+		User user = new User("test_id_1", "Indragie Karunaratne");
 		Session session = new Session(getContext(), user);
 		Session.setSharedSession(session);
 		assertEquals(session, Session.getSharedSession());
 	}
 	
 	public void testUserDataSiloing() {
-		User user1 = new User("Indragie Karunaratne");
-		User user2 = new User("Evil Twin");
+		User user1 = new User("test_id_1", "Indragie Karunaratne");
+		User user2 = new User("test_id_2", "Evil Twin");
 		
 		ExpenseClaim claim = new ExpenseClaim("URoma", "", new Date(), new Date(), user1, ExpenseClaim.Status.IN_PROGRESS);
 		
