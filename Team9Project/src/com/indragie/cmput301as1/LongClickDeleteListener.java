@@ -101,7 +101,7 @@ public class LongClickDeleteListener implements AdapterView.OnItemLongClickListe
 	
 	public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 		longClickedPosition = position;
-		if(setStatus.set(position)) {
+		if(setStatus.set(longClickedPosition)) {
 			activity.startActionMode(new ActionMode.Callback() {
 				@Override
 				public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
