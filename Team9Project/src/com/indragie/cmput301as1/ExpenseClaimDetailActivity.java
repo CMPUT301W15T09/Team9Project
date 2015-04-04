@@ -288,16 +288,13 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 				public void onDelete(int position) {
 					if (getListView().getItemAtPosition(position) == null)
 						return;
-					longPressedItemPosition = itemPositionForListViewPosition(position);
-					ExpenseClaimDetailController.DetailItem.ItemType type = controller.getItemType(longPressedItemPosition);
+					ExpenseClaimDetailController.DetailItem.ItemType type = getTypeAt(position);
 					startDeleteAlertDialog(type);
 				}
 			}, new LongClickDeleteListener.SetStatus() {
-				
 				@Override
 				public boolean set(int position) {
-					longPressedItemPosition = itemPositionForListViewPosition(position);
-					ExpenseClaimDetailController.DetailItem.ItemType type = controller.getItemType(longPressedItemPosition);
+					ExpenseClaimDetailController.DetailItem.ItemType type = getTypeAt(position);
 					if (editable ||type == ExpenseClaimDetailController.DetailItem.ItemType.TAG) {
 						return true;
 					}
@@ -623,7 +620,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		if (listView.getItemAtPosition(position) == null) return;
 		
 		int itemPosition = itemPositionForListViewPosition(position);
-		ExpenseClaimDetailController.DetailItem.ItemType type = controller.getItemType(itemPosition);
+		ExpenseClaimDetailController.DetailItem.ItemType type = getTypeAt(position);
 		SectionedListIndex index = controller.getSectionedIndex(itemPosition);
 		
 		switch (type) {
@@ -672,6 +669,16 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	private int itemPositionForListViewPosition(int position) {
 		// Subtract 1 for the header
 		return position - 1;
+	}
+	
+	/**
+	 * Get the ItemType of a item at a specified position
+	 * @param position The position of the item.
+	 * @return The ItemType of the item.
+	 */
+	public ExpenseClaimDetailController.DetailItem.ItemType getTypeAt(int position) {
+		longPressedItemPosition = itemPositionForListViewPosition(position);
+		return controller.getItemType(longPressedItemPosition);
 	}
 
 	//================================================================================
