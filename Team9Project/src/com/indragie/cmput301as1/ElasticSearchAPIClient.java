@@ -23,8 +23,11 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -264,6 +267,9 @@ public class ElasticSearchAPIClient {
 			this.model = model;
 		}
 
+		/* (non-Javadoc)
+		 * @see com.indragie.cmput301as1.ElasticSearchAPIClient.Deserializer#modelFromResponse(com.squareup.okhttp.Response)
+		 */
 		@Override
 		public T modelFromResponse(Response response) {
 			return model;
@@ -271,7 +277,7 @@ public class ElasticSearchAPIClient {
 	}
 
 	/**
-	 * A document deserializer that extracts the source JSON document from the
+	 * A deserializer that extracts the source JSON document from the
 	 * ElasticSearch API response and converts it to a model object.
 	 * @param <T> The type of the document.
 	 */
@@ -288,6 +294,9 @@ public class ElasticSearchAPIClient {
 			this.documentType = documentType;
 		}
 		
+		/* (non-Javadoc)
+		 * @see com.indragie.cmput301as1.ElasticSearchAPIClient.Deserializer#modelFromResponse(com.squareup.okhttp.Response)
+		 */
 		@Override
 		public T modelFromResponse(Response response) {
 			JsonParser parser = new JsonParser();
@@ -305,6 +314,62 @@ public class ElasticSearchAPIClient {
 			}
 			return null;
 		}
+	}
+	
+	/**
+	 * A deserializer that extracts the source JSON documents from the results
+	 * of a search query and returns a list of deserialized model objects.
+	 * @param <T> The type of the document.
+	 */
+	private class SearchHitDeserializer<T extends ElasticSearchDocument> implements Deserializer<List<T>> {
+		/** The type of the document */
+		private Type documentType;
+		
+		/**
+		 * Creates a new instance of {@link SearchHitDeserializer}
+		 * @param documentType The type of the document. Passing this in as a
+		 * parameter is an ugly hack to work around type erasure.
+		 */
+		SearchHitDeserializer(Type documentType) {
+			this.documentType = documentType;
+		}
+
+		/* (non-Javadoc)
+		 * @see com.indragie.cmput301as1.ElasticSearchAPIClient.Deserializer#modelFromResponse(com.squareup.okhttp.Response)
+		 */
+		@Override
+		public List<T> modelFromResponse(Response response) {
+			JsonParser parser = new JsonParser();
+			JsonElement rootElement;
+			try {
+				rootElement = parser.parse(response.body().string());
+				if (rootElement.isJsonObject()) {
+					JsonObject rootObject = rootElement.getAsJsonObject();
+					JsonElement hitsElement = rootObject.get("hits");
+					if (hitsElement.isJsonArray()) {
+						JsonArray hitsArray = hitsElement.getAsJsonArray();
+						ArrayList<T> models = new ArrayList<T>();
+						for (JsonElement element : hitsArray) {
+							if (element.isJsonObject()) {
+								JsonObject docObject = element.getAsJsonObject();
+								JsonElement sourceElement = docObject.get("_source");
+								T model = gson.fromJson(sourceElement, documentType);
+								if (model != null) {
+									models.add(model);
+								}
+							}
+						}
+						return models;
+					}
+				}
+			} catch (JsonSyntaxException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+		
 	}
 
 	//================================================================================
