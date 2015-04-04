@@ -130,7 +130,7 @@ public class LongClickDeleteListener implements AdapterView.OnItemLongClickListe
 			});
 			return true;
 		}
-		return false;
+		return true;
 	}
 	
 }
