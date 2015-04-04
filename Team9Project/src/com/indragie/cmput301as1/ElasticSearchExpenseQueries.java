@@ -29,17 +29,23 @@ public class ElasticSearchExpenseQueries {
 	 * @param client The API client.
 	 * @return An API call representing the search query.
 	 */
-	public static ElasticSearchAPIClient.APICall<List<ExpenseClaim>> expenseClaimsOwnedByUser(User user, ElasticSearchAPIClient client) {
+	public static ElasticSearchAPIClient.APICall<List<ExpenseClaim>> 
+		expenseClaimsOwnedByUser(User user, ElasticSearchAPIClient client) {
 		String queryJSON = "{"
-				+ " 	\"filtered\": {"
-				+ " 		\"filter\": {"
-				+ "				\"term\": {"
-				+ "					\"user.documentID.id\": \"" + user.getDocumentID().getID() + "\""
-				+ "				}"
-				+ "			}"
-				+ " 	}"
-				+ "}";
-		return client.search(ElasticSearchConfiguration.INDEX_NAME, ExpenseClaim.ELASTIC_SEARCH_TYPE, queryJSON, ExpenseClaim.class);
+			+ " 	\"filtered\": {"
+			+ " 		\"filter\": {"
+			+ "				\"term\": {"
+			+ "					\"user.documentID.id\": \"" + user.getDocumentID().getID() + "\""
+			+ "				}"
+			+ "			}"
+			+ " 	}"
+			+ "}";
+		return client.search(
+			ElasticSearchConfiguration.INDEX_NAME, 
+			ExpenseClaim.ELASTIC_SEARCH_TYPE, 
+			queryJSON, 
+			ExpenseClaim.class
+		);
 	}
 	
 	/**
@@ -50,23 +56,29 @@ public class ElasticSearchExpenseQueries {
 	 * @param client The API client.
 	 * @return An API call representing the search query.
 	 */
-	public static ElasticSearchAPIClient.APICall<List<ExpenseClaim>> expenseClaimsForReviewalByUser(User user, ElasticSearchAPIClient client) {
+	public static ElasticSearchAPIClient.APICall<List<ExpenseClaim>> 
+		expenseClaimsForReviewalByUser(User user, ElasticSearchAPIClient client) {
 		String queryJSON = "{"
-				+ " 	\"filtered\": {"
-				+ " 		\"filter\": {"
-				+ "				\"and\": ["
-				+ "					\"term\": {"
-				+ "						\"status\": \"SUBMITTED\""
-				+ "					},"
-				+ "					\"not\": {"
-				+ "						\"term\" {"
-				+ "							\"user.documentID.id\": \"" + user.getDocumentID().getID() + "\""
-				+ "						}"
-				+ "					}"
-				+ "				]"
-				+ "			}"
-				+ " 	}"
-				+ "}";
-		return client.search(ElasticSearchConfiguration.INDEX_NAME, ExpenseClaim.ELASTIC_SEARCH_TYPE, queryJSON, ExpenseClaim.class);
+			+ " 	\"filtered\": {"
+			+ " 		\"filter\": {"
+			+ "				\"and\": ["
+			+ "					\"term\": {"
+			+ "						\"status\": \"SUBMITTED\""
+			+ "					},"
+			+ "					\"not\": {"
+			+ "						\"term\" {"
+			+ "							\"user.documentID.id\": \"" + user.getDocumentID().getID() + "\""
+			+ "						}"
+			+ "					}"
+			+ "				]"
+			+ "			}"
+			+ " 	}"
+			+ "}";
+		return client.search(
+			ElasticSearchConfiguration.INDEX_NAME, 
+			ExpenseClaim.ELASTIC_SEARCH_TYPE, 
+			queryJSON, 
+			ExpenseClaim.class
+		);
 	}
 }
