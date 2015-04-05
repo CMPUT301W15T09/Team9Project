@@ -71,7 +71,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	/**
 	 * List of tags to filter expense claims.
 	 */
-	private ArrayList<Tag> filteredTags;
+	private ArrayList<Tag> selectedTags;
 	
 	/**
 	 * Manages the user and associated preferences.
@@ -92,6 +92,9 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		} else {
 			loadData();
 		}
+		
+		filteredListModel = new ListModel<ExpenseClaim>("filteredList", getApplicationContext());
+		selectedTags = new ArrayList<Tag>();
 		
 		getListView().setOnItemLongClickListener(new LongClickDeleteListener(this, new LongClickDeleteListener.OnDeleteListener() {
 			@Override
@@ -234,16 +237,17 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	@SuppressWarnings("unchecked")
 	private void onFilterTagsRequest(Intent data) {
 		//TODO: Filter tags, replace the tags, etc.
-		filteredTags = (ArrayList<Tag>)data.getSerializableExtra(FilterTagsActivity.TAG_TO_FILTER);
-		filteredListModel = new ListModel<ExpenseClaim>("temp", getApplicationContext());
+		selectedTags = (ArrayList<Tag>)data.getSerializableExtra(FilterTagsActivity.TAG_TO_FILTER);
+		ArrayList<ExpenseClaim> temp = new ArrayList<ExpenseClaim>();
 		
-		for(Tag tag: filteredTags) {
+		for(Tag tag: selectedTags) {
 			for(ExpenseClaim claim: listModel.getItems()) {
 				if(claim.hasTag(tag)) {
-					filteredListModel.add(claim);
+					temp.add(claim);
 				}
 			}
 		}
+		filteredListModel.replace(temp);
 		setListAdapter(new ExpenseClaimArrayAdapter(this, filteredListModel.getItems()));
 	}
 
@@ -300,6 +304,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	
 	private void startFilterTagsActivity() {
 		Intent filterTagsIntent = new Intent(this, FilterTagsActivity.class);
+		filterTagsIntent.putExtra(FilterTagsActivity.TAG_TO_FILTER, selectedTags);
 		startActivityForResult(filterTagsIntent, FILTER_TAGS_REQUEST);
 	}
 	
