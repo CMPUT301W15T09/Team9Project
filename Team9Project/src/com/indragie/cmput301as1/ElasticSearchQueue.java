@@ -111,8 +111,9 @@ public class ElasticSearchQueue<T> implements TypedObserver<NetworkInfo.State> {
 	//================================================================================
 
 	/**
-	 * adds a call to the stack. Then attempts to execute it.
-	 * @param APICall<T>
+	 * Adds an API call to the queue for later execution.
+	 * @param call The call to enqueue.
+	 * @param callback Optional callback to be called after execution.
 	 */
 	public void enqueueCall(ElasticSearchAPIClient.APICall<T> call, ElasticSearchAPIClient.APICallback<T> callback) {
 		queue.add(new QueueItem(call, callback));
@@ -120,7 +121,7 @@ public class ElasticSearchQueue<T> implements TypedObserver<NetworkInfo.State> {
 	}
 
 	/**
-	 * checks for APICalls in the stack and for network connection then executes the APICall
+	 * Attemtps to execute the next API call in the queue, if there is one.
 	 */
 	private void attemptNextAPICall() {
 		if (requestExecuting.get() 
