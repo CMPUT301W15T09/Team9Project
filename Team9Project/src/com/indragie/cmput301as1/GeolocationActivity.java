@@ -4,6 +4,11 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -18,7 +23,20 @@ public class GeolocationActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_geolocation);
-		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+		
+		if (!isNetworkAvailable(this)) {
+			AlertDialog.Builder alert = new AlertDialog.Builder(this);
+			alert.setCancelable(false);
+			alert.setTitle("No Connection Available");
+			alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+					finish();
+				}
+			});
+			alert.show();
+		} else {
+			map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+		}
 	}
 
 	@Override
@@ -38,5 +56,11 @@ public class GeolocationActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	public boolean isNetworkAvailable(Context context) {
+		ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+		return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 	}
 }
