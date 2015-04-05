@@ -133,7 +133,7 @@ public class ExpenseItemReceiptController {
 		if (totalPixels <= maxPixels) {
 			return 1;
 		} else {
-			return (int)Math.ceil(Math.sqrt((double)totalPixels / (double)maxPixels));
+			return (int)Math.round(Math.sqrt((double)totalPixels / (double)maxPixels));
 		}
 	}
 }
