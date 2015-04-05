@@ -203,10 +203,10 @@ public class Session implements TypedObserver<CollectionMutation<ExpenseClaim>> 
 			final ElasticSearchAPIClient.APICallback<List<ExpenseClaim>> callback, 
 			final ListModel<ExpenseClaim> listModel) {
 		
-		final Handler mainHandler = new Handler(context.getMainLooper());
 		pullQueue.enqueueCall(call, new ElasticSearchAPIClient.APICallback<List<ExpenseClaim>>() {
 			@Override
 			public void onSuccess(Response response, final List<ExpenseClaim> results) {
+				Handler mainHandler = new Handler(context.getMainLooper());
 				mainHandler.post(new Runnable() {
 					@Override
 					public void run() {
