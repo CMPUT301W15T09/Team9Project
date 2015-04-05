@@ -61,7 +61,7 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	/**
 	 * String representation of a Uri of a receipt image.
 	 */
-	private String receipt;
+	private String receiptPath;
 	/**
 	 * Incompleteness indicator.
 	 */
@@ -151,16 +151,16 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	/**
 	 * @return String representation of a Uri of a receipt image.
 	 */
-	public String getReceipt() {
-		return receipt;
+	public String getReceiptPath() {
+		return receiptPath;
 	}
 
 	/**
 	 * Sets the string representation of a Uri of a receipt image.
-	 * @param receipt String representation of a Uri of a receipt image.
+	 * @param receiptPath String representation of a Uri of a receipt image.
 	 */
-	public void setReceipt(String receipt) {
-		this.receipt = receipt;
+	public void setReceiptPath(String receiptPath) {
+		this.receiptPath = receiptPath;
 	}
 	
 	/**
