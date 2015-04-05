@@ -11,6 +11,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -19,7 +21,23 @@ import android.view.MenuItem;
 
 public class GeolocationActivity extends Activity {
 
+	//================================================================================
+	// Constants
+	//================================================================================
+
+	public static final String EXTRA_LOCATION = "com.indragie.cmput301as1.EXTRA_LOCATION";
+	
+	//================================================================================
+	// Properties
+	//================================================================================
+	
+	private Location location;
+	
 	private GoogleMap map;
+	
+	//================================================================================
+	// Activity Callbacks
+	//================================================================================
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +58,17 @@ public class GeolocationActivity extends Activity {
 			map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 		}
 		
+		Intent intent = getIntent();
+		location = (Location) intent.getSerializableExtra(EXTRA_LOCATION);
+		if (location != null) {
+			LatLng lastLocationLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+			MarkerOptions markerOpts = new MarkerOptions();
+			markerOpts.position(lastLocationLatLng);
+			map.animateCamera(CameraUpdateFactory.newLatLng(lastLocationLatLng));
+			map.addMarker(markerOpts);
+		}
+		
 		map.setOnMapClickListener(new OnMapClickListener() {
-			
 			@Override
 			public void onMapClick(LatLng point) {
 				MarkerOptions markerOpts = new MarkerOptions();
@@ -76,5 +103,10 @@ public class GeolocationActivity extends Activity {
 		ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 		return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+	}
+	
+	@Override
+	public void onBackPressed() {
+		
 	}
 }
