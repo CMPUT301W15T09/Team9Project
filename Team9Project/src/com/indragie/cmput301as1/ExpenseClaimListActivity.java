@@ -149,7 +149,13 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (resultCode != RESULT_OK) return;
+		if (resultCode != RESULT_OK) {
+			if(resultCode == RESULT_CANCELED && requestCode == FILTER_TAGS_REQUEST) {
+				setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems()));
+				selectedTags.clear();
+			}
+			return;
+		}
 		switch (requestCode) {
 		case ADD_EXPENSE_CLAIM_REQUEST:
 			onAddExpenseResult(data);
@@ -238,16 +244,18 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private void onFilterTagsRequest(Intent data) {
 		//TODO: Filter tags, replace the tags, etc.
 		selectedTags = (ArrayList<Tag>)data.getSerializableExtra(FilterTagsActivity.TAG_TO_FILTER);
-		ArrayList<ExpenseClaim> temp = new ArrayList<ExpenseClaim>();
+		ArrayList<ExpenseClaim> tempClaims = new ArrayList<ExpenseClaim>();
 		
 		for(Tag tag: selectedTags) {
 			for(ExpenseClaim claim: listModel.getItems()) {
 				if(claim.hasTag(tag)) {
-					temp.add(claim);
+					if(!tempClaims.contains(claim)) {
+						tempClaims.add(claim);
+					}
 				}
 			}
 		}
-		filteredListModel.replace(temp);
+		filteredListModel.replace(tempClaims);
 		setListAdapter(new ExpenseClaimArrayAdapter(this, filteredListModel.getItems()));
 	}
 
