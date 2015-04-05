@@ -148,7 +148,6 @@ public class ExpenseClaim implements Serializable, ElasticSearchDocument {
 		this.status = status;
 		this.creationDate = new Date();
 		this.user = user;
-		this.approver = new User("", "");
 	}
 
 	//================================================================================
