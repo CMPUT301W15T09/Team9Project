@@ -16,6 +16,7 @@
  */
 package com.indragie.cmput301as1;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 
 import android.app.Activity;
@@ -49,6 +50,7 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 	private static final int ADD_EXPENSE_CLAIM_REQUEST = 1;
 	private static final int EDIT_EXPENSE_CLAIM_REQUEST = 2;
 	private static final int SORT_EXPENSE_CLAIM_REQUEST = 3;
+	private static final int MANAGE_TAGS_REQUEST = 4;
 
 
 	//================================================================================
@@ -72,6 +74,11 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 	/** Activity of the class that created the fragment */
 
 	protected Activity activity;
+
+	/**
+	 * Manages the user and associated preferences.
+	 */
+	protected UserManager userManager;
 
 	//================================================================================
 	// Activity Callbacks
@@ -119,6 +126,8 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 		case SORT_EXPENSE_CLAIM_REQUEST:
 			onSortExpenseResult(data);
 			break;
+		case MANAGE_TAGS_REQUEST:
+			onManageTagsResult(data);
 		}
 	}
 
@@ -196,10 +205,8 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 	 * Starts the {@link ExpenseClaimAddActivity}
 	 */
 	private void startAddExpenseClaimActivity() {
-		Intent addIntent = new Intent(activity,
-				ExpenseClaimAddActivity.class);
-		addIntent.putExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM_USER,
-				user);
+		Intent addIntent = new Intent(activity, ExpenseClaimAddActivity.class);
+		addIntent.putExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM_USER, userManager.getActiveUser());
 		startActivityForResult(addIntent, ADD_EXPENSE_CLAIM_REQUEST);
 	}
 
@@ -207,8 +214,7 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 	 * Starts the {@link ExpenseClaimSortActivity}
 	 */
 	private void startSortExpenseClaimActivity() {
-		Intent intent = new Intent(activity,
-				ExpenseClaimSortActivity.class);
+		Intent intent = new Intent(activity, ExpenseClaimSortActivity.class);
 		startActivityForResult(intent, SORT_EXPENSE_CLAIM_REQUEST);
 	}
 
@@ -216,9 +222,20 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 	 * Starts the {@link ManageTagsActivity}
 	 */
 	private void startManageTagsActivity() {
-		Intent manageTagsIntent = new Intent(activity,
-				ManageTagsActivity.class);
-		startActivity(manageTagsIntent);
+		Intent manageTagsIntent = new Intent(activity, ManageTagsActivity.class);
+		manageTagsIntent.putExtra(ManageTagsActivity.CLAIM_LIST, new ArrayList<ExpenseClaim>(listModel.getItems()));
+		startActivityForResult(manageTagsIntent, MANAGE_TAGS_REQUEST);
+	}
+
+
+	/**
+	 * Sets the list used in ListModel to the returned list of expense claims from the intent. 
+	 * @param data The intent to get the list of expense claims from. 
+	 */
+	@SuppressWarnings("unchecked")
+	private void onManageTagsResult(Intent data) {
+		ArrayList<ExpenseClaim> claimList = (ArrayList<ExpenseClaim>)data.getSerializableExtra(ManageTagsActivity.CLAIM_LIST);
+		listModel.replace(claimList);
 	}
 
 	/**

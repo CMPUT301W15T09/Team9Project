@@ -33,7 +33,7 @@ public class ApprovalTabFragment extends ExpenseClaimTabFragment {
 
 		activity = getActivity();
 		load();
-		UserManager userManager = new UserManager(activity);
+		userManager = new UserManager(activity);
 		user = userManager.getActiveUser();
 		setHasOptionsMenu(true);
 

@@ -14,26 +14,24 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.indragie.cmput301as1;
 
-package com.indragie.comput301as1.test;
+import android.annotation.SuppressLint;
 
-import com.indragie.cmput301as1.User;
-import com.indragie.cmput301as1.UserManager;
-
-import android.test.AndroidTestCase;
-
-public class UserManagerTests extends AndroidTestCase {
-	public void testActiveUser() {
-		UserManager manager = new UserManager(getContext());
-		assertNull(manager.getActiveUser());
-		
-		User user = new User("test_id", "Indragie Karunaratne");
-		manager.setActiveUser(user);
-		assertEquals(user, manager.getActiveUser());
-		
-		// UserManager for the same Context should be accessing the
-		// same shared data.
-		UserManager anotherManager = new UserManager(getContext());
-		assertEquals(user, anotherManager.getActiveUser());
+/**
+ * Utility functions for working with strings.
+ */
+public class StringHelpers {
+	
+	/**
+	 * Normalizes the string by removing non-alphanumeric characters
+	 * and making all characters lowercase.
+	 * @param str The string to normalize.
+	 * @return The normalized representation of the string.
+	 */
+	@SuppressLint("DefaultLocale")
+	public static String normalize(String str) {
+		if (str == null) return null;
+		return str.replaceAll("[^A-Za-z0-9]", "").toLowerCase();
 	}
 }

@@ -17,13 +17,17 @@
 package com.indragie.cmput301as1;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 /**
  * Model object representing a user object.
  */
 public class User implements Serializable, ElasticSearchDocument {
-	private static final long serialVersionUID = 9042593982087737387L;
+	private static final long serialVersionUID = -5731747178226322124L;
+	
+	/**
+	 * Type used for indexing on ElasticSearch.
+	 */
+	public static final String ELASTIC_SEARCH_TYPE = "user";
 
 	//================================================================================
 	// Properties
@@ -31,11 +35,7 @@ public class User implements Serializable, ElasticSearchDocument {
 	/**
 	 * Unique document ID.
 	 */
-	private ElasticSearchDocumentID documentID = new ElasticSearchDocumentID(
-		ElasticSearchConfiguration.INDEX_NAME, 
-		"user", 
-		UUID.randomUUID().toString()
-	);
+	private ElasticSearchDocumentID documentID;
 	
 	/**
 	 * The user's name.
@@ -48,10 +48,17 @@ public class User implements Serializable, ElasticSearchDocument {
 
 	/**
 	 * Creates a new instance of {@link User}
+	 * @param identifier A unique identifier for the user. This should typically be
+	 * a device-specific identifier for our purposes.
 	 * @param name The user's name.
 	 */
-	public User(String name){
+	public User(String identifier, String name){
 		this.name = name;
+		this.documentID = new ElasticSearchDocumentID(
+			ElasticSearchConfiguration.INDEX_NAME, 
+			ELASTIC_SEARCH_TYPE,
+			identifier
+		);
 	}
 	
 	//================================================================================

@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.provider.Settings.Secure;
 
 /**
  * An activity that initializes tab fragments for displaying claims.
@@ -38,8 +39,6 @@ public class ExpenseClaimListActivity extends FragmentActivity {
 	// Properties
 	//================================================================================
 
-
-	
 	/**
 	 * Manages the user and associated preferences.
 	 */
@@ -62,7 +61,6 @@ public class ExpenseClaimListActivity extends FragmentActivity {
 		Tab tab = actionBar.newTab()
 				.setText(R.string.title_tab_claims)
 				.setTabListener(new ClaimTabListener<ClaimTabFragment>(this, "Claims", ClaimTabFragment.class));
-	
 		actionBar.addTab(tab);
 
 		/* Creating approval Tab */
@@ -70,14 +68,13 @@ public class ExpenseClaimListActivity extends FragmentActivity {
 				.setText(R.string.title_tab_approval)
 				.setTabListener(new ClaimTabListener<ApprovalTabFragment>(this, "Approval", ApprovalTabFragment.class));
 		actionBar.addTab(tab);;
-		
+
 		userManager = new UserManager(this);
 		if (userManager.getActiveUser() == null) {
 			promptForUserInformation();
 		}
 	}
 
-	
 	/**
 	 * Prompts the user to enter their name.
 	 */
@@ -87,22 +84,24 @@ public class ExpenseClaimListActivity extends FragmentActivity {
 		alert.setCancelable(false);
 		alert.setTitle(R.string.user_alert_title);
 		alert.setMessage(R.string.user_alert_message);
-		
+
 		final EditText input = new EditText(this);
 		alert.setView(input);
-		
+
 		alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				String name = input.getText().toString();
 				if (name == null || name.isEmpty()) {
 					Toast.makeText(getApplicationContext(), R.string.user_alert_error, Toast.LENGTH_LONG).show();
 				} else {
-					userManager.setActiveUser(new User(name));
+					// Device specific identifier
+					String androidID = Secure.getString(getContentResolver(), Secure.ANDROID_ID); 
+					userManager.setActiveUser(new User(androidID, name));
 				}
 			}
 		});
 		alert.show();
 	}
-	
-	
+
+
 }

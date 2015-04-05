@@ -58,7 +58,7 @@ public class ListModel<T extends Serializable> extends TypedObservable<Collectio
 	/**
 	 * List that backs the model.
 	 */
-	protected ArrayList<T> list;
+	private ArrayList<T> list;
 	
 	
 	//================================================================================
@@ -89,13 +89,6 @@ public class ListModel<T extends Serializable> extends TypedObservable<Collectio
 	}
 	
 	/**
-	 * @return A ArrayList of the items.
-	 */
-	public ArrayList<T> getArrayList() {
-		return list;
-	}
-	
-	/**
 	 * @return Comparator used to sort the items.
 	 */
 	public Comparator<T> getComparator() {
@@ -108,7 +101,7 @@ public class ListModel<T extends Serializable> extends TypedObservable<Collectio
 	 */
 	public void setComparator(Comparator<T> comparator) {
 		this.comparator = comparator;
-		mutate(null); // TODO: Handle this better
+		sort();
 	}
 	
 	//================================================================================
@@ -122,6 +115,7 @@ public class ListModel<T extends Serializable> extends TypedObservable<Collectio
 	public void add(T object) {
 		list.add(object);
 		mutate(new InsertionCollectionMutation<T>(list.size() - 1, object));
+		sort();
 	}
 
 	/**
@@ -149,8 +143,9 @@ public class ListModel<T extends Serializable> extends TypedObservable<Collectio
 	 * Remove all objects from the list of objects.
 	 */
 	public void removeAll() {
+		ArrayList<T> oldContents = new ArrayList<T>(list);
 		list.clear();
-		mutate(null); // TODO: Handle this better
+		mutate(new ReplacementCollectionMutation<T>(oldContents, new ArrayList<T>()));
 	}
 	
 	/**
@@ -160,6 +155,7 @@ public class ListModel<T extends Serializable> extends TypedObservable<Collectio
 	 */
 	public void set(int index, T newObject) {
 		mutate(new UpdateCollectionMutation<T>(index, list.set(index, newObject), newObject));
+		sort();
 	}
 	
 	/**
@@ -170,11 +166,13 @@ public class ListModel<T extends Serializable> extends TypedObservable<Collectio
 	}
 	
 	/**
-	 * Replaces the current list of the ListModel.
-	 * @param list The list to replace with.
+	 * Replaces the current contents of the model.
+	 * @param newContents The new contents of the list.
 	 */
-	public void replaceList(ArrayList<T> list) {
-		mutate(new UpdateListMutation<T>(this.list = list, list));
+	public void replace(List<T> newContents) {
+		ArrayList<T> oldContents = new ArrayList<T>(list);
+		list = new ArrayList<T>(newContents);
+		mutate(new ReplacementCollectionMutation<T>(oldContents, new ArrayList<T>(newContents)));
 	}
 	
 	//================================================================================
@@ -187,11 +185,17 @@ public class ListModel<T extends Serializable> extends TypedObservable<Collectio
 	private void mutate(CollectionMutation<T> mutation) {
 		setChanged();
 		notifyObservers(mutation);
-		
-		if (comparator != null) {
-			Collections.sort(list, comparator);
-		}
 		save(list);
+	}
+	
+	/**
+	 * Sorts the contents of the list.
+	 */
+	private void sort() {
+		if (comparator == null) return;
+		ArrayList<T> oldContents = new ArrayList<T>(list);
+		Collections.sort(list, comparator);
+		mutate(new ReplacementCollectionMutation<T>(oldContents, new ArrayList<T>(list)));
 	}
 	
 	/**
