@@ -24,13 +24,10 @@ import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -48,7 +45,6 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private static final int SORT_EXPENSE_CLAIM_REQUEST = 3;
 	private static final int MANAGE_TAGS_REQUEST = 4;
 	private static final String EXPENSE_CLAIM_FILENAME = "claims";
-	private static final String PREFERENCE = "PREFERENCE";
 
 	//================================================================================
 	// Properties
@@ -60,14 +56,9 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private ListModel<ExpenseClaim> listModel;
 	
 	/**
-	 * Index of a item that is long pressed.
+	 * Manages the user and associated preferences.
 	 */
-	private int longPressedItemIndex;
-	
-	/**
-	 * Active user.
-	 */
-	private User user;
+	private UserManager userManager;
 
 	//================================================================================
 	// Activity Callbacks
@@ -76,54 +67,22 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		checkFirstRun();
-		setUserFromPreferences();
-
+		
+		userManager = new UserManager(this);
+		if (userManager.getActiveUser() == null) {
+			promptForUserInformation();
+		}
+		
 		listModel = new ListModel<ExpenseClaim>(EXPENSE_CLAIM_FILENAME, this);
 		listModel.addObserver(this);
 		setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems()));
 		
-		final ActionMode.Callback longClickCallback = new ActionMode.Callback() {
+		getListView().setOnItemLongClickListener(new LongClickDeleteListener(this, new LongClickDeleteListener.OnDeleteListener() {
 			@Override
-			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-				switch (item.getItemId()) {
-				case R.id.action_delete:
-					startDeleteAlertDialog();
-					mode.finish();
-					return true;
-				default:
-					return false;
-				}
+			public void onDelete(int position) {
+				showDeleteAlertDialog(position);
 			}
-
-			@Override
-			public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-				mode.getMenuInflater().inflate(R.menu.contextual_delete, menu);
-				return true;
-			}
-
-			@Override
-			public void onDestroyActionMode(ActionMode mode) {}
-
-			@Override
-			public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-				return false;
-			}
-		};
-		getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-				longPressedItemIndex = position;
-				startActionMode(longClickCallback);
-				return true;
-			}
-		});
-	}
-	
-	private void setUserFromPreferences() {
-		SharedPreferences prefs = getSharedPreferences(PREFERENCE, MODE_PRIVATE);
-		user = new User(prefs.getString("name", "USER DOES NOT EXIST"), prefs.getInt("id", -1));
+		}));
 	}
 
 	@Override
@@ -219,7 +178,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 */
 	private void startAddExpenseClaimActivity() {
 		Intent addIntent = new Intent(this, ExpenseClaimAddActivity.class);
-		addIntent.putExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM_USER, user);
+		addIntent.putExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM_USER, userManager.getActiveUser());
 		startActivityForResult(addIntent, ADD_EXPENSE_CLAIM_REQUEST);
 	}
 	
@@ -239,67 +198,45 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		manageTagsIntent.putExtra(ManageTagsActivity.CLAIM_LIST, listModel.getArrayList());
 		startActivityForResult(manageTagsIntent, MANAGE_TAGS_REQUEST);
 	}
-
+	
 	/**
-	 * Checks for the first run of the program on the device. 
-	 * If it is, we create a new user. 
+	 * Prompts the user to enter their name.
 	 */
-	public void checkFirstRun() {
-		boolean isFirstRun = getSharedPreferences(PREFERENCE, MODE_PRIVATE).getBoolean("isFirstRun", true);
-		if (isFirstRun){ 
-			// http://www.androidsnippets.com/prompt-user-input-with-an-alertdialog
-			AlertDialog.Builder alert = new AlertDialog.Builder(this);
-			alert.setCancelable(false);
-
-			alert.setTitle("Username");
-			alert.setMessage("Please enter your name:");
-
-			// Set an EditText view to get user input 
-			final EditText input = new EditText(this);
-			alert.setView(input);
-
-			alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int whichButton) {
-					String value = input.getText().toString();
-
-					if(value != null && !value.isEmpty()){
-						SharedPreferences.Editor editor = getSharedPreferences(PREFERENCE, MODE_PRIVATE).edit();
-						editor.putString("name", value);
-						editor.putInt("id", 1);
-						editor.putBoolean("isFirstRun", false);
-						editor.apply();
-						setUserFromPreferences();
-					}
-					else{
-						checkFirstRun();
-						Toast.makeText(getApplicationContext(), "You must enter a username", Toast.LENGTH_LONG).show(); 
-					}
-
+	public void promptForUserInformation() {
+		// http://www.androidsnippets.com/prompt-user-input-with-an-alertdialog
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+		alert.setCancelable(false);
+		alert.setTitle(R.string.user_alert_title);
+		alert.setMessage(R.string.user_alert_message);
+		
+		final EditText input = new EditText(this);
+		alert.setView(input);
+		
+		alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				String name = input.getText().toString();
+				if (name == null || name.isEmpty()) {
+					Toast.makeText(getApplicationContext(), R.string.user_alert_error, Toast.LENGTH_LONG).show();
+				} else {
+					userManager.setActiveUser(new User(name));
 				}
-			});
-
-			alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int whichButton) {
-					checkFirstRun();
-					Toast.makeText(getApplicationContext(), "You must enter a username", Toast.LENGTH_LONG).show();
-				}
-			});
-
-			alert.show();
-		}
+			}
+		});
+		alert.show();
 	}
 	
 	/**
 	 * Prompts the user for confirmation in response to deleting an expense claim.
+	 * @param index The index of the expense claim to remove.
 	 */
-	public void startDeleteAlertDialog() {
+	public void showDeleteAlertDialog(final int index) {
 		AlertDialog.Builder openDialog = new AlertDialog.Builder(this);
 		openDialog.setTitle(R.string.action_delete_claim_confirm);
 		
 		openDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				listModel.remove(longPressedItemIndex);
+				listModel.remove(index);
 			}
 		});
 		
@@ -329,7 +266,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		Intent editIntent = new Intent(this, ExpenseClaimDetailActivity.class);
 		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM, listModel.getItems().get(position));
 		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_INDEX, position);
-		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_USER, user);
+		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_USER, userManager.getActiveUser());
 		startActivityForResult(editIntent, EDIT_EXPENSE_CLAIM_REQUEST);
 	}
 
@@ -341,5 +278,4 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	public void update(TypedObservable<CollectionMutation<ExpenseClaim>> observable, CollectionMutation<ExpenseClaim> mutation) {
 		setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems()));
 	}
-
 }
