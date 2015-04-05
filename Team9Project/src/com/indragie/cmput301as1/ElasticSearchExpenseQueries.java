@@ -51,7 +51,7 @@ public class ElasticSearchExpenseQueries {
 	/**
 	 * Creates a search query for expense claims to be reviewed by a particular user.
 	 * The list of returned expense claims are those that were not created by the
-	 * specified user and have a status of "Submitted
+	 * specified user and have a status of "Submitted"
 	 * @param user The user for which to search for expense claims to review.
 	 * @param client The API client.
 	 * @return An API call representing the search query.
