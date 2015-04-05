@@ -18,6 +18,12 @@
 package com.indragie.cmput301as1;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+
+import android.text.TextUtils;
 
 /**
  * Uniquely identifies an object in an ElasticSearch database.
@@ -82,6 +88,31 @@ public class ElasticSearchDocumentID implements Serializable {
 	 */
 	public String getID() {
 		return id;
+	}
+	
+	/**
+	 * Constructs the ElasticSearch URL for the document.
+	 * @param baseURL The base URL of the ElasticSearch instance.
+	 * @return A URL to the ElasticSearch document or `null` if
+	 */
+	public URL getURL(URL baseURL) {
+		try {
+			String tokens[] = new String[] { 
+				URLEncoder.encode(index, "UTF-8"), 
+				URLEncoder.encode(type, "UTF-8"),
+				URLEncoder.encode(id, "UTF-8") 
+			};
+			String path = "/" + TextUtils.join("/", tokens);
+			return new URL(baseURL, path);
+		} catch (UnsupportedEncodingException e) {
+			// This shouldn't happen, we know UTF-8 is valid.
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			// This shouldn't happen, all of the URL path components
+			// have been encoded and we know that the path is valid.
+			e.printStackTrace();	
+		}
+		return null;
 	}
 	
 	//================================================================================

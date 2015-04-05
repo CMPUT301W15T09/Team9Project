@@ -197,11 +197,13 @@ public class ExpenseItemAddActivity extends Activity {
 	//================================================================================
 	// Subclass Overrides
 	//================================================================================
+	
 	/**
-	 * Creates the new expense item of the intent.
-	 * @return A intent with the expense item.
+	 * Creates a new expense item based on the contents of the
+	 * data fields in the user interface.
+	 * @return The new expense item.
 	 */
-	protected Intent getResultIntent()  {
+	private ExpenseItem buildExpenseItem() {
 		Money amount = Money.of(
 			CurrencyUnit.of(currencySpinner.getSelectedItem().toString()), 
 			Float.parseFloat(amountField.getText().toString()),
@@ -218,9 +220,15 @@ public class ExpenseItemAddActivity extends Activity {
 			item.setReceipt(receiptFileUri.toString());
 		}
 		item.setIncomplete(incomplete);
-
+		return item;
+	}
+	
+	/**
+	 * @return The intent to be passed back to the parent activity.
+	 */
+	protected Intent getResultIntent()  {
 		Intent intent = new Intent();
-		intent.putExtra(EXTRA_EXPENSE_ITEM, item);
+		intent.putExtra(EXTRA_EXPENSE_ITEM, buildExpenseItem());
 		return intent;
 	}
 

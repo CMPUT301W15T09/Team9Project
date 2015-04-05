@@ -445,22 +445,13 @@ public class ElasticSearchAPIClient {
 	 * into this method.
 	 */
 	public <T extends ElasticSearchDocument> APICall<T> add(T document) {
-		try {
-			Type docType = new TypeToken<T>() {}.getType();
-			String json = gson.toJson(document, docType);
-			Request request = new Request.Builder()
-				.url(constructDocumentURL(document.getDocumentID()))
-				.post(RequestBody.create(MEDIA_TYPE_JSON, json))
-				.build();
-			return new APICall<T>(request, client, new IdentityDeserializer<T>(document));
-		} catch (MalformedURLException e) {
-			// This should never really happen because the URL is constructed internally,
-			// and it isn't possible to pass anything for the components of the 
-			// ElasticSearchDocumentID that would cause it to fail when constructing
-			// the URL.
-			e.printStackTrace();
-			return null;
-		}
+		Type docType = new TypeToken<T>() {}.getType();
+		String json = gson.toJson(document, docType);
+		Request request = new Request.Builder()
+			.url(document.getDocumentID().getURL(baseURL))
+			.post(RequestBody.create(MEDIA_TYPE_JSON, json))
+			.build();
+		return new APICall<T>(request, client, new IdentityDeserializer<T>(document));
 	}
 
 	/**
@@ -474,16 +465,11 @@ public class ElasticSearchAPIClient {
 	 * deserialized from JSON.
 	 */
 	public <T extends ElasticSearchDocument> APICall<T> get(ElasticSearchDocumentID documentID, Class<T> documentType) {
-		try {
-			Request request = new Request.Builder()
-				.url(constructDocumentURL(documentID))
-				.get()
-				.build();
-			return new APICall<T>(request, client, new JSONDocumentDeserializer<T>(documentType));
-		} catch (MalformedURLException e) {
-			// See comment in add() about this exception.
-			return null;
-		}
+		Request request = new Request.Builder()
+			.url(documentID.getURL(baseURL))
+			.get()
+			.build();
+		return new APICall<T>(request, client, new JSONDocumentDeserializer<T>(documentType));
 	}
 
 	/**
@@ -496,22 +482,16 @@ public class ElasticSearchAPIClient {
 	 * argument passed to this method.
 	 */
 	public <T extends ElasticSearchDocument> APICall<T> update(T newDocument) {
-		try {
-			JsonElement docElement = gson.getAdapter(new TypeToken<T>() {}).toJsonTree(newDocument);
-			JsonObject rootElement = new JsonObject();
-			rootElement.add("doc", docElement);
-			String json = rootElement.toString();
-			
-			Request request = new Request.Builder()
-				.url(constructDocumentURL(newDocument.getDocumentID()))
-				.put(RequestBody.create(MEDIA_TYPE_JSON, json))
-				.build();
-			return new APICall<T>(request, client, new IdentityDeserializer<T>(newDocument));
-		} catch (MalformedURLException e) {
-			// See comment in add() about this exception.
-			e.printStackTrace();
-			return null;
-		}
+		JsonElement docElement = gson.getAdapter(new TypeToken<T>() {}).toJsonTree(newDocument);
+		JsonObject rootElement = new JsonObject();
+		rootElement.add("doc", docElement);
+		String json = rootElement.toString();
+		
+		Request request = new Request.Builder()
+			.url(newDocument.getDocumentID().getURL(baseURL))
+			.put(RequestBody.create(MEDIA_TYPE_JSON, json))
+			.build();
+		return new APICall<T>(request, client, new IdentityDeserializer<T>(newDocument));
 	}
 
 	/**
@@ -522,17 +502,11 @@ public class ElasticSearchAPIClient {
 	 * @note The document returned by executing the call will be null.
 	 */
 	public <T extends ElasticSearchDocument> APICall<T> delete(T document) {
-		try {
-			Request request = new Request.Builder()
-				.url(constructDocumentURL(document.getDocumentID()))
-				.delete()
-				.build();
-			return new APICall<T>(request, client, null);
-		} catch (MalformedURLException e) {
-			// See comment in add() about this exception.
-			e.printStackTrace();
-			return null;
-		}
+		Request request = new Request.Builder()
+			.url(document.getDocumentID().getURL(baseURL))
+			.delete()
+			.build();
+		return new APICall<T>(request, client, null);
 	}
 	
 	/** 
@@ -561,35 +535,12 @@ public class ElasticSearchAPIClient {
 			// Shouldn't happen, we know UTF-8 is valid
 			e.printStackTrace();
 		} catch (MalformedURLException e) {
-			// See comment in add()
+			// This should never really happen because the URL is constructed internally,
+			// and it isn't possible to pass anything for the components of the 
+			// ElasticSearchDocumentID that would cause it to fail when constructing
+			// the URL.
 			e.printStackTrace();
 		}
 		return null;
-	}
-
-	//================================================================================
-	// Private
-	//================================================================================
-	
-	/**
-	 * Constructs the ElasticSearch URL for a document.
-	 * @param docID The ID of the document.
-	 * @return A URL to the ElasticSearch document.
-	 * @throws MalformedURLException If the URL could not be constructed.
-	 */
-	private URL constructDocumentURL(ElasticSearchDocumentID docID) throws MalformedURLException {
-		try {
-			String tokens[] = new String[] { 
-				URLEncoder.encode(docID.getIndex(), "UTF-8"), 
-				URLEncoder.encode(docID.getType(), "UTF-8"),
-				URLEncoder.encode(docID.getID(), "UTF-8") 
-			};
-			String path = "/" + TextUtils.join("/", tokens);
-			return new URL(baseURL, path);
-		} catch (UnsupportedEncodingException e) {
-			// This shouldn't happen, we know UTF-8 is valid.
-			e.printStackTrace();
-			return null;
-		}
 	}
 }
