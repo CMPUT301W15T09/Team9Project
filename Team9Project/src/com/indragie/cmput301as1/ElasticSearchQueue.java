@@ -72,6 +72,11 @@ public class ElasticSearchQueue<T> implements TypedObserver<NetworkInfo.State> {
 	 */
 	private NetworkStateListener networkListener;
 	
+	/**
+	 * Whether a request is currently executing.
+	 */
+	private boolean requestExecuting;
+	
 	//================================================================================
 	// Constructors
 	//================================================================================
@@ -117,10 +122,14 @@ public class ElasticSearchQueue<T> implements TypedObserver<NetworkInfo.State> {
 	 * checks for APICalls in the stack and for network connection then executes the APICall
 	 */
 	private void attemptNextAPICall() {
-		if (queue.size() == 0 || networkListener.getNetworkState() != State.CONNECTED) return;
+		if (requestExecuting 
+			|| queue.size() == 0 
+			|| networkListener.getNetworkState() != State.CONNECTED) return;
 		
 		final QueueItem item = queue.peek();
 		final ElasticSearchAPIClient.APICallback<T> callback = item.callback;
+		
+		requestExecuting = true;
 		item.call.enqueue(new ElasticSearchAPIClient.APICallback<T>() {
 			@Override
 			public void onSuccess(Response response, T document) {
@@ -128,6 +137,7 @@ public class ElasticSearchQueue<T> implements TypedObserver<NetworkInfo.State> {
 				if (callback != null) {
 					callback.onSuccess(response, document);
 				}
+				requestExecuting = false;
 				attemptNextAPICall();
 			}
 
@@ -149,6 +159,7 @@ public class ElasticSearchQueue<T> implements TypedObserver<NetworkInfo.State> {
 				} else {
 					Log.v(LOG_TAG, "Request failed with exception " + e.toString());
 				}
+				requestExecuting = false;
 			}
 		});
 	}
