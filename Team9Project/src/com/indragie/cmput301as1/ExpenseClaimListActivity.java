@@ -31,6 +31,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -186,8 +187,34 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 */
 	@SuppressWarnings("unchecked")
 	private void onManageTagsResult(Intent data) {
-		ArrayList<ExpenseClaim> claimList = (ArrayList<ExpenseClaim>)data.getSerializableExtra(ManageTagsActivity.CLAIM_LIST);
-		listModel.replace(claimList);
+		ArrayList<ManageTagsActivity.TagMutation> mutations =
+				(ArrayList<ManageTagsActivity.TagMutation>)data.getSerializableExtra(ManageTagsActivity.EXTRA_TAG_MUTATIONS);
+		SparseArray<ExpenseClaim> modifiedClaims = new SparseArray<ExpenseClaim>();
+		
+		for (ManageTagsActivity.TagMutation mutation : mutations) {
+			Tag tag = mutation.getOldTag();
+			int i = 0;
+			for (ExpenseClaim claim : listModel.getItems()) {
+				if (!claim.hasTag(tag)) continue;
+				
+				switch (mutation.getMutationType()) {
+				case DELETE:
+					claim.removeTag(tag);
+					break;
+				case EDIT:
+					int tagIndex = claim.getTags().indexOf(tag);
+					claim.setTag(tagIndex, mutation.getNewTag());
+					break;
+				}
+				
+				modifiedClaims.append(i, claim);
+				i++;
+			}
+		}
+		
+		for (int i = 0; i < modifiedClaims.size(); i++) {
+			listModel.set(modifiedClaims.keyAt(i), modifiedClaims.valueAt(i));
+		}
 	}
 
 	@Override
