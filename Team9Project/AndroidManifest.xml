@@ -74,6 +74,10 @@
             android:name=".TagEditToClaimActivity"
             android:label="@string/title_activity_tag_edit_to_claim" >
         </activity>
+        <activity 
+            android:name=".FilterTagsActivity"
+            android:label="@string/title_activity_filter_tag" >
+        </activity>
     </application>
 
 </manifest>
