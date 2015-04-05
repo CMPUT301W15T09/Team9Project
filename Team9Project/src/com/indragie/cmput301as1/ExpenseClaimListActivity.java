@@ -147,7 +147,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	@SuppressWarnings("unchecked")
 	private void onManageTagsResult(Intent data) {
 		ArrayList<ExpenseClaim> claimList = (ArrayList<ExpenseClaim>)data.getSerializableExtra(ManageTagsActivity.CLAIM_LIST);
-		listModel.replaceList(claimList);
+		listModel.replace(claimList);
 	}
 
 	@Override
