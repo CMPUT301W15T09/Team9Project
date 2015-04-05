@@ -18,6 +18,8 @@ package com.indragie.cmput301as1;
 
 import java.io.Serializable;
 
+import android.location.Location;
+
 /**
  * Model object representing a user object.
  */
@@ -32,6 +34,7 @@ public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String name;
 	private int id;
+	private Location home;
 	
 	
 	//================================================================================
@@ -62,7 +65,12 @@ public class User implements Serializable {
 		return id;
 	}
 	
-
-	
+	/**
+	 * set the home location
+	 * @param Location
+	 */
+	public void setHome(Location home) {
+		this.home = home;
+	}
 
 }

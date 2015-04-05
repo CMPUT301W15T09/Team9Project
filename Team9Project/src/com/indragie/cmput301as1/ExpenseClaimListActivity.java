@@ -26,6 +26,7 @@ import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -157,7 +158,8 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 * @param data
 	 */
 	private void onSetHomeLocationResult(Intent data) {
-		
+		Location location = (Location)data.getSerializableExtra(GeolocationActivity.EXTRA_LOCATION);
+		user.setHome(location);
 	}
 	
 	/**
