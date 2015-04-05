@@ -37,6 +37,11 @@ import android.content.res.Resources;
 public class ExpenseClaim implements Serializable, ElasticSearchDocument {
 	private static final long serialVersionUID = -3079284243806354009L;
 	
+	/**
+	 * Type used for indexing on ElasticSearch.
+	 */
+	public static final String ELASTIC_SEARCH_TYPE = "expense_claim";
+	
 	//================================================================================
 	// Properties
 	//================================================================================
@@ -45,7 +50,7 @@ public class ExpenseClaim implements Serializable, ElasticSearchDocument {
 	 */
 	private ElasticSearchDocumentID documentID = new ElasticSearchDocumentID(
 		ElasticSearchConfiguration.INDEX_NAME, 
-		"expense_claim", 
+		ELASTIC_SEARCH_TYPE,
 		UUID.randomUUID().toString()
 	);
 	
@@ -143,7 +148,7 @@ public class ExpenseClaim implements Serializable, ElasticSearchDocument {
 		this.status = status;
 		this.creationDate = new Date();
 		this.user = user;
-		this.approver = new User("");
+		this.approver = new User("", "");
 	}
 
 	//================================================================================

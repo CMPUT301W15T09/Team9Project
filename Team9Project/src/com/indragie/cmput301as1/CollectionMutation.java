@@ -37,7 +37,11 @@ public abstract class CollectionMutation<T> {
 		 * An existing object in a collection was replaced with
 		 * a new one.
 		 */
-		UPDATE 
+		UPDATE,
+		/**
+		 * The entire collection contents were replaced.
+		 */
+		REPLACEMENT
 	}
 	
 	/**
