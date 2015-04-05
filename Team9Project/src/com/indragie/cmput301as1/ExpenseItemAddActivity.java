@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.RoundingMode;
 
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
@@ -203,7 +204,8 @@ public class ExpenseItemAddActivity extends Activity {
 	protected Intent getResultIntent()  {
 		Money amount = Money.of(
 			CurrencyUnit.of(currencySpinner.getSelectedItem().toString()), 
-			Float.parseFloat(amountField.getText().toString())
+			Float.parseFloat(amountField.getText().toString()),
+			RoundingMode.HALF_UP
 		);
 		ExpenseItem item = new ExpenseItem(
 			nameField.getText().toString(),
