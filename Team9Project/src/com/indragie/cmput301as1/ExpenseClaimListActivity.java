@@ -192,6 +192,9 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private void onAddExpenseResult(Intent data) {
 		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM);
 		listModel.add(claim);
+		if(checkFilteredTags()) {
+			
+		}
 	}
 	
 	/**
@@ -257,6 +260,11 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		}
 		filteredListModel.replace(tempClaims);
 		setListAdapter(new ExpenseClaimArrayAdapter(this, filteredListModel.getItems()));
+	}
+	
+	private boolean checkFilteredTags() {
+		return !selectedTags.isEmpty();
+		
 	}
 
 	@Override
