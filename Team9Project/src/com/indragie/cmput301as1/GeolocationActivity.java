@@ -1,16 +1,24 @@
 package com.indragie.cmput301as1;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 public class GeolocationActivity extends Activity {
 
+	private GoogleMap map;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_geolocation);
+		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 	}
 
 	@Override

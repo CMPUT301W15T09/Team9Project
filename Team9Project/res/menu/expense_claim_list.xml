@@ -12,5 +12,9 @@
         android:id="@+id/action_manage_tags"
         android:title="@string/action_manage_tags">
     </item>
+    <item 
+        android:id="@+id/action_set_home_location" 
+        android:title="@string/action_set_home">
+    </item>
 
 </menu>

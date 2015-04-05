@@ -510,7 +510,8 @@ containing a value of this type.
         public static final int action_mark_approved=0x7f0c003e;
         public static final int action_mark_returned=0x7f0c003d;
         public static final int action_mark_submitted=0x7f0c003f;
-        public static final int action_settings=0x7f0c0043;
+        public static final int action_set_home_location=0x7f0c0043;
+        public static final int action_settings=0x7f0c0044;
         public static final int action_sort_claim=0x7f0c0041;
         public static final int adjust_height=0x7f0c0000;
         public static final int adjust_width=0x7f0c0001;
@@ -614,6 +615,9 @@ containing a value of this type.
         public static final int action_mark_returned=0x7f060041;
         public static final int action_mark_submitted=0x7f060040;
         public static final int action_new_tag=0x7f060058;
+        /**  Geolocation 
+         */
+        public static final int action_set_home=0x7f06005e;
         /**  ExpenseClaimSortActivity 
          */
         public static final int action_settings=0x7f06005b;
