@@ -282,27 +282,24 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	 * Sets the editable state of the entire UI.
 	 */
 	private void setDeletable() {
-		getListView().setOnItemLongClickListener(
-			new LongClickDeleteListener(this, new LongClickDeleteListener.OnDeleteListener() {
-				@Override
-				public void onDelete(int position) {
-					if (getListView().getItemAtPosition(position) == null)
-						return;
-					ExpenseClaimDetailController.DetailItem.ItemType type = getTypeAt(position);
-					startDeleteAlertDialog(type);
-				}
-			}, 
-			new LongClickDeleteListener.SetStatus() {
-				@Override
-				public boolean set(int position) {
-					ExpenseClaimDetailController.DetailItem.ItemType type = getTypeAt(position);
-					if (editable ||type == ExpenseClaimDetailController.DetailItem.ItemType.TAG) {
-						return true;
-					}
-					return false;
-				}
+		getListView().setOnItemLongClickListener(new LongClickDeleteListener(this, new LongClickDeleteListener.OnDeleteListener() {
+			@Override
+			public void onDelete(int position) {
+				if (getListView().getItemAtPosition(position) == null)
+					return;
+				ExpenseClaimDetailController.DetailItem.ItemType type = getTypeAt(position);
+				startDeleteAlertDialog(type);
 			}
-		));
+			
+			@Override
+			public boolean shouldDelete(int position) {
+				ExpenseClaimDetailController.DetailItem.ItemType type = getTypeAt(position);
+				if (editable ||type == ExpenseClaimDetailController.DetailItem.ItemType.TAG) {
+					return true;
+				}
+				return false;
+			}
+		}));
 	}
 	
 	@Override
