@@ -41,7 +41,7 @@ public class NetworkStateListener extends BroadcastReceiver {
 	 * The observable that observers use to receive updates when the 
 	 * network state changes.
 	 */
-	private TypedObservable<NetworkInfo.State> observable;
+	private TypedObservable<NetworkInfo.State> observable = new TypedObservable<NetworkInfo.State>();
 	
 	//================================================================================
 	// Constructors
