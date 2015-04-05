@@ -52,6 +52,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private static final int EDIT_EXPENSE_CLAIM_REQUEST = 2;
 	private static final int SORT_EXPENSE_CLAIM_REQUEST = 3;
 	private static final int MANAGE_TAGS_REQUEST = 4;
+	private static final int FILTER_TAGS_REQUEST = 5;
 	
 	//================================================================================
 	// Properties
@@ -61,6 +62,11 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 * List model of expense claim.
 	 */
 	private ListModel<ExpenseClaim> listModel;
+	
+	/**
+	 * List Model of filtered expense claim.
+	 */
+	private ListModel<ExpenseClaim> filteredListModel; //TODO: implement usage of this model.
 	
 	/**
 	 * Manages the user and associated preferences.
@@ -149,6 +155,9 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		case MANAGE_TAGS_REQUEST:
 			onManageTagsResult(data);
 			break;
+		case FILTER_TAGS_REQUEST:
+			onFilterTagsRequest(data);
+			break;
 		}
 	}
 	
@@ -216,10 +225,14 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 			listModel.set(modifiedClaims.keyAt(i), modifiedClaims.valueAt(i));
 		}
 	}
+	
+	private void onFilterTagsRequest(Intent data) {
+		//TODO: Filter tags, replace the tags, etc. 
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.expense_claim_list, menu);
+		getMenuInflater().inflate(R.menu.expense_claim_list, menu); //TODO: ADD TO EXPENSE CLAIM LIST
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -235,6 +248,8 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		case R.id.action_manage_tags:
 			startManageTagsActivity();
 			return true;
+		//TODO: make action_filter_tags id
+			//startFilterTagsActivity();
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -263,6 +278,10 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private void startManageTagsActivity() {
 		Intent manageTagsIntent = new Intent(this, ManageTagsActivity.class);
 		startActivityForResult(manageTagsIntent, MANAGE_TAGS_REQUEST);
+	}
+	
+	private void startFilterTagsActivity() {
+		//TODO: Make the intent and activity. 
 	}
 	
 	/**
