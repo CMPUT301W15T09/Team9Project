@@ -1,7 +1,11 @@
 package com.indragie.cmput301as1;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -10,8 +14,6 @@ import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -37,6 +39,18 @@ public class GeolocationActivity extends Activity {
 		} else {
 			map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 		}
+		
+		map.setOnMapClickListener(new OnMapClickListener() {
+			
+			@Override
+			public void onMapClick(LatLng point) {
+				MarkerOptions markerOpts = new MarkerOptions();
+				markerOpts.position(point);
+				map.clear();
+				map.animateCamera(CameraUpdateFactory.newLatLng(point));
+				map.addMarker(markerOpts);		
+			}
+		});
 	}
 
 	@Override

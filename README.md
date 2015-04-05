@@ -22,11 +22,14 @@ Original source code is from [indragiek/cmput301as1](https://github.com/indragie
 	* [http://www.theappguruz.com/blog/android-take-photo-camera-gallery-code-sample](http://www.theappguruz.com/blog/android-take-photo-camera-gallery-code-sample)
 * Calendar Usage
 	* [http://www.mkyong.com/java/java-how-to-get-current-date-time-date-and-calender](http://www.mkyong.com/java/java-how-to-get-current-date-time-date-and-calender)
+* Google Maps API v2 setup
+	* [http://www.vogella.com/tutorials/AndroidGoogleMaps/article.html](http://www.vogella.com/tutorials/AndroidGoogleMaps/article.html)
 
 ### Libraries Used
 
 * [Joda Money](http://www.joda.org/joda-money/) 0.10.0
 * Android Support Library v4 (automatically included by Eclipse)
+* Google Play Services (https://developer.android.com/google/play-services/index.html) 6.5
 
 ### License
 
