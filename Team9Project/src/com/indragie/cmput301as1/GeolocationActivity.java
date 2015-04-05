@@ -27,7 +27,7 @@ public class GeolocationActivity extends Activity {
 		if (!isNetworkAvailable(this)) {
 			AlertDialog.Builder alert = new AlertDialog.Builder(this);
 			alert.setCancelable(false);
-			alert.setTitle("No Connection Available");
+			alert.setMessage("No Connection Available");
 			alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int whichButton) {
 					finish();
@@ -58,7 +58,7 @@ public class GeolocationActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-	public boolean isNetworkAvailable(Context context) {
+	private boolean isNetworkAvailable(Context context) {
 		ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 		return activeNetworkInfo != null && activeNetworkInfo.isConnected();
