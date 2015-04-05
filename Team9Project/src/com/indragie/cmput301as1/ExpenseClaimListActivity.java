@@ -86,6 +86,11 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 			public void onDelete(int position) {
 				showDeleteAlertDialog(position);
 			}
+			
+			@Override
+			public boolean shouldDelete(int position) {
+				return true;
+			}
 		}));
 	}
 	
