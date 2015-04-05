@@ -198,6 +198,8 @@ public final class R {
         /**  ExpenseClaimSortActivity 
          */
         public static final int title_activity_tag_list=0x7f06003e;
+        public static final int title_tab_approval=0x7f060044;
+        public static final int title_tab_claims=0x7f060043;
         public static final int toast_receipt_deleted=0x7f060026;
         public static final int toast_receipt_failed=0x7f060025;
         public static final int toast_receipt_nonexistent=0x7f060027;

@@ -18,8 +18,6 @@
 package com.indragie.cmput301as1;
 
 
-import java.util.List;
-
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.AlertDialog;
@@ -34,18 +32,18 @@ import android.widget.Toast;
  * An activity that initializes tab fragments for displaying claims.
  */
 
-public class ExpenseClaimListActivity extends FragmentActivity implements TypedObserver<CollectionMutation<ExpenseClaim>> {
+public class ExpenseClaimListActivity extends FragmentActivity {
 
 	//================================================================================
 	// Constants
 	//================================================================================
-	
+
 	private static final String PREFERENCE = "PREFERENCE";
 
 	//================================================================================
 	// Properties
 	//================================================================================
-	
+
 	/**
 	 * Active user.
 	 */
@@ -60,7 +58,7 @@ public class ExpenseClaimListActivity extends FragmentActivity implements TypedO
 		super.onCreate(savedInstanceState);
 
 		checkFirstRun();
-		
+
 		ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
@@ -68,19 +66,19 @@ public class ExpenseClaimListActivity extends FragmentActivity implements TypedO
 
 		/* Creating ANDROID Tab */
 		Tab tab = actionBar.newTab()
-			.setText("Claims")
-			.setTabListener(new ClaimTabListener<ClaimTabFragment>(this, "Claims", ClaimTabFragment.class));
+				.setText(R.string.title_tab_claims)
+				.setTabListener(new ClaimTabListener<ClaimTabFragment>(this, "Claims", ClaimTabFragment.class));
 
 		actionBar.addTab(tab);
 
 		/* Creating APPLE Tab */
 		tab = actionBar.newTab()
-			.setText("Approval")
-			.setTabListener(new ClaimTabListener<ApprovalTabFragment>(this, "Approval", ApprovalTabFragment.class));
+				.setText(R.string.title_tab_approval)
+				.setTabListener(new ClaimTabListener<ApprovalTabFragment>(this, "Approval", ApprovalTabFragment.class));
 
 		actionBar.addTab(tab);;
 	}
-	
+
 	private void setUserFromPreferences() {
 		SharedPreferences prefs = getSharedPreferences(PREFERENCE, MODE_PRIVATE);
 		user = new User(prefs.getString("name", "USER DOES NOT EXIST"), prefs.getInt("id", -1));
@@ -131,16 +129,6 @@ public class ExpenseClaimListActivity extends FragmentActivity implements TypedO
 			alert.show();
 		}
 	}
-	
-	//================================================================================
-	// TypedObserver
-	//================================================================================
 
-	@Override
-	public void update(TypedObservable<CollectionMutation<ExpenseClaim>> o,
-			CollectionMutation<ExpenseClaim> arg) {
-		// TODO Auto-generated method stub
-		
-	}
 
 }
