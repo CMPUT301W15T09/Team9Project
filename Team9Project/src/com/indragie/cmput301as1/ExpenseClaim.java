@@ -28,8 +28,6 @@ import java.util.UUID;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 
-import com.google.gson.annotations.SerializedName;
-
 import android.content.res.Resources;
 
 /**

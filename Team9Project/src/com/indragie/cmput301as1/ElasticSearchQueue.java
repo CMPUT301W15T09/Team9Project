@@ -31,7 +31,7 @@ import com.squareup.okhttp.Response;
 /**
  * Handles queueing of requests and automatic retry of failed requests.
  */
-public class ElasticSearchQueue<T extends ElasticSearchDocument> implements TypedObserver<NetworkInfo.State> {
+public class ElasticSearchQueue<T> implements TypedObserver<NetworkInfo.State> {
 	//================================================================================
 	// Classes
 	//================================================================================
