@@ -159,6 +159,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 */
 	private void onSetHomeLocationResult(Intent data) {
 		Location location = (Location)data.getSerializableExtra(GeolocationActivity.EXTRA_LOCATION);
+		Toast.makeText(this, location.getLatitude() + ":" + location.getLongitude(), Toast.LENGTH_SHORT).show();
 		user.setHome(location);
 	}
 	
@@ -222,6 +223,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 */
 	private void startSetHomeLocationActivity() {
 		Intent intent = new Intent(this, GeolocationActivity.class);
+		intent.putExtra(GeolocationActivity.EXTRA_LOCATION, user.getHome());
 		startActivityForResult(intent, SET_HOME_LOCATION_REQUEST);
 	}
 	

@@ -65,6 +65,13 @@ public class User implements Serializable {
 		return id;
 	}
 	
+	 /**
+	  * @return the home location
+	  */
+	 public Location getHome() {
+		 return home;
+	 }
+	
 	/**
 	 * set the home location
 	 * @param Location
