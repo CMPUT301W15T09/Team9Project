@@ -115,7 +115,13 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 
 			@Override
 			public void onFailure(Request request, Response response, IOException e) {
-				Toast.makeText(context, R.string.load_fail_error, Toast.LENGTH_LONG).show();
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(context, R.string.load_fail_error, Toast.LENGTH_LONG).show();
+					}
+				});
+				
 			}
 		});
 	}
@@ -229,7 +235,6 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 */
 	private void startManageTagsActivity() {
 		Intent manageTagsIntent = new Intent(this, ManageTagsActivity.class);
-		manageTagsIntent.putExtra(ManageTagsActivity.CLAIM_LIST, new ArrayList<ExpenseClaim>(listModel.getItems()));
 		startActivityForResult(manageTagsIntent, MANAGE_TAGS_REQUEST);
 	}
 	
