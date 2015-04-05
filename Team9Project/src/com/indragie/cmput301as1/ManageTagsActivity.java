@@ -144,7 +144,6 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 	// Activity Callbacks
 	//================================================================================
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
