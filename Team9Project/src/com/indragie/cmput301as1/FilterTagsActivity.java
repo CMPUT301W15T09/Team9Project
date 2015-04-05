@@ -32,12 +32,13 @@ public class FilterTagsActivity extends ListActivity {
 	/**
 	 * List model of tags.
 	 */
-	protected ListModel<Tag> listModel;
-	/**
-	 * Index of a item that is pressed.
-	 */
-	protected int pressedItemIndex;
+	private ListModel<Tag> listModel;
 
+	/**
+	 * List of selected tags.
+	 */
+	private ArrayList<Tag> selectedTags;
+	
 	//================================================================================
 	// Activity Callbacks
 	//================================================================================
@@ -51,12 +52,20 @@ public class FilterTagsActivity extends ListActivity {
 	/**
 	 * Sets up the action bar and ListModel to use.
 	 */
+	@SuppressWarnings("unchecked")
 	protected void setUpActionBarAndModel() {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		listModel = new ListModel<Tag>(TAG_FILENAME, this);
 		getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 		setListAdapter(new TagFilterArrayAdapter(this, listModel.getItems()));
+		
+		selectedTags = (ArrayList<Tag>) getIntent().getSerializableExtra(TAG_TO_FILTER);
+		
+		for(Tag tag: selectedTags) {
+			int position = listModel.getItems().indexOf(tag);
+			getListView().setItemChecked(position, true);
+		}
 	}
 	
 	@Override
@@ -73,18 +82,24 @@ public class FilterTagsActivity extends ListActivity {
 	/**
 	 * Sets intent as canceled so no changes are made when home button pressed.
 	 */
-	protected void onHome() {
+	private void onHome() {
 		Intent intent = new Intent();
 		if(getListView().getCheckedItemCount() == 0) {
 			setResult(RESULT_CANCELED, intent);
 		} else {
 			SparseBooleanArray selectedIndexes = getListView().getCheckedItemPositions();
-			ArrayList<Tag> selectedTags = new ArrayList<Tag>();
+			System.out.println("Index size" + selectedIndexes.size());
+			System.out.println("Before clear" + selectedTags.size());
+			selectedTags.clear();
+			System.out.println("After clear" + selectedTags.size());
 			for(int index = 0; index < selectedIndexes.size(); index++) {
-				int position = selectedIndexes.keyAt(index);
-				selectedTags.add(listModel.getItems().get(position));
+				if(selectedIndexes.valueAt(index)){
+					int position = selectedIndexes.keyAt(index);
+					selectedTags.add(listModel.getItems().get(position));
+				}
 			}
 			intent.putExtra(TAG_TO_FILTER, selectedTags);
+			System.out.println("After adding" + selectedTags.size());
 			setResult(RESULT_OK, intent);
 		}
 		finish();
