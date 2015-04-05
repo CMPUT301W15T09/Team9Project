@@ -16,7 +16,14 @@
  */
 package com.indragie.cmput301as1;
 
+import java.io.IOException;
+import java.util.List;
+
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+
 import android.content.Context;
+import android.os.Handler;
 
 /**
  * Encapsulates shared state for the application-wide session.
@@ -86,9 +93,14 @@ public class Session implements TypedObserver<CollectionMutation<ExpenseClaim>> 
 	private ListModel<ExpenseClaim> reviewalClaims;
 	
 	/**
-	 * Used to queue up API calls (automatic retry, etc.)
+	 * Used to queue up API calls to push changes upstream.
 	 */
-	private ElasticSearchQueue<ExpenseClaim> requestQueue;
+	private ElasticSearchQueue<ExpenseClaim> pushQueue;
+	
+	/**
+	 * Used to queue up API calls to pull changes downstream.
+	 */
+	private ElasticSearchQueue<List<ExpenseClaim>> pullQueue;
 	
 	/**
 	 * Used to make API calls to the ElasticSearch servers.
@@ -114,7 +126,8 @@ public class Session implements TypedObserver<CollectionMutation<ExpenseClaim>> 
 		reviewalClaims = new ListModel<ExpenseClaim>(modelFilename(REVIEWAL_CLAIMS_FILENAME_PREFIX, user), context);
 		reviewalClaims.addObserver(this);
 		
-		requestQueue = new ElasticSearchQueue<ExpenseClaim>(context);
+		pushQueue = new ElasticSearchQueue<ExpenseClaim>(context);
+		pullQueue = new ElasticSearchQueue<List<ExpenseClaim>>(context);
 	}
 	
 	/**
@@ -150,6 +163,71 @@ public class Session implements TypedObserver<CollectionMutation<ExpenseClaim>> 
 	}
 	
 	//================================================================================
+	// API
+	//================================================================================
+	
+	/**
+	 * Loads the list of expense claims that have been created by the user from the server
+	 * and automatically updates the {@link Session#ownedClaims} list model.
+	 * @param callback Optional callback to be called on failure or on success, after the
+	 * list model has been updated.
+	 */
+	public void loadOwnedClaims(final ElasticSearchAPIClient.APICallback<List<ExpenseClaim>> callback) {
+		ElasticSearchAPIClient.APICall<List<ExpenseClaim>> call = 
+				ElasticSearchExpenseQueries.expenseClaimsOwnedByUser(user, apiClient);
+		loadClaims(call, callback, ownedClaims);
+	}
+	
+	/**
+	 * Loads the list of expense claims for reviewal by the user from the server
+	 * and automatically updates the {@link Session#reviewalClaims} list model.
+	 * @param callback Optional callback to be called on failure or on success, after the
+	 * list model has been updated.
+	 */
+	public void loadReviewalClaims(ElasticSearchAPIClient.APICallback<List<ExpenseClaim>> callback) {
+		ElasticSearchAPIClient.APICall<List<ExpenseClaim>> call = 
+				ElasticSearchExpenseQueries.expenseClaimsForReviewalByUser(user, apiClient);
+		loadClaims(call, callback, reviewalClaims);
+	}
+	
+	/**
+	 * Loads a list of expense claims from the server and automatically updates
+	 * the specified list model.
+	 * @param call The API call used to get a list of expense claims from the server.
+	 * @param callback Optional callback to be called on failure or on success, after the
+	 * list model has been updated.
+	 * @param listModel The list model to update.
+	 */
+	private void loadClaims(
+			ElasticSearchAPIClient.APICall<List<ExpenseClaim>> call, 
+			final ElasticSearchAPIClient.APICallback<List<ExpenseClaim>> callback, 
+			final ListModel<ExpenseClaim> listModel) {
+		
+		final Handler mainHandler = new Handler(context.getMainLooper());
+		pullQueue.enqueueCall(call, new ElasticSearchAPIClient.APICallback<List<ExpenseClaim>>() {
+			@Override
+			public void onSuccess(Response response, final List<ExpenseClaim> results) {
+				mainHandler.post(new Runnable() {
+					@Override
+					public void run() {
+						listModel.replace(results);
+					}
+				});
+				if (callback != null) {
+					callback.onSuccess(response, results);
+				}
+			}
+
+			@Override
+			public void onFailure(Request request, Response response, IOException e) {
+				if (callback != null) {
+					callback.onFailure(request, response, e);
+				}
+			}
+		});
+	}
+	
+	//================================================================================
 	// TypedObserver<CollectionMutation<ExpenseClaim>>
 	//================================================================================
 	
@@ -170,7 +248,10 @@ public class Session implements TypedObserver<CollectionMutation<ExpenseClaim>> 
 		case UPDATE:
 			call = apiClient.update(((UpdateCollectionMutation<ExpenseClaim>)mutation).getNewObject());
 			break;
+		default: break;
 		}
-		requestQueue.enqueueCall(call, null);
+		if (call != null) {
+			pushQueue.enqueueCall(call, null);
+		}
 	}
 }
