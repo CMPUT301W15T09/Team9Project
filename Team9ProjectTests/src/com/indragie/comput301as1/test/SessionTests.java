@@ -27,7 +27,6 @@ import android.test.AndroidTestCase;
 
 public class SessionTests extends AndroidTestCase {
 	public void testSingleton() {
-		assertNull(Session.getSharedSession());
 		User user = new User("test_id_1", "Indragie Karunaratne");
 		Session session = new Session(getContext(), user);
 		Session.setSharedSession(session);
@@ -41,6 +40,9 @@ public class SessionTests extends AndroidTestCase {
 		ExpenseClaim claim = new ExpenseClaim("URoma", "", new Date(), new Date(), user1, ExpenseClaim.Status.IN_PROGRESS);
 		
 		Session session1 = new Session(getContext(), user1);
+		session1.getOwnedClaims().removeAll();
+		session1.getReviewalClaims().removeAll();
+		
 		assertEquals(0, session1.getOwnedClaims().count());
 		assertEquals(0, session1.getReviewalClaims().count());
 		
