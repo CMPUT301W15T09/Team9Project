@@ -183,6 +183,9 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private void onSortExpenseResult(Intent data) {
 		Comparator<ExpenseClaim> comparator = (Comparator<ExpenseClaim>)data.getSerializableExtra(ExpenseClaimSortActivity.EXPENSE_CLAIM_SORT);
 		listModel.setComparator(comparator);
+		if(checkFilteredTags()) {
+			//TODO: Set comparator for filtered lists 
+		}
 	}
 
 	/**
@@ -193,7 +196,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM);
 		listModel.add(claim);
 		if(checkFilteredTags()) {
-			
+			//TODO: Check if claim has one of the tags in selectedTags
 		}
 	}
 	
@@ -205,8 +208,14 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM);
 		int position = data.getIntExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_INDEX, -1);
 		listModel.set(position, claim);
+		if(checkFilteredTags()) {
+			//TODO: Check if claim still contains the tag, if it doesn't then remove from list
+			//Else: don't do anything.
+		}
 	}
 	
+	//TODO: if tag in selectedTag isn't in the list of tags anymore, we must remove it from the list. 
+	//And update.
 	/**
 	 * Sets the list used in ListModel to the returned list of expense claims from the intent. 
 	 * @param data The intent to get the list of expense claims from. 
