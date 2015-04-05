@@ -88,10 +88,7 @@ public class FilterTagsActivity extends ListActivity {
 			setResult(RESULT_CANCELED, intent);
 		} else {
 			SparseBooleanArray selectedIndexes = getListView().getCheckedItemPositions();
-			System.out.println("Index size" + selectedIndexes.size());
-			System.out.println("Before clear" + selectedTags.size());
 			selectedTags.clear();
-			System.out.println("After clear" + selectedTags.size());
 			for(int index = 0; index < selectedIndexes.size(); index++) {
 				if(selectedIndexes.valueAt(index)){
 					int position = selectedIndexes.keyAt(index);
@@ -99,7 +96,6 @@ public class FilterTagsActivity extends ListActivity {
 				}
 			}
 			intent.putExtra(TAG_TO_FILTER, selectedTags);
-			System.out.println("After adding" + selectedTags.size());
 			setResult(RESULT_OK, intent);
 		}
 		finish();
