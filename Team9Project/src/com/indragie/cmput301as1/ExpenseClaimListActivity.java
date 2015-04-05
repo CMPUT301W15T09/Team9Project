@@ -232,7 +232,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.expense_claim_list, menu); //TODO: ADD TO EXPENSE CLAIM LIST
+		getMenuInflater().inflate(R.menu.expense_claim_list, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -248,8 +248,9 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		case R.id.action_manage_tags:
 			startManageTagsActivity();
 			return true;
-		//TODO: make action_filter_tags id
-			//startFilterTagsActivity();
+		case R.id.action_filter_tags:
+			startFilterTagsActivity();
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -281,7 +282,8 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	}
 	
 	private void startFilterTagsActivity() {
-		//TODO: Make the intent and activity. 
+		Intent filterTagsIntent = new Intent(this, FilterTagsActivity.class);
+		startActivityForResult(filterTagsIntent, FILTER_TAGS_REQUEST);
 	}
 	
 	/**
