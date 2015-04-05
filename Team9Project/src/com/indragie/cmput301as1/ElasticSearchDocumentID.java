@@ -51,12 +51,12 @@ public class ElasticSearchDocumentID implements Serializable {
 	 * Creates a new instance of {@link ElasticSearchDocumentID}
 	 * @param index The name of the index.
 	 * @param type The name of the type.
-	 * @param id The unique ID of the object.
+	 * @param id The unique ID of the object. The ID will automatically be normalized.
 	 */
 	public ElasticSearchDocumentID(String index, String type, String id) {
 		this.index = index;
 		this.type = type;
-		this.id = id;
+		this.id = StringHelpers.normalize(id);
 	}
 	
 	//================================================================================

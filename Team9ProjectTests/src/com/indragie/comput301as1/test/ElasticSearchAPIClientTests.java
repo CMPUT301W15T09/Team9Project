@@ -19,6 +19,7 @@
 package com.indragie.comput301as1.test;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.indragie.cmput301as1.ElasticSearchAPIClient;
 import com.indragie.cmput301as1.ElasticSearchAPIClient.RequestFailedException;
@@ -101,6 +102,31 @@ public class ElasticSearchAPIClientTests extends TestCase
 		RecordedRequest request = server.takeRequest();
 		assertEquals("/test/doc/100", request.getPath());
 		assertEquals("DELETE", request.getMethod());
+	}
+	
+	public void testSearch() throws InterruptedException, RequestFailedException, IOException {
+		MockResponse response = new MockResponse()
+			.addHeader("Content-Type", "application/json; charset=utf-8")
+			.setBody("{\"took\":0,\"timed_out\":false,\"_shards\":{\"total\":1,\"successful\":1,\"failed\":0},\"hits\":{\"total\":1,\"max_score\":1.0,\"hits\":[{\"_index\":\"test\",\"_type\":\"doc\",\"_id\":\"1\",\"_score\":1.0,\"_source\":{\"name\":\"Indragie Karunaratne\",\"year\":3}}]}}");
+		server.enqueue(response);
+		
+		TestDocument document = new TestDocument("Indragie Karunaratne", 3);
+		String queryJSON = "{"
+				+ "\"filtered\": {"
+				+ "		\"filter\": {"
+				+ " 		\"term\": {"
+				+ "				\"year\": 3"
+				+ "			}"
+				+ "		}"
+				+ "}"
+				+ "}";
+		List<TestDocument> results = client.search("test", "doc", queryJSON, TestDocument.class).execute();
+		assertEquals(1, results.size());
+		assertEquals(document, results.get(0));
+		
+		RecordedRequest request = server.takeRequest();
+		assertEquals("/test/doc/_search", request.getPath());
+		assertEquals("GET", request.getMethod());
 	}
 	
 	private class TestDocument implements ElasticSearchDocument {

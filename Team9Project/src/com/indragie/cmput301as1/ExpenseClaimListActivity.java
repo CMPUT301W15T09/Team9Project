@@ -31,6 +31,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.provider.Settings.Secure;
 
 /**
  * An activity that presents a list of expense claims.
@@ -151,7 +152,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	@SuppressWarnings("unchecked")
 	private void onManageTagsResult(Intent data) {
 		ArrayList<ExpenseClaim> claimList = (ArrayList<ExpenseClaim>)data.getSerializableExtra(ManageTagsActivity.CLAIM_LIST);
-		listModel.replaceList(claimList);
+		listModel.replace(claimList);
 	}
 
 	@Override
@@ -200,7 +201,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 */
 	private void startManageTagsActivity() {
 		Intent manageTagsIntent = new Intent(this, ManageTagsActivity.class);
-		manageTagsIntent.putExtra(ManageTagsActivity.CLAIM_LIST, listModel.getArrayList());
+		manageTagsIntent.putExtra(ManageTagsActivity.CLAIM_LIST, new ArrayList<ExpenseClaim>(listModel.getItems()));
 		startActivityForResult(manageTagsIntent, MANAGE_TAGS_REQUEST);
 	}
 	
@@ -223,7 +224,9 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 				if (name == null || name.isEmpty()) {
 					Toast.makeText(getApplicationContext(), R.string.user_alert_error, Toast.LENGTH_LONG).show();
 				} else {
-					userManager.setActiveUser(new User(name));
+					// Device specific identifier
+					String androidID = Secure.getString(getContentResolver(), Secure.ANDROID_ID); 
+					userManager.setActiveUser(new User(androidID, name));
 				}
 			}
 		});
