@@ -36,6 +36,7 @@
     <string name="user_alert_title">Welcome, new user!</string>
     <string name="user_alert_message">Please enter your name.</string>
     <string name="user_alert_error">You must enter a name.</string>
+    <string name="load_fail_error">Failed to load expense claims from server.</string>
 
     <!-- ExpenseClaim{Detail,Add}Activity -->
     <string name="detail_title">Detail</string>

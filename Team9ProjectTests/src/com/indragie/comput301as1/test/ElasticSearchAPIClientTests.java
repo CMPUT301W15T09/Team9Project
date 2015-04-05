@@ -107,7 +107,7 @@ public class ElasticSearchAPIClientTests extends TestCase
 	public void testSearch() throws InterruptedException, RequestFailedException, IOException {
 		MockResponse response = new MockResponse()
 			.addHeader("Content-Type", "application/json; charset=utf-8")
-			.setBody("{\"took\":0,\"timed_out\":false,\"_shards\":{\"total\":1,\"successful\":1,\"failed\":0},\"hits\":{\"total\":1,\"max_score\":1.0,\"hits\":[{\"_index\":\"test\",\"_type\":\"doc\",\"_id\":\"1\",\"_score\":1.0,\"_source\":{\"name\":\"Indragie Karunaratne\",\"year\":3}}]}}");
+			.setBody("{\"took\":0,\"timed_out\":false,\"_shards\":{\"total\":1,\"successful\":1,\"failed\":0},\"hits\":{\"total\":1,\"max_score\":1.0,\"hits\":[{\"_index\":\"test\",\"_type\":\"doc\",\"_id\":\"1\",\"_score\":1.0,\"_source\":{\"doc\": { \"name\":\"Indragie Karunaratne\",\"year\":3}}}]}}");
 		server.enqueue(response);
 		
 		TestDocument document = new TestDocument("Indragie Karunaratne", 3);

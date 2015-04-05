@@ -230,12 +230,13 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		userField.append(claim.getUser().getName());
 
 		approverField = (TextView)headerView.findViewById(R.id.tv_approver);
-		approverField.append(claim.getApprover().getName());
-
+		User approver = claim.getApprover();
+		if (approver != null) {
+			approverField.append(approver.getName());
+		}
 
 		comments = (EditText)headerView.findViewById(R.id.et_comments);
 		comments.setText(claim.getComments());
-
 
 		getListView().addHeaderView(headerView);
 	}
