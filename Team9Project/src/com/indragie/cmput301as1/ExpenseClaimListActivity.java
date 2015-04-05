@@ -66,7 +66,12 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	/**
 	 * List Model of filtered expense claim.
 	 */
-	private ListModel<ExpenseClaim> filteredListModel; //TODO: implement usage of this model.
+	private ListModel<ExpenseClaim> filteredListModel;
+	
+	/**
+	 * List of tags to filter expense claims.
+	 */
+	private ArrayList<Tag> filteredTags;
 	
 	/**
 	 * Manages the user and associated preferences.
@@ -226,8 +231,20 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void onFilterTagsRequest(Intent data) {
-		//TODO: Filter tags, replace the tags, etc. 
+		//TODO: Filter tags, replace the tags, etc.
+		filteredTags = (ArrayList<Tag>)data.getSerializableExtra(FilterTagsActivity.TAG_TO_FILTER);
+		filteredListModel = new ListModel<ExpenseClaim>("temp", getApplicationContext());
+		
+		for(Tag tag: filteredTags) {
+			for(ExpenseClaim claim: listModel.getItems()) {
+				if(claim.hasTag(tag)) {
+					filteredListModel.add(claim);
+				}
+			}
+		}
+		setListAdapter(new ExpenseClaimArrayAdapter(this, filteredListModel.getItems()));
 	}
 
 	@Override

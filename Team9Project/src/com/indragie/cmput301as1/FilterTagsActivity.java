@@ -1,12 +1,13 @@
 package com.indragie.cmput301as1;
 
+import java.util.ArrayList;
+
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.SparseBooleanArray;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ActionMode.Callback;
-import android.widget.AdapterView;
+import android.widget.ListView;
 
 public class FilterTagsActivity extends ListActivity {
 
@@ -17,7 +18,7 @@ public class FilterTagsActivity extends ListActivity {
 	/**
 	 * Filename for storing tags.
 	 */
-	protected static final String TAG_FILENAME = "tags";
+	private static final String TAG_FILENAME = "tags";
 	
 	/**
 	 * Intent key for the filter.
@@ -54,86 +55,39 @@ public class FilterTagsActivity extends ListActivity {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		listModel = new ListModel<Tag>(TAG_FILENAME, this);
-		//listModel.addObserver(this);
+		getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 		setListAdapter(new TagFilterArrayAdapter(this, listModel.getItems()));
 	}
 	
-	/**
-	 * Sets up the item click listener for when a tag is selected.
-	 * @param clickCallback The Callback for when selected.
-	 */
-	protected void setUpItemClickListener(final Callback clickCallback) {
-		getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				pressedItemIndex = position;
-				startActionMode(clickCallback);
-			}
-		});
-	}
-
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			onHome();
-			return true;
+			return true;	
 		default:
 			return super.onOptionsItemSelected(item);
 		}
-	}
-	/*
-	@Override
-	public void update(TypedObservable<CollectionMutation<Tag>> observable, CollectionMutation<Tag> mutation) {
-		setListAdapter(new TagArrayAdapter(this, listModel.getItems()));
-	}
-	
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (resultCode != RESULT_OK) return;
-		switch (requestCode) {
-		case ADD_TAG_REQUEST:
-			onAddTag(data);
-			break;
-		}
-	}
-	*/
-	
-	/*
-	@Override
-	public void onListItemClick(ListView listView, View view, int position, long id) {
-		setResult(RESULT_OK, getTagSelected(position));
-		finish();
-	}
-	*/
-	//================================================================================
-	// Add/Get a tag
-	//================================================================================
-	
-	/**
-	 * Adds a tag to the list model from a resulting activity.
-	 * @param data The intent from resulting activity.
-	 */
-	protected void onAddTag(Intent data) {
-		Tag tag = (Tag)data.getSerializableExtra(TagAddActivity.ADDED_TAG);
-		listModel.add(tag);
 	}
 	
 	/**
 	 * Sets intent as canceled so no changes are made when home button pressed.
 	 */
 	protected void onHome() {
-		setResult(RESULT_CANCELED, new Intent());
+		Intent intent = new Intent();
+		if(getListView().getCheckedItemCount() == 0) {
+			setResult(RESULT_CANCELED, intent);
+		} else {
+			SparseBooleanArray selectedIndexes = getListView().getCheckedItemPositions();
+			ArrayList<Tag> selectedTags = new ArrayList<Tag>();
+			for(int index = 0; index < selectedIndexes.size(); index++) {
+				int position = selectedIndexes.keyAt(index);
+				selectedTags.add(listModel.getItems().get(position));
+			}
+			intent.putExtra(TAG_TO_FILTER, selectedTags);
+			setResult(RESULT_OK, intent);
+		}
 		finish();
-	}
-	
-	/**
-	 * Gets tag a specified position
-	 * @param position The position of the tag in the listView.
-	 * @return The Tag.
-	 */
-	protected Tag getTagAt(int position) {
-		return listModel.getItems().get(position);
 	}
 	
 	
