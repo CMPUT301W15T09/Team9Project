@@ -19,6 +19,7 @@ package com.indragie.cmput301as1;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import android.content.Context;
 import android.net.NetworkInfo;
@@ -75,7 +76,7 @@ public class ElasticSearchQueue<T> implements TypedObserver<NetworkInfo.State> {
 	/**
 	 * Whether a request is currently executing.
 	 */
-	private boolean requestExecuting;
+	private AtomicBoolean requestExecuting = new AtomicBoolean(false);
 	
 	//================================================================================
 	// Constructors
@@ -122,14 +123,14 @@ public class ElasticSearchQueue<T> implements TypedObserver<NetworkInfo.State> {
 	 * checks for APICalls in the stack and for network connection then executes the APICall
 	 */
 	private void attemptNextAPICall() {
-		if (requestExecuting 
+		if (requestExecuting.get() 
 			|| queue.size() == 0 
 			|| networkListener.getNetworkState() != State.CONNECTED) return;
 		
 		final QueueItem item = queue.peek();
 		final ElasticSearchAPIClient.APICallback<T> callback = item.callback;
 		
-		requestExecuting = true;
+		requestExecuting.set(true);
 		item.call.enqueue(new ElasticSearchAPIClient.APICallback<T>() {
 			@Override
 			public void onSuccess(Response response, T document) {
@@ -137,7 +138,7 @@ public class ElasticSearchQueue<T> implements TypedObserver<NetworkInfo.State> {
 				if (callback != null) {
 					callback.onSuccess(response, document);
 				}
-				requestExecuting = false;
+				requestExecuting.set(false);
 				attemptNextAPICall();
 			}
 
@@ -159,7 +160,7 @@ public class ElasticSearchQueue<T> implements TypedObserver<NetworkInfo.State> {
 				} else {
 					Log.v(LOG_TAG, "Request failed with exception " + e.toString());
 				}
-				requestExecuting = false;
+				requestExecuting.set(false);
 			}
 		});
 	}
