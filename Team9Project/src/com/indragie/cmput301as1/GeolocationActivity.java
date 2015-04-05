@@ -43,29 +43,13 @@ public class GeolocationActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_geolocation);
-		
-		if (!isNetworkAvailable(this)) {
-			AlertDialog.Builder alert = new AlertDialog.Builder(this);
-			alert.setCancelable(false);
-			alert.setMessage("No Connection Available");
-			alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int whichButton) {
-					finish();
-				}
-			});
-			alert.show();
-		} else {
-			map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-		}
+		isNetworkAvailable(this);
+		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 		
 		Intent intent = getIntent();
 		location = (Location) intent.getSerializableExtra(EXTRA_LOCATION);
 		if (location != null) {
-			LatLng lastLocationLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-			MarkerOptions markerOpts = new MarkerOptions();
-			markerOpts.position(lastLocationLatLng);
-			map.animateCamera(CameraUpdateFactory.newLatLng(lastLocationLatLng));
-			map.addMarker(markerOpts);
+			setUpLastLocation();
 		}
 		
 		map.setOnMapClickListener(new OnMapClickListener() {
@@ -75,9 +59,17 @@ public class GeolocationActivity extends Activity {
 				markerOpts.position(point);
 				map.clear();
 				map.animateCamera(CameraUpdateFactory.newLatLng(point));
-				map.addMarker(markerOpts);		
+				map.addMarker(markerOpts);
 			}
 		});
+	}
+	
+	public void setUpLastLocation() {
+		LatLng lastLocationLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+		MarkerOptions markerOpts = new MarkerOptions();
+		markerOpts.position(lastLocationLatLng);
+		map.animateCamera(CameraUpdateFactory.newLatLng(lastLocationLatLng));
+		map.addMarker(markerOpts);
 	}
 
 	@Override
@@ -99,14 +91,24 @@ public class GeolocationActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-	private boolean isNetworkAvailable(Context context) {
+	private void isNetworkAvailable(Context context) {
 		ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-		return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+		if (activeNetworkInfo != null || (activeNetworkInfo.isConnected())); {
+			AlertDialog.Builder alert = new AlertDialog.Builder(this);
+			alert.setCancelable(false);
+			alert.setMessage("No Connection Available");
+			alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+					finish();
+				}
+			});
+			alert.show();
+		}
 	}
 	
 	@Override
 	public void onBackPressed() {
-		
+		// TODO
 	}
 }
