@@ -340,15 +340,14 @@ public class ElasticSearchAPIClient {
 		@Override
 		public List<T> modelFromResponse(Response response) {
 			JsonParser parser = new JsonParser();
-			JsonElement rootElement;
 			try {
-				rootElement = parser.parse(response.body().string());
+				ArrayList<T> models = new ArrayList<T>();
+				JsonElement rootElement = parser.parse(response.body().string());
 				if (rootElement.isJsonObject()) {
 					JsonElement outerHitsElement = rootElement.getAsJsonObject().get("hits");
 					if (outerHitsElement.isJsonObject()) {
 						JsonElement hitsElement = outerHitsElement.getAsJsonObject().get("hits");
 						if (hitsElement.isJsonArray()) {
-							ArrayList<T> models = new ArrayList<T>();
 							for (JsonElement element : hitsElement.getAsJsonArray()) {
 								if (element.isJsonObject()) {
 									JsonObject docObject = element.getAsJsonObject();
@@ -359,10 +358,10 @@ public class ElasticSearchAPIClient {
 									}
 								}
 							}
-							return models;
 						}
 					}
 				}
+				return models;
 			} catch (JsonSyntaxException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
