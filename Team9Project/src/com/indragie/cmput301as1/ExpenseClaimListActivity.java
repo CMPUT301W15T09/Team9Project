@@ -190,13 +190,14 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 
 	/**
 	 * Adds a expense claim to list model from a intent.
+	 * Displays the filteredListModel if there are selected tags.
 	 * @param data The intent to get the expense claim from.
 	 */
 	private void onAddExpenseResult(Intent data) {
 		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM);
 		listModel.add(claim);
 		if(checkFilteredTags()) {
-			//TODO: Check if claim has one of the tags in selectedTags
+			setListAdapter(new ExpenseClaimArrayAdapter(this, filteredListModel.getItems()));
 		}
 	}
 	
@@ -256,6 +257,11 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private void onFilterTagsRequest(Intent data) {
 		//TODO: Filter tags, replace the tags, etc.
 		selectedTags = (ArrayList<Tag>)data.getSerializableExtra(FilterTagsActivity.TAG_TO_FILTER);
+
+		setFilteredTags(selectedTags);
+	}
+	
+	private void setFilteredTags(ArrayList<Tag> selectedTags) {
 		ArrayList<ExpenseClaim> tempClaims = new ArrayList<ExpenseClaim>();
 		
 		for(Tag tag: selectedTags) {
