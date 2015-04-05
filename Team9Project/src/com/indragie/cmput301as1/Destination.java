@@ -19,6 +19,8 @@ package com.indragie.cmput301as1;
 
 import java.io.Serializable;
 
+import android.location.Location;
+
 /**
  * Model object representing a travel destination.
  */
@@ -39,14 +41,9 @@ public class Destination implements Serializable {
 	private String travelReason;
 	
 	/**
-	 * Longitude coordinate of geolocation attached to this claim. 
+	 * The geolocation attached to the destination. 
 	 */
-	private Double longitude;
-	
-	/**
-	 * Latitude coordinate of geolocation attached to this claim. 
-	 */
-	private Double latitude;
+	private Location geolocation;
 	
 	//================================================================================
 	// Constructors
@@ -97,33 +94,18 @@ public class Destination implements Serializable {
 	}
 	
 	/**
-	 * @return The longitude attached to this expense claim. 
+	 * @return The geolocation attached to the destination.
 	 */
-	public Double getLongitude() {
-		return longitude;
-	}
-	
-	/**
-	 * Sets the longitude for the geolocation of the expense claim.
-	 * @param longitude The coordinates in type double.
-	 */
-	public void setLongitude(Double longitude) {
-		this.longitude = longitude;
+	public Location getGeolocation() {
+		return geolocation;
 	}
 
 	/**
-	 * @return The latitude attached to this expense claim. 
+	 * Sets the geolocation attached to the destination.
+	 * @param geolocation The geolocation of the destination.
 	 */
-	public Double getLatitude() {
-		return latitude;
-	}
-	
-	/**
-	 * Sets the latitude for the geolocation of the expense claim.
-	 * @param latitude The coordinates in type double.
-	 */
-	public void setLatitude(Double latitude) {
-		this.latitude = latitude;
+	public void setGeolocation(Location geolocation) {
+		this.geolocation = geolocation;
 	}
 	
 	//================================================================================
