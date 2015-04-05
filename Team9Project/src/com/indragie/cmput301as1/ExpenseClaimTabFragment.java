@@ -82,13 +82,16 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 	// Activity Callbacks
 	//================================================================================
 
-
+	@Override
+	public void onCreate(Bundle savedInstanceState){
+		super.onCreate(savedInstanceState);
+		activity = getActivity();
+	}
+	
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-
-		activity = getActivity();
 		userManager = new UserManager(activity);
 		user = userManager.getActiveUser();
 		setHasOptionsMenu(true);
