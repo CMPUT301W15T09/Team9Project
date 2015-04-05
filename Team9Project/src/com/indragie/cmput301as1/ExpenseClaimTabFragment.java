@@ -22,10 +22,8 @@ import java.util.Comparator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListFragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -89,6 +87,11 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
+
+		activity = getActivity();
+		userManager = new UserManager(activity);
+		user = userManager.getActiveUser();
+		setHasOptionsMenu(true);
 
 		getListView().setOnItemLongClickListener(
 				new LongClickDeleteListener(activity, new LongClickDeleteListener.OnDeleteListener() {

@@ -31,10 +31,7 @@ public class ApprovalTabFragment extends ExpenseClaimTabFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-		activity = getActivity();
 		load();
-		userManager = new UserManager(activity);
-		user = userManager.getActiveUser();
 		setHasOptionsMenu(true);
 
 		/** Creating array adapter to set data in listview */
