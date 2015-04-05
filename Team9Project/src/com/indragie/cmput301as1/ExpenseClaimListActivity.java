@@ -47,6 +47,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private static final int ADD_EXPENSE_CLAIM_REQUEST = 1;
 	private static final int EDIT_EXPENSE_CLAIM_REQUEST = 2;
 	private static final int SORT_EXPENSE_CLAIM_REQUEST = 3;
+	private static final int SET_HOME_LOCATION_REQUEST = 4;
 	private static final String EXPENSE_CLAIM_FILENAME = "claims";
 	private static final String PREFERENCE = "PREFERENCE";
 
@@ -145,7 +146,18 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		case SORT_EXPENSE_CLAIM_REQUEST:
 			onSortExpenseResult(data);
 			break;
+		case SET_HOME_LOCATION_REQUEST:
+			onSetHomeLocationResult(data);
+			break;
 		}
+	}
+	
+	/**
+	 * sets the home location for the user
+	 * @param data
+	 */
+	private void onSetHomeLocationResult(Intent data) {
+		
 	}
 	
 	/**
@@ -195,11 +207,21 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		case R.id.action_manage_tags:
 			startManageTagsActivity();
 			return true;
+		case R.id.action_set_home_location:
+			startSetHomeLocationActivity();
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
 
+	/**
+	 * Starts the {@link GeolocationActivity}
+	 */
+	private void startSetHomeLocationActivity() {
+		Intent intent = new Intent(this, GeolocationActivity.class);
+		startActivityForResult(intent, SET_HOME_LOCATION_REQUEST);
+	}
 	
 	/**
 	 * Starts the {@link ExpenseClaimAddActivity}
