@@ -163,7 +163,17 @@ public class ElasticSearchAPIClient {
 		// Properties
 		//================================================================================
 		/**
-		 * The underlying {@link com.squareup.okhttp.Call} instance.
+		 * The request to use for the API call.
+		 */
+		private Request request;
+		
+		/**
+		 * The HTTP client used to create the underlying {@link Call} object.
+		 */
+		private OkHttpClient client;
+		
+		/**
+		 * The underlying {@link Call} object.
 		 */
 		private Call call;
 		
@@ -177,29 +187,52 @@ public class ElasticSearchAPIClient {
 		//================================================================================
 		/**
 		 * Creates a new instance of {@link APICall}
-		 * @param call The underlying {@link com.squareup.okhttp.Call} instance.
+		 * @param request The request to use for the API call.
+		 * @param client The HTTP client used to create the underlying {@link Call} object.
 		 * @param deserializer Optional deserializer used to deserialize a model object from JSON.
 		 */
-		protected APICall(Call call, Deserializer<T> deserializer) {
-			this.call = call;
+		protected APICall(Request request, OkHttpClient client, Deserializer<T> deserializer) {
+			this.request = request;
+			this.client = client;
 			this.deserializer = deserializer;
+		}
+		
+		//================================================================================
+		// Private
+		//================================================================================
+		
+		/**
+		 * If a call is not already executing, a call is created. Otherwise,
+		 * an {@link IllegalStateException} is thrown.
+		 */
+		private void createCallOrThrowException() {
+			if (call != null) {
+				throw new IllegalStateException("Call has already been enqueued");
+			}
+			call = client.newCall(request);
 		}
 		
 		//================================================================================
 		// API
 		//================================================================================
+		
 		/**
 		 * Cancels the request, if possible.
 		 */
 		public void cancel() {
-			call.cancel();
+			if (call != null) {
+				call.cancel();
+			}
 		}
 		
 		/**
 		 * @return Whether the call has been canceled.
 		 */
 		public boolean isCanceled() {
-			return call.isCanceled();
+			if (call != null) {
+				return call.isCanceled();
+			}
+			return false;
 		}
 		
 		/**
@@ -208,14 +241,17 @@ public class ElasticSearchAPIClient {
 		 * If you {@link #cancel()} a request before it completes the callback will not be invoked.
 		 */
 		public void enqueue(final APICallback<T> callback) {
+			createCallOrThrowException();
 			call.enqueue(new Callback() {
 				@Override
 				public void onFailure(Request request, IOException e) {
+					call = null;
 					callback.onFailure(request, null, e);
 				}
 
 				@Override
 				public void onResponse(Response response) throws IOException {
+					call = null;
 					if (response.isSuccessful()) {
 						T model = null;
 						if (deserializer != null) {
@@ -238,7 +274,10 @@ public class ElasticSearchAPIClient {
 		 * @throws IOException when the request fails to execute.
 		 */
 		public T execute() throws RequestFailedException, IOException {
+			createCallOrThrowException();
 			Response response = call.execute();
+			call = null;
+			
 			if (response.isSuccessful()) {
 				T model = null;
 				if (deserializer != null) {
@@ -413,7 +452,7 @@ public class ElasticSearchAPIClient {
 				.url(constructDocumentURL(document.getDocumentID()))
 				.post(RequestBody.create(MEDIA_TYPE_JSON, json))
 				.build();
-			return new APICall<T>(client.newCall(request), new IdentityDeserializer<T>(document));
+			return new APICall<T>(request, client, new IdentityDeserializer<T>(document));
 		} catch (MalformedURLException e) {
 			// This should never really happen because the URL is constructed internally,
 			// and it isn't possible to pass anything for the components of the 
@@ -440,7 +479,7 @@ public class ElasticSearchAPIClient {
 				.url(constructDocumentURL(documentID))
 				.get()
 				.build();
-			return new APICall<T>(client.newCall(request), new JSONDocumentDeserializer<T>(documentType));
+			return new APICall<T>(request, client, new JSONDocumentDeserializer<T>(documentType));
 		} catch (MalformedURLException e) {
 			// See comment in add() about this exception.
 			return null;
@@ -467,7 +506,7 @@ public class ElasticSearchAPIClient {
 				.url(constructDocumentURL(newDocument.getDocumentID()))
 				.put(RequestBody.create(MEDIA_TYPE_JSON, json))
 				.build();
-			return new APICall<T>(client.newCall(request), new IdentityDeserializer<T>(newDocument));
+			return new APICall<T>(request, client, new IdentityDeserializer<T>(newDocument));
 		} catch (MalformedURLException e) {
 			// See comment in add() about this exception.
 			e.printStackTrace();
@@ -488,7 +527,7 @@ public class ElasticSearchAPIClient {
 				.url(constructDocumentURL(document.getDocumentID()))
 				.delete()
 				.build();
-			return new APICall<T>(client.newCall(request), null);
+			return new APICall<T>(request, client, null);
 		} catch (MalformedURLException e) {
 			// See comment in add() about this exception.
 			e.printStackTrace();
@@ -517,7 +556,7 @@ public class ElasticSearchAPIClient {
 				.url(new URL(baseURL, path))
 				.get()
 				.build();
-			return new APICall<List<T>>(client.newCall(request), new SearchHitDeserializer<T>(documentType));
+			return new APICall<List<T>>(request, client, new SearchHitDeserializer<T>(documentType));
 		} catch (UnsupportedEncodingException e) {
 			// Shouldn't happen, we know UTF-8 is valid
 			e.printStackTrace();
