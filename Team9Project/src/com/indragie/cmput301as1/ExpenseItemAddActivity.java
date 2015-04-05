@@ -17,11 +17,6 @@
 
 package com.indragie.cmput301as1;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.RoundingMode;
 
 import org.joda.money.CurrencyUnit;
@@ -31,13 +26,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -69,11 +61,6 @@ public class ExpenseItemAddActivity extends Activity {
 	 * String array of dialog prompts.
 	 */
 	protected String[] dialogOptions;
-	
-	/**
-	 * Maximum size for receipt image files.
-	 */
-    protected static final int IMAGE_MAX_SIZE = 65536; 
 
 	//================================================================================
 	// Properties
@@ -123,6 +110,11 @@ public class ExpenseItemAddActivity extends Activity {
 	 * Incompleteness flag.
 	 */
 	protected boolean incomplete;
+	
+	/**
+	 * Controller used for handling receipt images.
+	 */
+	private ExpenseItemReceiptController receiptController;
 
 	//================================================================================
 	// Activity Callbacks
@@ -133,6 +125,7 @@ public class ExpenseItemAddActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_expense_item_add);
 		dialogOptions = getResources().getStringArray(R.array.receipt_dialog_array);
+		receiptController = new ExpenseItemReceiptController();
 
 		ActionBarUtils.showCancelDoneActionBar(
 			this,
@@ -247,125 +240,27 @@ public class ExpenseItemAddActivity extends Activity {
 	//================================================================================
 
 	/**
-	 * Sets up an external storage directory for receipt images and
-	 * creates a file to store a new one, then passes an intent
-	 * to a Camera application to take a photo.
+	 * Starts an activity to take a receipt image.
 	 */
 	protected void takePhoto() {
-
-		// create folder to store receipt images
-		String folder = Environment.getExternalStorageDirectory()
-				.getAbsolutePath() + "/ExpenseReceipts";
-		File receiptFolder = new File(folder);
-		if (!receiptFolder.exists()) {
-			receiptFolder.mkdir();
-		}
-
-		// create image file Uri
-		String receiptFilePath = folder + "/"
-				+ String.valueOf(System.currentTimeMillis()) + ".jpg";
-		File receiptFile = new File(receiptFilePath);
-		receiptFileUri = Uri.fromFile(receiptFile);
-
-		// create and dispatch picture intent 
+		receiptFileUri = receiptController.constructNewReceiptImageUri();
 		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		intent.putExtra(MediaStore.EXTRA_OUTPUT, receiptFileUri);
-
 		startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-	}
-
-	/*  Elements of the following methods borrowed from
-	 *  http://stackoverflow.com/questions/3331527/android-resize-a-large-bitmap-file-to-scaled-output-file
-	 *  last accessed: 03/15/15 3:29pm
-	 */ 
-	/**
-	 * Resizes a .jpeg file to be under the maximum size
-	 * @param imageFileUri The Uri of the image file to be resized
-	 */
-	public void scaleJpeg(Uri jpegFileUri) {
-		try {
-			final int IMAGE_MAX_SIZE = 65536; 
-		    InputStream fin = new FileInputStream(jpegFileUri.getPath());
-
-		    // Decode image size
-		    BitmapFactory.Options options = new BitmapFactory.Options();
-		    options.inJustDecodeBounds = true;
-		    BitmapFactory.decodeStream(fin, null, options);
-		    fin.close();
-
-		    int scale = calculateScale(options, IMAGE_MAX_SIZE);
-		    
-		    if (scale > 1) {
-		    	Bitmap bmp = null;
-		    	fin = new FileInputStream(jpegFileUri.getPath());
-		    	// scale to max possible inSampleSize that still yields an image
-		        // larger than target
-		        scale--;
-		        options = new BitmapFactory.Options();
-		        options.inSampleSize = scale;
-		        bmp = BitmapFactory.decodeStream(fin, null, options);
-		        
-		        resizeBitmap(bmp);
-		        fin.close();
-		        
-		        FileOutputStream fos = new FileOutputStream(jpegFileUri.getPath());
-		        bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-		        fos.flush();
-		        fos.close();
-		    }
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * 
-	 * @param options An options object created from the image to be resized.
-	 * @param maxSize Maximum size of a receipt image.
-	 * @return the scale factor.
-	 */
-	protected int calculateScale(BitmapFactory.Options options, int maxSize) {
-		int scale = 1;
-	    while ((options.outWidth * options.outHeight) * (1 / Math.pow(scale, 2)) > 
-	          maxSize) {
-	       scale++;
-	    }
-	    return scale;
-	}
-	
-	/**
-	 * Resizes the dimensions of the scaled bitmap.
-	 * @param bmp the bitmap to be resized.
-	 * @return the resized bitmap.
-	 */
-	protected Bitmap resizeBitmap(Bitmap bmp) {
-        // resize to desired dimensions
-		int height = bmp.getHeight();
-        int width = bmp.getWidth();
-
-        double y = Math.sqrt(IMAGE_MAX_SIZE
-                / (((double) width) / height));
-        double x = (y / height) * width;
-
-        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bmp, (int) x, 
-           (int) y, true);
-        bmp = scaledBitmap;
-		return bmp;
 	}
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
 		if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-			scaleJpeg(receiptFileUri);
-			receiptButton = (ImageButton) findViewById(R.id.btn_receipt);
-			Drawable receiptPic = Drawable.createFromPath(receiptFileUri.getPath());
-			receiptButton.setImageDrawable(receiptPic);
-			Toast.makeText(getApplicationContext(), getString(R.string.toast_receipt_success), Toast.LENGTH_SHORT).show();
+			if (receiptController.postprocessImage(receiptFileUri)) {
+				receiptButton = (ImageButton)findViewById(R.id.btn_receipt);
+				Drawable receiptPic = Drawable.createFromPath(receiptFileUri.getPath());
+				receiptButton.setImageDrawable(receiptPic);
+				Toast.makeText(getApplicationContext(), getString(R.string.toast_receipt_success), Toast.LENGTH_SHORT).show();
+				return;
+			}
 		}
-		else {
-			Toast.makeText(getApplicationContext(), getString(R.string.toast_receipt_failed), Toast.LENGTH_SHORT).show();
-		}
+		receiptFileUri = null;
+		Toast.makeText(getApplicationContext(), getString(R.string.toast_receipt_failed), Toast.LENGTH_SHORT).show();
 	}
 
 	//================================================================================
@@ -421,4 +316,3 @@ public class ExpenseItemAddActivity extends Activity {
 		openDialog.show();
 	}
 }
-
