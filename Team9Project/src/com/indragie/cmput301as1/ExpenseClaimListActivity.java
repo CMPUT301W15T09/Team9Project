@@ -17,11 +17,17 @@
 
 package com.indragie.cmput301as1;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
+
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -45,8 +51,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private static final int EDIT_EXPENSE_CLAIM_REQUEST = 2;
 	private static final int SORT_EXPENSE_CLAIM_REQUEST = 3;
 	private static final int MANAGE_TAGS_REQUEST = 4;
-	private static final String EXPENSE_CLAIM_FILENAME = "claims";
-
+	
 	//================================================================================
 	// Properties
 	//================================================================================
@@ -72,11 +77,9 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		userManager = new UserManager(this);
 		if (userManager.getActiveUser() == null) {
 			promptForUserInformation();
+		} else {
+			loadData();
 		}
-		
-		listModel = new ListModel<ExpenseClaim>(EXPENSE_CLAIM_FILENAME, this);
-		listModel.addObserver(this);
-		setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems()));
 		
 		getListView().setOnItemLongClickListener(new LongClickDeleteListener(this, new LongClickDeleteListener.OnDeleteListener() {
 			@Override
@@ -84,6 +87,32 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 				showDeleteAlertDialog(position);
 			}
 		}));
+	}
+	
+	/**
+	 * Loads the expense claim data to display in the {@link ListView}
+	 */
+	private void loadData() {
+		// Create the application-wide session
+		Session session = new Session(this, userManager.getActiveUser());
+		Session.setSharedSession(session);
+
+		// Show the initial list of expense claims (persisted on disk)
+		listModel = session.getOwnedClaims();
+		listModel.addObserver(this);
+		setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems()));
+
+		// Load the new list from the server
+		final Context context = this;
+		session.loadOwnedClaims(new ElasticSearchAPIClient.APICallback<List<ExpenseClaim>>() {
+			@Override
+			public void onSuccess(Response response, List<ExpenseClaim> model) {}
+
+			@Override
+			public void onFailure(Request request, Response response, IOException e) {
+				Toast.makeText(context, R.string.load_fail_error, Toast.LENGTH_LONG).show();
+			}
+		});
 	}
 
 	@Override
@@ -172,7 +201,6 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
 	
 	/**
 	 * Starts the {@link ExpenseClaimAddActivity}
@@ -222,6 +250,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 					// Device specific identifier
 					String androidID = Secure.getString(getContentResolver(), Secure.ANDROID_ID); 
 					userManager.setActiveUser(new User(androidID, name));
+					loadData();
 				}
 			}
 		});
