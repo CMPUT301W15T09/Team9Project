@@ -143,7 +143,7 @@ public class ExpenseClaim implements Serializable, ElasticSearchDocument {
 		this.status = status;
 		this.creationDate = new Date();
 		this.user = user;
-		this.approver = new User("", -2);
+		this.approver = new User("");
 	}
 
 	//================================================================================
@@ -417,11 +417,22 @@ public class ExpenseClaim implements Serializable, ElasticSearchDocument {
 	}
 	
 	/**
-	 * Replaces a old tag with a new tag you want to replace it with. 
-	 * @param oldTag The old Tag object you wish to remove. 
+	 * Replaces a old tag at a specified index with a new tag you want to replace it with. 
+	 * @param index The index of the old tag you wish to remove. 
 	 * @param newTag The new Tag object you wish to replace the old one with.
 	 */
 	public void setTag(int index, Tag newTag) {
+		tags.set(index, newTag);
+		Collections.sort(tags);
+	}
+	
+	/**
+	 * Replaces old tag with new tag you want to replace it with. 
+	 * @param oldTag The old tag object you wish to remove. 
+	 * @param newTag The new tag object you wish to replace the old one with.
+	 */
+	public void setTag(Tag oldTag, Tag newTag) {
+		int index = tags.indexOf(oldTag);
 		tags.set(index, newTag);
 		Collections.sort(tags);
 	}

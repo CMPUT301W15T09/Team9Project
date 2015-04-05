@@ -67,7 +67,7 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 	/**
 	 * Active user.
 	 */
-	private User user;
+	protected User user;
 
 	/** Activity of the class that created the fragment */
 
@@ -90,6 +90,12 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 						if (getListView().getItemAtPosition(position) == null) {
 							return;
 						}
+					}
+
+					@Override
+					public boolean shouldDelete(int position) {
+						// TODO Auto-generated method stub
+						return false;
 					}}));
 	}
 
@@ -240,13 +246,6 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 			}
 		});
 		openDialog.show();
-	}
-
-	protected void setUserFromPreferences() {
-		SharedPreferences prefs = this.activity.getSharedPreferences(
-				PREFERENCE, Context.MODE_PRIVATE);
-		user = new User(prefs.getString("name", "USER DOES NOT EXIST"),
-				prefs.getInt("id", -1));
 	}
 
 	// ================================================================================

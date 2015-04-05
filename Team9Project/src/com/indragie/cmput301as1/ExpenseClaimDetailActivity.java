@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2015 Indragie Karunaratne
+ * Copyright (C) 2015 Indragie Karunaratne, Andrew Zhong
  * 
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -158,6 +158,9 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	 */
 	private ExpenseClaimDetailController controller;
 	
+	/**
+	 * Position of a long pressed item.
+	 */
 	private int longPressedItemPosition;
 
 	//================================================================================
@@ -243,11 +246,11 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	 */
 	private void setupListFooterView() {
 		View footerView = getLayoutInflater().inflate(R.layout.activity_claim_footer, getListView(), false);
-
+		
 		amountsTextView = (TextView)footerView.findViewById(R.id.tv_amounts);
 		amountsTextView.setText(claim.getSummarizedAmounts());
-
-		getListView().addFooterView(footerView);
+		
+		getListView().addFooterView(footerView, null, false);
 	}
 	
 	/**
@@ -277,24 +280,26 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	
 	/**
 	 * Sets the editable state of the entire UI.
-	 * @param editable Whether the claim is editable or not.
 	 */
 	private void setDeletable() {
-		if (editable) {
-			getListView().setOnItemLongClickListener(
-				new LongClickDeleteListener(this, new LongClickDeleteListener.OnDeleteListener() {
-					@Override
-					public void onDelete(int position) {
-						if (getListView().getItemAtPosition(position) == null) {
-							return;
-						}
-						longPressedItemPosition = itemPositionForListViewPosition(position);
-						ExpenseClaimDetailController.DetailItem.ItemType type = controller.getItemType(longPressedItemPosition);
-						startDeleteAlertDialog(type);
-					}
+		getListView().setOnItemLongClickListener(new LongClickDeleteListener(this, new LongClickDeleteListener.OnDeleteListener() {
+			@Override
+			public void onDelete(int position) {
+				if (getListView().getItemAtPosition(position) == null)
+					return;
+				ExpenseClaimDetailController.DetailItem.ItemType type = getTypeAt(position);
+				startDeleteAlertDialog(type);
+			}
+			
+			@Override
+			public boolean shouldDelete(int position) {
+				ExpenseClaimDetailController.DetailItem.ItemType type = getTypeAt(position);
+				if (editable ||type == ExpenseClaimDetailController.DetailItem.ItemType.TAG) {
+					return true;
 				}
-			));
-		}
+				return false;
+			}
+		}));
 	}
 	
 	@Override
@@ -487,6 +492,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	
 	/**
 	 * Prompts the user for confirmation in response to deleting items in the activity.
+	 * @param type The ItemType of the DetailItem.
 	 */
 	public void startDeleteAlertDialog(ExpenseClaimDetailController.DetailItem.ItemType type) {
 		AlertDialog.Builder openDialog = new AlertDialog.Builder(this);
@@ -576,7 +582,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		boolean UserCheck = user.getName().contentEquals(claim.getUser().getName());//SHOULD BE ID USING NAME FOR TESTING
 		MenuItem addDestination = menu.findItem(R.id.action_add_destination); 
 		MenuItem addItem = menu.findItem(R.id.action_add_item);
-		MenuItem addTag = menu.findItem(R.id.action_add_tag);
 		MenuItem submit = menu.findItem(R.id.action_mark_submitted);
 		MenuItem approve = menu.findItem(R.id.action_mark_approved);
 		MenuItem returned = menu.findItem(R.id.action_mark_returned);
@@ -584,7 +589,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		if (status == Status.APPROVED){
 			addDestination.setEnabled(false);
 			addItem.setEnabled(false);
-			addTag.setEnabled(false);
 			submit.setEnabled(false);
 			approve.setEnabled(false);
 			returned.setEnabled(false);
@@ -592,7 +596,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		if(status == Status.RETURNED || status == Status.IN_PROGRESS){
 			addDestination.setEnabled(UserCheck);
 			addItem.setEnabled(UserCheck);
-			addTag.setEnabled(UserCheck);
 			submit.setEnabled(UserCheck);
 			approve.setEnabled(false);
 			returned.setEnabled(false);
@@ -602,7 +605,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			returned.setEnabled(!UserCheck);
 			addDestination.setEnabled(false);
 			addItem.setEnabled(false);
-			addTag.setEnabled(false);
 			submit.setEnabled(false);
 		}
 	}
@@ -616,7 +618,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		if (listView.getItemAtPosition(position) == null) return;
 		
 		int itemPosition = itemPositionForListViewPosition(position);
-		ExpenseClaimDetailController.DetailItem.ItemType type = controller.getItemType(itemPosition);
+		ExpenseClaimDetailController.DetailItem.ItemType type = getTypeAt(position);
 		SectionedListIndex index = controller.getSectionedIndex(itemPosition);
 		
 		switch (type) {
@@ -625,8 +627,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 				buildDestinationAlertDialog(index.getItemIndex()).show();
 			break;
 		case TAG:
-			if(status == Status.RETURNED || status == Status.IN_PROGRESS)
-				startEditTagActivity(index.getItemIndex());
+			startEditTagActivity(index.getItemIndex());
 			break;
 		case EXPENSE_ITEM:
 			startEditExpenseItemActivity(index.getItemIndex());
@@ -666,6 +667,16 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	private int itemPositionForListViewPosition(int position) {
 		// Subtract 1 for the header
 		return position - 1;
+	}
+	
+	/**
+	 * Get the ItemType of a item at a specified position
+	 * @param position The position of the item.
+	 * @return The ItemType of the item.
+	 */
+	public ExpenseClaimDetailController.DetailItem.ItemType getTypeAt(int position) {
+		longPressedItemPosition = itemPositionForListViewPosition(position);
+		return controller.getItemType(longPressedItemPosition);
 	}
 
 	//================================================================================

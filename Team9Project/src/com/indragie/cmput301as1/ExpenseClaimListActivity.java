@@ -18,11 +18,11 @@
 package com.indragie.cmput301as1;
 
 
+
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.widget.EditText;
@@ -35,19 +35,15 @@ import android.widget.Toast;
 public class ExpenseClaimListActivity extends FragmentActivity {
 
 	//================================================================================
-	// Constants
-	//================================================================================
-
-	private static final String PREFERENCE = "PREFERENCE";
-
-	//================================================================================
 	// Properties
 	//================================================================================
 
+
+	
 	/**
-	 * Active user.
+	 * Manages the user and associated preferences.
 	 */
-	private User user;
+	private UserManager userManager;
 
 	//================================================================================
 	// Activity Callbacks
@@ -57,78 +53,56 @@ public class ExpenseClaimListActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		checkFirstRun();
-
 		ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
 		actionBar.setDisplayShowTitleEnabled(true);
 
-		/* Creating ANDROID Tab */
+		/* Creating claim Tab */
 		Tab tab = actionBar.newTab()
 				.setText(R.string.title_tab_claims)
 				.setTabListener(new ClaimTabListener<ClaimTabFragment>(this, "Claims", ClaimTabFragment.class));
-
+	
 		actionBar.addTab(tab);
 
-		/* Creating APPLE Tab */
+		/* Creating approval Tab */
 		tab = actionBar.newTab()
 				.setText(R.string.title_tab_approval)
 				.setTabListener(new ClaimTabListener<ApprovalTabFragment>(this, "Approval", ApprovalTabFragment.class));
-
 		actionBar.addTab(tab);;
-	}
-
-	private void setUserFromPreferences() {
-		SharedPreferences prefs = getSharedPreferences(PREFERENCE, MODE_PRIVATE);
-		user = new User(prefs.getString("name", "USER DOES NOT EXIST"), prefs.getInt("id", -1));
-	}
-
-
-	public void checkFirstRun() {
-		boolean isFirstRun = getSharedPreferences(PREFERENCE, MODE_PRIVATE).getBoolean("isFirstRun", true);
-		if (isFirstRun){ 
-			// http://www.androidsnippets.com/prompt-user-input-with-an-alertdialog
-			AlertDialog.Builder alert = new AlertDialog.Builder(this);
-			alert.setCancelable(false);
-
-			alert.setTitle("Username");
-			alert.setMessage("Please enter your name:");
-
-			// Set an EditText view to get user input 
-			final EditText input = new EditText(this);
-			alert.setView(input);
-
-			alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int whichButton) {
-					String value = input.getText().toString();
-
-					if(value != null && !value.isEmpty()){
-						SharedPreferences.Editor editor = getSharedPreferences(PREFERENCE, MODE_PRIVATE).edit();
-						editor.putString("name", value);
-						editor.putInt("id", 1);
-						editor.putBoolean("isFirstRun", false);
-						editor.apply();
-						setUserFromPreferences();
-					}
-					else{
-						checkFirstRun();
-						Toast.makeText(getApplicationContext(), "You must enter a username", Toast.LENGTH_LONG).show(); 
-					}
-
-				}
-			});
-
-			alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int whichButton) {
-					checkFirstRun();
-					Toast.makeText(getApplicationContext(), "You must enter a username", Toast.LENGTH_LONG).show();
-				}
-			});
-
-			alert.show();
+		
+		userManager = new UserManager(this);
+		if (userManager.getActiveUser() == null) {
+			promptForUserInformation();
 		}
 	}
 
-
+	
+	/**
+	 * Prompts the user to enter their name.
+	 */
+	public void promptForUserInformation() {
+		// http://www.androidsnippets.com/prompt-user-input-with-an-alertdialog
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+		alert.setCancelable(false);
+		alert.setTitle(R.string.user_alert_title);
+		alert.setMessage(R.string.user_alert_message);
+		
+		final EditText input = new EditText(this);
+		alert.setView(input);
+		
+		alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				String name = input.getText().toString();
+				if (name == null || name.isEmpty()) {
+					Toast.makeText(getApplicationContext(), R.string.user_alert_error, Toast.LENGTH_LONG).show();
+				} else {
+					userManager.setActiveUser(new User(name));
+				}
+			}
+		});
+		alert.show();
+	}
+	
+	
 }

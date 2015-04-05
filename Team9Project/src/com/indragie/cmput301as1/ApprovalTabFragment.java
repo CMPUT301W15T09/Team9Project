@@ -33,7 +33,8 @@ public class ApprovalTabFragment extends ExpenseClaimTabFragment {
 
 		activity = getActivity();
 		load();
-		setUserFromPreferences();
+		UserManager userManager = new UserManager(activity);
+		user = userManager.getActiveUser();
 		setHasOptionsMenu(true);
 
 		/** Creating array adapter to set data in listview */

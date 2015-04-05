@@ -34,7 +34,8 @@ public class ClaimTabFragment extends ExpenseClaimTabFragment {
 
 		activity = getActivity();
 		load();
-		setUserFromPreferences();
+		UserManager userManager = new UserManager(activity);
+		user = userManager.getActiveUser();
 		setHasOptionsMenu(true);
 
 
