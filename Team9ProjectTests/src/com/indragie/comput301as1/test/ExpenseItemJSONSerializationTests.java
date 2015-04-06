@@ -73,7 +73,7 @@ public class ExpenseItemJSONSerializationTests extends ActivityTestCase {
 		
 		// Serialize, then deserialize and check if the objects are the same
 		ExpenseItemJSONSerializer serializer = new ExpenseItemJSONSerializer();
-		ExpenseItemJSONDeserializer deserializer = new ExpenseItemJSONDeserializer();
+		ExpenseItemJSONDeserializer deserializer = new ExpenseItemJSONDeserializer(controller);
 		GsonBuilder builder = new GsonBuilder();
 		builder.registerTypeAdapter(ExpenseItem.class, serializer);
 		builder.registerTypeAdapter(ExpenseItem.class, deserializer);

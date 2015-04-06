@@ -163,7 +163,7 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	 * @param receiptPath Uri of a receipt image.
 	 */
 	public void setReceiptUri(Uri receiptUri) {
-		this.receiptUriString = receiptUri.toString();
+		this.receiptUriString = (receiptUri == null) ? null : receiptUri.toString();
 	}
 	
 	/**
