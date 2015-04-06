@@ -181,9 +181,8 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 * @param data
 	 */
 	private void onSetHomeLocationResult(Intent data) {
-		double latitude = data.getExtras().getDouble(GeolocationActivity.EXTRA_LOCATION_LATITUDE);
-		double longitude = data.getExtras().getDouble(GeolocationActivity.EXTRA_LOCATION_LONGITUDE);
-		userManager.getActiveUser().setLocation(latitude, longitude);
+		Geolocation location = (Geolocation)data.getSerializableExtra(GeolocationActivity.EXTRA_LOCATION);
+		userManager.getActiveUser().setLocation(location);
 	}
 	
 	/**
@@ -343,8 +342,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private void startSetHomeLocationActivity() {
 		Intent intent = new Intent(this, GeolocationActivity.class);
 		User user = userManager.getActiveUser();
-		intent.putExtra(GeolocationActivity.EXTRA_LOCATION_LATITUDE, user.getLatitude());
-		intent.putExtra(GeolocationActivity.EXTRA_LOCATION_LONGITUDE, user.getLongitude());
+		intent.putExtra(GeolocationActivity.EXTRA_LOCATION, user.getLocation());
 		startActivityForResult(intent, SET_HOME_LOCATION_REQUEST);
 	}
 	

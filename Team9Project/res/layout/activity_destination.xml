@@ -20,4 +20,10 @@
         android:layout_marginBottom="10dp"
         android:hint="@string/travel_reason_hint" />
 
+  <Button
+      android:id="@+id/button_add_location"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Button" />
+
 </LinearLayout>

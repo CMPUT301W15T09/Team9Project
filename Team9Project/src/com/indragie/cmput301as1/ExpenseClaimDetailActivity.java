@@ -470,7 +470,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	
 	@SuppressLint("InflateParams")
 	private AlertDialog buildDestinationAlertDialog(final int index) {
-		View dialogView = getLayoutInflater().inflate(R.layout.destination_alert, null);
+		View dialogView = getLayoutInflater().inflate(R.layout.activity_destination, null);
 		final EditText nameField = (EditText)dialogView.findViewById(R.id.et_name);
 		final EditText reasonField = (EditText)dialogView.findViewById(R.id.et_travel_reason);
 		
