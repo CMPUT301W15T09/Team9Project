@@ -62,7 +62,7 @@ public class FilterTagsActivity extends ListActivity {
 		
 		selectedTags = (ArrayList<Tag>) getIntent().getSerializableExtra(TAG_TO_FILTER);
 		
-		for(Tag tag: selectedTags) {
+		for (Tag tag: selectedTags) {
 			int position = listModel.getItems().indexOf(tag);
 			getListView().setItemChecked(position, true);
 		}
@@ -84,13 +84,13 @@ public class FilterTagsActivity extends ListActivity {
 	 */
 	private void onHome() {
 		Intent intent = new Intent();
-		if(getListView().getCheckedItemCount() == 0) {
+		if (getListView().getCheckedItemCount() == 0) {
 			setResult(RESULT_CANCELED, intent);
 		} else {
 			SparseBooleanArray selectedIndexes = getListView().getCheckedItemPositions();
 			selectedTags.clear();
-			for(int index = 0; index < selectedIndexes.size(); index++) {
-				if(selectedIndexes.valueAt(index)){
+			for (int index = 0; index < selectedIndexes.size(); index++) {
+				if (selectedIndexes.valueAt(index)){
 					int position = selectedIndexes.keyAt(index);
 					selectedTags.add(listModel.getItems().get(position));
 				}
