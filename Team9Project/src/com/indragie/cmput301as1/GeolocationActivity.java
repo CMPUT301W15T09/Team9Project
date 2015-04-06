@@ -29,8 +29,7 @@ public class GeolocationActivity extends Activity implements LocationListener{
 	// Constants
 	//================================================================================
 
-	public static final String EXTRA_LOCATION_LATITUDE = "com.indragie.cmput301as1.EXTRA_LOCATION_LATITUDE";
-	public static final String EXTRA_LOCATION_LONGITUDE = "com.indragie.cmput301as1.EXTRA_LOCATION_LONGITUDE";
+	public static final String EXTRA_LOCATION = "com.indragie.cmput301as1.EXTRA_LOCATION";
 	
 	//================================================================================
 	// Properties
@@ -55,11 +54,10 @@ public class GeolocationActivity extends Activity implements LocationListener{
 		map = ((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
 		
 		Intent intent = getIntent();
-		double latitude = intent.getExtras().getDouble(EXTRA_LOCATION_LATITUDE);
-		double longitude = intent.getExtras().getDouble(EXTRA_LOCATION_LONGITUDE);
-		LatLng location = new LatLng(latitude, longitude);
-		marker = map.addMarker(new MarkerOptions().position(location));
-		map.animateCamera(CameraUpdateFactory.newLatLng(location));
+		Geolocation location = (Geolocation) intent.getSerializableExtra(EXTRA_LOCATION);
+		LatLng mapPosition = new LatLng(location.getLatitude(), location.getLongitude());
+		marker = map.addMarker(new MarkerOptions().position(mapPosition));
+		map.animateCamera(CameraUpdateFactory.newLatLng(mapPosition));
 		
 		map.setOnMapClickListener(new OnMapClickListener() {
 			@Override
@@ -71,8 +69,8 @@ public class GeolocationActivity extends Activity implements LocationListener{
 	}
 	
 	@Override
-	public void onLocationChanged(Location location) {
-		LatLng point = new LatLng(location.getLatitude(), location.getLongitude());
+	public void onLocationChanged(Location mapPosition) {
+		LatLng point = new LatLng(mapPosition.getLatitude(), mapPosition.getLongitude());
 		marker.setPosition(point);
 		map.animateCamera(CameraUpdateFactory.newLatLng(point));		
 	}
@@ -107,9 +105,9 @@ public class GeolocationActivity extends Activity implements LocationListener{
 			startGpsUnavailabeDialog();
 		}
 		
-		Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-		if (location != null) {
-			onLocationChanged(location);
+		Location mapPosition = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+		if (mapPosition != null) {
+			onLocationChanged(mapPosition);
 		} else {
 			Toast.makeText(this, "GPS is not available at the moment", Toast.LENGTH_SHORT).show();
 		}
@@ -147,8 +145,7 @@ public class GeolocationActivity extends Activity implements LocationListener{
 	public Intent getResultIntent() {
 		LatLng locationLatLng = marker.getPosition();
 		Intent intent = new Intent();
-		intent.putExtra(EXTRA_LOCATION_LATITUDE, locationLatLng.latitude);
-		intent.putExtra(EXTRA_LOCATION_LONGITUDE, locationLatLng.longitude);
+		intent.putExtra(EXTRA_LOCATION, new Geolocation(locationLatLng.latitude, locationLatLng.longitude));
 		return intent;
 	}
 	
