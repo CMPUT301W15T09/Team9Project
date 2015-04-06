@@ -78,6 +78,14 @@ public class User implements Serializable, ElasticSearchDocument {
 	}
 	
 	/**
+	 * Sets the name of the user.
+	 * @param name The name of the user.
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	/**
 	 * @return home location for the user
 	 */
 	public Geolocation getLocation() {

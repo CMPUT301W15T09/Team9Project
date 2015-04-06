@@ -106,5 +106,9 @@
     <!-- PlacePickerParentActivity -->
     <string name="places_unavailable_error">Unable to connect to Google Places</string>
     
+    <!-- DestinationAddActivity -->
     <string name="title_activity_destination_add">DestinationAddActivity</string>
+    
+    <!-- UserSettingsActivity -->
+    <string name="home_location_hint">Home Location</string>
 </resources>
