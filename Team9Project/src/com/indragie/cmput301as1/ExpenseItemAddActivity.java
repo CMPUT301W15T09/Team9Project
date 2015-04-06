@@ -118,6 +118,11 @@ public class ExpenseItemAddActivity extends Activity {
 	protected boolean incomplete;
 	
 	/**
+	 * Geolocation for item.
+	 */
+	protected Geolocation geolocation;
+	
+	/**
 	 * Controller used for handling receipt images.
 	 */
 	private ExpenseItemReceiptController receiptController;

@@ -212,7 +212,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 
 		nameField = (EditText)headerView.findViewById(R.id.et_name);
 		nameField.setText(claim.getName());
-
+		
 		descriptionField = (EditText)headerView.findViewById(R.id.et_description);
 		descriptionField.setText(claim.getDescription());
 
