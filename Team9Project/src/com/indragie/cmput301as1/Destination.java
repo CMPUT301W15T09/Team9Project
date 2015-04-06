@@ -98,6 +98,14 @@ public class Destination implements Serializable {
 		return location;
 	}
 	
+	/**
+	 * Sets the location of the destination.
+	 * @param location The location of the destination.
+	 */
+	public void setLocation(Geolocation location) {
+		this.location = location;
+	}
+	
 	//================================================================================
 	// Object
 	//================================================================================
