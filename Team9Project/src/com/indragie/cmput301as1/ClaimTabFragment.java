@@ -34,19 +34,19 @@ public class ClaimTabFragment extends ExpenseClaimTabFragment {
 		activity = getActivity();
 		filteredListModel = new ListModel<ExpenseClaim>("filtered_List", activity);
 		
-		userManager = new UserManager(activity);
-		if (userManager.getActiveUser() == null) {
-			promptForUserInformation();
-		} else {
-			loadData(0);
-		}
+		
 		setHasOptionsMenu(true);
 	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-
+		userManager = new UserManager(activity);
+		if (userManager.getActiveUser() == null) {
+			promptForUserInformation();
+		} else {
+			loadData(0);
+		}
 
 		return super.onCreateView(inflater, container, savedInstanceState);
 	}

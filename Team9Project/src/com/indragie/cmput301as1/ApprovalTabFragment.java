@@ -46,6 +46,12 @@ public class ApprovalTabFragment extends ExpenseClaimTabFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
+		userManager = new UserManager(activity);
+		if (userManager.getActiveUser() == null) {
+			promptForUserInformation();
+		} else {
+			loadData(0);
+		}
 //		userManager = new UserManager(activity);
 //		if (userManager.getActiveUser() == null) {
 //			promptForUserInformation();
