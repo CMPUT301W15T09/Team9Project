@@ -22,6 +22,8 @@ import java.util.Date;
 
 import org.joda.money.Money;
 
+import android.net.Uri;
+
 /**
  * Model object representing a single item on an expense claim.
  */
@@ -61,7 +63,7 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	/**
 	 * String representation of a Uri of a receipt image.
 	 */
-	private String receiptPath;
+	private String receiptUriString;
 	
 	/**
 	 * Incompleteness indicator.
@@ -150,18 +152,19 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	}
 	
 	/**
-	 * @return String representation of a Uri of a receipt image.
+	 * @return Uri of the receipt image.
 	 */
-	public String getReceiptPath() {
-		return receiptPath;
+	public Uri getReceiptUri() {
+		if (receiptUriString == null) return null;
+		return Uri.parse(receiptUriString);
 	}
 
 	/**
-	 * Sets the string representation of a Uri of a receipt image.
-	 * @param receiptPath String representation of a Uri of a receipt image.
+	 * Sets the Uri of a receipt image.
+	 * @param receiptPath Uri of a receipt image.
 	 */
-	public void setReceiptPath(String receiptPath) {
-		this.receiptPath = receiptPath;
+	public void setReceiptUri(Uri receiptUri) {
+		this.receiptUriString = receiptUri.toString();
 	}
 	
 	/**
