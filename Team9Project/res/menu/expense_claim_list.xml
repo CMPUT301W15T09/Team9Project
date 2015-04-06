@@ -12,5 +12,9 @@
         android:id="@+id/action_manage_tags"
         android:title="@string/action_manage_tags">
     </item>
-
+    <item 
+        android:id="@+id/action_filter_tags"
+        android:title="@string/action_filter_tags">
+    </item>
+    
 </menu>
