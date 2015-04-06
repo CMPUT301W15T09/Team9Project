@@ -36,17 +36,17 @@ public class ExpenseItemReceiptController {
 	//================================================================================
 	// Constants
 	//================================================================================
-	
+
 	/**
 	 * Name of the folder used to store receipts.
 	 */
 	private static final String RECEIPTS_FOLDER_NAME = "ExpenseReceipts";
-	
+
 	/**
 	 * File extension for receipt images.
 	 */
 	private static final String RECEIPT_IMAGE_EXT = "jpg";
-	
+
 	/**
 	 * The maximum image size in bytes.
 	 */
@@ -55,7 +55,7 @@ public class ExpenseItemReceiptController {
 	//================================================================================
 	// API
 	//================================================================================
-	
+
 	/**
 	 * Creates a new {@link Uri} representing a location on disk to
 	 * store a receipt image.
@@ -72,7 +72,7 @@ public class ExpenseItemReceiptController {
 		File receiptFile = new File(receiptFilePath);
 		return Uri.fromFile(receiptFile);
 	}
-	
+
 	/**
 	 * Deletes the image at the specified {@link Uri} 
 	 * @param imageUri The {@link Uri} of the image to delete.
@@ -85,7 +85,7 @@ public class ExpenseItemReceiptController {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Postprocesses an existing image to ensure that it is within
 	 * the size constraints.
@@ -96,43 +96,43 @@ public class ExpenseItemReceiptController {
 		try {
 			String path = imageUri.getPath();
 			InputStream fin = new FileInputStream(path);
-			
+
 			BitmapFactory.Options options = new BitmapFactory.Options();
 			// Decode only the image size.
-		    options.inJustDecodeBounds = true;
-		    BitmapFactory.decodeStream(fin, null, options);
-		    fin.close();
-		    
-		    // Use the RGB_565 format because it only uses 2 bytes per pixel, and 
- 			// receipt images do not need high color fidelity.
-		    // More information here: http://developer.android.com/reference/android/graphics/Bitmap.Config.html#ARGB_8888
-		    int maxPixels = MAX_IMAGE_SIZE / 2;
-		    int scale = calculateScale(options.outWidth, options.outHeight, maxPixels);
-		    
-		    if (scale > 1) {
-		    	// Decode the scaled bitmap image.
-		    	options = new BitmapFactory.Options();
-		    	options.inSampleSize = scale;
-		    	options.inDither = true;
-		    	options.inPreferredConfig = Bitmap.Config.RGB_565;
-		    	
-		    	fin = new FileInputStream(imageUri.getPath());
-		    	Bitmap scaledBitmap = BitmapFactory.decodeStream(fin, null, options);
-		    	fin.close();
-		    	
-		    	// Write the JPEG image to the original location.
-		    	FileOutputStream fos = new FileOutputStream(path, false);
-		        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-		        fos.flush();
-		        fos.close();
-		    }
-		    return true;
+			options.inJustDecodeBounds = true;
+			BitmapFactory.decodeStream(fin, null, options);
+			fin.close();
+
+			// Use the RGB_565 format because it only uses 2 bytes per pixel, and 
+			// receipt images do not need high color fidelity.
+			// More information here: http://developer.android.com/reference/android/graphics/Bitmap.Config.html#ARGB_8888
+			int maxPixels = MAX_IMAGE_SIZE / 2;
+			int scale = calculateScale(options.outWidth, options.outHeight, maxPixels);
+
+			if (scale > 1) {
+				// Decode the scaled bitmap image.
+				options = new BitmapFactory.Options();
+				options.inSampleSize = scale;
+				options.inDither = true;
+				options.inPreferredConfig = Bitmap.Config.RGB_565;
+
+				fin = new FileInputStream(imageUri.getPath());
+				Bitmap scaledBitmap = BitmapFactory.decodeStream(fin, null, options);
+				fin.close();
+
+				// Write the JPEG image to the original location.
+				FileOutputStream fos = new FileOutputStream(path, false);
+				scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+				fos.flush();
+				fos.close();
+			}
+			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Calculates the scale factor necessary to scale an image down to
 	 * be less than an upper bound on the total number of pixels.
