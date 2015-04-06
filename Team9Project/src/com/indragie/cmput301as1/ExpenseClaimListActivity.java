@@ -66,12 +66,12 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	/**
 	 * List Model of filtered expense claim.
 	 */
-	private ListModel<ExpenseClaim> filteredListModel;
+	private ListModel<ExpenseClaim> filteredListModel = new ListModel<ExpenseClaim>("filtered_List", this);
 	
 	/**
 	 * List of tags to filter expense claims.
 	 */
-	private ArrayList<Tag> filteredTagsList;
+	private ArrayList<Tag> filteredTagsList = new ArrayList<Tag>();
 	
 	/**
 	 * Manages the user and associated preferences.
@@ -92,9 +92,6 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		} else {
 			loadData();
 		}
-		
-		filteredListModel = new ListModel<ExpenseClaim>("filtered_List", getApplicationContext());
-		filteredTagsList = new ArrayList<Tag>();
 		
 		getListView().setOnItemLongClickListener(new LongClickDeleteListener(this, new LongClickDeleteListener.OnDeleteListener() {
 			@Override
@@ -150,7 +147,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode != RESULT_OK) {
-			if(resultCode == RESULT_CANCELED && requestCode == FILTER_TAGS_REQUEST) {
+			if (resultCode == RESULT_CANCELED && requestCode == FILTER_TAGS_REQUEST) {
 				setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems()));
 				filteredTagsList.clear();
 			}
@@ -183,7 +180,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private void onSortExpenseResult(Intent data) {
 		Comparator<ExpenseClaim> comparator = (Comparator<ExpenseClaim>)data.getSerializableExtra(ExpenseClaimSortActivity.EXPENSE_CLAIM_SORT);
 		listModel.setComparator(comparator);
-		if(checkFilteredTags()) {
+		if (checkFilteredTags()) {
 			setFilteredClaims();
 			filteredListModel.setComparator(comparator);
 		}
@@ -197,7 +194,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private void onAddExpenseResult(Intent data) {
 		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM);
 		listModel.add(claim);
-		if(checkFilteredTags()) {
+		if (checkFilteredTags()) {
 			setListAdapter(new ExpenseClaimArrayAdapter(this, filteredListModel.getItems()));
 		}
 	}
@@ -212,7 +209,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM);
 		int position = data.getIntExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_INDEX, -1);
 		listModel.set(position, claim);
-		if(checkFilteredTags()) {
+		if (checkFilteredTags()) {
 			setFilteredClaims();
 		}
 
@@ -239,14 +236,14 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 				switch (mutation.getMutationType()) {
 				case DELETE:
 					claim.removeTag(tag);
-					if(filteredTagsList.contains(tag) && checkFilteredTags()) {
+					if (filteredTagsList.contains(tag) && checkFilteredTags()) {
 						filteredTagsList.remove(tag);
 					}
 					break;
 				case EDIT:
 					int tagIndex = claim.getTags().indexOf(tag);
 					claim.setTag(tagIndex, mutation.getNewTag());
-					if(filteredTagsList.contains(tag) && checkFilteredTags()) {
+					if (filteredTagsList.contains(tag) && checkFilteredTags()) {
 						int selectedIndex = filteredTagsList.indexOf(tag);
 						filteredTagsList.set(selectedIndex, mutation.getNewTag());
 					}
@@ -262,7 +259,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		for (int i = 0; i < modifiedClaims.size(); i++) {
 			listModel.set(modifiedClaims.keyAt(i), modifiedClaims.valueAt(i));
 		}
-		if(checkFilteredTags()) {
+		if (checkFilteredTags()) {
 			setFilteredClaims();
 		}
 		
@@ -289,8 +286,8 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		
 		for(Tag tag: filteredTagsList) {
 			for(ExpenseClaim claim: listModel.getItems()) {
-				if(claim.hasTag(tag)) {
-					if(!tempClaims.contains(claim)) {
+				if (claim.hasTag(tag)) {
+					if (!tempClaims.contains(claim)) {
 						tempClaims.add(claim);
 					}
 				}
@@ -409,7 +406,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		openDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				if(checkFilteredTags()) { //TODO: check if this works
+				if (checkFilteredTags()) { //TODO: check if this works
 					ExpenseClaim removedClaim = filteredListModel.getItems().get(index);
 					filteredListModel.remove(index);
 					listModel.remove(removedClaim);
@@ -443,7 +440,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 */
 	private void startEditExpenseClaimActivity(int position) {
 		Intent editIntent = new Intent(this, ExpenseClaimDetailActivity.class);
-		if(checkFilteredTags()) {
+		if (checkFilteredTags()) {
 			editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM, filteredListModel.getItems().get(position));
 			position = listModel.getItems().indexOf(filteredListModel.getItems().get(position));
 		} else {
