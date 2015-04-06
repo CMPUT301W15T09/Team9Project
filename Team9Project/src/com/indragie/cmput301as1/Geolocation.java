@@ -195,4 +195,18 @@ public class Geolocation implements Serializable {
 			return false;
 		return true;
 	}
+	
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		if (name != null) {
+			builder.append(name);
+			builder.append("\n");
+		}
+		if (address != null) {
+			builder.append(address);
+			builder.append("\n");
+		}
+		builder.append(String.format("(%.4f, %.4f)", latitude, longitude));
+		return builder.toString();
+	}
 }
