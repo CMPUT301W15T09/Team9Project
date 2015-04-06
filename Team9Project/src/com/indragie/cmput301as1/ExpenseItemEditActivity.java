@@ -68,8 +68,8 @@ public class ExpenseItemEditActivity extends ExpenseItemAddActivity {
 		Intent intent = getIntent();
 		ExpenseItem item = (ExpenseItem)getIntent().getSerializableExtra(EXTRA_EXPENSE_ITEM);
 		editable = intent.getBooleanExtra(EXTRA_EXPENSE_ITEM_EDITABLE, false);
-		if (item.getReceipt() != null) {
-			receiptFileUri = Uri.parse(item.getReceipt());
+		if (item.getReceiptPath() != null) {
+			receiptFileUri = Uri.parse(item.getReceiptPath());
 		}
 		incomplete = item.isIncomplete();
 		
