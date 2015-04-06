@@ -391,8 +391,16 @@ public class ElasticSearchAPIClient {
 								if (element.isJsonObject()) {
 									JsonElement sourceElement = element.getAsJsonObject().get("_source");
 									if (sourceElement.isJsonObject()) {
+										// For some reason sometimes the results from ES will put
+										// the actual JSON document inside another doc element.
+										// Check for both cases.
 										JsonElement docElement = sourceElement.getAsJsonObject().get("doc");
-										T model = gson.fromJson(docElement, documentType);
+										T model = null;
+										if (docElement != null) {
+											model = gson.fromJson(docElement, documentType);
+										} else {
+											model = gson.fromJson(sourceElement, documentType);
+										}
 										if (model != null) {
 											models.add(model);
 										}
