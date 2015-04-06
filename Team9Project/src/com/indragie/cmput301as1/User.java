@@ -34,7 +34,8 @@ public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String name;
 	private int id;
-	private Location home;
+	private double latitude;
+	private double longitude;
 	
 	
 	//================================================================================
@@ -64,20 +65,17 @@ public class User implements Serializable {
 	public int getId() {
 		return id;
 	}
-	
-	 /**
-	  * @return the home location
-	  */
-	 public Location getHome() {
-		 return home;
-	 }
-	
-	/**
-	 * set the home location
-	 * @param Location
-	 */
-	public void setHome(Location home) {
-		this.home = home;
+
+	public double getLatitude() {
+		return latitude;
 	}
 
+	public double getLongitude() {
+		return longitude;
+	}
+
+	public void setLocation(double latitude, double longitude) {
+		this.latitude = latitude;
+		this.longitude = longitude;
+	}
 }
