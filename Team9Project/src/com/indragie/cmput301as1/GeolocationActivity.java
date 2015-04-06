@@ -1,5 +1,7 @@
 package com.indragie.cmput301as1;
 
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
@@ -14,7 +16,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -22,13 +26,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class GeolocationActivity extends Activity {
+public class GeolocationActivity extends Activity implements LocationListener{
 
 	//================================================================================
 	// Constants
 	//================================================================================
 
-	public static final String EXTRA_LOCATION = "com.indragie.cmput301as1.EXTRA_LOCATION";
+	public static final String EXTRA_LOCATION_LATITUDE = "com.indragie.cmput301as1.EXTRA_LOCATION_LATITUDE";
+	public static final String EXTRA_LOCATION_LONGITUDE = "com.indragie.cmput301as1.EXTRA_LOCATION_LONGITUDE";
 	
 	//================================================================================
 	// Properties
@@ -45,38 +50,20 @@ public class GeolocationActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_geolocation);
-		
-		/*
-		isNetworkAvailable(getActivity());
-		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-		*/
-		
 		if (!isNetworkAvailable(this)) {
-			AlertDialog.Builder alert = new AlertDialog.Builder(this);
-			alert.setCancelable(false);
-			alert.setMessage("No Connection Available");
-			alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int whichButton) {
-					finish();
-				}
-			});
-			alert.show();
-		} else {
-			map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+			startNetworkUnavailableDialog();
 		}
+		
+		setContentView(R.layout.activity_geolocation);
+		map = ((MapFragment)getFragmentManager().findFragmentById(R.id.map)).getMap();
 		
 		Intent intent = getIntent();
-		Location location = (Location) intent.getSerializableExtra(EXTRA_LOCATION);
-		if (location != null) {
-			setUpLastLocation(location);
-			Toast toast = Toast.makeText(this, "Loading last location", Toast.LENGTH_SHORT);
-			toast.show();
-		} else {
-			// TODO: set this location to current location
-		}
+		double latitude = intent.getExtras().getDouble(EXTRA_LOCATION_LATITUDE);
+		double longitude = intent.getExtras().getDouble(EXTRA_LOCATION_LONGITUDE);
+		LatLng location = new LatLng(latitude, longitude);
+		marker = map.addMarker(new MarkerOptions().position(location));
+		map.animateCamera(CameraUpdateFactory.newLatLng(location));
 		
-		marker = map.addMarker(new MarkerOptions().position(new LatLng(0,0))); // TODO: change to current location
 		map.setOnMapClickListener(new OnMapClickListener() {
 			@Override
 			public void onMapClick(LatLng point) {
@@ -86,16 +73,10 @@ public class GeolocationActivity extends Activity {
 		});
 	}
 	
-	public void setUpLastLocation(Location location) {
-		LatLng lastLocationLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-		MarkerOptions markerOpts = new MarkerOptions();
-		markerOpts.position(lastLocationLatLng);
-		CameraPosition cameraPosition = new CameraPosition.Builder()
-		.target(lastLocationLatLng)
-		.zoom(17)
-		.build();
-		 map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));		
-		 map.addMarker(markerOpts);
+	@Override
+	public void onLocationChanged(Location arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
@@ -107,8 +88,8 @@ public class GeolocationActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
+		if (id == R.id.action_current_location) {
+			goToCurrentLocation();
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -116,26 +97,28 @@ public class GeolocationActivity extends Activity {
 	private boolean isNetworkAvailable(Context context) {
 		ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-		return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+		return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
 	}
-	/*
-	private void isNetworkAvailable(Context context) {
-		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-		if (activeNetworkInfo != null || (activeNetworkInfo.isConnectedOrConnecting())); {
-			AlertDialog.Builder alert = new AlertDialog.Builder(this);
-			alert.setCancelable(false);
-			alert.setMessage("No Connection Available");
-			alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int whichButton) {
-					finish();
-				}
-			});
-			alert.show();
-		}
-		
+
+	private void startNetworkUnavailableDialog() {
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+		alert.setCancelable(false);
+		alert.setMessage("No Connection Available");
+		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				finish();
+			}
+		});
+		alert.show();
 	}
-	*/
+	
+	private void goToCurrentLocation() {
+		LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+		Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+		LatLng point = new LatLng(location.getLatitude(), location.getLongitude());
+		marker.setPosition(point);
+		map.animateCamera(CameraUpdateFactory.newLatLng(point));
+	}
 	
 	//================================================================================
 	// Subclass Overrides
@@ -143,17 +126,9 @@ public class GeolocationActivity extends Activity {
 	
 	public Intent getResultIntent() {
 		LatLng locationLatLng = marker.getPosition();
-		Location location = new Location("");
-		location.setLatitude(locationLatLng.latitude);
-		location.setLongitude(locationLatLng.longitude);
-		
 		Intent intent = new Intent();
-		
-		Bundle bundle = new Bundle();
-		bundle.putParcelable(EXTRA_LOCATION, location);
-		intent.putExtras(bundle);
-		
-		//intent.putExtra(EXTRA_LOCATION, location);
+		intent.putExtra(EXTRA_LOCATION_LATITUDE, locationLatLng.latitude);
+		intent.putExtra(EXTRA_LOCATION_LONGITUDE, locationLatLng.longitude);
 		return intent;
 	}
 	

@@ -48,7 +48,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private static final int ADD_EXPENSE_CLAIM_REQUEST = 1;
 	private static final int EDIT_EXPENSE_CLAIM_REQUEST = 2;
 	private static final int SORT_EXPENSE_CLAIM_REQUEST = 3;
-	private static final int SET_HOME_LOCATION_REQUEST = 4;
+	private static final int SET_HOME_LOCATION_REQUEST = 6;
 	private static final String EXPENSE_CLAIM_FILENAME = "claims";
 	private static final String PREFERENCE = "PREFERENCE";
 
@@ -158,17 +158,9 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 * @param data
 	 */
 	private void onSetHomeLocationResult(Intent data) {
-		Bundle bundle = data.getExtras();
-		Location location = (Location)bundle.get(GeolocationActivity.EXTRA_LOCATION);
-		
-		System.out.println("Lat:" + location.getLatitude());
-		System.out.println("Lon:" + location.getLongitude());
-		//Location location = (Location)data.getBundleExtra(GeolocationActivity.EXTRA_LOCATION);
-		
-		//Location location = (Location)data.getSerializableExtra(GeolocationActivity.EXTRA_LOCATION);
-		
-		Toast.makeText(this, location.getLatitude() + ":" + location.getLongitude(), Toast.LENGTH_SHORT).show();
-		user.setHome(location);
+		double latitude = data.getExtras().getDouble(GeolocationActivity.EXTRA_LOCATION_LATITUDE);
+		double longitude = data.getExtras().getDouble(GeolocationActivity.EXTRA_LOCATION_LONGITUDE);
+		user.setLocation(latitude, longitude);
 	}
 	
 	/**
@@ -231,7 +223,8 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 */
 	private void startSetHomeLocationActivity() {
 		Intent intent = new Intent(this, GeolocationActivity.class);
-		intent.putExtra(GeolocationActivity.EXTRA_LOCATION, user.getHome());
+		intent.putExtra(GeolocationActivity.EXTRA_LOCATION_LATITUDE, user.getLatitude());
+		intent.putExtra(GeolocationActivity.EXTRA_LOCATION_LONGITUDE, user.getLongitude());
 		startActivityForResult(intent, SET_HOME_LOCATION_REQUEST);
 	}
 	
