@@ -23,7 +23,7 @@ import java.io.Serializable;
  * Model object representing a travel destination.
  */
 public class Destination implements Serializable {
-	private static final long serialVersionUID = 88384989745470050L;
+	private static final long serialVersionUID = -7090403546853416471L;
 
 	//================================================================================
 	// Properties
@@ -39,14 +39,9 @@ public class Destination implements Serializable {
 	private String travelReason;
 	
 	/**
-	 * Longitude coordinate of geolocation attached to this claim. 
+	 * Location of the destination.
 	 */
-	private Double longitude;
-	
-	/**
-	 * Latitude coordinate of geolocation attached to this claim. 
-	 */
-	private Double latitude;
+	private Geolocation location;
 	
 	//================================================================================
 	// Constructors
@@ -97,27 +92,18 @@ public class Destination implements Serializable {
 	}
 	
 	/**
-	 * @return The longitude attached to this destination. 
+	 * @return The location of the destination.
 	 */
-	public double getLongitude() {
-		return longitude;
-	}
-
-	/**
-	 * @return The latitude attached to this destination. 
-	 */
-	public double getLatitude() {
-		return latitude;
+	public Geolocation getLocation() {
+		return location;
 	}
 	
 	/**
-	 * Sets the coordinates for the geolocation of the expense claim.
-	 * @param latitude The latitude in type double.
-	 * @param longitude The longitude in type double.
+	 * Sets the location of the destination.
+	 * @param location The location of the destination.
 	 */
-	public void setLocation(double latitude, double longitude) {
-		this.latitude = latitude;
-		this.longitude = longitude;
+	public void setLocation(Geolocation location) {
+		this.location = location;
 	}
 	
 	//================================================================================
@@ -128,6 +114,8 @@ public class Destination implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result
+				+ ((location == null) ? 0 : location.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result
 				+ ((travelReason == null) ? 0 : travelReason.hashCode());
@@ -143,6 +131,11 @@ public class Destination implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Destination other = (Destination) obj;
+		if (location == null) {
+			if (other.location != null)
+				return false;
+		} else if (!location.equals(other.location))
+			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;

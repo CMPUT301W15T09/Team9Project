@@ -28,12 +28,12 @@ import android.net.Uri;
  * Model object representing a single item on an expense claim.
  */
 public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
-	private static final long serialVersionUID = -1106294407274690532L;
+	private static final long serialVersionUID = -5211881809548351778L;
 	
 	//================================================================================
 	// Properties
 	//================================================================================
-
+	
 	/**
 	 * Name of the expense item.
 	 */
@@ -66,14 +66,9 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	private String receiptUriString;
 	
 	/**
-	 * Longitude coordinate of geolocation attached to this item. 
+	 * Location of the expense item.
 	 */
-	private Double longitude;
-	
-	/**
-	 * Latitude coordinate of geolocation attached to this item. 
-	 */
-	private Double latitude;
+	private Geolocation location;
 	
 	/**
 	 * Incompleteness indicator.
@@ -209,27 +204,18 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	}
 
 	/**
-	 * @return The longitude attached to this expense item. 
+	 * @return The location of the expense item.
 	 */
-	public double getLongitude() {
-		return longitude;
-	}
-
-	/**
-	 * @return The latitude attached to this expense item. 
-	 */
-	public double getLatitude() {
-		return latitude;
+	public Geolocation getLocation() {
+		return location;
 	}
 	
 	/**
-	 * Sets the latitude and longitude for the geolocation of the expense item.
-	 * @param latitude The coordinates latitude in type double.
-	 * @param longitude The coordinate longitude in type double.
+	 * Sets the location of the expense item.
+	 * @param location The location of the expense item.
 	 */
-	public void setLocation(double latitude, double longitude) {
-		this.latitude = latitude;
-		this.longitude = longitude;
+	public void setLocation(Geolocation location) {
+		this.location = location;
 	}
 	
 	//================================================================================
@@ -244,7 +230,7 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	//================================================================================
 	// Object
 	//================================================================================
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -256,6 +242,8 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 		result = prime * result
 				+ ((description == null) ? 0 : description.hashCode());
 		result = prime * result + (incomplete ? 1231 : 1237);
+		result = prime * result
+				+ ((location == null) ? 0 : location.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -290,6 +278,11 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 		} else if (!description.equals(other.description))
 			return false;
 		if (incomplete != other.incomplete)
+			return false;
+		if (location == null) {
+			if (other.location != null)
+				return false;
+		} else if (!location.equals(other.location))
 			return false;
 		if (name == null) {
 			if (other.name != null)
