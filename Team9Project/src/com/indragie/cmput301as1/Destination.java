@@ -23,7 +23,7 @@ import java.io.Serializable;
  * Model object representing a travel destination.
  */
 public class Destination implements Serializable {
-	private static final long serialVersionUID = 88384989745470050L;
+	private static final long serialVersionUID = -7090403546853416471L;
 
 	//================================================================================
 	// Properties
@@ -37,6 +37,11 @@ public class Destination implements Serializable {
 	 * The reason of travel to the destination.
 	 */
 	private String travelReason;
+	
+	/**
+	 * Location of the destination.
+	 */
+	private Geolocation location;
 	
 	//================================================================================
 	// Constructors
@@ -86,6 +91,21 @@ public class Destination implements Serializable {
 		this.travelReason = travelReason;
 	}
 	
+	/**
+	 * @return The location of the destination.
+	 */
+	public Geolocation getLocation() {
+		return location;
+	}
+	
+	/**
+	 * Sets the location of the destination.
+	 * @param location The location of the destination.
+	 */
+	public void setLocation(Geolocation location) {
+		this.location = location;
+	}
+	
 	//================================================================================
 	// Object
 	//================================================================================
@@ -94,6 +114,8 @@ public class Destination implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result
+				+ ((location == null) ? 0 : location.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result
 				+ ((travelReason == null) ? 0 : travelReason.hashCode());
@@ -109,6 +131,11 @@ public class Destination implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Destination other = (Destination) obj;
+		if (location == null) {
+			if (other.location != null)
+				return false;
+		} else if (!location.equals(other.location))
+			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;

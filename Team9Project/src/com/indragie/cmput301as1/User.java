@@ -22,8 +22,8 @@ import java.io.Serializable;
  * Model object representing a user object.
  */
 public class User implements Serializable, ElasticSearchDocument {
-	private static final long serialVersionUID = -5731747178226322124L;
-	
+	private static final long serialVersionUID = 5700320468581917557L;
+
 	/**
 	 * Type used for indexing on ElasticSearch.
 	 */
@@ -41,6 +41,9 @@ public class User implements Serializable, ElasticSearchDocument {
 	 * The user's name.
 	 */
 	private String name;
+	
+	private double latitude;
+	private double longitude;
 
 	//================================================================================
 	// Constructors
@@ -82,6 +85,19 @@ public class User implements Serializable, ElasticSearchDocument {
 	@Override
 	public ElasticSearchDocumentID getDocumentID() {
 		return documentID;
+	}
+
+	public double getLatitude() {
+		return latitude;
+	}
+
+	public double getLongitude() {
+		return longitude;
+	}
+
+	public void setLocation(double latitude, double longitude) {
+		this.latitude = latitude;
+		this.longitude = longitude;
 	}
 	
 	//================================================================================

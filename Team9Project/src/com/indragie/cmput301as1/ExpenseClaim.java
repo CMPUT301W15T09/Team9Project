@@ -135,7 +135,7 @@ public class ExpenseClaim implements Serializable, ElasticSearchDocument {
 	 * User who returned or approved claim.
 	 */
 	private User approver;
-
+	
 	//================================================================================
 	// Constructors
 	//================================================================================
@@ -587,4 +587,6 @@ public class ExpenseClaim implements Serializable, ElasticSearchDocument {
 			return false;
 		return true;
 	}
+
+
 }

@@ -22,15 +22,13 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings.Secure;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,7 +36,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
-import android.provider.Settings.Secure;
+
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 /**
  * An activity that presents a list of expense claims.
@@ -51,6 +51,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private static final int ADD_EXPENSE_CLAIM_REQUEST = 1;
 	private static final int EDIT_EXPENSE_CLAIM_REQUEST = 2;
 	private static final int SORT_EXPENSE_CLAIM_REQUEST = 3;
+	private static final int SET_HOME_LOCATION_REQUEST = 6;
 	private static final int MANAGE_TAGS_REQUEST = 4;
 	private static final int FILTER_TAGS_REQUEST = 5;
 	
@@ -163,6 +164,9 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		case SORT_EXPENSE_CLAIM_REQUEST:
 			onSortExpenseResult(data);
 			break;
+		case SET_HOME_LOCATION_REQUEST:
+			onSetHomeLocationResult(data);
+			break;
 		case MANAGE_TAGS_REQUEST:
 			onManageTagsResult(data);
 			break;
@@ -170,6 +174,16 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 			onFilterTagsRequest(data);
 			break;
 		}
+	}
+	
+	/**
+	 * sets the home location for the user
+	 * @param data
+	 */
+	private void onSetHomeLocationResult(Intent data) {
+		double latitude = data.getExtras().getDouble(GeolocationActivity.EXTRA_LOCATION_LATITUDE);
+		double longitude = data.getExtras().getDouble(GeolocationActivity.EXTRA_LOCATION_LONGITUDE);
+		userManager.getActiveUser().setLocation(latitude, longitude);
 	}
 	
 	/**
@@ -201,8 +215,6 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	
 	/**
 	 * Sets a expense claim at a specified position in the list model from a intent.
-	 * Displays the filteredListModel instead if there are filtered tags.
-	 * If the claim exists in the filteredListModel, we check if it still has the filtered tag.
 	 * @param data The intent to get the expense claim from.
 	 */
 	private void onEditExpenseResult(Intent data) {
@@ -314,12 +326,26 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		case R.id.action_manage_tags:
 			startManageTagsActivity();
 			return true;
+		case R.id.action_set_home_location:
+			startSetHomeLocationActivity();
+			return true;
 		case R.id.action_filter_tags:
 			startFilterTagsActivity();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	/**
+	 * Starts the {@link GeolocationActivity}
+	 */
+	private void startSetHomeLocationActivity() {
+		Intent intent = new Intent(this, GeolocationActivity.class);
+		User user = userManager.getActiveUser();
+		intent.putExtra(GeolocationActivity.EXTRA_LOCATION_LATITUDE, user.getLatitude());
+		intent.putExtra(GeolocationActivity.EXTRA_LOCATION_LONGITUDE, user.getLongitude());
+		startActivityForResult(intent, SET_HOME_LOCATION_REQUEST);
 	}
 	
 	/**

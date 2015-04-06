@@ -83,16 +83,23 @@
     <string name="action_accept">Add</string>
     <string name="title_activity_add_tag">Add a tag</string>
     <string name="title_activity_edit_tag">Edit Tag</string>
+
+    <!-- ExpenseClaimSortActivity -->
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_geolocation_add">Add Geolocation</string>
+    <string name="hello_world">Hello world!</string>
     
+    <!-- Geolocation -->
+	<string name="action_set_home">Set Home Location</string>
+	<string name="action_current_location">Go To Current Location</string>
+	
     <!--  FilterTagsActivity -->
     <string name="action_filter_tags">Filter Tags</string>
     <string name="title_activity_filter_tag">Filter Tags</string>
 
     <!-- ExpenseClaimSortActivity -->
     <string name="title_activity_tag_list">TagListActivity</string>
-    <string name="hello_world">Hello world!</string>
 
     <!--  Tag{Add,Edit}ToClaimActivity -->
     <string name="title_activity_tag_edit_to_claim">TagEditToClaimActivity</string>
-
 </resources>
