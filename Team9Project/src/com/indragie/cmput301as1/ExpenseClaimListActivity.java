@@ -22,17 +22,13 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.location.Location;
 import android.os.Bundle;
+import android.provider.Settings.Secure;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,7 +36,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
-import android.provider.Settings.Secure;
+
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 /**
  * An activity that presents a list of expense claims.
