@@ -49,7 +49,10 @@ public class ExpenseItemJSONSerializer implements JsonSerializer<ExpenseItem> {
 		obj.addProperty("category", src.getCategory());
 		obj.addProperty("incomplete", src.isIncomplete());
 		obj.add("amount", context.serialize(src.getAmount(), Money.class));
-		obj.add("date", context.serialize(src.getDate(), Date.class));
+		Date date = src.getDate();
+		if (date != null) {
+			obj.addProperty("date", date.getTime());
+		}
 		
 		Uri receiptUri = src.getReceiptUri();
 		if (receiptUri != null) {
