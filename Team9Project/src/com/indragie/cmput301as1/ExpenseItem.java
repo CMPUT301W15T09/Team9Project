@@ -24,6 +24,8 @@ import org.joda.money.Money;
 
 import android.location.Location;
 
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * Model object representing a single item on an expense claim.
  */
@@ -66,9 +68,15 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	private String receipt;
 	
 	/**
-	 * Geolocation attached to the expense item.
+	 * Longitude coordinate of geolocation attached to this item. 
 	 */
-	private Location geolocation;
+	private Double longitude;
+	
+	/**
+	 * Latitude coordinate of geolocation attached to this item. 
+	 */
+	private Double latitude;
+
 
 	//================================================================================
 	// Constructors
@@ -180,22 +188,31 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	public void setAmount(Money amount) {
 		this.amount = amount;
 	}
+
+	/**
+	 * @return The longitude attached to this expense item. 
+	 */
+	public double getLongitude() {
+		return longitude;
+	}
+
+	/**
+	 * @return The latitude attached to this expense item. 
+	 */
+	public double getLatitude() {
+		return latitude;
+	}
 	
 	/**
-	 * @return The geolocation of the incurred expense.
+	 * Sets the latitude and longitude for the geolocation of the expense item.
+	 * @param latitude The coordinates latitude in type double.
+	 * @param longitude The coordinate longitude in type double.
 	 */
-	public Location getGeolocation() {
-		return geolocation;
+	public void setLocation(double latitude, double longitude) {
+		this.latitude = latitude;
+		this.longitude = longitude;
 	}
-
-	/**
-	 * Sets the geolocation where the expense was incurred.
-	 * @param geolocation The geolocation of the incurred expense.
-	 */
-	public void setGeolocation(Location geolocation) {
-		this.geolocation = geolocation;
-	}
-
+	
 	//================================================================================
 	// Comparable
 	//================================================================================

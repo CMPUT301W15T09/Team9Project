@@ -41,9 +41,14 @@ public class Destination implements Serializable {
 	private String travelReason;
 	
 	/**
-	 * The geolocation attached to the destination. 
+	 * Longitude coordinate of geolocation attached to this claim. 
 	 */
-	private Location geolocation;
+	private Double longitude;
+	
+	/**
+	 * Latitude coordinate of geolocation attached to this claim. 
+	 */
+	private Double latitude;
 	
 	//================================================================================
 	// Constructors
@@ -94,18 +99,27 @@ public class Destination implements Serializable {
 	}
 	
 	/**
-	 * @return The geolocation attached to the destination.
+	 * @return The longitude attached to this destination. 
 	 */
-	public Location getGeolocation() {
-		return geolocation;
+	public double getLongitude() {
+		return longitude;
 	}
 
 	/**
-	 * Sets the geolocation attached to the destination.
-	 * @param geolocation The geolocation of the destination.
+	 * @return The latitude attached to this destination. 
 	 */
-	public void setGeolocation(Location geolocation) {
-		this.geolocation = geolocation;
+	public double getLatitude() {
+		return latitude;
+	}
+	
+	/**
+	 * Sets the coordinates for the geolocation of the expense claim.
+	 * @param latitude The latitude in type double.
+	 * @param longitude The longitude in type double.
+	 */
+	public void setLocation(double latitude, double longitude) {
+		this.latitude = latitude;
+		this.longitude = longitude;
 	}
 	
 	//================================================================================
