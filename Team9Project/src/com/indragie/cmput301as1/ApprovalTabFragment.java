@@ -16,10 +16,23 @@
  */
 package com.indragie.cmput301as1;
 
+import java.io.IOException;
+import java.util.List;
+
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.provider.Settings.Secure;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Toast;
 
 
 /**
@@ -28,40 +41,87 @@ import android.view.ViewGroup;
 public class ApprovalTabFragment extends ExpenseClaimTabFragment {
 
 	@Override
-	public void onCreate(Bundle savedInstanceState){
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		activity = getActivity();
-		filteredListModel = new ListModel<ExpenseClaim>("filtered_List", activity);
-		
 		userManager = new UserManager(activity);
 		if (userManager.getActiveUser() == null) {
 			promptForUserInformation();
 		} else {
-			loadData(1);
+			loadData();
 		}
+		
 		setHasOptionsMenu(true);
+
 	}
 	
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	/**
+	 * Loads the expense claim data to display in the {@link ListView}
+	 */
+	protected void loadData() {
+		// Create the application-wide session
+		Session session = new Session(activity, userManager.getActiveUser());
+		Session.setSharedSession(session);
 
-		userManager = new UserManager(activity);
-		if (userManager.getActiveUser() == null) {
-			promptForUserInformation();
-		} else {
-			loadData(0);
-		}
-//		userManager = new UserManager(activity);
-//		if (userManager.getActiveUser() == null) {
-//			promptForUserInformation();
-//		} else {
-//			loadData();
-//		}
-		
-		setHasOptionsMenu(true);
+		// Show the initial list of expense claims (persisted on disk)
+		listModel = session.getOwnedClaims();
+		listModel.addObserver((TypedObserver<CollectionMutation<ExpenseClaim>>)this);
+		setListAdapter(new ExpenseClaimArrayAdapter(activity, listModel.getItems()));
 
-		return super.onCreateView(inflater, container, savedInstanceState);
+		//Load the new list from the server
+		final Context context = activity;
+		session.loadOwnedClaims(new ElasticSearchAPIClient.APICallback<List<ExpenseClaim>>() {
+			@Override
+			public void onSuccess(Response response, final List<ExpenseClaim> model) {
+				
+					activity.runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						listModel.replace(model);
+					}
+				});
+			}
+
+			@Override
+			public void onFailure(Request request, Response response, IOException e) {
+				activity.runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(context, R.string.load_fail_error, Toast.LENGTH_LONG).show();
+					}
+				});
+				
+			}
+		});
+	}
+	
+	/**
+	 * Prompts the user to enter their name.
+	 */
+	public void promptForUserInformation() {
+		// http://www.androidsnippets.com/prompt-user-input-with-an-alertdialog
+		AlertDialog.Builder alert = new AlertDialog.Builder(activity);
+		alert.setCancelable(false);
+		alert.setTitle(R.string.user_alert_title);
+		alert.setMessage(R.string.user_alert_message);
+
+		final EditText input = new EditText(activity);
+		alert.setView(input);
+
+		alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				String name = input.getText().toString();
+				if (name == null || name.isEmpty()) {
+					Toast.makeText(activity, R.string.user_alert_error, Toast.LENGTH_LONG).show();
+				} else {
+					// Device specific identifier
+					String androidID = Secure.getString(activity.getContentResolver(), Secure.ANDROID_ID); 
+					userManager.setActiveUser(new User(androidID, name));
+					loadData();
+				}
+			}
+		});
+		alert.show();
 	}
 
 	

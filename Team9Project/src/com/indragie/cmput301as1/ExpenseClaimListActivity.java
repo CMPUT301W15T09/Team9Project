@@ -43,8 +43,6 @@ public class ExpenseClaimListActivity extends FragmentActivity {
 	//================================================================================
 
 	/**
-<<<<<<< HEAD
-=======
 	 * List model of expense claim.
 	 */
 	private ListModel<ExpenseClaim> listModel;
@@ -60,7 +58,6 @@ public class ExpenseClaimListActivity extends FragmentActivity {
 	private ArrayList<Tag> filteredTagsList = new ArrayList<Tag>();
 	
 	/**
->>>>>>> master
 	 * Manages the user and associated preferences.
 	 */
 	private UserManager userManager;

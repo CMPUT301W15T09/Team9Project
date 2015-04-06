@@ -71,11 +71,6 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 	protected ListModel<ExpenseClaim> listModel;
 
 	/**
-	 * Index of a item that is long pressed.
-	 */
-	private int longPressedItemIndex;
-
-	/**
 	 * Active user.
 	 */
 	protected User user;
@@ -110,19 +105,17 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 		super.onActivityCreated(savedInstanceState);
 
 
-		getListView().setOnItemLongClickListener(
-				new LongClickDeleteListener(activity, new LongClickDeleteListener.OnDeleteListener() {
-					@Override
-					public void onDelete(int position) {
-						if (getListView().getItemAtPosition(position) == null) {
-							return;
-						}
-					}
-
-					@Override
-					public boolean shouldDelete(int position) {
-						return false;
-					}}));
+		getListView().setOnItemLongClickListener(new LongClickDeleteListener(activity, new LongClickDeleteListener.OnDeleteListener() {
+			@Override
+			public void onDelete(int position) {
+				showDeleteAlertDialog(position);
+			}
+			
+			@Override
+			public boolean shouldDelete(int position) {
+				return true;
+			}
+		}));
 	}
 
 	@Override
@@ -330,24 +323,27 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 	}
 
 	/**
-	 * Prompts the user for confirmation in response to deleting an expense
-	 * claim.
+	 * Prompts the user for confirmation in response to deleting an expense claim.
+	 * @param index The index of the expense claim to remove.
 	 */
-	public void startDeleteAlertDialog() {
+	public void showDeleteAlertDialog(final int index) {
 		AlertDialog.Builder openDialog = new AlertDialog.Builder(activity);
 		openDialog.setTitle(R.string.action_delete_claim_confirm);
-
-		openDialog.setPositiveButton(android.R.string.ok,
-				new DialogInterface.OnClickListener() {
+		
+		openDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				listModel.remove(longPressedItemIndex);
-
+				if (!filteredTagsList.isEmpty()) {
+					ExpenseClaim claimToRemove = filteredListModel.getItems().get(index);
+					listModel.remove(claimToRemove);
+					setFilteredClaims();
+				} else {
+					listModel.remove(index);
+				}
 			}
 		});
-
-		openDialog.setNegativeButton(android.R.string.cancel,
-				new DialogInterface.OnClickListener() {
+		
+		openDialog.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.dismiss();
@@ -376,66 +372,7 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 		setListAdapter(new ExpenseClaimArrayAdapter(activity, filteredListModel.getItems()));
 	}
 	
-	/**
-	 * Loads the expense claim data to display in the {@link ListView}
-	 */
-	protected void loadData(int i) {
-		// Create the application-wide session
-		Session session = new Session(activity, userManager.getActiveUser());
-		Session.setSharedSession(session);
-
-		// Show the initial list of expense claims (persisted on disk)
-		listModel = session.getOwnedClaims();
-		listModel.addObserver((TypedObserver<CollectionMutation<ExpenseClaim>>)this);
-		setListAdapter(new ExpenseClaimArrayAdapter(activity, listModel.getItems()));
-
-		//Load the new list from the server
-		final Context context = activity;
-		session.loadOwnedClaims(new ElasticSearchAPIClient.APICallback<List<ExpenseClaim>>() {
-			@Override
-			public void onSuccess(Response response, List<ExpenseClaim> model) {}
-
-			@Override
-			public void onFailure(Request request, Response response, IOException e) {
-				activity.runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						Toast.makeText(context, R.string.load_fail_error, Toast.LENGTH_LONG).show();
-					}
-				});
-				
-			}
-		});
-	}
 	
-	/**
-	 * Prompts the user to enter their name.
-	 */
-	public void promptForUserInformation() {
-		// http://www.androidsnippets.com/prompt-user-input-with-an-alertdialog
-		AlertDialog.Builder alert = new AlertDialog.Builder(activity);
-		alert.setCancelable(false);
-		alert.setTitle(R.string.user_alert_title);
-		alert.setMessage(R.string.user_alert_message);
-
-		final EditText input = new EditText(activity);
-		alert.setView(input);
-
-		alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
-				String name = input.getText().toString();
-				if (name == null || name.isEmpty()) {
-					Toast.makeText(activity, R.string.user_alert_error, Toast.LENGTH_LONG).show();
-				} else {
-					// Device specific identifier
-					String androidID = Secure.getString(activity.getContentResolver(), Secure.ANDROID_ID); 
-					userManager.setActiveUser(new User(androidID, name));
-					loadData(0);
-				}
-			}
-		});
-		alert.show();
-	}
 
 	// ================================================================================
 	// ListView Callbacks
