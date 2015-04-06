@@ -16,49 +16,129 @@
  */
 package com.indragie.cmput301as1;
 
-import java.util.List;
+import java.io.Serializable;
+import java.util.ArrayList;
 
-import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ActionMode;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-
 
 /**
- * Activity for viewing the current list of tags the use has defined. 
+ * Activity for viewing the current list of tags the user has defined. 
  * Can direct user to activities for adding or editing tags. 
  * Allows user to remove existing tags. 
  */
-public class ManageTagsActivity extends ListActivity implements TypedObserver<List<Tag>>{
+
+public class ManageTagsActivity extends TagAddToClaimActivity{
+	//================================================================================
+	// Classes
+	//================================================================================
+	
+	/**
+	 * Class that encapsulates a mutation to a tag.
+	 */
+	public static class TagMutation implements Serializable {
+		private static final long serialVersionUID = -7792735815468100896L;
+		/**
+		 * The type of mutation that occurred.
+		 */
+		public enum MutationType {
+			/**
+			 * Tag was deleted. {@link ChangeType#oldTag} will contain the
+			 * tag that was deleted, and {@link ChangeType#newTag} will be
+			 * null.
+			 */
+			DELETE,
+			/**
+			 * Tag was edited. {@link ChangeType#oldTag} will contain the
+			 * original tag, and {@link ChangeType#newTag} will contain the
+			 * modified tag.
+			 */
+			EDIT
+		}
+		
+		//================================================================================
+		// Properties
+		//================================================================================
+		
+		/**
+		 * The type of mutation that occurred.
+		 */
+		private MutationType mutationType;
+		
+		/**
+		 * The previous version of the tag.
+		 */
+		private Tag oldTag;
+		
+		/**
+		 * The new version of the tag.
+		 */
+		private Tag newTag;
+		
+		//================================================================================
+		// Constructors
+		//================================================================================
+		
+		/**
+		 * Creates a new instance of {@link TagMutation}
+		 * @param mutationType The type of mutation that occurred.
+		 * @param oldTag The previous version of the tag.
+		 * @param newTag The new version of the tag.
+		 */
+		public TagMutation(MutationType mutationType, Tag oldTag, Tag newTag) {
+			this.mutationType = mutationType;
+			this.oldTag = oldTag;
+			this.newTag = newTag;
+		}
+		
+		//================================================================================
+		// Accessors
+		//================================================================================
+		
+		/**
+		 * @return The type of mutation that occurred.
+		 */
+		public MutationType getMutationType() {
+			return mutationType;
+		}
+		
+		/**
+		 * @return The previous version of the tag.
+		 */
+		public Tag getOldTag() {
+			return oldTag;
+		}
+		
+		/**
+		 * @return The new version of the tag.
+		 */
+		public Tag getNewTag() {
+			return newTag;
+		}
+	}
 
 	//================================================================================
 	// Constants
 	//================================================================================
 	
-	private static final int ADD_TAG_REQUEST= 1;
 	private static final int EDIT_TAG_REQUEST= 2;
-	private static final String TAG_FILENAME = "tags";
 
 	public static final String EXTRA_TAG = "com.indragie.cmput301as1.EXTRA_TAG";
+	
+	public static final String EXTRA_TAG_MUTATIONS = "com.indragie.cmput301as1.TAG_MUTATIONS";
 	
 	//================================================================================
 	// Properties
 	//================================================================================
 	
 	/**
-	 * List model of tags.
+	 * Used to store pending mutations to the tags.
 	 */
-	private ListModel<Tag> listModel;
-	/**
-	 * Index of a item that is long pressed.
-	 */
-	private int longPressedItemIndex;
-
+	private ArrayList<TagMutation> mutations = new ArrayList<TagMutation>();
+	
 	//================================================================================
 	// Activity Callbacks
 	//================================================================================
@@ -66,14 +146,9 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-		
-		listModel = new ListModel<Tag>(TAG_FILENAME, this);
-		listModel.addObserver(this);
-		setListAdapter(new TagArrayAdapter(this, listModel.getItems()));
-		
-		
-		final ActionMode.Callback longClickCallback = new ActionMode.Callback() {
+		setUpActionBarAndModel();
+	
+		final ActionMode.Callback clickCallback = new ActionMode.Callback() {
 			@Override
 			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 				switch (item.getItemId()) {
@@ -82,7 +157,9 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 						mode.finish();
 						return true;
 					case R.id.action_delete:
-						listModel.remove(longPressedItemIndex);
+						Tag tag = getTagAt(pressedItemIndex);
+						listModel.remove(pressedItemIndex);
+						mutations.add(new TagMutation(TagMutation.MutationType.DELETE, tag, null));
 						mode.finish();
 						return true;
 					default:
@@ -106,44 +183,7 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 			}
 		};
 
-		getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-				longPressedItemIndex = position;
-				startActionMode(longClickCallback);
-				return true;
-			}
-		});
-				
-		
-	}
-	
-	@Override 
-	public boolean onCreateOptionsMenu(Menu menu){
-		super.onCreateOptionsMenu(menu);
-
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.contextual_add,menu);
-		return super.onCreateOptionsMenu(menu);
-	}
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.action_add_tag:
-			startAddTagActivity();
-			return true;
-		case android.R.id.home:
-			finish();
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
-	}
-	
-	@Override
-	public void update(TypedObservable<List<Tag>> o, List<Tag> tags) {
-		setListAdapter(new TagArrayAdapter(this, tags));
+		setUpItemClickListener(clickCallback);
 	}
 	
 	@Override
@@ -158,44 +198,38 @@ public class ManageTagsActivity extends ListActivity implements TypedObserver<Li
 		}
 	}
 	
-	//================================================================================
-	// Add/Edit a tag
-	//================================================================================
-	
 	/**
-	 * Starts the activity to add a tag.
+	 * Starts intent to return.
 	 */
-	private void startAddTagActivity() {
-		Intent addTagIntent = new Intent(this, TagAddActivity.class);
-		startActivityForResult(addTagIntent, ADD_TAG_REQUEST);
+	@Override
+	protected void onHome() {
+		Intent intent = new Intent();
+		intent.putExtra(EXTRA_TAG_MUTATIONS, mutations);
+		setResult(RESULT_OK, intent);
+		finish();
 	}
 	
-	/**
-	 * Adds a tag to the list model from a resulting activity.
-	 * @param data The intent from resulting activity.
-	 */
-	private void onAddTag(Intent data) {
-		Tag tag = (Tag)data.getSerializableExtra(TagAddActivity.ADDED_TAG);
-		listModel.add(tag);
-		
-	}
+	//================================================================================
+	// Edit a tag
+	//================================================================================
 	
 	/**
 	 * Starts the activity to edit a tag.
 	 */
 	private void startEditTagActivity() {
 		Intent editTagIntent = new Intent(this, TagEditActivity.class);
-		editTagIntent.putExtra(EXTRA_TAG, listModel.getItems().get(longPressedItemIndex));
+		editTagIntent.putExtra(EXTRA_TAG, getTagAt(pressedItemIndex));
 		startActivityForResult(editTagIntent, EDIT_TAG_REQUEST);
 	}
-	
+	 	
 	/**
 	 * Edits a tag in list model from resulting activity.
 	 * @param data The intent form resulting activity.
 	 */
 	private void onEditTag(Intent data) {
-		Tag tag = (Tag)data.getSerializableExtra(TagAddActivity.ADDED_TAG);
-		listModel.set(longPressedItemIndex, tag);
+		Tag newTag = (Tag)data.getSerializableExtra(TagAddActivity.ADDED_TAG);
+		Tag oldTag = getTagAt(pressedItemIndex);
+		listModel.set(pressedItemIndex, newTag);
+		mutations.add(new TagMutation(TagMutation.MutationType.EDIT, oldTag, newTag));
 	}
-
 }

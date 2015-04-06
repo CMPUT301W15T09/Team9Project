@@ -22,16 +22,14 @@ import java.util.Date;
 
 import org.joda.money.Money;
 
-import android.location.Location;
-
-import com.google.android.gms.maps.model.LatLng;
+import android.net.Uri;
 
 /**
  * Model object representing a single item on an expense claim.
  */
 public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
-	private static final long serialVersionUID = -5923561360068724438L;
-
+	private static final long serialVersionUID = -1106294407274690532L;
+	
 	//================================================================================
 	// Properties
 	//================================================================================
@@ -65,7 +63,7 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	/**
 	 * String representation of a Uri of a receipt image.
 	 */
-	private String receipt;
+	private String receiptUriString;
 	
 	/**
 	 * Longitude coordinate of geolocation attached to this item. 
@@ -76,7 +74,11 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	 * Latitude coordinate of geolocation attached to this item. 
 	 */
 	private Double latitude;
-
+	
+	/**
+	 * Incompleteness indicator.
+	 */
+	private boolean incomplete;
 
 	//================================================================================
 	// Constructors
@@ -159,18 +161,19 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	}
 	
 	/**
-	 * @return String representation of a Uri of a receipt image.
+	 * @return Uri of the receipt image.
 	 */
-	public String getReceipt() {
-		return receipt;
+	public Uri getReceiptUri() {
+		if (receiptUriString == null) return null;
+		return Uri.parse(receiptUriString);
 	}
 
 	/**
-	 * Sets the string representation of a Uri of a receipt image.
-	 * @param receipt String representation of a Uri of a receipt image.
+	 * Sets the Uri of a receipt image.
+	 * @param receiptPath Uri of a receipt image.
 	 */
-	public void setReceipt(String receipt) {
-		this.receipt = receipt;
+	public void setReceiptUri(Uri receiptUri) {
+		this.receiptUriString = (receiptUri == null) ? null : receiptUri.toString();
 	}
 	
 	/**
@@ -187,6 +190,22 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	 */
 	public void setAmount(Money amount) {
 		this.amount = amount;
+	}
+	
+	/**
+	 * Checks if incomplete. 
+	 * @return incomplete
+	 */
+	public boolean isIncomplete() {
+		return incomplete;
+	}
+
+	/**
+	 * Sets the incompleteness flag of the claim.
+	 * @param incomplete
+	 */
+	public void setIncomplete(boolean incomplete) {
+		this.incomplete = incomplete;
 	}
 
 	/**
@@ -236,6 +255,7 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 		result = prime * result + ((date == null) ? 0 : date.hashCode());
 		result = prime * result
 				+ ((description == null) ? 0 : description.hashCode());
+		result = prime * result + (incomplete ? 1231 : 1237);
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -268,6 +288,8 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 			if (other.description != null)
 				return false;
 		} else if (!description.equals(other.description))
+			return false;
+		if (incomplete != other.incomplete)
 			return false;
 		if (name == null) {
 			if (other.name != null)

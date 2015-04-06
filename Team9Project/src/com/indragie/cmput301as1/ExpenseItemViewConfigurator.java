@@ -71,8 +71,14 @@ public class ExpenseItemViewConfigurator implements ViewConfigurator<ExpenseClai
 		
 		ImageView receiptImageView = (ImageView)view.findViewById(R.id.iv_receipt_icon);
 		receiptImageView.setVisibility(View.INVISIBLE);
-		if (item.getReceipt() != null) {
+		if (item.getReceiptUri() != null) {
 			receiptImageView.setVisibility(View.VISIBLE);
+		}
+		
+		ImageView incompleteImageView = (ImageView)view.findViewById(R.id.iv_incomplete_icon);
+		incompleteImageView.setVisibility(View.INVISIBLE);
+		if (item.isIncomplete()) {
+			incompleteImageView.setVisibility(View.VISIBLE);
 		}
 	}
 }
