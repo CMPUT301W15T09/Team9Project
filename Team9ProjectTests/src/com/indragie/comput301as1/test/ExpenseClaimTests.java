@@ -51,15 +51,15 @@ public class ExpenseClaimTests extends TestCase {
 	public void testDestinationsAccessors() {
 		ExpenseClaim claim = new ExpenseClaim("Indragie", "", new Date(), new Date(), new User("test_id", "Test User"), ExpenseClaim.Status.IN_PROGRESS);
 		
-		Destination destination1 = new Destination("Rome", "");
-		Destination destination2 = new Destination("Paris", "");
+		Destination destination1 = new Destination("Rome", "", null); //TODO: fix
+ 		Destination destination2 = new Destination("Paris", "", null); //TODO: fix
 		claim.addDestination(destination1);
 		claim.addDestination(destination2);
 		
 		assertEquals(destination1, claim.getDestinations().get(0));
 		assertEquals(destination2, claim.getDestinations().get(1));
 		
-		Destination destination3 = new Destination("NYC", "");
+		Destination destination3 = new Destination("NYC", "", null); //TODO: fix
 		claim.setDestination(0, destination3);
 		assertEquals(destination3, claim.getDestinations().get(0));
 		assertEquals(destination2, claim.getDestinations().get(1));
