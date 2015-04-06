@@ -191,7 +191,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 
 	/**
 	 * Adds a expense claim to list model from a intent.
-	 * Displays the filteredListModel instead if there are selected tags.
+	 * Displays the filteredListModel instead if there are filtered tags.
 	 * @param data The intent to get the expense claim from.
 	 */
 	private void onAddExpenseResult(Intent data) {
@@ -204,7 +204,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	
 	/**
 	 * Sets a expense claim at a specified position in the list model from a intent.
-	 * Displays the filteredListModel instead if there are selected tags.
+	 * Displays the filteredListModel instead if there are filtered tags.
 	 * If the claim exists in the filteredListModel, we check if it still has the filtered tag.
 	 * @param data The intent to get the expense claim from.
 	 */
@@ -220,6 +220,8 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 
 	/**
 	 * Sets the list used in ListModel to the returned list of expense claims from the intent. 
+	 * If tag is in the filteredTagsList, we have to update the list to accommodate for the changes.
+	 * Displays the filteredListModel instead if there are filtered tags.
 	 * @param data The intent to get the list of expense claims from. 
 	 */
 	@SuppressWarnings("unchecked")
@@ -266,6 +268,10 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		
 	}
 	
+	/**
+	 * Sets the listModel used to filteredListModel.
+	 * @param data The intent to get the filteredTagsList.
+	 */
 	@SuppressWarnings("unchecked")
 	private void onFilterTagsRequest(Intent data) {
 		//TODO: Filter tags, replace the tags, etc.
@@ -274,6 +280,10 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		setFilteredClaims();
 	}
 	
+	/**
+	 * Checks list of filtered tags. 
+	 * If claim contains filtered tag, we keep the claim in our filteredListModel.
+	 */
 	private void setFilteredClaims() {
 		ArrayList<ExpenseClaim> tempClaims = new ArrayList<ExpenseClaim>();
 		
@@ -290,6 +300,10 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		setListAdapter(new ExpenseClaimArrayAdapter(this, filteredListModel.getItems()));
 	}
 	
+	/**
+	 * Checks if there are filtered tags.
+	 * @return Status if there are filtered tags.
+	 */
 	private boolean checkFilteredTags() {
 		return !filteredTagsList.isEmpty();
 		
@@ -346,6 +360,9 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		startActivityForResult(manageTagsIntent, MANAGE_TAGS_REQUEST);
 	}
 	
+	/**
+	 * Starts the {@link FilterTagsActivity}
+	 */
 	private void startFilterTagsActivity() {
 		Intent filterTagsIntent = new Intent(this, FilterTagsActivity.class);
 		filterTagsIntent.putExtra(FilterTagsActivity.TAG_TO_FILTER, filteredTagsList);
