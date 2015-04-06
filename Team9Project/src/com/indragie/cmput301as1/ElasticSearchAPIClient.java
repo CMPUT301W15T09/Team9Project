@@ -390,12 +390,9 @@ public class ElasticSearchAPIClient {
 							for (JsonElement element : hitsElement.getAsJsonArray()) {
 								if (element.isJsonObject()) {
 									JsonElement sourceElement = element.getAsJsonObject().get("_source");
-									if (sourceElement.isJsonObject()) {
-										JsonElement docElement = sourceElement.getAsJsonObject().get("doc");
-										T model = gson.fromJson(docElement, documentType);
-										if (model != null) {
-											models.add(model);
-										}
+									T model = gson.fromJson(sourceElement, documentType);
+									if (model != null) {
+										models.add(model);
 									}
 								}
 							}
