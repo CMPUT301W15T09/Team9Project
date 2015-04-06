@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.audiofx.BassBoost.Settings;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -74,9 +75,10 @@ public class GeolocationActivity extends Activity implements LocationListener{
 	}
 	
 	@Override
-	public void onLocationChanged(Location arg0) {
-		// TODO Auto-generated method stub
-		
+	public void onLocationChanged(Location location) {
+		LatLng point = new LatLng(location.getLatitude(), location.getLongitude());
+		marker.setPosition(point);
+		map.animateCamera(CameraUpdateFactory.newLatLng(point));		
 	}
 
 	@Override
@@ -100,11 +102,28 @@ public class GeolocationActivity extends Activity implements LocationListener{
 		return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
 	}
 
+
+	
+	private void goToCurrentLocation() {
+		LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+		boolean enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+		if (!enabled) {
+			startGpsUnavailabeDialog();
+		}
+		
+		Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+		if (location != null) {
+			onLocationChanged(location);
+		} else {
+			Toast.makeText(this, "GPS is not available at the moment", Toast.LENGTH_SHORT).show();
+		}
+	}
+	
 	private void startNetworkUnavailableDialog() {
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		alert.setCancelable(false);
 		alert.setMessage("No Connection Available");
-		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+		alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				finish();
 			}
@@ -112,12 +131,17 @@ public class GeolocationActivity extends Activity implements LocationListener{
 		alert.show();
 	}
 	
-	private void goToCurrentLocation() {
-		LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-		Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-		LatLng point = new LatLng(location.getLatitude(), location.getLongitude());
-		marker.setPosition(point);
-		map.animateCamera(CameraUpdateFactory.newLatLng(point));
+	private void startGpsUnavailabeDialog() {
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+		alert.setMessage("GPS is disabled for your device. Would you like to enable it?");
+		alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+				startActivity(intent);
+			}
+		});
+		alert.setNegativeButton(android.R.string.cancel, null);
+		alert.show();
 	}
 	
 	//================================================================================
