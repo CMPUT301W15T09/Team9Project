@@ -17,6 +17,7 @@
 package com.indragie.cmput301as1;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -132,6 +133,8 @@ public class Session implements TypedObserver<CollectionMutation<ExpenseClaim>> 
 		pullQueue = new ElasticSearchQueue<List<ExpenseClaim>>(context);
 		
 		GsonBuilder builder = new GsonBuilder();
+		builder.registerTypeAdapter(Date.class, new DateJSONSerializer());
+		builder.registerTypeAdapter(Date.class, new DateJSONDeserializer());
 		builder.registerTypeAdapter(ExpenseItem.class, new ExpenseItemJSONSerializer());
 		builder.registerTypeAdapter(ExpenseItem.class, new ExpenseItemJSONDeserializer(new ExpenseItemReceiptController()));
 		Gson gson = builder.create();

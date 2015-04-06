@@ -63,7 +63,7 @@ public class ExpenseItemJSONDeserializer implements JsonDeserializer<ExpenseItem
 		String category = JSONHelpers.getStringIfPossible(obj.get("category"));
 		boolean incomplete = JSONHelpers.getBooleanIfPossible(obj.get("incomplete"));
 		JsonObject amountObject = JSONHelpers.getJsonObjectIfPossible(obj.get("amount"));
-		long time = JSONHelpers.getLongIfPossible(obj.get("date"));
+		JsonElement dateElement = obj.get("date");
 		String receiptBase64Str = JSONHelpers.getStringIfPossible(obj.get("receipt_base64"));
 		
 		Money amount = null;
@@ -71,7 +71,12 @@ public class ExpenseItemJSONDeserializer implements JsonDeserializer<ExpenseItem
 			amount = context.deserialize(amountObject, Money.class);
 		}
 		
-		ExpenseItem item = new ExpenseItem(name, description, category, amount, new Date(time));
+		Date date = null;
+		if (dateElement != null) {
+			date = context.deserialize(dateElement, Date.class);
+		}
+		
+		ExpenseItem item = new ExpenseItem(name, description, category, amount, date);
 		item.setIncomplete(incomplete);
 		
 		if (receiptBase64Str != null) {
