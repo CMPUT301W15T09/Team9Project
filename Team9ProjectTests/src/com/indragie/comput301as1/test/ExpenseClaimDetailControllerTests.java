@@ -43,8 +43,8 @@ public class ExpenseClaimDetailControllerTests extends AndroidTestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		ExpenseClaim claim = new ExpenseClaim("", "", new Date(), new Date(), new User("abcd", ""), ExpenseClaim.Status.IN_PROGRESS);
-		destination1 = new Destination("Rome", "", null);
-		destination2 = new Destination("Paris", "", null);
+		destination1 = new Destination("Rome", "", null); //TODO: fix
+		destination2 = new Destination("Paris", "", null); //TODO: fixs
 		claim.addDestination(destination1);
 		claim.addDestination(destination2);
 		
