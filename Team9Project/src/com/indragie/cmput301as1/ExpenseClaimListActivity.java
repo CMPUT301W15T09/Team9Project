@@ -17,29 +17,50 @@
 
 package com.indragie.cmput301as1;
 
-
+import java.util.ArrayList;
 
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.widget.EditText;
-import android.widget.Toast;
-import android.provider.Settings.Secure;
 
 /**
  * An activity that initializes tab fragments for displaying claims.
  */
 
+
 public class ExpenseClaimListActivity extends FragmentActivity {
+
+	private static final int ADD_EXPENSE_CLAIM_REQUEST = 1;
+	private static final int EDIT_EXPENSE_CLAIM_REQUEST = 2;
+	private static final int SORT_EXPENSE_CLAIM_REQUEST = 3;
+	private static final int MANAGE_TAGS_REQUEST = 4;
+	private static final int FILTER_TAGS_REQUEST = 5;
+	
 
 	//================================================================================
 	// Properties
 	//================================================================================
 
 	/**
+<<<<<<< HEAD
+=======
+	 * List model of expense claim.
+	 */
+	private ListModel<ExpenseClaim> listModel;
+	
+	/**
+	 * List Model of filtered expense claim.
+	 */
+	private ListModel<ExpenseClaim> filteredListModel = new ListModel<ExpenseClaim>("filtered_List", this);
+	
+	/**
+	 * List of tags to filter expense claims.
+	 */
+	private ArrayList<Tag> filteredTagsList = new ArrayList<Tag>();
+	
+	/**
+>>>>>>> master
 	 * Manages the user and associated preferences.
 	 */
 	private UserManager userManager;
@@ -51,10 +72,10 @@ public class ExpenseClaimListActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 
 		ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
 		actionBar.setDisplayShowTitleEnabled(true);
 
 		/* Creating claim Tab */
@@ -69,39 +90,9 @@ public class ExpenseClaimListActivity extends FragmentActivity {
 				.setTabListener(new ClaimTabListener<ApprovalTabFragment>(this, "Approval", ApprovalTabFragment.class));
 		actionBar.addTab(tab);;
 
-		userManager = new UserManager(this);
-		if (userManager.getActiveUser() == null) {
-			promptForUserInformation();
-		}
 	}
-
-	/**
-	 * Prompts the user to enter their name.
-	 */
-	public void promptForUserInformation() {
-		// http://www.androidsnippets.com/prompt-user-input-with-an-alertdialog
-		AlertDialog.Builder alert = new AlertDialog.Builder(this);
-		alert.setCancelable(false);
-		alert.setTitle(R.string.user_alert_title);
-		alert.setMessage(R.string.user_alert_message);
-
-		final EditText input = new EditText(this);
-		alert.setView(input);
-
-		alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
-				String name = input.getText().toString();
-				if (name == null || name.isEmpty()) {
-					Toast.makeText(getApplicationContext(), R.string.user_alert_error, Toast.LENGTH_LONG).show();
-				} else {
-					// Device specific identifier
-					String androidID = Secure.getString(getContentResolver(), Secure.ANDROID_ID); 
-					userManager.setActiveUser(new User(androidID, name));
-				}
-			}
-		});
-		alert.show();
-	}
-
+	
+	
+	
 
 }

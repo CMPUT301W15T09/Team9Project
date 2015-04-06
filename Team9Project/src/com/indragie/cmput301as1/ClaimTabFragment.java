@@ -29,19 +29,24 @@ public class ClaimTabFragment extends ExpenseClaimTabFragment {
 
 
 	@Override
+	public void onCreate(Bundle savedInstanceState){
+		super.onCreate(savedInstanceState);
+		activity = getActivity();
+		filteredListModel = new ListModel<ExpenseClaim>("filtered_List", activity);
+		
+		userManager = new UserManager(activity);
+		if (userManager.getActiveUser() == null) {
+			promptForUserInformation();
+		} else {
+			loadData(0);
+		}
+		setHasOptionsMenu(true);
+	}
+	
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-		load();
-		setHasOptionsMenu(true);
-
-
-		/** Creating array adapter to set data in listview */
-		ExpenseClaimArrayAdapter adapter = new ExpenseClaimArrayAdapter(
-				activity, listModel.getItems());
-
-		/** Setting the array adapter to the listview */
-		setListAdapter(adapter);
 
 		return super.onCreateView(inflater, container, savedInstanceState);
 	}

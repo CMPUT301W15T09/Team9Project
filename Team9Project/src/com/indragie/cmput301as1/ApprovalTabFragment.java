@@ -28,24 +28,35 @@ import android.view.ViewGroup;
 public class ApprovalTabFragment extends ExpenseClaimTabFragment {
 
 	@Override
+	public void onCreate(Bundle savedInstanceState){
+		super.onCreate(savedInstanceState);
+		activity = getActivity();
+		filteredListModel = new ListModel<ExpenseClaim>("filtered_List", activity);
+		
+		userManager = new UserManager(activity);
+		if (userManager.getActiveUser() == null) {
+			promptForUserInformation();
+		} else {
+			loadData(1);
+		}
+		setHasOptionsMenu(true);
+	}
+	
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-		load();
+//		userManager = new UserManager(activity);
+//		if (userManager.getActiveUser() == null) {
+//			promptForUserInformation();
+//		} else {
+//			loadData();
+//		}
+		
 		setHasOptionsMenu(true);
-
-		/** Creating array adapter to set data in listview */
-		ExpenseClaimArrayAdapter adapter = new ExpenseClaimArrayAdapter(
-				activity, listModel.getItems());
-
-		/** Setting the array adapter to the listview */
-		setListAdapter(adapter);
 
 		return super.onCreateView(inflater, container, savedInstanceState);
 	}
 
-	public void load(){
-		listModel = new ListModel<ExpenseClaim>(EXPENSE_APPROVAL_FILENAME, getActivity());
-		listModel.addObserver((TypedObserver<CollectionMutation<ExpenseClaim>>) this);
-	}
+	
 }

@@ -163,7 +163,17 @@ public class ElasticSearchAPIClient {
 		// Properties
 		//================================================================================
 		/**
-		 * The underlying {@link com.squareup.okhttp.Call} instance.
+		 * The request to use for the API call.
+		 */
+		private Request request;
+		
+		/**
+		 * The HTTP client used to create the underlying {@link Call} object.
+		 */
+		private OkHttpClient client;
+		
+		/**
+		 * The underlying {@link Call} object.
 		 */
 		private Call call;
 		
@@ -177,29 +187,52 @@ public class ElasticSearchAPIClient {
 		//================================================================================
 		/**
 		 * Creates a new instance of {@link APICall}
-		 * @param call The underlying {@link com.squareup.okhttp.Call} instance.
+		 * @param request The request to use for the API call.
+		 * @param client The HTTP client used to create the underlying {@link Call} object.
 		 * @param deserializer Optional deserializer used to deserialize a model object from JSON.
 		 */
-		protected APICall(Call call, Deserializer<T> deserializer) {
-			this.call = call;
+		protected APICall(Request request, OkHttpClient client, Deserializer<T> deserializer) {
+			this.request = request;
+			this.client = client;
 			this.deserializer = deserializer;
+		}
+		
+		//================================================================================
+		// Private
+		//================================================================================
+		
+		/**
+		 * If a call is not already executing, a call is created. Otherwise,
+		 * an {@link IllegalStateException} is thrown.
+		 */
+		private void createCallOrThrowException() {
+			if (call != null) {
+				throw new IllegalStateException("Call has already been enqueued");
+			}
+			call = client.newCall(request);
 		}
 		
 		//================================================================================
 		// API
 		//================================================================================
+		
 		/**
 		 * Cancels the request, if possible.
 		 */
 		public void cancel() {
-			call.cancel();
+			if (call != null) {
+				call.cancel();
+			}
 		}
 		
 		/**
 		 * @return Whether the call has been canceled.
 		 */
 		public boolean isCanceled() {
-			return call.isCanceled();
+			if (call != null) {
+				return call.isCanceled();
+			}
+			return false;
 		}
 		
 		/**
@@ -208,14 +241,17 @@ public class ElasticSearchAPIClient {
 		 * If you {@link #cancel()} a request before it completes the callback will not be invoked.
 		 */
 		public void enqueue(final APICallback<T> callback) {
+			createCallOrThrowException();
 			call.enqueue(new Callback() {
 				@Override
 				public void onFailure(Request request, IOException e) {
+					call = null;
 					callback.onFailure(request, null, e);
 				}
 
 				@Override
 				public void onResponse(Response response) throws IOException {
+					call = null;
 					if (response.isSuccessful()) {
 						T model = null;
 						if (deserializer != null) {
@@ -238,7 +274,10 @@ public class ElasticSearchAPIClient {
 		 * @throws IOException when the request fails to execute.
 		 */
 		public T execute() throws RequestFailedException, IOException {
+			createCallOrThrowException();
 			Response response = call.execute();
+			call = null;
+			
 			if (response.isSuccessful()) {
 				T model = null;
 				if (deserializer != null) {
@@ -340,29 +379,30 @@ public class ElasticSearchAPIClient {
 		@Override
 		public List<T> modelFromResponse(Response response) {
 			JsonParser parser = new JsonParser();
-			JsonElement rootElement;
 			try {
-				rootElement = parser.parse(response.body().string());
+				ArrayList<T> models = new ArrayList<T>();
+				JsonElement rootElement = parser.parse(response.body().string());
 				if (rootElement.isJsonObject()) {
 					JsonElement outerHitsElement = rootElement.getAsJsonObject().get("hits");
 					if (outerHitsElement.isJsonObject()) {
 						JsonElement hitsElement = outerHitsElement.getAsJsonObject().get("hits");
 						if (hitsElement.isJsonArray()) {
-							ArrayList<T> models = new ArrayList<T>();
 							for (JsonElement element : hitsElement.getAsJsonArray()) {
 								if (element.isJsonObject()) {
-									JsonObject docObject = element.getAsJsonObject();
-									JsonElement sourceElement = docObject.get("_source");
-									T model = gson.fromJson(sourceElement, documentType);
-									if (model != null) {
-										models.add(model);
+									JsonElement sourceElement = element.getAsJsonObject().get("_source");
+									if (sourceElement.isJsonObject()) {
+										JsonElement docElement = sourceElement.getAsJsonObject().get("doc");
+										T model = gson.fromJson(docElement, documentType);
+										if (model != null) {
+											models.add(model);
+										}
 									}
 								}
 							}
-							return models;
 						}
 					}
 				}
+				return models;
 			} catch (JsonSyntaxException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -405,22 +445,13 @@ public class ElasticSearchAPIClient {
 	 * into this method.
 	 */
 	public <T extends ElasticSearchDocument> APICall<T> add(T document) {
-		try {
-			Type docType = new TypeToken<T>() {}.getType();
-			String json = gson.toJson(document, docType);
-			Request request = new Request.Builder()
-				.url(constructDocumentURL(document.getDocumentID()))
-				.post(RequestBody.create(MEDIA_TYPE_JSON, json))
-				.build();
-			return new APICall<T>(client.newCall(request), new IdentityDeserializer<T>(document));
-		} catch (MalformedURLException e) {
-			// This should never really happen because the URL is constructed internally,
-			// and it isn't possible to pass anything for the components of the 
-			// ElasticSearchDocumentID that would cause it to fail when constructing
-			// the URL.
-			e.printStackTrace();
-			return null;
-		}
+		Type docType = new TypeToken<T>() {}.getType();
+		String json = gson.toJson(document, docType);
+		Request request = new Request.Builder()
+			.url(document.getDocumentID().getURL(baseURL))
+			.post(RequestBody.create(MEDIA_TYPE_JSON, json))
+			.build();
+		return new APICall<T>(request, client, new IdentityDeserializer<T>(document));
 	}
 
 	/**
@@ -434,16 +465,11 @@ public class ElasticSearchAPIClient {
 	 * deserialized from JSON.
 	 */
 	public <T extends ElasticSearchDocument> APICall<T> get(ElasticSearchDocumentID documentID, Class<T> documentType) {
-		try {
-			Request request = new Request.Builder()
-				.url(constructDocumentURL(documentID))
-				.get()
-				.build();
-			return new APICall<T>(client.newCall(request), new JSONDocumentDeserializer<T>(documentType));
-		} catch (MalformedURLException e) {
-			// See comment in add() about this exception.
-			return null;
-		}
+		Request request = new Request.Builder()
+			.url(documentID.getURL(baseURL))
+			.get()
+			.build();
+		return new APICall<T>(request, client, new JSONDocumentDeserializer<T>(documentType));
 	}
 
 	/**
@@ -456,22 +482,16 @@ public class ElasticSearchAPIClient {
 	 * argument passed to this method.
 	 */
 	public <T extends ElasticSearchDocument> APICall<T> update(T newDocument) {
-		try {
-			JsonElement docElement = gson.getAdapter(new TypeToken<T>() {}).toJsonTree(newDocument);
-			JsonObject rootElement = new JsonObject();
-			rootElement.add("doc", docElement);
-			String json = rootElement.toString();
-			
-			Request request = new Request.Builder()
-				.url(constructDocumentURL(newDocument.getDocumentID()))
-				.put(RequestBody.create(MEDIA_TYPE_JSON, json))
-				.build();
-			return new APICall<T>(client.newCall(request), new IdentityDeserializer<T>(newDocument));
-		} catch (MalformedURLException e) {
-			// See comment in add() about this exception.
-			e.printStackTrace();
-			return null;
-		}
+		JsonElement docElement = gson.getAdapter(new TypeToken<T>() {}).toJsonTree(newDocument);
+		JsonObject rootElement = new JsonObject();
+		rootElement.add("doc", docElement);
+		String json = rootElement.toString();
+		
+		Request request = new Request.Builder()
+			.url(newDocument.getDocumentID().getURL(baseURL))
+			.put(RequestBody.create(MEDIA_TYPE_JSON, json))
+			.build();
+		return new APICall<T>(request, client, new IdentityDeserializer<T>(newDocument));
 	}
 
 	/**
@@ -482,17 +502,11 @@ public class ElasticSearchAPIClient {
 	 * @note The document returned by executing the call will be null.
 	 */
 	public <T extends ElasticSearchDocument> APICall<T> delete(T document) {
-		try {
-			Request request = new Request.Builder()
-				.url(constructDocumentURL(document.getDocumentID()))
-				.delete()
-				.build();
-			return new APICall<T>(client.newCall(request), null);
-		} catch (MalformedURLException e) {
-			// See comment in add() about this exception.
-			e.printStackTrace();
-			return null;
-		}
+		Request request = new Request.Builder()
+			.url(document.getDocumentID().getURL(baseURL))
+			.delete()
+			.build();
+		return new APICall<T>(request, client, null);
 	}
 	
 	/** 
@@ -516,40 +530,17 @@ public class ElasticSearchAPIClient {
 				.url(new URL(baseURL, path))
 				.get()
 				.build();
-			return new APICall<List<T>>(client.newCall(request), new SearchHitDeserializer<T>(documentType));
+			return new APICall<List<T>>(request, client, new SearchHitDeserializer<T>(documentType));
 		} catch (UnsupportedEncodingException e) {
 			// Shouldn't happen, we know UTF-8 is valid
 			e.printStackTrace();
 		} catch (MalformedURLException e) {
-			// See comment in add()
+			// This should never really happen because the URL is constructed internally,
+			// and it isn't possible to pass anything for the components of the 
+			// ElasticSearchDocumentID that would cause it to fail when constructing
+			// the URL.
 			e.printStackTrace();
 		}
 		return null;
-	}
-
-	//================================================================================
-	// Private
-	//================================================================================
-	
-	/**
-	 * Constructs the ElasticSearch URL for a document.
-	 * @param docID The ID of the document.
-	 * @return A URL to the ElasticSearch document.
-	 * @throws MalformedURLException If the URL could not be constructed.
-	 */
-	private URL constructDocumentURL(ElasticSearchDocumentID docID) throws MalformedURLException {
-		try {
-			String tokens[] = new String[] { 
-				URLEncoder.encode(docID.getIndex(), "UTF-8"), 
-				URLEncoder.encode(docID.getType(), "UTF-8"),
-				URLEncoder.encode(docID.getID(), "UTF-8") 
-			};
-			String path = "/" + TextUtils.join("/", tokens);
-			return new URL(baseURL, path);
-		} catch (UnsupportedEncodingException e) {
-			// This shouldn't happen, we know UTF-8 is valid.
-			e.printStackTrace();
-			return null;
-		}
 	}
 }

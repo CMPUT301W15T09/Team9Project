@@ -15,23 +15,26 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.indragie.comput301as1.test;
+package com.indragie.cmput301as1;
 
-import com.indragie.cmput301as1.User;
-import com.indragie.cmput301as1.UserManager;
+import java.lang.reflect.Type;
+import java.util.Date;
 
-import android.test.AndroidTestCase;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 
-public class UserManagerTests extends AndroidTestCase {
-	public void testActiveUser() {
-		UserManager manager = new UserManager(getContext());
-		User user = new User("test_id", "Indragie Karunaratne");
-		manager.setActiveUser(user);
-		assertEquals(user, manager.getActiveUser());
-		
-		// UserManager for the same Context should be accessing the
-		// same shared data.
-		UserManager anotherManager = new UserManager(getContext());
-		assertEquals(user, anotherManager.getActiveUser());
+/**
+ * Serializes {@link Date} objects to JSON.
+ */
+public class DateJSONSerializer implements JsonSerializer<Date> {
+
+	/* (non-Javadoc)
+	 * @see com.google.gson.JsonSerializer#serialize(java.lang.Object, java.lang.reflect.Type, com.google.gson.JsonSerializationContext)
+	 */
+	@Override
+	public JsonElement serialize(Date src, Type typeOfSrc, JsonSerializationContext context) {
+		return new JsonPrimitive(src.getTime());
 	}
 }

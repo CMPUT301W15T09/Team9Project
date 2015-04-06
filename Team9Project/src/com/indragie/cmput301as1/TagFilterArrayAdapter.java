@@ -27,13 +27,13 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 /**
- * Adapter for showing an array of {@link Tag} objects in a {@link ListView}
+ * Adapter for showing an array of {@link Tag} objects to filter in a {@link ListView}
  * Based on https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
  */
-public class TagArrayAdapter extends ArrayAdapter<Tag> {
+public class TagFilterArrayAdapter extends ArrayAdapter<Tag> {
 	
-	public TagArrayAdapter(Context context, List<Tag> tags) {
-		super(context, android.R.layout.simple_list_item_1, tags);
+	public TagFilterArrayAdapter(Context context, List<Tag> tags) {
+		super(context, android.R.layout.simple_list_item_multiple_choice, tags);
 	}
 	
 	@Override
@@ -41,7 +41,7 @@ public class TagArrayAdapter extends ArrayAdapter<Tag> {
 		Tag tags = getItem(position);
 		
 		if (convertView == null) {
-			convertView = LayoutInflater.from(getContext()).inflate(android.R.layout.simple_list_item_1, parent, false);
+			convertView = LayoutInflater.from(getContext()).inflate(android.R.layout.simple_list_item_multiple_choice, parent, false);
 		}
 		TextView nameTextView = (TextView)convertView.findViewById(android.R.id.text1);
 		nameTextView.setText(tags.getName().toString());

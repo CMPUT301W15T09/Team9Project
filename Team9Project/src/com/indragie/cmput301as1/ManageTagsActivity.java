@@ -16,7 +16,7 @@
  */
 package com.indragie.cmput301as1;
 
-
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import android.content.Intent;
@@ -26,12 +26,99 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 /**
- * Activity for viewing the current list of tags the use has defined. 
+ * Activity for viewing the current list of tags the user has defined. 
  * Can direct user to activities for adding or editing tags. 
  * Allows user to remove existing tags. 
  */
 
 public class ManageTagsActivity extends TagAddToClaimActivity{
+	//================================================================================
+	// Classes
+	//================================================================================
+	
+	/**
+	 * Class that encapsulates a mutation to a tag.
+	 */
+	public static class TagMutation implements Serializable {
+		private static final long serialVersionUID = -7792735815468100896L;
+		/**
+		 * The type of mutation that occurred.
+		 */
+		public enum MutationType {
+			/**
+			 * Tag was deleted. {@link ChangeType#oldTag} will contain the
+			 * tag that was deleted, and {@link ChangeType#newTag} will be
+			 * null.
+			 */
+			DELETE,
+			/**
+			 * Tag was edited. {@link ChangeType#oldTag} will contain the
+			 * original tag, and {@link ChangeType#newTag} will contain the
+			 * modified tag.
+			 */
+			EDIT
+		}
+		
+		//================================================================================
+		// Properties
+		//================================================================================
+		
+		/**
+		 * The type of mutation that occurred.
+		 */
+		private MutationType mutationType;
+		
+		/**
+		 * The previous version of the tag.
+		 */
+		private Tag oldTag;
+		
+		/**
+		 * The new version of the tag.
+		 */
+		private Tag newTag;
+		
+		//================================================================================
+		// Constructors
+		//================================================================================
+		
+		/**
+		 * Creates a new instance of {@link TagMutation}
+		 * @param mutationType The type of mutation that occurred.
+		 * @param oldTag The previous version of the tag.
+		 * @param newTag The new version of the tag.
+		 */
+		public TagMutation(MutationType mutationType, Tag oldTag, Tag newTag) {
+			this.mutationType = mutationType;
+			this.oldTag = oldTag;
+			this.newTag = newTag;
+		}
+		
+		//================================================================================
+		// Accessors
+		//================================================================================
+		
+		/**
+		 * @return The type of mutation that occurred.
+		 */
+		public MutationType getMutationType() {
+			return mutationType;
+		}
+		
+		/**
+		 * @return The previous version of the tag.
+		 */
+		public Tag getOldTag() {
+			return oldTag;
+		}
+		
+		/**
+		 * @return The new version of the tag.
+		 */
+		public Tag getNewTag() {
+			return newTag;
+		}
+	}
 
 	//================================================================================
 	// Constants
@@ -41,32 +128,26 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 
 	public static final String EXTRA_TAG = "com.indragie.cmput301as1.EXTRA_TAG";
 	
-	public static final String CLAIM_LIST = "com.indragie.cmput301as1.CLAIM_LIST";
+	public static final String EXTRA_TAG_MUTATIONS = "com.indragie.cmput301as1.TAG_MUTATIONS";
 	
 	//================================================================================
 	// Properties
 	//================================================================================
 	
-	private ArrayList<ExpenseClaim> claimList;
-	
-	Boolean listChanged;
+	/**
+	 * Used to store pending mutations to the tags.
+	 */
+	private ArrayList<TagMutation> mutations = new ArrayList<TagMutation>();
 	
 	//================================================================================
 	// Activity Callbacks
 	//================================================================================
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
 		setUpActionBarAndModel();
-		
-		Intent intent = getIntent();
-		
-		claimList = (ArrayList<ExpenseClaim>)intent.getSerializableExtra(CLAIM_LIST);
-		listChanged = false;
-		
+	
 		final ActionMode.Callback clickCallback = new ActionMode.Callback() {
 			@Override
 			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
@@ -77,9 +158,8 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 						return true;
 					case R.id.action_delete:
 						Tag tag = getTagAt(pressedItemIndex);
-						deleteTagInClaims(tag);
-						
 						listModel.remove(pressedItemIndex);
+						mutations.add(new TagMutation(TagMutation.MutationType.DELETE, tag, null));
 						mode.finish();
 						return true;
 					default:
@@ -124,12 +204,8 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 	@Override
 	protected void onHome() {
 		Intent intent = new Intent();
-		if(listChanged) {
-			intent.putExtra(CLAIM_LIST, claimList);
-			setResult(RESULT_OK, intent);
-		} else {
-			setResult(RESULT_CANCELED, intent);
-		}
+		intent.putExtra(EXTRA_TAG_MUTATIONS, mutations);
+		setResult(RESULT_OK, intent);
 		finish();
 	}
 	
@@ -153,38 +229,7 @@ public class ManageTagsActivity extends TagAddToClaimActivity{
 	private void onEditTag(Intent data) {
 		Tag newTag = (Tag)data.getSerializableExtra(TagAddActivity.ADDED_TAG);
 		Tag oldTag = getTagAt(pressedItemIndex);
-		
 		listModel.set(pressedItemIndex, newTag);
-		updateTagsInClaims(oldTag, newTag);
+		mutations.add(new TagMutation(TagMutation.MutationType.EDIT, oldTag, newTag));
 	}
-	
-	/**
-	 * Update the old tag with the new tag in claims that are returned or in progress.
-	 * @param oldTag The old tag to update.
-	 * @param newTag The new tag.
-	 */
-	private void updateTagsInClaims(Tag oldTag, Tag newTag) {
-		for (ExpenseClaim claim: claimList) {
-			if(claim.hasTag(oldTag)) {
-				listChanged = true;
-				claim.setTag(oldTag, newTag);
-			}
-		
-		}
-
-	}
-	
-	/**
-	 * Deletes the removed tag in claims that are returned or in progress.
-	 * @param tag Tag to remove in claims.
-	 */
-	private void deleteTagInClaims(Tag tag) {
-		for(ExpenseClaim claim: claimList) {
-			if(claim.hasTag(tag)) {
-				listChanged = true;
-				claim.removeTag(tag);
-			}
-		}
-	}
-	
 }

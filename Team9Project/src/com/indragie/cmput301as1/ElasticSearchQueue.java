@@ -19,6 +19,7 @@ package com.indragie.cmput301as1;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import android.content.Context;
 import android.net.NetworkInfo;
@@ -72,6 +73,11 @@ public class ElasticSearchQueue<T> implements TypedObserver<NetworkInfo.State> {
 	 */
 	private NetworkStateListener networkListener;
 	
+	/**
+	 * Whether a request is currently executing.
+	 */
+	private AtomicBoolean requestExecuting = new AtomicBoolean(false);
+	
 	//================================================================================
 	// Constructors
 	//================================================================================
@@ -105,8 +111,9 @@ public class ElasticSearchQueue<T> implements TypedObserver<NetworkInfo.State> {
 	//================================================================================
 
 	/**
-	 * adds a call to the stack. Then attempts to execute it.
-	 * @param APICall<T>
+	 * Adds an API call to the queue for later execution.
+	 * @param call The call to enqueue.
+	 * @param callback Optional callback to be called after execution.
 	 */
 	public void enqueueCall(ElasticSearchAPIClient.APICall<T> call, ElasticSearchAPIClient.APICallback<T> callback) {
 		queue.add(new QueueItem(call, callback));
@@ -114,13 +121,17 @@ public class ElasticSearchQueue<T> implements TypedObserver<NetworkInfo.State> {
 	}
 
 	/**
-	 * checks for APICalls in the stack and for network connection then executes the APICall
+	 * Attemtps to execute the next API call in the queue, if there is one.
 	 */
 	private void attemptNextAPICall() {
-		if (queue.size() == 0 || networkListener.getNetworkState() != State.CONNECTED) return;
+		if (requestExecuting.get() 
+			|| queue.size() == 0 
+			|| networkListener.getNetworkState() != State.CONNECTED) return;
 		
 		final QueueItem item = queue.peek();
 		final ElasticSearchAPIClient.APICallback<T> callback = item.callback;
+		
+		requestExecuting.set(true);
 		item.call.enqueue(new ElasticSearchAPIClient.APICallback<T>() {
 			@Override
 			public void onSuccess(Response response, T document) {
@@ -128,6 +139,7 @@ public class ElasticSearchQueue<T> implements TypedObserver<NetworkInfo.State> {
 				if (callback != null) {
 					callback.onSuccess(response, document);
 				}
+				requestExecuting.set(false);
 				attemptNextAPICall();
 			}
 
@@ -149,6 +161,7 @@ public class ElasticSearchQueue<T> implements TypedObserver<NetworkInfo.State> {
 				} else {
 					Log.v(LOG_TAG, "Request failed with exception " + e.toString());
 				}
+				requestExecuting.set(false);
 			}
 		});
 	}

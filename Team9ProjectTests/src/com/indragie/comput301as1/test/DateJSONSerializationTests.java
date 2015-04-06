@@ -17,21 +17,25 @@
 
 package com.indragie.comput301as1.test;
 
-import com.indragie.cmput301as1.User;
-import com.indragie.cmput301as1.UserManager;
+import java.util.Date;
 
-import android.test.AndroidTestCase;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.indragie.cmput301as1.DateJSONDeserializer;
+import com.indragie.cmput301as1.DateJSONSerializer;
 
-public class UserManagerTests extends AndroidTestCase {
-	public void testActiveUser() {
-		UserManager manager = new UserManager(getContext());
-		User user = new User("test_id", "Indragie Karunaratne");
-		manager.setActiveUser(user);
-		assertEquals(user, manager.getActiveUser());
+import junit.framework.TestCase;
+
+public class DateJSONSerializationTests extends TestCase {
+	public void testSerializationAndDeserialization() {
+		GsonBuilder builder = new GsonBuilder();
+		builder.registerTypeAdapter(Date.class, new DateJSONSerializer());
+		builder.registerTypeAdapter(Date.class, new DateJSONDeserializer());
+		Gson gson = builder.create();
 		
-		// UserManager for the same Context should be accessing the
-		// same shared data.
-		UserManager anotherManager = new UserManager(getContext());
-		assertEquals(user, anotherManager.getActiveUser());
+		Date date = new Date();
+		String json = gson.toJson(date, Date.class);
+		Date deserializedDate = gson.fromJson(json, Date.class);
+		assertEquals(date, deserializedDate);
 	}
 }

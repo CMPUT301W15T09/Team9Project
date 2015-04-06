@@ -49,13 +49,21 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	 * Intent key for the {@link ExpenseClaim} object.
 	 */
 	public static final String EXTRA_EXPENSE_CLAIM = "com.indragie.cmput301as1.EXTRA_CLAIM";
-	public static final String EXTRA_EXPENSE_CLAIM_POSITION = "com.indragie.cmput301as1.EXTRA_EXPENSE_CLAIM_POSITION";
+	
+	/**
+	 * Intent key for the {@link User} object.
+	 */
 	public static final String EXTRA_EXPENSE_CLAIM_USER = "com.indragie.cmput301as1.EXTRA_EXPENSE_CLAIM_USER";
 	
 	/**
 	 * Intent key for the position of the {@link ExpenseClaim} object in the expense claims list.
 	 */
 	public static final String EXTRA_EXPENSE_CLAIM_INDEX = "com.indragie.cmput301as1.EXTRA_EXPENSE_CLAIM_INDEX";
+	
+	/**
+	 * Intent key for the position of the {@link ExpenseClaim} object in the filtered claims list.
+	 */
+	public static final String EXTRA_FILTERED_EXPENSE_CLAIM_INDEX = "com.indragie.cmput301as1.EXTRA_FILTERED_EXPENSE_CLAIM_INDEX";
 	
 	/**
 	 * Request code for starting {@link ExpenseItemAddActivity}
@@ -230,12 +238,13 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		userField.append(claim.getUser().getName());
 
 		approverField = (TextView)headerView.findViewById(R.id.tv_approver);
-		approverField.append(claim.getApprover().getName());
-
+		User approver = claim.getApprover();
+		if (approver != null) {
+			approverField.append(approver.getName());
+		}
 
 		comments = (EditText)headerView.findViewById(R.id.et_comments);
 		comments.setText(claim.getComments());
-
 
 		getListView().addHeaderView(headerView);
 	}

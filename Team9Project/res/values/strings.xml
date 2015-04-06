@@ -30,12 +30,14 @@
 
     <!-- ExpenseClaimListActivity -->
     <string name="action_add_claim">Add Claim</string>
+    <string name="action_sort_claim">Sort Claim</string>
     <string name="action_delete_claim_confirm">Are you sure you want to delete this claim?</string>
     <string name="no_expenses">No expenses</string>
     <string name="no_destinations">No destinations</string>
     <string name="user_alert_title">Welcome, new user!</string>
     <string name="user_alert_message">Please enter your name.</string>
     <string name="user_alert_error">You must enter a name.</string>
+    <string name="load_fail_error">Failed to load expense claims from server.</string>
 
     <!-- ExpenseClaim{Detail,Add}Activity -->
     <string name="detail_title">Detail</string>
@@ -52,11 +54,10 @@
     <string name="action_delete_dest_confirm">Are you sure you want to delete this destination?</string>
     <string name="action_delete_item_confirm">Are you sure you want to delete this expense?</string>
     <string name= "action_delete_tag_confirm">Are you sure you want to delete this tag?</string>
-    <string name="toast_receipt_success">Save Successful</string>
-    <string name="toast_receipt_failed">Save Failed</string>
-    <string name="toast_receipt_deleted">Receipt Deleted</string>
-    <string name="toast_receipt_nonexistent">No Saved Receipt</string>
-    <string name="action_sort_claim">Sort Claim</string>
+    <string name="toast_receipt_success">Receipt successfully saved.</string>
+    <string name="toast_receipt_failed">Receipt failed to save.</string>
+    <string name="toast_receipt_deleted">Receipt deleted.</string>
+    <string name="toast_receipt_nonexistent">There is no saved receipt.</string>
     <string name="sort_type">Type of Sort: </string>
     <string name="sort_order">Order of Sort: </string>
     <string name="user">User:&#160;</string>
@@ -82,6 +83,10 @@
     <string name="action_accept">Add</string>
     <string name="title_activity_add_tag">Add a tag</string>
     <string name="title_activity_edit_tag">Edit Tag</string>
+    
+    <!--  FilterTagsActivity -->
+    <string name="action_filter_tags">Filter Tags</string>
+    <string name="title_activity_filter_tag">Filter Tags</string>
 
     <!-- ExpenseClaimSortActivity -->
     <string name="title_activity_tag_list">TagListActivity</string>
