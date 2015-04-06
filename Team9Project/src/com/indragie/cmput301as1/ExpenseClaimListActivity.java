@@ -396,10 +396,10 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		openDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				if (!filteredTagsList.isEmpty()) { //TODO: check if this works
-					ExpenseClaim removedClaim = filteredListModel.getItems().get(index);
-					filteredListModel.remove(index);
-					listModel.remove(removedClaim);
+				if (!filteredTagsList.isEmpty()) {
+					ExpenseClaim claimToRemove = filteredListModel.getItems().get(index);
+					listModel.remove(claimToRemove);
+					setFilteredClaims();
 				} else {
 					listModel.remove(index);
 				}
