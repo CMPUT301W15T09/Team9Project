@@ -158,7 +158,15 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 * @param data
 	 */
 	private void onSetHomeLocationResult(Intent data) {
-		Location location = (Location)data.getSerializableExtra(GeolocationActivity.EXTRA_LOCATION);
+		Bundle bundle = data.getExtras();
+		Location location = (Location)bundle.get(GeolocationActivity.EXTRA_LOCATION);
+		
+		System.out.println("Lat:" + location.getLatitude());
+		System.out.println("Lon:" + location.getLongitude());
+		//Location location = (Location)data.getBundleExtra(GeolocationActivity.EXTRA_LOCATION);
+		
+		//Location location = (Location)data.getSerializableExtra(GeolocationActivity.EXTRA_LOCATION);
+		
 		Toast.makeText(this, location.getLatitude() + ":" + location.getLongitude(), Toast.LENGTH_SHORT).show();
 		user.setHome(location);
 	}
@@ -183,7 +191,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	}
 	
 	/**
-	 * Sets a expense claim at a sepcified position in the list model from a intent.
+	 * Sets a expense claim at a specified position in the list model from a intent.
 	 * @param data The intent to get the expense claim from.
 	 */
 	private void onEditExpenseResult(Intent data) {
