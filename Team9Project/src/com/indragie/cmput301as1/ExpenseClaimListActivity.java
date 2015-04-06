@@ -166,6 +166,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 			break;
 		case SET_HOME_LOCATION_REQUEST:
 			onSetHomeLocationResult(data);
+			break;
 		case MANAGE_TAGS_REQUEST:
 			onManageTagsResult(data);
 			break;
