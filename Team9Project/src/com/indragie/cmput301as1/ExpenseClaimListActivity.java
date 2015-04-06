@@ -213,10 +213,9 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		int position = data.getIntExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_INDEX, -1);
 		listModel.set(position, claim);
 		if(checkFilteredTags()) {
-			if(filteredListModel.getItems().contains(claim)) {
-				setFilteredClaims();
-			}
+			setFilteredClaims();
 		}
+
 	}
 
 	/**
@@ -393,7 +392,13 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		openDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				listModel.remove(index);
+				if(checkFilteredTags()) { //TODO: check if this works
+					ExpenseClaim removedClaim = filteredListModel.getItems().get(index);
+					filteredListModel.remove(index);
+					listModel.remove(removedClaim);
+				} else {
+					listModel.remove(index);
+				}
 			}
 		});
 		
@@ -421,7 +426,12 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 */
 	private void startEditExpenseClaimActivity(int position) {
 		Intent editIntent = new Intent(this, ExpenseClaimDetailActivity.class);
-		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM, listModel.getItems().get(position));
+		if(checkFilteredTags()) {
+			editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM, filteredListModel.getItems().get(position));
+			position = listModel.getItems().indexOf(filteredListModel.getItems().get(position));
+		} else {
+			editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM, listModel.getItems().get(position));
+		}
 		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_INDEX, position);
 		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_USER, userManager.getActiveUser());
 		startActivityForResult(editIntent, EDIT_EXPENSE_CLAIM_REQUEST);
