@@ -112,5 +112,7 @@
     
     <!-- UserSettingsActivity -->
     <string name="title_activity_user_settings">User Settings</string>
+    <string name="title_activity_user_settings_first_run">Welcome to Expense Tracker</string>
     <string name="home_location_hint">Home Location</string>
+    <string name="fill_in_message">Please fill in the details below.</string>
 </resources>

@@ -86,6 +86,8 @@ public class UserSettingsActivity extends PlacePickerParentActivity {
 			if (location != null) {
 				locationField.setText(location.toString());
 			}
+		} else {
+			setTitle(R.string.title_activity_user_settings_first_run);
 		}
 		
 		final OnPlacePickedListener listener = new OnPlacePickedListener() {
