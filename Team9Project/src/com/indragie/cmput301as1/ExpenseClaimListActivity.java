@@ -67,7 +67,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	/**
 	 * List Model of filtered expense claim.
 	 */
-	private ListModel<ExpenseClaim> filteredListModel = new ListModel<ExpenseClaim>("filtered_List", this);
+	private ListModel<ExpenseClaim> filteredListModel;
 	
 	/**
 	 * List of tags to filter expense claims.
@@ -87,6 +87,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		filteredListModel = new ListModel<ExpenseClaim>("filtered_List", this);
 		userManager = new UserManager(this);
 		if (userManager.getActiveUser() == null) {
 			promptForUserInformation();
@@ -124,7 +125,14 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		final Context context = this;
 		session.loadOwnedClaims(new ElasticSearchAPIClient.APICallback<List<ExpenseClaim>>() {
 			@Override
-			public void onSuccess(Response response, List<ExpenseClaim> model) {}
+			public void onSuccess(Response response, final List<ExpenseClaim> model) {
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						listModel.replace(model);
+					}
+				});
+			}
 
 			@Override
 			public void onFailure(Request request, Response response, IOException e) {
@@ -134,7 +142,6 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 						Toast.makeText(context, R.string.load_fail_error, Toast.LENGTH_LONG).show();
 					}
 				});
-				
 			}
 		});
 	}
