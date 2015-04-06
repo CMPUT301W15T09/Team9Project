@@ -74,13 +74,11 @@ public class ExpenseItemJSONSerializationTests extends ActivityTestCase {
 		item.setReceiptUri(receiptUri);
 		
 		// Serialize, then deserialize and check if the objects are the same
-		ExpenseItemJSONSerializer serializer = new ExpenseItemJSONSerializer();
-		ExpenseItemJSONDeserializer deserializer = new ExpenseItemJSONDeserializer(controller);
 		GsonBuilder builder = new GsonBuilder();
 		builder.registerTypeAdapter(Date.class, new DateJSONSerializer());
 		builder.registerTypeAdapter(Date.class, new DateJSONDeserializer());
-		builder.registerTypeAdapter(ExpenseItem.class, serializer);
-		builder.registerTypeAdapter(ExpenseItem.class, deserializer);
+		builder.registerTypeAdapter(ExpenseItem.class, new ExpenseItemJSONSerializer());
+		builder.registerTypeAdapter(ExpenseItem.class, new ExpenseItemJSONDeserializer(controller));
 		Gson gson = builder.create();
 		
 		String json = gson.toJson(item);
