@@ -40,8 +40,8 @@ public class ExpenseClaimDetailModelTests extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		ExpenseClaim claim = new ExpenseClaim("", "", new Date(), new Date(), new User("test_id", "Test User"), ExpenseClaim.Status.IN_PROGRESS);
-		destination1 = new Destination("Rome", "", null); //TODO: fix
-		destination2 = new Destination("Paris", "", null); //TODO: fix
+		destination1 = new Destination("Rome", "", null);
+		destination2 = new Destination("Paris", "", null);
 		claim.addDestination(destination1);
 		claim.addDestination(destination2);
 		
@@ -59,13 +59,13 @@ public class ExpenseClaimDetailModelTests extends TestCase {
 	}
 	
 	public void testAddDestination() {
-		Destination destination = new Destination("Berlin", "", null); //TODO: fix
+		Destination destination = new Destination("Berlin", "", null);
 		model.addDestination(destination);
 		assertEquals(destination, model.getDestinations().get(2));
 	}
 	
 	public void testSetDestination() {
-		Destination destination = new Destination("Berlin", "", null); //TODO: fix
+		Destination destination = new Destination("Berlin", "", null); 
 		model.setDestination(0, destination);
 		assertEquals(destination, model.getDestinations().get(0));
 	}
