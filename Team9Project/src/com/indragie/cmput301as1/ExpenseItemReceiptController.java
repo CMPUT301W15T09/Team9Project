@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.UUID;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -50,7 +51,7 @@ public class ExpenseItemReceiptController {
 	/**
 	 * The maximum image size in bytes.
 	 */
-	private static int MAX_IMAGE_SIZE = 65536;
+	public static int MAX_IMAGE_SIZE = 65536;
 
 	//================================================================================
 	// API
@@ -68,7 +69,7 @@ public class ExpenseItemReceiptController {
 			receiptFolder.mkdir();
 		}
 
-		String receiptFilePath = folder + "/" + String.valueOf(System.currentTimeMillis()) + "." + RECEIPT_IMAGE_EXT;
+		String receiptFilePath = folder + "/" + UUID.randomUUID().toString() + "." + RECEIPT_IMAGE_EXT;
 		File receiptFile = new File(receiptFilePath);
 		return Uri.fromFile(receiptFile);
 	}
