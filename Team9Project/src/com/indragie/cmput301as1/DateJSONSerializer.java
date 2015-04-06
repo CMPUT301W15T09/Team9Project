@@ -35,6 +35,6 @@ public class DateJSONSerializer implements JsonSerializer<Date> {
 	 */
 	@Override
 	public JsonElement serialize(Date src, Type typeOfSrc, JsonSerializationContext context) {
-		return null;
+		return new JsonPrimitive(src.getTime());
 	}
 }
