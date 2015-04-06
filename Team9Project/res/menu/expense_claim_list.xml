@@ -11,10 +11,10 @@
         android:id="@+id/action_manage_tags"
         android:title="@string/action_manage_tags"/>
     <item
-        android:id="@+id/action_set_home_location"
-        android:title="@string/action_set_home"/>
-    <item
         android:id="@+id/action_filter_tags"
         android:title="@string/action_filter_tags"/>
+    <item
+        android:id="@+id/action_user_settings"
+        android:title="@string/action_user_settings"/>
 
 </menu>
