@@ -42,8 +42,10 @@ public class User implements Serializable, ElasticSearchDocument {
 	 */
 	private String name;
 	
-	private double latitude;
-	private double longitude;
+	/**
+	 * The user's home location.
+	 */
+	private Geolocation location;
 
 	//================================================================================
 	// Constructors
@@ -75,6 +77,21 @@ public class User implements Serializable, ElasticSearchDocument {
 		return name;
 	}
 	
+	/**
+	 * @return home location for the user
+	 */
+	public Geolocation getLocation() {
+		return location;
+	}
+
+	/**
+	 * Sets the home location for the user.
+	 * @param location The location.
+	 */
+	public void setLocation(Geolocation location) {
+		this.location = location;
+	}
+	
 	//================================================================================
 	// ElasticSearchDocument
 	//================================================================================
@@ -85,19 +102,6 @@ public class User implements Serializable, ElasticSearchDocument {
 	@Override
 	public ElasticSearchDocumentID getDocumentID() {
 		return documentID;
-	}
-
-	public double getLatitude() {
-		return latitude;
-	}
-
-	public double getLongitude() {
-		return longitude;
-	}
-
-	public void setLocation(double latitude, double longitude) {
-		this.latitude = latitude;
-		this.longitude = longitude;
 	}
 	
 	//================================================================================
@@ -110,6 +114,8 @@ public class User implements Serializable, ElasticSearchDocument {
 		int result = 1;
 		result = prime * result
 				+ ((documentID == null) ? 0 : documentID.hashCode());
+		result = prime * result
+				+ ((location == null) ? 0 : location.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -127,6 +133,11 @@ public class User implements Serializable, ElasticSearchDocument {
 			if (other.documentID != null)
 				return false;
 		} else if (!documentID.equals(other.documentID))
+			return false;
+		if (location == null) {
+			if (other.location != null)
+				return false;
+		} else if (!location.equals(other.location))
 			return false;
 		if (name == null) {
 			if (other.name != null)
