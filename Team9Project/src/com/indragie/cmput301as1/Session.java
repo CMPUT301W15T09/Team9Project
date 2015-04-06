@@ -17,8 +17,11 @@
 package com.indragie.cmput301as1;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
@@ -105,7 +108,7 @@ public class Session implements TypedObserver<CollectionMutation<ExpenseClaim>> 
 	/**
 	 * Used to make API calls to the ElasticSearch servers.
 	 */
-	private ElasticSearchAPIClient apiClient = new ElasticSearchAPIClient(ElasticSearchConfiguration.getBaseURL());
+	private ElasticSearchAPIClient apiClient;
 	
 	//================================================================================
 	// Constructors
@@ -128,6 +131,15 @@ public class Session implements TypedObserver<CollectionMutation<ExpenseClaim>> 
 		
 		pushQueue = new ElasticSearchQueue<ExpenseClaim>(context);
 		pullQueue = new ElasticSearchQueue<List<ExpenseClaim>>(context);
+		
+		GsonBuilder builder = new GsonBuilder();
+		builder.registerTypeAdapter(Date.class, new DateJSONSerializer());
+		builder.registerTypeAdapter(Date.class, new DateJSONDeserializer());
+		builder.registerTypeAdapter(ExpenseItem.class, new ExpenseItemJSONSerializer());
+		builder.registerTypeAdapter(ExpenseItem.class, new ExpenseItemJSONDeserializer(new ExpenseItemReceiptController()));
+		Gson gson = builder.create();
+		
+		apiClient = new ElasticSearchAPIClient(ElasticSearchConfiguration.getBaseURL(), gson);
 	}
 	
 	/**

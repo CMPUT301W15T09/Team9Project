@@ -61,6 +61,7 @@ public class ExpenseItemReceiptControllerTests extends ActivityTestCase {
 		InputStream inputStream = resources.openRawResource(R.raw.test_image);
 		byte[] buffer = new byte[inputStream.available()];
 		inputStream.read(buffer);
+		inputStream.close();
 		
 		// Write the original file contents to disk.
 		Uri receiptUri = controller.constructNewReceiptImageUri();

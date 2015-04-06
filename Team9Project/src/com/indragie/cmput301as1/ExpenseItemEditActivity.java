@@ -22,7 +22,6 @@ import org.joda.money.Money;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 
@@ -68,9 +67,7 @@ public class ExpenseItemEditActivity extends ExpenseItemAddActivity {
 		Intent intent = getIntent();
 		ExpenseItem item = (ExpenseItem)getIntent().getSerializableExtra(EXTRA_EXPENSE_ITEM);
 		editable = intent.getBooleanExtra(EXTRA_EXPENSE_ITEM_EDITABLE, false);
-		if (item.getReceiptPath() != null) {
-			receiptFileUri = Uri.parse(item.getReceiptPath());
-		}
+		receiptFileUri = item.getReceiptUri();
 		incomplete = item.isIncomplete();
 		
 		setTitle(item.getName());
