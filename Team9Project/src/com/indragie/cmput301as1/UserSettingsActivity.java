@@ -36,7 +36,11 @@ public class UserSettingsActivity extends PlacePickerParentActivity {
 	/**
 	 * Intent key for getting the user.
 	 */
-	private static final String EXTRA_USER = "com.indragie.cmput301as1.EXTRA_USER";
+	public static final String EXTRA_USER = "com.indragie.cmput301as1.EXTRA_USER";
+	
+	//================================================================================
+	// Properties
+	//================================================================================
 	
 	/**
 	 * Field for the user's name.
@@ -73,8 +77,15 @@ public class UserSettingsActivity extends PlacePickerParentActivity {
 		
 		user = (User)getIntent().getSerializableExtra(EXTRA_USER);
 		if (user != null) {
-			nameField.setText(user.getName());
-			locationField.setText(user.getLocation().toString());
+			String name = user.getName();
+			Geolocation location = user.getLocation();
+			
+			if (name != null) {
+				nameField.setText(name);
+			}
+			if (location != null) {
+				locationField.setText(location.toString());
+			}
 		}
 		
 		final OnPlacePickedListener listener = new OnPlacePickedListener() {
@@ -90,6 +101,7 @@ public class UserSettingsActivity extends PlacePickerParentActivity {
                 locationField.clearFocus();
             }
         };
+        
         locationField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -130,8 +142,8 @@ public class UserSettingsActivity extends PlacePickerParentActivity {
 			user = new User(androidID, nameText);
 		} else {
 			user.setName(nameText);
-			user.setLocation(homeLocation);
 		}
+		user.setLocation(homeLocation);
 		
 		intent.putExtra(EXTRA_USER, user);
 		setResult(RESULT_OK, intent);

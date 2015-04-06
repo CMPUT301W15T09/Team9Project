@@ -30,6 +30,7 @@
     <!-- ExpenseClaimListActivity -->
     <string name="action_add_claim">Add Claim</string>
     <string name="action_sort_claim">Sort Claim</string>
+    <string name="action_user_settings">User Settings</string>
     <string name="action_delete_claim_confirm">Are you sure you want to delete this claim?</string>
     <string name="no_expenses">No expenses</string>
     <string name="no_destinations">No destinations</string>
@@ -110,5 +111,6 @@
     <string name="title_activity_destination_add">DestinationAddActivity</string>
     
     <!-- UserSettingsActivity -->
+    <string name="title_activity_user_settings">User Settings</string>
     <string name="home_location_hint">Home Location</string>
 </resources>
