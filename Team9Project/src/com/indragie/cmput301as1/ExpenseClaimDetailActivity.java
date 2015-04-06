@@ -399,7 +399,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			commitChangesAndFinish();
 			return true;
 		case R.id.action_add_destination:
-			buildDestinationAlertDialog().show();
+			//startDestinationAddActivity();
 			return true;
 		case R.id.action_add_item:
 			startAddExpenseItemActivity();
@@ -464,10 +464,11 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	 * Alert dialog that warns about no index.
 	 * @return The alert dialog.
 	 */
-	private AlertDialog buildDestinationAlertDialog() {
-		return buildDestinationAlertDialog(NO_INDEX);
+	private void buildDestinationAlertDialog() {
+		//startDestinationAddActivity(NO_INDEX);
 	}
 	
+	/* 
 	@SuppressLint("InflateParams")
 	private AlertDialog buildDestinationAlertDialog(final int index) {
 		View dialogView = getLayoutInflater().inflate(R.layout.activity_destination, null);
@@ -498,7 +499,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		.setNegativeButton(android.R.string.cancel, null);
 		return builder.create();
 	}
-	
+	*/
 	/**
 	 * Prompts the user for confirmation in response to deleting items in the activity.
 	 * @param type The ItemType of the DetailItem.
@@ -633,7 +634,8 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		switch (type) {
 		case DESTINATION:
 			if(status == Status.RETURNED || status == Status.IN_PROGRESS)
-				buildDestinationAlertDialog(index.getItemIndex()).show();
+				//startDestinationAddActivity(index.getItemIndex());
+				//buildDestinationAlertDialog(index.getItemIndex()).show(); TODO: destination activity
 			break;
 		case TAG:
 			startEditTagActivity(index.getItemIndex());

@@ -57,6 +57,7 @@
     <string name="toast_receipt_failed">Receipt failed to save.</string>
     <string name="toast_receipt_deleted">Receipt deleted.</string>
     <string name="toast_receipt_nonexistent">There is no saved receipt.</string>
+    <string name="action_add_location">Add Location</string>
     <string name="sort_type">Type of Sort: </string>
     <string name="sort_order">Order of Sort: </string>
     <string name="user">User:&#160;</string>
