@@ -27,6 +27,11 @@ import android.util.SparseBooleanArray;
 import android.view.MenuItem;
 import android.widget.ListView;
 
+/**
+ * Activity for viewing the current list of tags the user has defined. 
+ * Allows user to select one or more existing tags to filter claims in ExpenseClaimListActivity.
+ */
+
 public class FilterTagsActivity extends ListActivity {
 
 	//================================================================================

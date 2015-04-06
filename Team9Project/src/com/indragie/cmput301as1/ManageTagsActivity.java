@@ -16,7 +16,6 @@
  */
 package com.indragie.cmput301as1;
 
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -27,7 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 /**
- * Activity for viewing the current list of tags the use has defined. 
+ * Activity for viewing the current list of tags the user has defined. 
  * Can direct user to activities for adding or editing tags. 
  * Allows user to remove existing tags. 
  */
