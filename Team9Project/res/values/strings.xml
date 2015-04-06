@@ -77,5 +77,6 @@
     
     <!-- Geolocation -->
 	<string name="action_set_home">Set Home Location</string>
+	<string name="action_current_location">Go To Current Location</string>
 	
 </resources>

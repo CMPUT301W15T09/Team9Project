@@ -502,6 +502,7 @@ containing a value of this type.
         public static final int action_add_item=0x7f0c003b;
         public static final int action_add_tag=0x7f0c0037;
         public static final int action_cancel=0x7f0c0023;
+        public static final int action_current_location=0x7f0c0045;
         public static final int action_delete=0x7f0c0038;
         public static final int action_done=0x7f0c0024;
         public static final int action_edit=0x7f0c0039;
@@ -607,6 +608,7 @@ containing a value of this type.
         public static final int action_add_destination=0x7f06003d;
         public static final int action_add_item=0x7f06003e;
         public static final int action_add_tag=0x7f060053;
+        public static final int action_current_location=0x7f06005f;
         public static final int action_delete=0x7f060027;
         public static final int action_edit=0x7f060055;
         public static final int action_email=0x7f06003f;
