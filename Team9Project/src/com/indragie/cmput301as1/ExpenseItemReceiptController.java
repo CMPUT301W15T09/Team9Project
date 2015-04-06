@@ -51,7 +51,7 @@ public class ExpenseItemReceiptController {
 	 * The maximum image size in bytes.
 	 */
 	private static int MAX_IMAGE_SIZE = 65536;
-	
+
 	//================================================================================
 	// API
 	//================================================================================
@@ -74,12 +74,25 @@ public class ExpenseItemReceiptController {
 	}
 	
 	/**
+	 * Deletes the image at the specified {@link Uri} 
+	 * @param imageUri The {@link Uri} of the image to delete.
+	 * @return Whether the file was deleted.
+	 */
+	public boolean deleteReceiptImage(Uri imageUri) {
+		File file = new File(imageUri.getPath());
+		if (file.exists()) {
+			return file.delete();
+		}
+		return false;
+	}
+	
+	/**
 	 * Postprocesses an existing image to ensure that it is within
 	 * the size constraints.
 	 * @param imageUri The {@link Uri} to the image to post-process.
 	 * @return Whether the post-processing operation was successful.
 	 */
-	public boolean postprocessImage(Uri imageUri) {
+	public boolean postProcessReceiptImage(Uri imageUri) {
 		try {
 			String path = imageUri.getPath();
 			InputStream fin = new FileInputStream(path);

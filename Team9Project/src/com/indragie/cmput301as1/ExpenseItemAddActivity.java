@@ -107,6 +107,12 @@ public class ExpenseItemAddActivity extends Activity {
 	protected Uri receiptFileUri;
 	
 	/**
+	 * Uri reference of the receipt image that is in the process of
+	 * being taken.
+	 */
+	private Uri newReceiptFileUri;
+	
+	/**
 	 * Incompleteness flag.
 	 */
 	protected boolean incomplete;
@@ -226,6 +232,7 @@ public class ExpenseItemAddActivity extends Activity {
 	}
 
 	protected void onCancel() {
+		setReceiptFileUri(null); // Delete receipt image if it exists
 		setResult(RESULT_CANCELED, new Intent());
 		finish();
 	}
@@ -243,24 +250,39 @@ public class ExpenseItemAddActivity extends Activity {
 	 * Starts an activity to take a receipt image.
 	 */
 	protected void takePhoto() {
-		receiptFileUri = receiptController.constructNewReceiptImageUri();
+		newReceiptFileUri = receiptController.constructNewReceiptImageUri();
 		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		intent.putExtra(MediaStore.EXTRA_OUTPUT, receiptFileUri);
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, newReceiptFileUri);
 		startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
 	}
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-			if (receiptController.postprocessImage(receiptFileUri)) {
-				receiptButton = (ImageButton)findViewById(R.id.btn_receipt);
+			if (receiptController.postProcessReceiptImage(newReceiptFileUri)) {
+				setReceiptFileUri(newReceiptFileUri);
+				newReceiptFileUri = null;
+				
 				Drawable receiptPic = Drawable.createFromPath(receiptFileUri.getPath());
 				receiptButton.setImageDrawable(receiptPic);
+				
 				Toast.makeText(getApplicationContext(), getString(R.string.toast_receipt_success), Toast.LENGTH_SHORT).show();
 				return;
 			}
 		}
-		receiptFileUri = null;
+		newReceiptFileUri = null;
 		Toast.makeText(getApplicationContext(), getString(R.string.toast_receipt_failed), Toast.LENGTH_SHORT).show();
+	}
+	
+	/**
+	 * Sets the {@link ExpenseItemAddActivity#receiptFileUri} and deletes the
+	 * receipt at the existing URI, if it exists.
+	 * @param receiptFileUri The new receipt file URI.
+	 */
+	private void setReceiptFileUri(Uri receiptFileUri) {
+		if (this.receiptFileUri != null) {
+			receiptController.deleteReceiptImage(this.receiptFileUri);
+		}
+		this.receiptFileUri = receiptFileUri;
 	}
 
 	//================================================================================
@@ -302,7 +324,7 @@ public class ExpenseItemAddActivity extends Activity {
 				}
 
 				else if (dialogOptions[item].equals("Delete Photo")) {
-					receiptFileUri = null;
+					setReceiptFileUri(null);
 					Toast.makeText(getApplicationContext(), 
 							getString(R.string.toast_receipt_deleted), Toast.LENGTH_SHORT).show();
 					receiptButton.setImageResource(R.drawable.ic_action_search);
