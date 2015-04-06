@@ -782,8 +782,9 @@ containing a value of this type.
         public static final int done_label=0x7f060037;
         public static final int end_label=0x7f060046;
         public static final int expense_items=0x7f06002c;
+        public static final int fill_in_message=0x7f060078;
         public static final int hello_world=0x7f06006c;
-        public static final int home_location_hint=0x7f060076;
+        public static final int home_location_hint=0x7f060077;
         public static final int incomplete=0x7f060031;
         public static final int items_title=0x7f060060;
         public static final int load_fail_error=0x7f060041;
@@ -823,6 +824,7 @@ containing a value of this type.
         /**  UserSettingsActivity 
          */
         public static final int title_activity_user_settings=0x7f060075;
+        public static final int title_activity_user_settings_first_run=0x7f060076;
         public static final int toast_receipt_deleted=0x7f060052;
         public static final int toast_receipt_failed=0x7f060051;
         public static final int toast_receipt_nonexistent=0x7f060053;
