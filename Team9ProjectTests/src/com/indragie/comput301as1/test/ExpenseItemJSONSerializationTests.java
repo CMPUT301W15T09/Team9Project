@@ -35,6 +35,8 @@ import android.test.ActivityTestCase;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.indragie.cmput301as1.DateJSONDeserializer;
+import com.indragie.cmput301as1.DateJSONSerializer;
 import com.indragie.cmput301as1.ExpenseItem;
 import com.indragie.cmput301as1.ExpenseItemJSONDeserializer;
 import com.indragie.cmput301as1.ExpenseItemJSONSerializer;
@@ -75,6 +77,8 @@ public class ExpenseItemJSONSerializationTests extends ActivityTestCase {
 		ExpenseItemJSONSerializer serializer = new ExpenseItemJSONSerializer();
 		ExpenseItemJSONDeserializer deserializer = new ExpenseItemJSONDeserializer(controller);
 		GsonBuilder builder = new GsonBuilder();
+		builder.registerTypeAdapter(Date.class, new DateJSONSerializer());
+		builder.registerTypeAdapter(Date.class, new DateJSONDeserializer());
 		builder.registerTypeAdapter(ExpenseItem.class, serializer);
 		builder.registerTypeAdapter(ExpenseItem.class, deserializer);
 		Gson gson = builder.create();
