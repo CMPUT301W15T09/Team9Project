@@ -180,7 +180,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private void onSortExpenseResult(Intent data) {
 		Comparator<ExpenseClaim> comparator = (Comparator<ExpenseClaim>)data.getSerializableExtra(ExpenseClaimSortActivity.EXPENSE_CLAIM_SORT);
 		listModel.setComparator(comparator);
-		if (checkFilteredTags()) {
+		if (!filteredTagsList.isEmpty()) {
 			setFilteredClaims();
 			filteredListModel.setComparator(comparator);
 		}
@@ -194,7 +194,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private void onAddExpenseResult(Intent data) {
 		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM);
 		listModel.add(claim);
-		if (checkFilteredTags()) {
+		if (!filteredTagsList.isEmpty()) {
 			setListAdapter(new ExpenseClaimArrayAdapter(this, filteredListModel.getItems()));
 		}
 	}
@@ -209,7 +209,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM);
 		int position = data.getIntExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_INDEX, -1);
 		listModel.set(position, claim);
-		if (checkFilteredTags()) {
+		if (!filteredTagsList.isEmpty()) {
 			setFilteredClaims();
 		}
 
@@ -236,14 +236,14 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 				switch (mutation.getMutationType()) {
 				case DELETE:
 					claim.removeTag(tag);
-					if (filteredTagsList.contains(tag) && checkFilteredTags()) {
+					if (filteredTagsList.contains(tag) && !filteredTagsList.isEmpty()) {
 						filteredTagsList.remove(tag);
 					}
 					break;
 				case EDIT:
 					int tagIndex = claim.getTags().indexOf(tag);
 					claim.setTag(tagIndex, mutation.getNewTag());
-					if (filteredTagsList.contains(tag) && checkFilteredTags()) {
+					if (filteredTagsList.contains(tag) && !filteredTagsList.isEmpty()) {
 						int selectedIndex = filteredTagsList.indexOf(tag);
 						filteredTagsList.set(selectedIndex, mutation.getNewTag());
 					}
@@ -259,7 +259,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		for (int i = 0; i < modifiedClaims.size(); i++) {
 			listModel.set(modifiedClaims.keyAt(i), modifiedClaims.valueAt(i));
 		}
-		if (checkFilteredTags()) {
+		if (!filteredTagsList.isEmpty()) {
 			setFilteredClaims();
 		}
 		
@@ -271,7 +271,6 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 */
 	@SuppressWarnings("unchecked")
 	private void onFilterTagsRequest(Intent data) {
-		//TODO: Filter tags, replace the tags, etc.
 		filteredTagsList = (ArrayList<Tag>)data.getSerializableExtra(FilterTagsActivity.TAG_TO_FILTER);
 
 		setFilteredClaims();
@@ -284,8 +283,8 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private void setFilteredClaims() {
 		ArrayList<ExpenseClaim> tempClaims = new ArrayList<ExpenseClaim>();
 		
-		for(Tag tag: filteredTagsList) {
-			for(ExpenseClaim claim: listModel.getItems()) {
+		for (Tag tag: filteredTagsList) {
+			for (ExpenseClaim claim: listModel.getItems()) {
 				if (claim.hasTag(tag)) {
 					if (!tempClaims.contains(claim)) {
 						tempClaims.add(claim);
@@ -295,15 +294,6 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		}
 		filteredListModel.replace(tempClaims);
 		setListAdapter(new ExpenseClaimArrayAdapter(this, filteredListModel.getItems()));
-	}
-	
-	/**
-	 * Checks if there are filtered tags.
-	 * @return Status if there are filtered tags.
-	 */
-	private boolean checkFilteredTags() {
-		return !filteredTagsList.isEmpty();
-		
 	}
 
 	@Override
@@ -406,7 +396,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		openDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				if (checkFilteredTags()) { //TODO: check if this works
+				if (!filteredTagsList.isEmpty()) { //TODO: check if this works
 					ExpenseClaim removedClaim = filteredListModel.getItems().get(index);
 					filteredListModel.remove(index);
 					listModel.remove(removedClaim);
@@ -440,7 +430,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 */
 	private void startEditExpenseClaimActivity(int position) {
 		Intent editIntent = new Intent(this, ExpenseClaimDetailActivity.class);
-		if (checkFilteredTags()) {
+		if (!filteredTagsList.isEmpty()) {
 			editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM, filteredListModel.getItems().get(position));
 			position = listModel.getItems().indexOf(filteredListModel.getItems().get(position));
 		} else {
