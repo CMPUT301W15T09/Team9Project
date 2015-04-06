@@ -27,7 +27,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 /**
- * Adaptor for showing an array of {@link Tag} objects to filter in a {@link ListView}
+ * Adapter for showing an array of {@link Tag} objects to filter in a {@link ListView}
  * Based on https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
  */
 public class TagFilterArrayAdapter extends ArrayAdapter<Tag> {
