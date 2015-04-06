@@ -32,7 +32,6 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
 
 /**
  * Deserializes an {@link ExpenseItem} from JSON.
@@ -59,13 +58,13 @@ public class ExpenseItemJSONDeserializer implements JsonDeserializer<ExpenseItem
 		JsonObject obj = json.getAsJsonObject();
 		if (obj == null) return null;
 		
-		String name = getStringIfPossible(obj.get("name"));
-		String description = getStringIfPossible(obj.get("description"));
-		String category = getStringIfPossible(obj.get("category"));
-		boolean incomplete = getBooleanIfPossible(obj.get("incomplete"));
-		JsonObject amountObject = getJsonObjectIfPossible(obj.get("amount"));
-		long time = getLongIfPossible(obj.get("date"));
-		String receiptBase64Str = getStringIfPossible(obj.get("receipt_base64"));
+		String name = JSONHelpers.getStringIfPossible(obj.get("name"));
+		String description = JSONHelpers.getStringIfPossible(obj.get("description"));
+		String category = JSONHelpers.getStringIfPossible(obj.get("category"));
+		boolean incomplete = JSONHelpers.getBooleanIfPossible(obj.get("incomplete"));
+		JsonObject amountObject = JSONHelpers.getJsonObjectIfPossible(obj.get("amount"));
+		long time = JSONHelpers.getLongIfPossible(obj.get("date"));
+		String receiptBase64Str = JSONHelpers.getStringIfPossible(obj.get("receipt_base64"));
 		
 		Money amount = null;
 		if (amountObject != null) {
@@ -90,50 +89,5 @@ public class ExpenseItemJSONDeserializer implements JsonDeserializer<ExpenseItem
 		}
 		
 		return item;
-	}
-	
-	private static String getStringIfPossible(JsonElement element) {
-		if (element == null) return null;
-		
-		if (element.isJsonPrimitive()) {
-			JsonPrimitive primitive = element.getAsJsonPrimitive();
-			if (primitive.isString()) {
-				return primitive.getAsString();
-			}
-		}
-		return null;
-	}
-	
-	private static boolean getBooleanIfPossible(JsonElement element) {
-		if (element == null) return false;
-		
-		if (element.isJsonPrimitive()) {
-			JsonPrimitive primitive = element.getAsJsonPrimitive();
-			if (primitive.isBoolean()) {
-				return primitive.getAsBoolean();
-			}
-		}
-		return false;
-	}
-	
-	private static long getLongIfPossible(JsonElement element) {
-		if (element == null) return 0;
-		
-		if (element.isJsonPrimitive()) {
-			JsonPrimitive primitive = element.getAsJsonPrimitive();
-			if (primitive.isNumber()) {
-				return primitive.getAsLong();
-			}
-		}
-		return 0;
-	}
-	
-	private static JsonObject getJsonObjectIfPossible(JsonElement element) {
-		if (element == null) return null;
-		
-		if (element.isJsonObject()) {
-			return element.getAsJsonObject();
-		}
-		return null;
 	}
 }
