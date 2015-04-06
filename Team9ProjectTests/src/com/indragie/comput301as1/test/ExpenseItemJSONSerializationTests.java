@@ -45,6 +45,7 @@ public class ExpenseItemJSONSerializationTests extends ActivityTestCase {
 	public void testSerializationAndDeserialization() throws IOException {
 		ExpenseItem item = 
 				new ExpenseItem("Taxi", "Taxi from airport", "ground transportation", Money.of(CurrencyUnit.CAD, 60.0), new Date());
+		item.setIncomplete(true);
 		Resources resources = getInstrumentation().getContext().getResources();
 		ExpenseItemReceiptController controller = new ExpenseItemReceiptController();
 		

@@ -80,7 +80,6 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 		this.category = category;
 		this.amount = amount;
 		this.date = date;
-		this.incomplete = false;
 	}
 
 	//================================================================================
