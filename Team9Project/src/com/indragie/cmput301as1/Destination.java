@@ -19,8 +19,6 @@ package com.indragie.cmput301as1;
 
 import java.io.Serializable;
 
-import android.location.Location;
-
 /**
  * Model object representing a travel destination.
  */
