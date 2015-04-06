@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
@@ -33,12 +34,26 @@ import android.content.res.Resources;
  * Model object representing an expense claim.
  */
 
-public class ExpenseClaim implements Serializable {
+public class ExpenseClaim implements Serializable, ElasticSearchDocument {
 	private static final long serialVersionUID = -3079284243806354009L;
+	
+	/**
+	 * Type used for indexing on ElasticSearch.
+	 */
+	public static final String ELASTIC_SEARCH_TYPE = "expense_claim";
 	
 	//================================================================================
 	// Properties
 	//================================================================================
+	/**
+	 * Unique document ID.
+	 */
+	private ElasticSearchDocumentID documentID = new ElasticSearchDocumentID(
+		ElasticSearchConfiguration.INDEX_NAME, 
+		ELASTIC_SEARCH_TYPE,
+		UUID.randomUUID().toString()
+	);
+	
 	/**
 	 * Name of the user who created the claim. TODO: Make this work with the new User stuff.
 	 */
@@ -110,10 +125,12 @@ public class ExpenseClaim implements Serializable {
 	 * User who created this claim.
 	 */
 	private User user;
+	
 	/**
 	 * Approvers comments.
 	 */
 	private String comments;
+	
 	/**
 	 * User who returned or approved claim.
 	 */
@@ -131,7 +148,6 @@ public class ExpenseClaim implements Serializable {
 		this.status = status;
 		this.creationDate = new Date();
 		this.user = user;
-		this.approver = new User("", -2);
 	}
 
 	//================================================================================
@@ -405,12 +421,24 @@ public class ExpenseClaim implements Serializable {
 	}
 	
 	/**
-	 * Replaces a old tag with a new tag you want to replace it with. 
-	 * @param oldTag The old Tag object you wish to remove. 
+	 * Replaces a old tag at a specified index with a new tag you want to replace it with. 
+	 * @param index The index of the old tag you wish to remove. 
 	 * @param newTag The new Tag object you wish to replace the old one with.
 	 */
-	public void replaceTag(Tag oldTag, Tag newTag) {
-		tags.set(tags.indexOf(oldTag), newTag);
+	public void setTag(int index, Tag newTag) {
+		tags.set(index, newTag);
+		Collections.sort(tags);
+	}
+	
+	/**
+	 * Replaces old tag with new tag you want to replace it with. 
+	 * @param oldTag The old tag object you wish to remove. 
+	 * @param newTag The new tag object you wish to replace the old one with.
+	 */
+	public void setTag(Tag oldTag, Tag newTag) {
+		int index = tags.indexOf(oldTag);
+		tags.set(index, newTag);
+		Collections.sort(tags);
 	}
 	
 	/**
@@ -452,6 +480,14 @@ public class ExpenseClaim implements Serializable {
 		// Remove trailing newline
 		builder.deleteCharAt(builder.length() - 1);
 		return builder.toString();
+	}
+	
+	//================================================================================
+	// ElasticSearchDocument
+	//================================================================================
+	
+	public ElasticSearchDocumentID getDocumentID() {
+		return documentID;
 	}
 
 	//================================================================================

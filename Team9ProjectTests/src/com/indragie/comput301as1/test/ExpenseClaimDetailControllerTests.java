@@ -42,7 +42,7 @@ public class ExpenseClaimDetailControllerTests extends AndroidTestCase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		ExpenseClaim claim = new ExpenseClaim("", "", new Date(), new Date(), new User("", 1), ExpenseClaim.Status.IN_PROGRESS);
+		ExpenseClaim claim = new ExpenseClaim("", "", new Date(), new Date(), new User("abcd", ""), ExpenseClaim.Status.IN_PROGRESS);
 		destination1 = new Destination("Rome", "");
 		destination2 = new Destination("Paris", "");
 		claim.addDestination(destination1);

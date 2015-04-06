@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2015 Indragie Karunaratne
+ * Copyright (C) 2015 Indragie Karunaratne, Andrew Zhong
  * 
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -49,13 +49,21 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	 * Intent key for the {@link ExpenseClaim} object.
 	 */
 	public static final String EXTRA_EXPENSE_CLAIM = "com.indragie.cmput301as1.EXTRA_CLAIM";
-	public static final String EXTRA_EXPENSE_CLAIM_POSITION = "com.indragie.cmput301as1.EXTRA_EXPENSE_CLAIM_POSITION";
+	
+	/**
+	 * Intent key for the {@link User} object.
+	 */
 	public static final String EXTRA_EXPENSE_CLAIM_USER = "com.indragie.cmput301as1.EXTRA_EXPENSE_CLAIM_USER";
 	
 	/**
 	 * Intent key for the position of the {@link ExpenseClaim} object in the expense claims list.
 	 */
 	public static final String EXTRA_EXPENSE_CLAIM_INDEX = "com.indragie.cmput301as1.EXTRA_EXPENSE_CLAIM_INDEX";
+	
+	/**
+	 * Intent key for the position of the {@link ExpenseClaim} object in the filtered claims list.
+	 */
+	public static final String EXTRA_FILTERED_EXPENSE_CLAIM_INDEX = "com.indragie.cmput301as1.EXTRA_FILTERED_EXPENSE_CLAIM_INDEX";
 	
 	/**
 	 * Request code for starting {@link ExpenseItemAddActivity}
@@ -66,6 +74,16 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	 * Request code for starting {@link ExpenseItemEditActivity}
 	 */
 	private static final int EDIT_EXPENSE_ITEM_REQUEST = 2;
+	
+	/**
+	 * Request code for starting {@link TagAddToClaimActivity}
+	 */
+	private static final int ADD_TAG_REQUEST = 3;
+	
+	/**
+	 * Request code for start {@link TagEditToClaimActivity}
+	 */
+	private static final int EDIT_TAG_REQUEST = 4;
 	
 	/**
 	 * Index used to indicate the nonexistence of an index.
@@ -147,6 +165,11 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	 * data for the user interface.
 	 */
 	private ExpenseClaimDetailController controller;
+	
+	/**
+	 * Position of a long pressed item.
+	 */
+	private int longPressedItemPosition;
 
 	//================================================================================
 	// Activity Callbacks
@@ -161,19 +184,17 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		claim = (ExpenseClaim)intent.getSerializableExtra(EXTRA_EXPENSE_CLAIM);
 		user = (User)intent.getSerializableExtra(EXTRA_EXPENSE_CLAIM_USER);
 		status = claim.getStatus();
-		
-		claim = (ExpenseClaim)getIntent().getSerializableExtra(EXTRA_EXPENSE_CLAIM);
-		
+				
 		model = new ExpenseClaimDetailModel(claim);
 		model.addObserver(this);
 		controller = new ExpenseClaimDetailController(this, model);
 		
 		setupListHeaderView();
 		setupListFooterView();
-		setEditable(claim.isEditable());
 		setListAdapter(controller.getAdapter());
 		
 		setEditable();
+		setDeletable();
 	}
 	
 	@Override
@@ -217,12 +238,13 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		userField.append(claim.getUser().getName());
 
 		approverField = (TextView)headerView.findViewById(R.id.tv_approver);
-		approverField.append(claim.getApprover().getName());
-
+		User approver = claim.getApprover();
+		if (approver != null) {
+			approverField.append(approver.getName());
+		}
 
 		comments = (EditText)headerView.findViewById(R.id.et_comments);
 		comments.setText(claim.getComments());
-
 
 		getListView().addHeaderView(headerView);
 	}
@@ -233,35 +255,25 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	 */
 	private void setupListFooterView() {
 		View footerView = getLayoutInflater().inflate(R.layout.activity_claim_footer, getListView(), false);
-
+		
 		amountsTextView = (TextView)footerView.findViewById(R.id.tv_amounts);
 		amountsTextView.setText(claim.getSummarizedAmounts());
-
-		getListView().addFooterView(footerView);
+		
+		getListView().addFooterView(footerView, null, false);
 	}
 	
 	/**
 	 * Sets the editable state of the entire UI.
-	 * @param editable Whether the claim is editable or not.
 	 */
 	private void setEditable(){
-		boolean UserCheck = user.getName().contentEquals(claim.getUser().getName());//SHOULD BE ID USING NAME FOR TESTING
+		boolean UserCheck = user.getName().contentEquals(claim.getUser().getName()); //SHOULD BE ID USING NAME FOR TESTING
 
-
-		if(status == Status.SUBMITTED ){
+		if(status == Status.SUBMITTED || status == Status.APPROVED ){
 			nameField.setEnabled(false);
 			descriptionField.setEnabled(false);
 			startDateField.setEnabled(false);
 			endDateField.setEnabled(false);
-			comments.setEnabled(!UserCheck);
-			this.editable = false;
-		}
-		else if(status == Status.APPROVED){
-			nameField.setEnabled(false);
-			descriptionField.setEnabled(false);
-			startDateField.setEnabled(false);
-			endDateField.setEnabled(false);
-			comments.setEnabled(false);	
+			comments.setEnabled(status != Status.APPROVED);
 			this.editable = false;
 		}
 		else {
@@ -272,31 +284,33 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			comments.setEnabled(false);
 			this.editable= UserCheck;
 		}
+		invalidateOptionsMenu();
 	}
 	
 	/**
 	 * Sets the editable state of the entire UI.
-	 * @param editable Whether the claim is editable or not.
 	 */
-	private void setEditable(Boolean editable) {
-		this.editable = editable;
-		invalidateOptionsMenu();
-		if (editable) {
-			getListView().setOnItemLongClickListener(
-				new LongClickDeleteListener(this, 
-					new LongClickDeleteListener.OnDeleteListener() {
-						@Override
-						public void onDelete(int position) {
-							controller.remove(itemPositionForListViewPosition(position));
-						}
-					}
-				)
-			);
-		} else {
-			getListView().setOnItemLongClickListener(null);
-		}
+	private void setDeletable() {
+		getListView().setOnItemLongClickListener(new LongClickDeleteListener(this, new LongClickDeleteListener.OnDeleteListener() {
+			@Override
+			public void onDelete(int position) {
+				if (getListView().getItemAtPosition(position) == null)
+					return;
+				ExpenseClaimDetailController.DetailItem.ItemType type = getTypeAt(position);
+				startDeleteAlertDialog(type);
+			}
+			
+			@Override
+			public boolean shouldDelete(int position) {
+				ExpenseClaimDetailController.DetailItem.ItemType type = getTypeAt(position);
+				if (editable ||type == ExpenseClaimDetailController.DetailItem.ItemType.TAG) {
+					return true;
+				}
+				return false;
+			}
+		}));
 	}
-
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode != RESULT_OK) return;
@@ -306,6 +320,12 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			break;
 		case EDIT_EXPENSE_ITEM_REQUEST:
 			onEditExpenseItem(data);
+			break;
+		case ADD_TAG_REQUEST:
+			onAddTag(data);
+			break;
+		case EDIT_TAG_REQUEST:
+			onEditTag(data);
 			break;
 		default:
 			break;
@@ -323,13 +343,33 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 
 	/**
 	 * Retrieves the expense item from a intent to edit on the expense claim.
-	 * @param data The intent
+	 * @param data The intent.
 	 */
 	private void onEditExpenseItem(Intent data) {
 		ExpenseItem item = (ExpenseItem)data.getSerializableExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM);
 		int position = data.getIntExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_POSITION, -1);
 		model.setItem(position, item);
 	}
+	
+	/**
+	 * Retrieves the tag from intent to add to the expense claim.
+	 * @param data The intent.
+	 */
+	private void onAddTag(Intent data) {
+		Tag tag = (Tag)data.getSerializableExtra(TagAddToClaimActivity.TAG_TO_ADD);
+		model.addTag(tag);
+	}
+	
+	/**
+	 * Retrieves the tag from intent to edit on the expense claim.
+	 * @param data The intent.
+	 */
+	private void onEditTag(Intent data) {
+		Tag tag = (Tag)data.getSerializableExtra(TagAddToClaimActivity.TAG_TO_ADD);
+		int position = data.getIntExtra(TagEditToClaimActivity.EXTRA_TAG_POSITION, -1);
+		model.setTag(position, tag);
+	}
+
 	
 	@Override
 	public void onBackPressed() {
@@ -347,46 +387,8 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);
-		boolean UserCheck = user.getName().contentEquals(claim.getUser().getName());//SHOULD BE ID USING NAME FOR TESTING
-		MenuItem addDestination = menu.findItem(R.id.action_add_destination); 
-		MenuItem addItem = menu.findItem(R.id.action_add_item);
-		MenuItem submit = menu.findItem(R.id.action_mark_submitted);
-		MenuItem approve = menu.findItem(R.id.action_mark_approved);
-		MenuItem returned = menu.findItem(R.id.action_mark_returned);
-
-		if (status ==Status.APPROVED){
-			addDestination.setEnabled(false);
-			addItem.setEnabled(false);
-			submit.setEnabled(false);
-			approve.setEnabled(false);
-			returned.setEnabled(false);
-		}
-		if(status == Status.RETURNED || status == Status.IN_PROGRESS){
-			if(UserCheck){
-				addItem.setEnabled(true);
-				submit.setEnabled(true);
-			}
-			else{
-				addDestination.setEnabled(false);
-				addItem.setEnabled(false);
-				submit.setEnabled(false);
-			}
-			approve.setEnabled(false);
-			returned.setEnabled(false);
-		}
-		if(status==Status.SUBMITTED){
-			if(UserCheck){
-				approve.setEnabled(false);
-				returned.setEnabled(false);
-			}
-			else{
-				approve.setEnabled(true);
-				returned.setEnabled(true);
-			}
-			addDestination.setEnabled(false);
-			addItem.setEnabled(false);
-			submit.setEnabled(false);
-		}
+		setEnabledMenuFields(menu);
+		
 		return true;
 	}
 
@@ -402,12 +404,14 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		case R.id.action_add_item:
 			startAddExpenseItemActivity();
 			return true;
+		case R.id.action_add_tag:
+			startAddTagToClaimActivity();
+			return true;
 		case R.id.action_email:
 			startEmailActivity();
 			return true;
 		case R.id.action_mark_submitted:
-			claim.setStatus(Status.SUBMITTED);
-			commitChangesAndFinish();
+			startSubmitAlertDialog();
 			return true;
 		case R.id.action_mark_returned:
 			claim.setStatus(Status.RETURNED);
@@ -424,6 +428,42 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		}
 	}
 	
+	/**
+	 * Prompts the user for confirmation in response to marking an expense as submitted, additionally 
+	 * the user will be notified if any incomplete expense items exist under the claim.
+	 */
+	private void startSubmitAlertDialog() {
+		AlertDialog.Builder openDialog = new AlertDialog.Builder(this);
+		openDialog.setTitle(R.string.alert_submit_title);
+		
+		for (ExpenseItem expense : model.getItems()) {
+			if (expense.isIncomplete()) {
+				openDialog.setMessage(R.string.alert_submit_message);
+				break;
+			}
+		}
+		
+		openDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				claim.setStatus(Status.SUBMITTED);
+				commitChangesAndFinish();
+			}
+		});
+		
+		openDialog.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+		openDialog.show();
+	}
+	
+	/**
+	 * Alert dialog that warns about no index.
+	 * @return The alert dialog.
+	 */
 	private AlertDialog buildDestinationAlertDialog() {
 		return buildDestinationAlertDialog(NO_INDEX);
 	}
@@ -460,6 +500,40 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	}
 	
 	/**
+	 * Prompts the user for confirmation in response to deleting items in the activity.
+	 * @param type The ItemType of the DetailItem.
+	 */
+	public void startDeleteAlertDialog(ExpenseClaimDetailController.DetailItem.ItemType type) {
+		AlertDialog.Builder openDialog = new AlertDialog.Builder(this);
+		switch (type) {
+		case DESTINATION:
+			openDialog.setTitle(R.string.action_delete_dest_confirm);
+			break;
+		case TAG:
+			openDialog.setTitle(R.string.action_delete_tag_confirm);
+			break;
+		case EXPENSE_ITEM:
+			openDialog.setTitle(R.string.action_delete_item_confirm);
+			break;
+		default: break;
+		}
+		openDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				controller.remove(longPressedItemPosition);
+			}
+		});
+		
+		openDialog.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+		openDialog.show();
+	}
+	
+	/**
 	 * Starts the {@link ExpenseItemAddActivity}
 	 */
 	private void startAddExpenseItemActivity() {
@@ -467,6 +541,14 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		startActivityForResult(addIntent, ADD_EXPENSE_ITEM_REQUEST);
 	}
 
+	/**
+	 * Starts the {@link TagAddToClaimActivity}
+	 */
+	private void startAddTagToClaimActivity() {
+		Intent addTagIntent = new Intent(this, TagAddToClaimActivity.class);
+		startActivityForResult(addTagIntent, ADD_TAG_REQUEST);
+	}
+	
 	/**
 	 * Starts a choose activity for sending the {@link ExpenseClaim} contents
 	 * as an email.
@@ -499,6 +581,42 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		setResult(RESULT_OK, intent);
 		finish();
 	}
+	
+	/**
+	 * Sets the menu fields as enabled or not depending on status of claim.
+	 * @param menu The menu to set.
+	 */
+	public void setEnabledMenuFields(Menu menu) {
+
+		boolean UserCheck = user.getName().contentEquals(claim.getUser().getName());//SHOULD BE ID USING NAME FOR TESTING
+		MenuItem addDestination = menu.findItem(R.id.action_add_destination); 
+		MenuItem addItem = menu.findItem(R.id.action_add_item);
+		MenuItem submit = menu.findItem(R.id.action_mark_submitted);
+		MenuItem approve = menu.findItem(R.id.action_mark_approved);
+		MenuItem returned = menu.findItem(R.id.action_mark_returned);
+
+		if (status == Status.APPROVED){
+			addDestination.setEnabled(false);
+			addItem.setEnabled(false);
+			submit.setEnabled(false);
+			approve.setEnabled(false);
+			returned.setEnabled(false);
+		}
+		if(status == Status.RETURNED || status == Status.IN_PROGRESS){
+			addDestination.setEnabled(UserCheck);
+			addItem.setEnabled(UserCheck);
+			submit.setEnabled(UserCheck);
+			approve.setEnabled(false);
+			returned.setEnabled(false);
+		}
+		if(status == Status.SUBMITTED){
+			approve.setEnabled(!UserCheck);
+			returned.setEnabled(!UserCheck);
+			addDestination.setEnabled(false);
+			addItem.setEnabled(false);
+			submit.setEnabled(false);
+		}
+	}
 
 	//================================================================================
 	// ListView Callbacks
@@ -509,15 +627,16 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		if (listView.getItemAtPosition(position) == null) return;
 		
 		int itemPosition = itemPositionForListViewPosition(position);
-		ExpenseClaimDetailController.DetailItem.ItemType type = controller.getItemType(itemPosition);
+		ExpenseClaimDetailController.DetailItem.ItemType type = getTypeAt(position);
 		SectionedListIndex index = controller.getSectionedIndex(itemPosition);
 		
 		switch (type) {
 		case DESTINATION:
-			buildDestinationAlertDialog(index.getItemIndex()).show();
+			if(status == Status.RETURNED || status == Status.IN_PROGRESS)
+				buildDestinationAlertDialog(index.getItemIndex()).show();
 			break;
 		case TAG:
-			// TODO
+			startEditTagActivity(index.getItemIndex());
 			break;
 		case EXPENSE_ITEM:
 			startEditExpenseItemActivity(index.getItemIndex());
@@ -539,6 +658,16 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	}
 	
 	/**
+	 * Starts the {@link TagEditToClaimActivity}
+	 * @param index The index of the {@link Tag} to edit.
+	 */
+	private void startEditTagActivity(int index) {
+		Intent editTagIntent = new Intent(this, TagEditToClaimActivity.class);
+		editTagIntent.putExtra(TagEditToClaimActivity.EXTRA_TAG_POSITION, index);
+		startActivityForResult(editTagIntent, EDIT_TAG_REQUEST);
+	}
+
+	/**
 	 * Returns the item position from a list view position by adjusting
 	 * it to account for header and footer views.
 	 * @param position The unadjusted list view position.
@@ -547,6 +676,16 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	private int itemPositionForListViewPosition(int position) {
 		// Subtract 1 for the header
 		return position - 1;
+	}
+	
+	/**
+	 * Get the ItemType of a item at a specified position
+	 * @param position The position of the item.
+	 * @return The ItemType of the item.
+	 */
+	public ExpenseClaimDetailController.DetailItem.ItemType getTypeAt(int position) {
+		longPressedItemPosition = itemPositionForListViewPosition(position);
+		return controller.getItemType(longPressedItemPosition);
 	}
 
 	//================================================================================
@@ -557,5 +696,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	public void update(TypedObservable<Object> observable, Object object) {
 		amountsTextView.setText(claim.getSummarizedAmounts());
 	}
+	
 }
 

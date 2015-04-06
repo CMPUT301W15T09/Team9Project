@@ -22,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,10 +33,13 @@ import android.content.Context;
 /**
  * Observable model that contains a list of items that can be mutated.
  */
-public class ListModel<T> extends TypedObservable<List<T>> {
+public class ListModel<T extends Serializable> extends TypedObservable<CollectionMutation<T>> implements Serializable{
+	private static final long serialVersionUID = 5371138997651829224L;
+
 	//================================================================================
 	// Properties
 	//================================================================================
+	
 	/**
 	 * The filename to save to.
 	 */
@@ -54,7 +58,7 @@ public class ListModel<T> extends TypedObservable<List<T>> {
 	/**
 	 * List that backs the model.
 	 */
-	protected ArrayList<T> list;
+	private ArrayList<T> list;
 	
 	//================================================================================
 	// Constructors
@@ -95,7 +99,7 @@ public class ListModel<T> extends TypedObservable<List<T>> {
 	 */
 	public void setComparator(Comparator<T> comparator) {
 		this.comparator = comparator;
-		commitClaimsMutation();
+		sort();
 	}
 	
 	//================================================================================
@@ -104,52 +108,52 @@ public class ListModel<T> extends TypedObservable<List<T>> {
 	
 	/**
 	 * Adds a object to the list of objects.
-	 * @param o The object to add.
+	 * @param object The object to add.
 	 */
-	public void add(T o) {
-		list.add(o);
-		commitClaimsMutation();
+	public void add(T object) {
+		list.add(object);
+		mutate(new InsertionCollectionMutation<T>(list.size() - 1, object));
+		sort();
 	}
-	
 
 	/**
 	 * Removes an existing object from the list of objects.
 	 * @param o The object to remove.
 	 */
 	public boolean remove(T o) {
-		if (list.remove(o)) {
-			commitClaimsMutation();
+		int index = list.indexOf(o);
+		if (index != -1) {
+			remove(index);
 			return true;
 		}
 		return false;
 	}
 
-	
 	/**
 	 * Removes an existing object from the list of objects.
 	 * @param index The index of the object to remove.
 	 */
 	public void remove(int index) {
-		list.remove(index);
-		commitClaimsMutation();
+		mutate(new RemovalCollectionMutation<T>(index, list.remove(index)));
 	}
 	
 	/**
 	 * Remove all objects from the list of objects.
 	 */
 	public void removeAll() {
+		ArrayList<T> oldContents = new ArrayList<T>(list);
 		list.clear();
-		commitClaimsMutation();
+		mutate(new ReplacementCollectionMutation<T>(oldContents, new ArrayList<T>()));
 	}
 	
 	/**
 	 * Replaces an existing object.
 	 * @param index The index of the object to replace.
-	 * @param newO The new object to replace the existing object with.
+	 * @param newObject The new object to replace the existing object with.
 	 */
-	public void set(int index, T newO) {
-		list.set(index, newO);
-		commitClaimsMutation();
+	public void set(int index, T newObject) {
+		mutate(new UpdateCollectionMutation<T>(index, list.set(index, newObject), newObject));
+		sort();
 	}
 	
 	/**
@@ -159,6 +163,16 @@ public class ListModel<T> extends TypedObservable<List<T>> {
 		return list.size();
 	}
 	
+	/**
+	 * Replaces the current contents of the model.
+	 * @param newContents The new contents of the list.
+	 */
+	public void replace(List<T> newContents) {
+		ArrayList<T> oldContents = new ArrayList<T>(list);
+		list = new ArrayList<T>(newContents);
+		mutate(new ReplacementCollectionMutation<T>(oldContents, new ArrayList<T>(newContents)));
+	}
+	
 	//================================================================================
 	// Helpers
 	//================================================================================
@@ -166,13 +180,20 @@ public class ListModel<T> extends TypedObservable<List<T>> {
 	/**
 	 * Commits the changes.
 	 */
-	private void commitClaimsMutation() {
-		if (comparator != null) {
-			Collections.sort(list, comparator);
-		}
-		save(list);
+	private void mutate(CollectionMutation<T> mutation) {
 		setChanged();
-		notifyObservers(list);
+		notifyObservers(mutation);
+		save(list);
+	}
+	
+	/**
+	 * Sorts the contents of the list.
+	 */
+	private void sort() {
+		if (comparator == null) return;
+		ArrayList<T> oldContents = new ArrayList<T>(list);
+		Collections.sort(list, comparator);
+		mutate(new ReplacementCollectionMutation<T>(oldContents, new ArrayList<T>(list)));
 	}
 	
 	/**

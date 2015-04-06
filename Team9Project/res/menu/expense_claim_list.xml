@@ -6,15 +6,15 @@
         android:title="@string/action_add_claim"/>
     <item
         android:id="@+id/action_sort_claim"
-        android:title="@string/action_sort_claim">
-    </item>
+        android:title="@string/action_sort_claim"/>
     <item
         android:id="@+id/action_manage_tags"
-        android:title="@string/action_manage_tags">
-    </item>
-    <item 
-        android:id="@+id/action_set_home_location" 
-        android:title="@string/action_set_home">
-    </item>
+        android:title="@string/action_manage_tags"/>
+    <item
+        android:id="@+id/action_set_home_location"
+        android:title="@string/action_set_home"/>
+    <item
+        android:id="@+id/action_filter_tags"
+        android:title="@string/action_filter_tags"/>
 
 </menu>

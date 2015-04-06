@@ -59,6 +59,11 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 	 */
 	private ListSection<DetailItem> expenseItemsSection;
 	
+	/**
+	 * Section of the list view that displays tags.
+	 */
+	private ListSection<DetailItem> tagsSection;
+	
 	//================================================================================
 	// Classes
 	//================================================================================
@@ -154,9 +159,16 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 			new ExpenseItemViewConfigurator()
 		);
 		
+		tagsSection = new ListSection<DetailItem>(
+			resources.getString(R.string.tags_title),
+			getTagDetailItems(),
+			new TagViewConfigurator()
+		);
+		
 		ArrayList<ListSection<DetailItem>> sections = new ArrayList<ListSection<DetailItem>>();
 		sections.add(destinationsSection);
 		sections.add(expenseItemsSection);
+		sections.add(tagsSection);
 		
 		XMLSectionHeaderConfigurator headerConfigurator = new XMLSectionHeaderConfigurator(R.layout.list_header, R.id.title_label);
 		adapter = new SectionedListAdapter<DetailItem>(context, sections, headerConfigurator);
@@ -234,6 +246,14 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 	}
 	
 	/**
+	 * @param index The index of the {@link Tag} relative to its section.
+	 * @return The {@link Tag} at the specified index.
+	 */
+	public Tag getTag(int index) {
+		return (Tag)tagsSection.get(index).getModel();
+	}
+	
+	/**
 	 * Removes the item at the specified position.
 	 * @param position The position of the item to remove.
 	 */
@@ -246,9 +266,11 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 			model.removeDestination(index.getItemIndex());
 			break;
 		case TAG:
-			// TODO
+			model.removeTag(index.getItemIndex());
+			break;
 		case EXPENSE_ITEM:
 			model.removeItem(index.getItemIndex());
+			break;
 		}
 	}
 	
@@ -307,6 +329,17 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 		}
 		return items;
 	}
+	
+	/**
+	 * @return The tags for the expense claim, wrapped in {@link Tag} objects.
+	 */
+	private ArrayList<DetailItem> getTagDetailItems() {
+		ArrayList<DetailItem> items = new ArrayList<DetailItem>();
+		for (Tag tag : model.getExpenseClaim().getTags()) {
+			items.add(new DetailItem(DetailItem.ItemType.TAG, tag));
+		}
+		return items;
+	}
 
 	//================================================================================
 	// Observer
@@ -316,6 +349,7 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 	public void update(TypedObservable<Object> observable, Object object) {
 		destinationsSection.setItems(getDestinationDetailItems());
 		expenseItemsSection.setItems(getExpenseItemDetailItems());
+		tagsSection.setItems(getTagDetailItems());
 		adapter.noteSectionsChanged();
 	}
 }

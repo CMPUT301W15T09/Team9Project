@@ -17,30 +17,35 @@
 
 package com.indragie.cmput301as1;
 
-
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
-import android.view.ActionMode;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.provider.Settings.Secure;
 
 /**
  * An activity that presents a list of expense claims.
  */
-public class ExpenseClaimListActivity extends ListActivity implements TypedObserver<List<ExpenseClaim>> {
+public class ExpenseClaimListActivity extends ListActivity implements TypedObserver<CollectionMutation<ExpenseClaim>> {
 	//================================================================================
 	// Constants
 	//================================================================================
@@ -49,9 +54,9 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private static final int EDIT_EXPENSE_CLAIM_REQUEST = 2;
 	private static final int SORT_EXPENSE_CLAIM_REQUEST = 3;
 	private static final int SET_HOME_LOCATION_REQUEST = 6;
-	private static final String EXPENSE_CLAIM_FILENAME = "claims";
-	private static final String PREFERENCE = "PREFERENCE";
-
+	private static final int MANAGE_TAGS_REQUEST = 4;
+	private static final int FILTER_TAGS_REQUEST = 5;
+	
 	//================================================================================
 	// Properties
 	//================================================================================
@@ -62,14 +67,19 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private ListModel<ExpenseClaim> listModel;
 	
 	/**
-	 * Index of a item that is long pressed.
+	 * List Model of filtered expense claim.
 	 */
-	private int longPressedItemIndex;
+	private ListModel<ExpenseClaim> filteredListModel = new ListModel<ExpenseClaim>("filtered_List", this);
 	
 	/**
-	 * Active user.
+	 * List of tags to filter expense claims.
 	 */
-	private User user;
+	private ArrayList<Tag> filteredTagsList = new ArrayList<Tag>();
+	
+	/**
+	 * Manages the user and associated preferences.
+	 */
+	private UserManager userManager;
 
 	//================================================================================
 	// Activity Callbacks
@@ -78,54 +88,57 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		checkFirstRun();
-		setUserFromPreferences();
-
-		listModel = new ListModel<ExpenseClaim>(EXPENSE_CLAIM_FILENAME, this);
-		listModel.addObserver(this);
-		setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems()));
 		
-		final ActionMode.Callback longClickCallback = new ActionMode.Callback() {
+		userManager = new UserManager(this);
+		if (userManager.getActiveUser() == null) {
+			promptForUserInformation();
+		} else {
+			loadData();
+		}
+		
+		getListView().setOnItemLongClickListener(new LongClickDeleteListener(this, new LongClickDeleteListener.OnDeleteListener() {
 			@Override
-			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-				switch (item.getItemId()) {
-				case R.id.action_delete:
-					listModel.remove(longPressedItemIndex);
-					mode.finish();
-					return true;
-				default:
-					return false;
-				}
+			public void onDelete(int position) {
+				showDeleteAlertDialog(position);
 			}
-
+			
 			@Override
-			public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-				mode.getMenuInflater().inflate(R.menu.contextual_delete, menu);
+			public boolean shouldDelete(int position) {
 				return true;
 			}
-
-			@Override
-			public void onDestroyActionMode(ActionMode mode) {}
-
-			@Override
-			public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-				return false;
-			}
-		};
-		getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-				longPressedItemIndex = position;
-				startActionMode(longClickCallback);
-				return true;
-			}
-		});
+		}));
 	}
 	
-	private void setUserFromPreferences() {
-		SharedPreferences prefs = getSharedPreferences(PREFERENCE, MODE_PRIVATE);
-		user = new User(prefs.getString("name", "USER DOES NOT EXIST"), prefs.getInt("id", -1));
+	/**
+	 * Loads the expense claim data to display in the {@link ListView}
+	 */
+	private void loadData() {
+		// Create the application-wide session
+		Session session = new Session(this, userManager.getActiveUser());
+		Session.setSharedSession(session);
+
+		// Show the initial list of expense claims (persisted on disk)
+		listModel = session.getOwnedClaims();
+		listModel.addObserver(this);
+		setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems()));
+
+		// Load the new list from the server
+		final Context context = this;
+		session.loadOwnedClaims(new ElasticSearchAPIClient.APICallback<List<ExpenseClaim>>() {
+			@Override
+			public void onSuccess(Response response, List<ExpenseClaim> model) {}
+
+			@Override
+			public void onFailure(Request request, Response response, IOException e) {
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(context, R.string.load_fail_error, Toast.LENGTH_LONG).show();
+					}
+				});
+				
+			}
+		});
 	}
 
 	@Override
@@ -136,7 +149,13 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (resultCode != RESULT_OK) return;
+		if (resultCode != RESULT_OK) {
+			if (resultCode == RESULT_CANCELED && requestCode == FILTER_TAGS_REQUEST) {
+				setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems()));
+				filteredTagsList.clear();
+			}
+			return;
+		}
 		switch (requestCode) {
 		case ADD_EXPENSE_CLAIM_REQUEST:
 			onAddExpenseResult(data);
@@ -149,6 +168,11 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 			break;
 		case SET_HOME_LOCATION_REQUEST:
 			onSetHomeLocationResult(data);
+		case MANAGE_TAGS_REQUEST:
+			onManageTagsResult(data);
+			break;
+		case FILTER_TAGS_REQUEST:
+			onFilterTagsRequest(data);
 			break;
 		}
 	}
@@ -160,7 +184,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private void onSetHomeLocationResult(Intent data) {
 		double latitude = data.getExtras().getDouble(GeolocationActivity.EXTRA_LOCATION_LATITUDE);
 		double longitude = data.getExtras().getDouble(GeolocationActivity.EXTRA_LOCATION_LONGITUDE);
-		user.setLocation(latitude, longitude);
+		userManager.getActiveUser().setLocation(latitude, longitude);
 	}
 	
 	/**
@@ -171,15 +195,23 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private void onSortExpenseResult(Intent data) {
 		Comparator<ExpenseClaim> comparator = (Comparator<ExpenseClaim>)data.getSerializableExtra(ExpenseClaimSortActivity.EXPENSE_CLAIM_SORT);
 		listModel.setComparator(comparator);
+		if (!filteredTagsList.isEmpty()) {
+			setFilteredClaims();
+			filteredListModel.setComparator(comparator);
+		}
 	}
 
 	/**
 	 * Adds a expense claim to list model from a intent.
+	 * Displays the filteredListModel instead if there are filtered tags.
 	 * @param data The intent to get the expense claim from.
 	 */
 	private void onAddExpenseResult(Intent data) {
 		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM);
 		listModel.add(claim);
+		if (!filteredTagsList.isEmpty()) {
+			setListAdapter(new ExpenseClaimArrayAdapter(this, filteredListModel.getItems()));
+		}
 	}
 	
 	/**
@@ -190,6 +222,91 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM);
 		int position = data.getIntExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_INDEX, -1);
 		listModel.set(position, claim);
+		if (!filteredTagsList.isEmpty()) {
+			setFilteredClaims();
+		}
+
+	}
+
+	/**
+	 * Sets the list used in ListModel to the returned list of expense claims from the intent. 
+	 * If tag is in the filteredTagsList, we have to update the list to accommodate for the changes.
+	 * Displays the filteredListModel instead if there are filtered tags.
+	 * @param data The intent to get the list of expense claims from. 
+	 */
+	@SuppressWarnings("unchecked")
+	private void onManageTagsResult(Intent data) {
+		ArrayList<ManageTagsActivity.TagMutation> mutations =
+				(ArrayList<ManageTagsActivity.TagMutation>)data.getSerializableExtra(ManageTagsActivity.EXTRA_TAG_MUTATIONS);
+		SparseArray<ExpenseClaim> modifiedClaims = new SparseArray<ExpenseClaim>();
+		
+		for (ManageTagsActivity.TagMutation mutation : mutations) {
+			Tag tag = mutation.getOldTag();
+			int i = 0;
+			for (ExpenseClaim claim : listModel.getItems()) {
+				if (!claim.hasTag(tag)) continue;
+				
+				switch (mutation.getMutationType()) {
+				case DELETE:
+					claim.removeTag(tag);
+					if (filteredTagsList.contains(tag) && !filteredTagsList.isEmpty()) {
+						filteredTagsList.remove(tag);
+					}
+					break;
+				case EDIT:
+					int tagIndex = claim.getTags().indexOf(tag);
+					claim.setTag(tagIndex, mutation.getNewTag());
+					if (filteredTagsList.contains(tag) && !filteredTagsList.isEmpty()) {
+						int selectedIndex = filteredTagsList.indexOf(tag);
+						filteredTagsList.set(selectedIndex, mutation.getNewTag());
+					}
+					break;
+				}
+				
+				modifiedClaims.append(i, claim);
+				i++;
+			}
+			
+		}
+		
+		for (int i = 0; i < modifiedClaims.size(); i++) {
+			listModel.set(modifiedClaims.keyAt(i), modifiedClaims.valueAt(i));
+		}
+		if (!filteredTagsList.isEmpty()) {
+			setFilteredClaims();
+		}
+		
+	}
+	
+	/**
+	 * Sets the listModel used to filteredListModel.
+	 * @param data The intent to get the filteredTagsList.
+	 */
+	@SuppressWarnings("unchecked")
+	private void onFilterTagsRequest(Intent data) {
+		filteredTagsList = (ArrayList<Tag>)data.getSerializableExtra(FilterTagsActivity.TAG_TO_FILTER);
+
+		setFilteredClaims();
+	}
+	
+	/**
+	 * Checks list of filtered tags. 
+	 * If claim contains filtered tag, we keep the claim in our filteredListModel.
+	 */
+	private void setFilteredClaims() {
+		ArrayList<ExpenseClaim> tempClaims = new ArrayList<ExpenseClaim>();
+		
+		for (Tag tag: filteredTagsList) {
+			for (ExpenseClaim claim: listModel.getItems()) {
+				if (claim.hasTag(tag)) {
+					if (!tempClaims.contains(claim)) {
+						tempClaims.add(claim);
+					}
+				}
+			}
+		}
+		filteredListModel.replace(tempClaims);
+		setListAdapter(new ExpenseClaimArrayAdapter(this, filteredListModel.getItems()));
 	}
 
 	@Override
@@ -213,6 +330,9 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		case R.id.action_set_home_location:
 			startSetHomeLocationActivity();
 			return true;
+		case R.id.action_filter_tags:
+			startFilterTagsActivity();
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -223,6 +343,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 */
 	private void startSetHomeLocationActivity() {
 		Intent intent = new Intent(this, GeolocationActivity.class);
+		User user = userManager.getActiveUser();
 		intent.putExtra(GeolocationActivity.EXTRA_LOCATION_LATITUDE, user.getLatitude());
 		intent.putExtra(GeolocationActivity.EXTRA_LOCATION_LONGITUDE, user.getLongitude());
 		startActivityForResult(intent, SET_HOME_LOCATION_REQUEST);
@@ -233,7 +354,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 */
 	private void startAddExpenseClaimActivity() {
 		Intent addIntent = new Intent(this, ExpenseClaimAddActivity.class);
-		addIntent.putExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM_USER, user);
+		addIntent.putExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM_USER, userManager.getActiveUser());
 		startActivityForResult(addIntent, ADD_EXPENSE_CLAIM_REQUEST);
 	}
 	
@@ -250,53 +371,75 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 */
 	private void startManageTagsActivity() {
 		Intent manageTagsIntent = new Intent(this, ManageTagsActivity.class);
-		startActivity(manageTagsIntent);
+		startActivityForResult(manageTagsIntent, MANAGE_TAGS_REQUEST);
 	}
-
-
-	public void checkFirstRun() {
-		boolean isFirstRun = getSharedPreferences(PREFERENCE, MODE_PRIVATE).getBoolean("isFirstRun", true);
-		if (isFirstRun){ 
-			// http://www.androidsnippets.com/prompt-user-input-with-an-alertdialog
-			AlertDialog.Builder alert = new AlertDialog.Builder(this);
-			alert.setCancelable(false);
-
-			alert.setTitle("Username");
-			alert.setMessage("Please enter your name:");
-
-			// Set an EditText view to get user input 
-			final EditText input = new EditText(this);
-			alert.setView(input);
-
-			alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int whichButton) {
-					String value = input.getText().toString();
-
-					if(value != null && !value.isEmpty()){
-						SharedPreferences.Editor editor = getSharedPreferences(PREFERENCE, MODE_PRIVATE).edit();
-						editor.putString("name", value);
-						editor.putInt("id", 1);
-						editor.putBoolean("isFirstRun", false);
-						editor.apply();
-						setUserFromPreferences();
-					}
-					else{
-						checkFirstRun();
-						Toast.makeText(getApplicationContext(), "You must enter a username", Toast.LENGTH_LONG).show(); 
-					}
-
+	
+	/**
+	 * Starts the {@link FilterTagsActivity}
+	 */
+	private void startFilterTagsActivity() {
+		Intent filterTagsIntent = new Intent(this, FilterTagsActivity.class);
+		filterTagsIntent.putExtra(FilterTagsActivity.TAG_TO_FILTER, filteredTagsList);
+		startActivityForResult(filterTagsIntent, FILTER_TAGS_REQUEST);
+	}
+	
+	/**
+	 * Prompts the user to enter their name.
+	 */
+	public void promptForUserInformation() {
+		// http://www.androidsnippets.com/prompt-user-input-with-an-alertdialog
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+		alert.setCancelable(false);
+		alert.setTitle(R.string.user_alert_title);
+		alert.setMessage(R.string.user_alert_message);
+		
+		final EditText input = new EditText(this);
+		alert.setView(input);
+		
+		alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				String name = input.getText().toString();
+				if (name == null || name.isEmpty()) {
+					Toast.makeText(getApplicationContext(), R.string.user_alert_error, Toast.LENGTH_LONG).show();
+				} else {
+					// Device specific identifier
+					String androidID = Secure.getString(getContentResolver(), Secure.ANDROID_ID); 
+					userManager.setActiveUser(new User(androidID, name));
+					loadData();
 				}
-			});
-
-			alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int whichButton) {
-					checkFirstRun();
-					Toast.makeText(getApplicationContext(), "You must enter a username", Toast.LENGTH_LONG).show();
+			}
+		});
+		alert.show();
+	}
+	
+	/**
+	 * Prompts the user for confirmation in response to deleting an expense claim.
+	 * @param index The index of the expense claim to remove.
+	 */
+	public void showDeleteAlertDialog(final int index) {
+		AlertDialog.Builder openDialog = new AlertDialog.Builder(this);
+		openDialog.setTitle(R.string.action_delete_claim_confirm);
+		
+		openDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				if (!filteredTagsList.isEmpty()) {
+					ExpenseClaim claimToRemove = filteredListModel.getItems().get(index);
+					listModel.remove(claimToRemove);
+					setFilteredClaims();
+				} else {
+					listModel.remove(index);
 				}
-			});
-
-			alert.show();
-		}
+			}
+		});
+		
+		openDialog.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+		openDialog.show();
 	}
 
 	//================================================================================
@@ -314,9 +457,14 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 */
 	private void startEditExpenseClaimActivity(int position) {
 		Intent editIntent = new Intent(this, ExpenseClaimDetailActivity.class);
-		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM, listModel.getItems().get(position));
+		if (!filteredTagsList.isEmpty()) {
+			editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM, filteredListModel.getItems().get(position));
+			position = listModel.getItems().indexOf(filteredListModel.getItems().get(position));
+		} else {
+			editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM, listModel.getItems().get(position));
+		}
 		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_INDEX, position);
-		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_USER, user);
+		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_USER, userManager.getActiveUser());
 		startActivityForResult(editIntent, EDIT_EXPENSE_CLAIM_REQUEST);
 	}
 
@@ -325,8 +473,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	//================================================================================
 
 	@Override
-	public void update(TypedObservable<List<ExpenseClaim>> o, List<ExpenseClaim> claims) {
-		setListAdapter(new ExpenseClaimArrayAdapter(this, claims));
+	public void update(TypedObservable<CollectionMutation<ExpenseClaim>> observable, CollectionMutation<ExpenseClaim> mutation) {
+		setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems()));
 	}
-
 }
