@@ -26,8 +26,8 @@ import org.joda.money.Money;
  * Model object representing a single item on an expense claim.
  */
 public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
-	private static final long serialVersionUID = -5923561360068724438L;
-
+	private static final long serialVersionUID = -1106294407274690532L;
+	
 	//================================================================================
 	// Properties
 	//================================================================================
@@ -62,6 +62,7 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	 * String representation of a Uri of a receipt image.
 	 */
 	private String receiptPath;
+	
 	/**
 	 * Incompleteness indicator.
 	 */
@@ -218,6 +219,7 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 		result = prime * result + ((date == null) ? 0 : date.hashCode());
 		result = prime * result
 				+ ((description == null) ? 0 : description.hashCode());
+		result = prime * result + (incomplete ? 1231 : 1237);
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -250,6 +252,8 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 			if (other.description != null)
 				return false;
 		} else if (!description.equals(other.description))
+			return false;
+		if (incomplete != other.incomplete)
 			return false;
 		if (name == null) {
 			if (other.name != null)
