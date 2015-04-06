@@ -786,6 +786,9 @@ containing a value of this type.
         public static final int name_hint=0x7f060042;
         public static final int no_destinations=0x7f06003c;
         public static final int no_expenses=0x7f06003b;
+        /**  PlacePickerParentActivity 
+         */
+        public static final int places_unavailable_error=0x7f060071;
         public static final int sort_order=0x7f060054;
         public static final int sort_type=0x7f060053;
         public static final int start_label=0x7f060044;
@@ -798,7 +801,7 @@ containing a value of this type.
         public static final int store_picture_title=0x7f060000;
         public static final int tags_title=0x7f06005d;
         public static final int title_activity_add_tag=0x7f060066;
-        public static final int title_activity_destination_add=0x7f060071;
+        public static final int title_activity_destination_add=0x7f060072;
         public static final int title_activity_edit_tag=0x7f060067;
         public static final int title_activity_filter_tag=0x7f06006e;
         public static final int title_activity_geolocation_add=0x7f060069;
