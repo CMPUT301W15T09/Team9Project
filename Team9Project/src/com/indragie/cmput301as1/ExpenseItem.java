@@ -22,12 +22,14 @@ import java.util.Date;
 
 import org.joda.money.Money;
 
+import android.net.Uri;
+
 /**
  * Model object representing a single item on an expense claim.
  */
 public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
-	private static final long serialVersionUID = -5923561360068724438L;
-
+	private static final long serialVersionUID = -1106294407274690532L;
+	
 	//================================================================================
 	// Properties
 	//================================================================================
@@ -61,7 +63,8 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	/**
 	 * String representation of a Uri of a receipt image.
 	 */
-	private String receiptPath;
+	private String receiptUriString;
+	
 	/**
 	 * Incompleteness indicator.
 	 */
@@ -77,7 +80,6 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 		this.category = category;
 		this.amount = amount;
 		this.date = date;
-		this.incomplete = false;
 	}
 
 	//================================================================================
@@ -149,18 +151,19 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 	}
 	
 	/**
-	 * @return String representation of a Uri of a receipt image.
+	 * @return Uri of the receipt image.
 	 */
-	public String getReceiptPath() {
-		return receiptPath;
+	public Uri getReceiptUri() {
+		if (receiptUriString == null) return null;
+		return Uri.parse(receiptUriString);
 	}
 
 	/**
-	 * Sets the string representation of a Uri of a receipt image.
-	 * @param receiptPath String representation of a Uri of a receipt image.
+	 * Sets the Uri of a receipt image.
+	 * @param receiptPath Uri of a receipt image.
 	 */
-	public void setReceiptPath(String receiptPath) {
-		this.receiptPath = receiptPath;
+	public void setReceiptUri(Uri receiptUri) {
+		this.receiptUriString = (receiptUri == null) ? null : receiptUri.toString();
 	}
 	
 	/**
@@ -218,6 +221,7 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 		result = prime * result + ((date == null) ? 0 : date.hashCode());
 		result = prime * result
 				+ ((description == null) ? 0 : description.hashCode());
+		result = prime * result + (incomplete ? 1231 : 1237);
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -250,6 +254,8 @@ public class ExpenseItem implements Serializable, Comparable<ExpenseItem> {
 			if (other.description != null)
 				return false;
 		} else if (!description.equals(other.description))
+			return false;
+		if (incomplete != other.incomplete)
 			return false;
 		if (name == null) {
 			if (other.name != null)
