@@ -64,7 +64,7 @@ public class ExpenseItemJSONDeserializer implements JsonDeserializer<ExpenseItem
 		String category = getStringIfPossible(obj.get("category"));
 		boolean incomplete = getBooleanIfPossible(obj.get("incomplete"));
 		JsonObject amountObject = getJsonObjectIfPossible(obj.get("amount"));
-		JsonObject dateObject = getJsonObjectIfPossible(obj.get("date"));
+		long time = getLongIfPossible(obj.get("date"));
 		String receiptBase64Str = getStringIfPossible(obj.get("receipt_base64"));
 		
 		Money amount = null;
@@ -72,12 +72,7 @@ public class ExpenseItemJSONDeserializer implements JsonDeserializer<ExpenseItem
 			amount = context.deserialize(amountObject, Money.class);
 		}
 		
-		Date date = null;
-		if (dateObject != null) {
-			date = context.deserialize(dateObject, Money.class);
-		}
-		
-		ExpenseItem item = new ExpenseItem(name, description, category, amount, date);
+		ExpenseItem item = new ExpenseItem(name, description, category, amount, new Date(time));
 		item.setIncomplete(incomplete);
 		
 		if (receiptBase64Str != null) {
@@ -119,6 +114,18 @@ public class ExpenseItemJSONDeserializer implements JsonDeserializer<ExpenseItem
 			}
 		}
 		return false;
+	}
+	
+	private static long getLongIfPossible(JsonElement element) {
+		if (element == null) return 0;
+		
+		if (element.isJsonPrimitive()) {
+			JsonPrimitive primitive = element.getAsJsonPrimitive();
+			if (primitive.isNumber()) {
+				return primitive.getAsLong();
+			}
+		}
+		return 0;
 	}
 	
 	private static JsonObject getJsonObjectIfPossible(JsonElement element) {
