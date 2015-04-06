@@ -124,8 +124,13 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		final Context context = this;
 		session.loadOwnedClaims(new ElasticSearchAPIClient.APICallback<List<ExpenseClaim>>() {
 			@Override
-			public void onSuccess(Response response, List<ExpenseClaim> model) {
-				listModel.replace(model);
+			public void onSuccess(Response response, final List<ExpenseClaim> model) {
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						listModel.replace(model);
+					}
+				});
 			}
 
 			@Override
@@ -136,7 +141,6 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 						Toast.makeText(context, R.string.load_fail_error, Toast.LENGTH_LONG).show();
 					}
 				});
-				
 			}
 		});
 	}
