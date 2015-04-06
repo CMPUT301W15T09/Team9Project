@@ -782,6 +782,9 @@ containing a value of this type.
         public static final int name_hint=0x7f060042;
         public static final int no_destinations=0x7f06003c;
         public static final int no_expenses=0x7f06003b;
+        /**  PlacePickerParentActivity 
+         */
+        public static final int places_unavailable_error=0x7f060071;
         public static final int sort_order=0x7f060054;
         public static final int sort_type=0x7f060053;
         public static final int start_label=0x7f060044;
