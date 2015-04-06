@@ -216,7 +216,7 @@ public class ExpenseItemAddActivity extends Activity {
 			dateField.getDate()
 		);
 		if (receiptFileUri != null) {
-			item.setReceiptPath(receiptFileUri.toString());
+			item.setReceiptUri(receiptFileUri);
 		}
 		item.setIncomplete(incomplete);
 		return item;
