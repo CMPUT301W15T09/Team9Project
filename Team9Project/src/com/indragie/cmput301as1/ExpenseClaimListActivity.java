@@ -52,6 +52,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private static final int EDIT_EXPENSE_CLAIM_REQUEST = 2;
 	private static final int SORT_EXPENSE_CLAIM_REQUEST = 3;
 	private static final int MANAGE_TAGS_REQUEST = 4;
+	private static final int FILTER_TAGS_REQUEST = 5;
 	
 	//================================================================================
 	// Properties
@@ -61,6 +62,16 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 * List model of expense claim.
 	 */
 	private ListModel<ExpenseClaim> listModel;
+	
+	/**
+	 * List Model of filtered expense claim.
+	 */
+	private ListModel<ExpenseClaim> filteredListModel = new ListModel<ExpenseClaim>("filtered_List", this);
+	
+	/**
+	 * List of tags to filter expense claims.
+	 */
+	private ArrayList<Tag> filteredTagsList = new ArrayList<Tag>();
 	
 	/**
 	 * Manages the user and associated preferences.
@@ -135,7 +146,13 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (resultCode != RESULT_OK) return;
+		if (resultCode != RESULT_OK) {
+			if (resultCode == RESULT_CANCELED && requestCode == FILTER_TAGS_REQUEST) {
+				setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems()));
+				filteredTagsList.clear();
+			}
+			return;
+		}
 		switch (requestCode) {
 		case ADD_EXPENSE_CLAIM_REQUEST:
 			onAddExpenseResult(data);
@@ -149,6 +166,9 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		case MANAGE_TAGS_REQUEST:
 			onManageTagsResult(data);
 			break;
+		case FILTER_TAGS_REQUEST:
+			onFilterTagsRequest(data);
+			break;
 		}
 	}
 	
@@ -160,29 +180,45 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private void onSortExpenseResult(Intent data) {
 		Comparator<ExpenseClaim> comparator = (Comparator<ExpenseClaim>)data.getSerializableExtra(ExpenseClaimSortActivity.EXPENSE_CLAIM_SORT);
 		listModel.setComparator(comparator);
+		if (!filteredTagsList.isEmpty()) {
+			setFilteredClaims();
+			filteredListModel.setComparator(comparator);
+		}
 	}
 
 	/**
 	 * Adds a expense claim to list model from a intent.
+	 * Displays the filteredListModel instead if there are filtered tags.
 	 * @param data The intent to get the expense claim from.
 	 */
 	private void onAddExpenseResult(Intent data) {
 		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM);
 		listModel.add(claim);
+		if (!filteredTagsList.isEmpty()) {
+			setListAdapter(new ExpenseClaimArrayAdapter(this, filteredListModel.getItems()));
+		}
 	}
 	
 	/**
 	 * Sets a expense claim at a specified position in the list model from a intent.
+	 * Displays the filteredListModel instead if there are filtered tags.
+	 * If the claim exists in the filteredListModel, we check if it still has the filtered tag.
 	 * @param data The intent to get the expense claim from.
 	 */
 	private void onEditExpenseResult(Intent data) {
 		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM);
 		int position = data.getIntExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_INDEX, -1);
 		listModel.set(position, claim);
+		if (!filteredTagsList.isEmpty()) {
+			setFilteredClaims();
+		}
+
 	}
-	
+
 	/**
 	 * Sets the list used in ListModel to the returned list of expense claims from the intent. 
+	 * If tag is in the filteredTagsList, we have to update the list to accommodate for the changes.
+	 * Displays the filteredListModel instead if there are filtered tags.
 	 * @param data The intent to get the list of expense claims from. 
 	 */
 	@SuppressWarnings("unchecked")
@@ -200,21 +236,64 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 				switch (mutation.getMutationType()) {
 				case DELETE:
 					claim.removeTag(tag);
+					if (filteredTagsList.contains(tag) && !filteredTagsList.isEmpty()) {
+						filteredTagsList.remove(tag);
+					}
 					break;
 				case EDIT:
 					int tagIndex = claim.getTags().indexOf(tag);
 					claim.setTag(tagIndex, mutation.getNewTag());
+					if (filteredTagsList.contains(tag) && !filteredTagsList.isEmpty()) {
+						int selectedIndex = filteredTagsList.indexOf(tag);
+						filteredTagsList.set(selectedIndex, mutation.getNewTag());
+					}
 					break;
 				}
 				
 				modifiedClaims.append(i, claim);
 				i++;
 			}
+			
 		}
 		
 		for (int i = 0; i < modifiedClaims.size(); i++) {
 			listModel.set(modifiedClaims.keyAt(i), modifiedClaims.valueAt(i));
 		}
+		if (!filteredTagsList.isEmpty()) {
+			setFilteredClaims();
+		}
+		
+	}
+	
+	/**
+	 * Sets the listModel used to filteredListModel.
+	 * @param data The intent to get the filteredTagsList.
+	 */
+	@SuppressWarnings("unchecked")
+	private void onFilterTagsRequest(Intent data) {
+		filteredTagsList = (ArrayList<Tag>)data.getSerializableExtra(FilterTagsActivity.TAG_TO_FILTER);
+
+		setFilteredClaims();
+	}
+	
+	/**
+	 * Checks list of filtered tags. 
+	 * If claim contains filtered tag, we keep the claim in our filteredListModel.
+	 */
+	private void setFilteredClaims() {
+		ArrayList<ExpenseClaim> tempClaims = new ArrayList<ExpenseClaim>();
+		
+		for (Tag tag: filteredTagsList) {
+			for (ExpenseClaim claim: listModel.getItems()) {
+				if (claim.hasTag(tag)) {
+					if (!tempClaims.contains(claim)) {
+						tempClaims.add(claim);
+					}
+				}
+			}
+		}
+		filteredListModel.replace(tempClaims);
+		setListAdapter(new ExpenseClaimArrayAdapter(this, filteredListModel.getItems()));
 	}
 
 	@Override
@@ -234,6 +313,9 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 			return true;
 		case R.id.action_manage_tags:
 			startManageTagsActivity();
+			return true;
+		case R.id.action_filter_tags:
+			startFilterTagsActivity();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -263,6 +345,15 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private void startManageTagsActivity() {
 		Intent manageTagsIntent = new Intent(this, ManageTagsActivity.class);
 		startActivityForResult(manageTagsIntent, MANAGE_TAGS_REQUEST);
+	}
+	
+	/**
+	 * Starts the {@link FilterTagsActivity}
+	 */
+	private void startFilterTagsActivity() {
+		Intent filterTagsIntent = new Intent(this, FilterTagsActivity.class);
+		filterTagsIntent.putExtra(FilterTagsActivity.TAG_TO_FILTER, filteredTagsList);
+		startActivityForResult(filterTagsIntent, FILTER_TAGS_REQUEST);
 	}
 	
 	/**
@@ -305,7 +396,13 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		openDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				listModel.remove(index);
+				if (!filteredTagsList.isEmpty()) { //TODO: check if this works
+					ExpenseClaim removedClaim = filteredListModel.getItems().get(index);
+					filteredListModel.remove(index);
+					listModel.remove(removedClaim);
+				} else {
+					listModel.remove(index);
+				}
 			}
 		});
 		
@@ -333,7 +430,12 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	 */
 	private void startEditExpenseClaimActivity(int position) {
 		Intent editIntent = new Intent(this, ExpenseClaimDetailActivity.class);
-		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM, listModel.getItems().get(position));
+		if (!filteredTagsList.isEmpty()) {
+			editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM, filteredListModel.getItems().get(position));
+			position = listModel.getItems().indexOf(filteredListModel.getItems().get(position));
+		} else {
+			editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM, listModel.getItems().get(position));
+		}
 		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_INDEX, position);
 		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_USER, userManager.getActiveUser());
 		startActivityForResult(editIntent, EDIT_EXPENSE_CLAIM_REQUEST);
