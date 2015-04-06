@@ -53,6 +53,11 @@ public class PlacePickerParentActivity extends Activity {
 		 * @param place The place that was picked.
 		 */
 		public void onPlacePicked(Place place);
+		
+		/**
+		 * Called when the place picker action is canceled.
+		 */
+		public void onPlacePickerCanceled();
 	}
 	
 	//================================================================================
@@ -97,6 +102,8 @@ public class PlacePickerParentActivity extends Activity {
 			if (resultCode == RESULT_OK) {
 				final Place place = PlacePicker.getPlace(data, this);
 				placePickedListener.onPlacePicked(place);
+			} else {
+				placePickedListener.onPlacePickerCanceled();
 			}
 			placePickedListener = null;
 		} else {
