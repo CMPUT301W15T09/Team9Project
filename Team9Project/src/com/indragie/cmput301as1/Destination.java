@@ -52,9 +52,10 @@ public class Destination implements Serializable {
 	 * @param name The name of the destination.
 	 * @param travelReason The reason of travel to the destination.
 	 */
-	public Destination(String name, String travelReason) {
+	public Destination(String name, String travelReason, Geolocation location) {
 		this.name = name;
 		this.travelReason = travelReason;
+		this.location = location;
 	}
 	
 	//================================================================================

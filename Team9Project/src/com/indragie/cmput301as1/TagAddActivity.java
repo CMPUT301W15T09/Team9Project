@@ -53,7 +53,7 @@ public class TagAddActivity extends Activity{
 		super.onCreateOptionsMenu(menu);
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.contextual_accept, menu);
-		 return super.onCreateOptionsMenu(menu);
+		return super.onCreateOptionsMenu(menu);
 	}
 	
 	@Override
