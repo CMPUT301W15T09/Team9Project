@@ -148,7 +148,12 @@ public class GeolocationActivity extends Activity {
 		location.setLongitude(locationLatLng.longitude);
 		
 		Intent intent = new Intent();
-		intent.putExtra(EXTRA_LOCATION, location);
+		
+		Bundle bundle = new Bundle();
+		bundle.putParcelable(EXTRA_LOCATION, location);
+		intent.putExtras(bundle);
+		
+		//intent.putExtra(EXTRA_LOCATION, location);
 		return intent;
 	}
 	
