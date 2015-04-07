@@ -236,10 +236,9 @@ public abstract class ExpenseClaimListFragment extends ListFragment implements T
 	}
 
 	/**
-	 * Sets the list used in ListModel to the returned list of expense claims from the intent. 
-	 * If tag is in the filteredTagsList, we have to update the list to accommodate for the changes.
-	 * Displays the filteredListModel instead if there are filtered tags.
-	 * @param data The intent to get the list of expense claims from. 
+	 * Mutates expense claims by removing or editing tags based on the mutations
+	 * contained within the intent.
+	 * @param data The intent to get the list of mutations fron.
 	 */
 	@SuppressWarnings("unchecked")
 	private void onManageTagsResult(Intent data) {
@@ -249,8 +248,9 @@ public abstract class ExpenseClaimListFragment extends ListFragment implements T
 	}
 	
 	/**
-	 * Sets the listModel used to filteredListModel.
-	 * @param data The intent to get the filteredTagsList.
+	 * Filters the expense claims list based on the filter tags contained within
+	 * the intent.
+	 * @param data The intent to get the filter tags from.
 	 */
 	@SuppressWarnings("unchecked")
 	private void onFilterTagsRequest(Intent data) {
