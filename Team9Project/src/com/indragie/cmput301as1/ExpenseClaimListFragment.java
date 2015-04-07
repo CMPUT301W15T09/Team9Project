@@ -22,7 +22,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.ListFragment;
+import android.support.v4.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -42,7 +42,7 @@ public abstract class ExpenseClaimListFragment extends ListFragment implements T
 	/**
 	 * Bundle key for the active user.
 	 */
-	private static final String BUNDLE_USER = "com.indragie.cmput301as1.BUNDLE_USER";
+	public static final String BUNDLE_USER = "com.indragie.cmput301as1.BUNDLE_USER";
 	
 	/**
 	 * Request code for starting {@link ExpenseClaimDetailActivity}
