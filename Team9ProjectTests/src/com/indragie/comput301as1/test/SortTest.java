@@ -25,9 +25,9 @@ private static final String EXPENSE_CLAIM_SORT = "com.indragie.cmput301as1.EXPEN
 		Date date2 = new Date(1995, 01, 01);
 		
 		// ExpenseClaim(name, description, startDate, endDate, status, creationDate)
-		ExpenseClaim claim1 = new ExpenseClaim(null, null, date1, null, null, null);
+		ExpenseClaim claim1 = new ExpenseClaim(null, date1, null, null, null);
 		Thread.sleep(2000);
-		ExpenseClaim claim2 = new ExpenseClaim(null, null, date2, null, null, null);
+		ExpenseClaim claim2 = new ExpenseClaim(null, date2, null, null, null);
 		
 		ListModel<ExpenseClaim> listmodel = new ListModel<ExpenseClaim>("claims_test.dat", getContext());
 		listmodel.removeAll();

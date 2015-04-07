@@ -37,7 +37,7 @@ public class SessionTests extends AndroidTestCase {
 		User user1 = new User("test_id_1", "Indragie Karunaratne");
 		User user2 = new User("test_id_2", "Evil Twin");
 		
-		ExpenseClaim claim = new ExpenseClaim("URoma", "", new Date(), new Date(), user1, ExpenseClaim.Status.IN_PROGRESS);
+		ExpenseClaim claim = new ExpenseClaim("", new Date(), new Date(), user1, ExpenseClaim.Status.IN_PROGRESS);
 		
 		Session session1 = new Session(getContext(), user1);
 		session1.getOwnedClaims().removeAll();

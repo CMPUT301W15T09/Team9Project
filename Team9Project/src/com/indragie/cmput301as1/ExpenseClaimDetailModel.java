@@ -179,7 +179,7 @@ public class ExpenseClaimDetailModel extends TypedObservable<Object> {
 	 * @param comment The comment to add.
 	 */
 	public void addComment(Comment comment) {
-		claim.addComments(comment);
+		claim.addComments(0,comment);
 		setChanged();
 		notifyObservers();
 	}
