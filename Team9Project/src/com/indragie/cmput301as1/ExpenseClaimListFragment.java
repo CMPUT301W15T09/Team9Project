@@ -76,7 +76,33 @@ public abstract class ExpenseClaimListFragment extends ListFragment implements T
 	/**
 	 * The controller for this fragment.
 	 */
-	protected ExpenseClaimListController controller;
+	private ExpenseClaimListController controller;
+	
+	//================================================================================
+	// Accessors
+	//================================================================================
+	
+	/**
+	 * @return The active user.
+	 */ 
+	protected User getUser() {
+		return user;
+	}
+	
+	/**
+	 * @return The controller for this fragment.
+	 */
+	protected ExpenseClaimListController getController() {
+		return controller;
+	}
+	
+	/**
+	 * Sets the controller for this fragment.
+	 * @param controller The controller for this fragment.
+	 */
+	public void setController(ExpenseClaimListController controller) {
+		this.controller = controller;
+	}
 	
 	//================================================================================
 	// Fragment Callbacks
@@ -161,12 +187,6 @@ public abstract class ExpenseClaimListFragment extends ListFragment implements T
 	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (resultCode != Activity.RESULT_OK) {
-			if (resultCode == Activity.RESULT_CANCELED && requestCode == FILTER_TAGS_REQUEST) {
-				controller.removeFilter();
-			}
-			return;
-		}
 		switch (requestCode) {
 		case EDIT_EXPENSE_CLAIM_REQUEST:
 			onEditExpenseResult(data);
@@ -178,8 +198,14 @@ public abstract class ExpenseClaimListFragment extends ListFragment implements T
 			onManageTagsResult(data);
 			break;
 		case FILTER_TAGS_REQUEST:
-			onFilterTagsRequest(data);
+			if (resultCode == Activity.RESULT_OK) {
+				onFilterTagsRequest(data);
+			} else {
+				controller.removeFilter();
+			}
 			break;
+		default:
+			super.onActivityResult(requestCode, resultCode, data);
 		}
 	}
 	
@@ -225,7 +251,6 @@ public abstract class ExpenseClaimListFragment extends ListFragment implements T
 		ArrayList<Tag> tags = (ArrayList<Tag>)data.getSerializableExtra(FilterTagsActivity.TAG_TO_FILTER);
 		controller.filter(tags);
 	}
-	
 	
 	//================================================================================
 	// ListView Callbacks
