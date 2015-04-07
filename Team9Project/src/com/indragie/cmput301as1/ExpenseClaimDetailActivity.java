@@ -436,16 +436,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			return true;
 		case R.id.action_mark_submitted:
 			startSubmitAlertDialog();
-			return true;
-		case R.id.action_mark_returned:
-			claim.setStatus(Status.RETURNED);
-			claim.setApprover(user);
-			setEditable();
-			return true;
-		case R.id.action_mark_approved:
-			claim.setStatus(Status.APPROVED);
-			claim.setApprover(user);
-			commitChangesAndFinish();
 			return true; 
 		case R.id.action_add_comment:
 			startaddCommentActivity();
@@ -563,7 +553,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	private void startEmailActivity() {
 		// Based on http://stackoverflow.com/a/2745702/153112
 		Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:"));
-		emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Expense Claim: " + claim.getName());
+		emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Expense Claim: " + claim.getUser().getName());
 
 		// Originally planned to use HTML for rich text in the email, but it turns
 		// out that most email clients on Android (including K-9) don't support HTML
@@ -576,7 +566,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	 * Saves changes made to the expense claim and finishes the activity.
 	 */
 	private void commitChangesAndFinish() {
-		claim.setName(nameField.getText().toString());
 		claim.setDescription(descriptionField.getText().toString());
 		claim.setStartDate(startDateField.getDate());
 		claim.setEndDate(endDateField.getDate());
@@ -598,29 +587,21 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		MenuItem addDestination = menu.findItem(R.id.action_add_destination); 
 		MenuItem addItem = menu.findItem(R.id.action_add_item);
 		MenuItem submit = menu.findItem(R.id.action_mark_submitted);
-		MenuItem approve = menu.findItem(R.id.action_mark_approved);
-		MenuItem returned = menu.findItem(R.id.action_mark_returned);
 		MenuItem addComment = menu.findItem(R.id.action_add_comment);
 
 		if (status == Status.APPROVED){
 			addDestination.setEnabled(false);
 			addItem.setEnabled(false);
 			submit.setEnabled(false);
-			approve.setEnabled(false);
-			returned.setEnabled(false);
 			addComment.setEnabled(false);
 		}
 		if (status == Status.RETURNED || status == Status.IN_PROGRESS){
 			addDestination.setEnabled(UserCheck);
 			addItem.setEnabled(UserCheck);
 			submit.setEnabled(UserCheck);
-			approve.setEnabled(false);
-			returned.setEnabled(false);
 			addComment.setEnabled(false); 
 		}
 		if (status == Status.SUBMITTED){
-			approve.setEnabled(!UserCheck);
-			returned.setEnabled(!UserCheck);
 			addDestination.setEnabled(false);
 			addItem.setEnabled(false);
 			submit.setEnabled(false);
