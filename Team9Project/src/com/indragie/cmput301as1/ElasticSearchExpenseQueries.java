@@ -22,6 +22,42 @@ import java.util.List;
 /**
  * Queries used for searching expense claims via ElasticSearch.
  */
+
+/*
+ * Mapping:
+	 {
+	    "expense_claim": {
+	        "properties": {
+	            "items": {
+	                "type": "nested",
+	                "properties": {
+	                    "receipt_base64": {
+	                        "include_in_all": false,
+	                        "index": "no",
+	                        "type": "string"
+	                    }
+	                }
+	            },
+	            "user": {
+	                "type": "nested",
+	                "properties": {
+	                    "documentID": {
+	                        "type": "nested"
+	                    }
+	                }
+	            },
+	            "approver": {
+	                "type": "nested",
+	                "properties": {
+	                    "documentID": {
+	                        "type": "nested"
+	                    }
+	                }
+	            }
+	        }
+	    }
+	}
+ */
 public class ElasticSearchExpenseQueries {
 	/**
 	 * Creates a search query for expense claims owned by a particular user.
@@ -31,15 +67,27 @@ public class ElasticSearchExpenseQueries {
 	 */
 	public static ElasticSearchAPIClient.APICall<List<ExpenseClaim>> 
 		expenseClaimsOwnedByUser(User user, ElasticSearchAPIClient client) {
-		String queryJSON = "{"
-			+ " 	\"filtered\": {"
-			+ " 		\"filter\": {"
-			+ "				\"term\": {"
-			+ "					\"user.documentID.id\": \"" + user.getDocumentID().getID() + "\""
-			+ "				}"
-			+ "			}"
-			+ " 	}"
-			+ "}";
+		/*
+		 * {
+			  "query": {
+			    "filtered": {
+			      "filter": {
+			        "nested": {
+			          "path": "user.documentID",
+			          "query":{
+			            "filtered": {
+			              "filter": {
+			                "term": {"user.documentID.id": "<user ID>"}
+			              }
+			            }
+			          }
+			        }
+			      }
+			    }
+			  }
+			}
+		 */
+		String queryJSON = "{\"query\":{\"filtered\":{\"filter\":{\"nested\":{\"path\":\"user.documentID\",\"query\":{\"filtered\":{\"filter\":{\"term\":{\"user.documentID.id\":\"" + user.getDocumentID().getID() + "\"}}}}}}}}}";
 		return client.search(
 			ElasticSearchConfiguration.INDEX_NAME, 
 			ExpenseClaim.ELASTIC_SEARCH_TYPE, 
@@ -58,22 +106,52 @@ public class ElasticSearchExpenseQueries {
 	 */
 	public static ElasticSearchAPIClient.APICall<List<ExpenseClaim>> 
 		expenseClaimsForReviewalByUser(User user, ElasticSearchAPIClient client) {
-		String queryJSON = "{"
-			+ " 	\"filtered\": {"
-			+ " 		\"filter\": {"
-			+ "				\"and\": ["
-			+ "					\"term\": {"
-			+ "						\"status\": \"SUBMITTED\""
-			+ "					},"
-			+ "					\"not\": {"
-			+ "						\"term\" {"
-			+ "							\"user.documentID.id\": \"" + user.getDocumentID().getID() + "\""
-			+ "						}"
-			+ "					}"
-			+ "				]"
-			+ "			}"
-			+ " 	}"
-			+ "}";
+		String id = user.getDocumentID().getID();
+		/*
+		 * {
+			  "query": {
+			    "filtered": {
+			      "filter": {
+			        "bool": {
+			          "must": [
+			          { "term": {"status": "SUBMITTED"} }
+			          ],
+			          "must_not": [
+			          {
+			            "nested": {
+			              "path": "user.documentID",
+			              "query": {
+			                "filtered": {
+			                  "filter": {
+			                    "term": { "user.documentID.id": "1c4bd6fa8abd69fb" }
+			                  }
+			                }
+			              }
+			            }
+			          }
+			          ],
+			          "should": [
+			          { "missing" : {"field": "approver"}},
+			          {
+			            "nested": {
+			              "path": "approver.documentID",
+			              "query": {
+			                "filtered": {
+			                  "filter": {
+			                    "term": { "approver.documentID.id": "1c4bd6fa8abd69fb" }
+			                  }
+			                }
+			              }
+			            }
+			          }
+			          ]
+			        }
+			      }
+			    }
+			  }
+			}
+		 */
+		String queryJSON = "{\"query\":{\"filtered\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"status\":\"SUBMITTED\"}}],\"must_not\":[{\"nested\":{\"path\":\"user.documentID\",\"query\":{\"filtered\":{\"filter\":{\"term\":{\"user.documentID.id\":\"" + id + "\"}}}}}}],\"should\":[{\"missing\":{\"field\":\"approver\"}},{\"nested\":{\"path\":\"approver.documentID\",\"query\":{\"filtered\":{\"filter\":{\"term\":{\"approver.documentID.id\":\"" + id + "\"}}}}}}]}}}}}";
 		return client.search(
 			ElasticSearchConfiguration.INDEX_NAME, 
 			ExpenseClaim.ELASTIC_SEARCH_TYPE, 
