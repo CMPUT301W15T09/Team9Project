@@ -66,7 +66,8 @@ public class ListModel<T extends Serializable> extends TypedObservable<Collectio
 	
 	/**
 	 * Create a new instance of {@link ExpenseClaimListModel}
-	 * @param fileName Name of the file used to persist the expense claims.
+	 * @param fileName Name of the file used to persist the list. Pass null to create
+	 * an in-memory list model that doesn't persist its contents.
 	 * @param context The context used for I/O operations.
 	 */
 	public ListModel(String fileName, Context context) {
@@ -202,6 +203,10 @@ public class ListModel<T extends Serializable> extends TypedObservable<Collectio
 	 */
 	@SuppressWarnings("unchecked")
 	private ArrayList<T> load() {
+		if (fileName == null) {
+			return new ArrayList<T>();
+		}
+		
 		try {
 			FileInputStream fis = context.openFileInput(fileName);
 			ObjectInputStream ois = new ObjectInputStream(fis);
@@ -219,6 +224,8 @@ public class ListModel<T extends Serializable> extends TypedObservable<Collectio
 	 * @param o The list to save.
 	 */
 	private void save(ArrayList<T> o) {
+		if (fileName == null) return;
+		
 		try {
 			FileOutputStream fos = context.openFileOutput(fileName, 0);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
