@@ -53,15 +53,9 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 		if (convertView == null) {
 			convertView = LayoutInflater.from(getContext()).inflate(R.layout.expense_claim_list_row, parent, false);
 		}
-		TextView destinationsTextView = (TextView)convertView.findViewById(R.id.tv_name);
-
-		// get the Geolocation of the current destination
-		List<Destination> destinations = claim.getDestinations();
-
-		// change the background color for destinations
+		setColorCoding(claim.getDestinations(), convertView);
 		
-		setColorCoding(destinations, convertView);
-
+		TextView destinationsTextView = (TextView)convertView.findViewById(R.id.tv_name);
 		destinationsTextView.setText(buildDestinationsString(claim));
 		
 		TextView dateTextView = (TextView)convertView.findViewById(R.id.tv_date);
@@ -87,11 +81,10 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 	 * @param convertView the background of the claim
 	 */
 	private void setColorCoding(List<Destination> destinations, View convertView) {
+		ImageView destinationsBar = (ImageView)convertView.findViewById(R.id.destination_color_bar);
 		if ((destinations.size() > 0) && (user.getLocation() != null)) {
 			// get the home location
 			Geolocation home = user.getLocation();
-			ImageView destinationsBar = (ImageView)convertView.findViewById(R.id.destination_color_bar);
-			destinationsBar.setVisibility(View.VISIBLE);
 		
 			// get the first destination
 			if (destinations.get(0).getLocation() != null) {
@@ -119,6 +112,8 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 					destinationsBar.setImageResource(R.drawable.red);
 				}				
 			}
+		} else {
+			destinationsBar.setImageResource(R.drawable.grey);
 		}
 	}
 	
