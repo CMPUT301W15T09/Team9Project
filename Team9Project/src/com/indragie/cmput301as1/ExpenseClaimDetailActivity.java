@@ -76,22 +76,23 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	/**
 	 * Request code for starting {@link ExpenseItemAddActivity}
 	 */
-	private static final int ADD_EXPENSE_ITEM_REQUEST = 1;
+	private static final int ADD_EXPENSE_ITEM_REQUEST = 30;
 	
 	/**
 	 * Request code for starting {@link ExpenseItemEditActivity}
 	 */
-	private static final int EDIT_EXPENSE_ITEM_REQUEST = 2;
+	private static final int EDIT_EXPENSE_ITEM_REQUEST = 31;
 	
 	/**
 	 * Request code for starting {@link TagAddToClaimActivity}
 	 */
-	private static final int ADD_TAG_REQUEST = 3;
+	private static final int ADD_TAG_REQUEST = 32;
 	
 	/**
 	 * Request code for starting {@link TagEditToClaimActivity}
 	 */
-	private static final int EDIT_TAG_REQUEST = 4;
+
+	private static final int EDIT_TAG_REQUEST = 33;
 
 	//================================================================================
 	// Properties
