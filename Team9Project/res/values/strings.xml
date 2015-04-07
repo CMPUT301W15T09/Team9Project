@@ -2,7 +2,7 @@
 <resources>
 
     <!-- General -->
-    <string name="app_name">karunara-expenses</string>
+    <string name="app_name">Expense Tracker</string>
     <string name="action_delete">Delete</string>
     <string name="action_confirm_prefix">Are you sure you want to </string>
 
@@ -116,4 +116,17 @@
     <string name="title_activity_user_settings_first_run">Welcome to Expense Tracker</string>
     <string name="home_location_hint">Home Location</string>
     <string name="fill_in_message">Please fill in the details below.</string>
+    
+    <!-- GPSFallbackController -->
+    <string name="latitude_hint">Latitude</string>
+    <string name="longitude_hint">Longitude</string>
+    <string name="current_location_button_title">Use Current Location</string>
+    <string name="gps_alert_title">Enter GPS coordinates</string>
+    <string name="gps_alert_message">A network connection is currently unavailable, so coordinates must be entered manually.</string>
+    <string name="no_location_toast">Current location is unavailable</string>
+    
+    <!-- ExpenseClaimPagerAdapter -->
+    <string name="tab_owned">Owned</string>
+    <string name="tab_reviewal">Reviewal</string>
+    
 </resources>
