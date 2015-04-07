@@ -43,7 +43,7 @@ public class ExpenseClaimAddActivity extends Activity {
 	/**
 	 * The name of the expense claim.
 	 */
-	private TextView nameField;
+	private EditText nameField;
 	/**
 	 * The description of the expense claim.
 	 */
@@ -56,6 +56,7 @@ public class ExpenseClaimAddActivity extends Activity {
 	 * The end date of the expense claim.
 	 */
 	private DateEditText endDateField;
+	private TextView userfield;
 	private User user;
 
 	//================================================================================
@@ -88,8 +89,7 @@ public class ExpenseClaimAddActivity extends Activity {
 			}
 		);
 
-		nameField = (TextView)findViewById(R.id.text_name);
-		nameField.setText("User: " + user.getName());
+		nameField = (EditText)findViewById(R.id.et_name);
 		descriptionField = (EditText)findViewById(R.id.et_description);
 
 		startDateField = (DateEditText)findViewById(R.id.et_start_date);
@@ -108,6 +108,8 @@ public class ExpenseClaimAddActivity extends Activity {
 			}
 		});
 		
+		userfield = (TextView)findViewById(R.id.tv_user);
+		userfield.append(user.getName());
 	}
 	
 	/**
