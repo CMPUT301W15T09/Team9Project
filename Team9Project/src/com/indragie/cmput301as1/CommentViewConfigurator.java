@@ -61,8 +61,9 @@ public class CommentViewConfigurator implements ViewConfigurator<ExpenseClaimDet
 		TextView dateTextView = (TextView)view.findViewById(R.id.tv_date);
 		dateTextView.setText(DateFormat.getDateInstance().format(comment.getCreationDate()));
 		
-		TextView categoryTextView = (TextView)view.findViewById(R.id.tv_status);
-		categoryTextView.setBackground(context.getResources().getDrawable(R.drawable.bg_rounded_grey));
+		TextView statusTextView = (TextView)view.findViewById(R.id.tv_status);
+		statusTextView.setBackground(context.getResources().getDrawable(R.drawable.bg_rounded_grey));
+		statusTextView.setText(comment.getStatus().toString());
 	}
 
 }
