@@ -18,9 +18,14 @@
 package com.indragie.cmput301as1;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.ActionBar.Tab;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.provider.Settings.Secure;
 import android.support.v4.app.FragmentActivity;
+import android.widget.EditText;
+import android.widget.Toast;
 
 /**
  * An activity that initializes tab fragments for displaying claims.
@@ -52,9 +57,13 @@ public class ExpenseClaimListActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 
 		userManager = new UserManager(this);
+		if (userManager.getActiveUser() == null) {
+			promptForUserInformation();
+		} else {
+			loadSession();
+		}
 		
-		Session session = new Session(this, userManager.getActiveUser());
-		Session.setSharedSession(session);
+		
 
 		ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -70,8 +79,14 @@ public class ExpenseClaimListActivity extends FragmentActivity {
 		tab = actionBar.newTab()
 				.setText(R.string.title_tab_approval)
 				.setTabListener(new ClaimTabListener<ApprovalTabFragment>(this, "Approval", ApprovalTabFragment.class));
-		actionBar.addTab(tab);;
+		actionBar.addTab(tab);
 
+	}
+
+	private void loadSession() {
+		session = new Session(this, userManager.getActiveUser());
+		Session.setSharedSession(session);
+		
 	}
 
 	public UserManager getUserManager(){
@@ -81,6 +96,37 @@ public class ExpenseClaimListActivity extends FragmentActivity {
 	public Session getSession(){
 		return session;
 	}
+	
+	/**
+	 * Prompts the user to enter their name.
+	 */
+	public void promptForUserInformation() {
+		// http://www.androidsnippets.com/prompt-user-input-with-an-alertdialog
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+		alert.setCancelable(false);
+		alert.setTitle(R.string.user_alert_title);
+		alert.setMessage(R.string.user_alert_message);
+
+		final EditText input = new EditText(this);
+		alert.setView(input);
+
+		alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				String name = input.getText().toString();
+				if (name == null || name.isEmpty()) {
+					Toast.makeText(getApplicationContext(), R.string.user_alert_error, Toast.LENGTH_LONG).show();
+				} else {
+					// Device specific identifier
+					String androidID = Secure.getString(getContentResolver(), Secure.ANDROID_ID); 
+					userManager.setActiveUser(new User(androidID, name));
+					loadSession();
+				}
+			}
+		});
+		alert.show();
+	}
+	
+	
 
 
 

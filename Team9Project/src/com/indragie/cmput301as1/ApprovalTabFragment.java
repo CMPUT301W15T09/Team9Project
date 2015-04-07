@@ -60,7 +60,7 @@ public class ApprovalTabFragment extends ExpenseClaimTabFragment {
 	 */
 	private void loadData() {
 		// Access the application-wide session
-		Session session = ((ExpenseClaimListActivity) activity).getSession();
+		Session session = Session.getSharedSession();
 
 		// Show the initial list of expense claims (persisted on disk)
 		listModel = session.getReviewalClaims();
