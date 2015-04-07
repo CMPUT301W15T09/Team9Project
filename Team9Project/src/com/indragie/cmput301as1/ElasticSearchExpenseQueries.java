@@ -114,7 +114,11 @@ public class ElasticSearchExpenseQueries {
 			      "filter": {
 			        "bool": {
 			          "must": [
-			          { "term": {"status": "SUBMITTED"} }
+			            {
+			              "query": {
+			                "match": {"status": "SUBMITTED"}
+			              }
+			            }
 			          ],
 			          "must_not": [
 			          {
@@ -123,7 +127,7 @@ public class ElasticSearchExpenseQueries {
 			              "query": {
 			                "filtered": {
 			                  "filter": {
-			                    "term": { "user.documentID.id": "1c4bd6fa8abd69fb" }
+			                    "term": { "user.documentID.id": "<user id>" }
 			                  }
 			                }
 			              }
@@ -138,7 +142,7 @@ public class ElasticSearchExpenseQueries {
 			              "query": {
 			                "filtered": {
 			                  "filter": {
-			                    "term": { "approver.documentID.id": "1c4bd6fa8abd69fb" }
+			                    "term": { "approver.documentID.id": "<user id>" }
 			                  }
 			                }
 			              }
@@ -151,7 +155,7 @@ public class ElasticSearchExpenseQueries {
 			  }
 			}
 		 */
-		String queryJSON = "{\"query\":{\"filtered\":{\"filter\":{\"bool\":{\"must\":[{\"term\":{\"status\":\"SUBMITTED\"}}],\"must_not\":[{\"nested\":{\"path\":\"user.documentID\",\"query\":{\"filtered\":{\"filter\":{\"term\":{\"user.documentID.id\":\"" + id + "\"}}}}}}],\"should\":[{\"missing\":{\"field\":\"approver\"}},{\"nested\":{\"path\":\"approver.documentID\",\"query\":{\"filtered\":{\"filter\":{\"term\":{\"approver.documentID.id\":\"" + id + "\"}}}}}}]}}}}}";
+		String queryJSON = "{\"query\":{\"filtered\":{\"filter\":{\"bool\":{\"must\":[{\"query\":{\"match\":{\"status\":\"SUBMITTED\"}}}],\"must_not\":[{\"nested\":{\"path\":\"user.documentID\",\"query\":{\"filtered\":{\"filter\":{\"term\":{\"user.documentID.id\":\"" + id + "\"}}}}}}],\"should\":[{\"missing\":{\"field\":\"approver\"}},{\"nested\":{\"path\":\"approver.documentID\",\"query\":{\"filtered\":{\"filter\":{\"term\":{\"approver.documentID.id\":\"" + id + "\"}}}}}}]}}}}}";
 		return client.search(
 			ElasticSearchConfiguration.INDEX_NAME, 
 			ExpenseClaim.ELASTIC_SEARCH_TYPE, 
