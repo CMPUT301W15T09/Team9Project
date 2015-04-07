@@ -87,6 +87,7 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
+		
 		getListView().setOnItemLongClickListener(new LongClickDeleteListener(activity, new LongClickDeleteListener.OnDeleteListener() {
 			@Override
 			public void onDelete(int position) {

@@ -59,9 +59,8 @@ public class ApprovalTabFragment extends ExpenseClaimTabFragment {
 	 * Loads the expense claim data to display in the {@link ListView}
 	 */
 	private void loadData() {
-		// Create the application-wide session
-		Session session = new Session(activity, userManager.getActiveUser());
-		Session.setSharedSession(session);
+		// Access the application-wide session
+		Session session = ((ExpenseClaimListActivity) activity).getSession();
 
 		// Show the initial list of expense claims (persisted on disk)
 		listModel = session.getReviewalClaims();

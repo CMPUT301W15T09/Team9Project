@@ -37,7 +37,11 @@ public class ExpenseClaimListActivity extends FragmentActivity {
 	 * Manages the user and associated preferences.
 	 */
 	protected UserManager userManager;
-
+	
+	/**
+	 * Manages shared state for entire application. 
+	 */
+	protected Session session;
 
 	//================================================================================
 	// Activity Callbacks
@@ -48,6 +52,9 @@ public class ExpenseClaimListActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 
 		userManager = new UserManager(this);
+		
+		Session session = new Session(this, userManager.getActiveUser());
+		Session.setSharedSession(session);
 
 		ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -69,6 +76,10 @@ public class ExpenseClaimListActivity extends FragmentActivity {
 
 	public UserManager getUserManager(){
 		return userManager;
+	}
+	
+	public Session getSession(){
+		return session;
 	}
 
 
