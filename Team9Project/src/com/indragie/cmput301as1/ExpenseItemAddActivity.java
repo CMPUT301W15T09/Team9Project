@@ -295,6 +295,7 @@ public class ExpenseItemAddActivity extends PlacePickerParentActivity {
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE
 				&& resultCode == RESULT_OK) {
 			if (receiptController.postProcessReceiptImage(newReceiptFileUri)) {
