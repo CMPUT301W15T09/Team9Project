@@ -638,7 +638,7 @@ containing a value of this type.
         public static final int action_add_location=0x7f060055;
         public static final int action_add_tag=0x7f060063;
         public static final int action_confirm_prefix=0x7f060028;
-        public static final int action_current_location=0x7f060072;
+        public static final int action_current_location=0x7f060071;
         public static final int action_delete=0x7f060027;
         public static final int action_delete_claim_confirm=0x7f06003b;
         public static final int action_delete_dest_confirm=0x7f06004e;
@@ -648,7 +648,7 @@ containing a value of this type.
         public static final int action_email=0x7f060049;
         /**  FilterTagsActivity 
          */
-        public static final int action_filter_tags=0x7f060073;
+        public static final int action_filter_tags=0x7f060072;
         public static final int action_manage_tags=0x7f060064;
         public static final int action_mark_approved=0x7f06004c;
         public static final int action_mark_returned=0x7f06004b;
@@ -656,7 +656,7 @@ containing a value of this type.
         public static final int action_new_tag=0x7f060067;
         /**  Geolocation 
          */
-        public static final int action_set_home=0x7f060071;
+        public static final int action_set_home=0x7f060070;
         public static final int action_set_incomplete=0x7f060035;
         /**  ExpenseClaimSortActivity 
          */
@@ -678,7 +678,9 @@ containing a value of this type.
          */
         public static final int category=0x7f060032;
         public static final int comments=0x7f06005a;
-        public static final int comments_title=0x7f06006f;
+        /**  CommentActivity 
+         */
+        public static final int comments_title=0x7f06006e;
         /**   Text for notification shown when the Android Wear apps needs to be updated. Only shown on the wearable. [CHAR LIMIT=NONE] 
          */
         public static final int common_android_wear_notification_needs_update_text=0x7f060009;
@@ -840,23 +842,23 @@ containing a value of this type.
         public static final int tab_reviewal=0x7f060084;
         public static final int tags_title=0x7f060060;
         public static final int title_activity_add_tag=0x7f060069;
-        public static final int title_activity_comment_add=0x7f060070;
-        /**  DestinationAddActivity 
+        public static final int title_activity_comment_add=0x7f06006f;
+        /**  Destination{Add, Edit}Activity 
          */
         public static final int title_activity_destination_add=0x7f060077;
         public static final int title_activity_destination_edit=0x7f060078;
         public static final int title_activity_edit_tag=0x7f06006a;
-        public static final int title_activity_filter_tag=0x7f060074;
+        public static final int title_activity_filter_tag=0x7f060073;
         public static final int title_activity_geolocation_add=0x7f06006c;
         /**  ManageTagsActivity 
          */
         public static final int title_activity_manage_tags=0x7f060062;
         /**  Tag{Add,Edit}ToClaimActivity 
          */
-        public static final int title_activity_tag_edit_to_claim=0x7f06006e;
+        public static final int title_activity_tag_edit_to_claim=0x7f060075;
         /**  ExpenseClaimSortActivity 
          */
-        public static final int title_activity_tag_list=0x7f060075;
+        public static final int title_activity_tag_list=0x7f060074;
         /**  UserSettingsActivity 
          */
         public static final int title_activity_user_settings=0x7f060079;

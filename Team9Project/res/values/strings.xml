@@ -116,11 +116,9 @@
     <!-- PlacePickerParentActivity -->
     <string name="places_unavailable_error">Unable to connect to Google Places</string>
 
-    <!-- DestinationAddActivity -->
-
-
+    <!-- Destination{Add, Edit}Activity -->
     <string name="title_activity_destination_add">Add Destination</string>
-
+	<string name="title_activity_destination_edit">Edit Destination</string>
     
     <!-- UserSettingsActivity -->
     <string name="title_activity_user_settings">User Settings</string>
