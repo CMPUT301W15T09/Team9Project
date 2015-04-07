@@ -111,22 +111,21 @@ public class ElasticSearchAPIClientTests extends TestCase
 		server.enqueue(response);
 		
 		TestDocument document = new TestDocument("Indragie Karunaratne", 3);
-		String queryJSON = "{"
+		String queryJSON = "{ \"query\": {"
 				+ "\"filtered\": {"
 				+ "		\"filter\": {"
 				+ " 		\"term\": {"
 				+ "				\"year\": 3"
 				+ "			}"
 				+ "		}"
-				+ "}"
-				+ "}";
+				+ "}}}";
 		List<TestDocument> results = client.search("test", "doc", queryJSON, TestDocument.class).execute();
 		assertEquals(1, results.size());
 		assertEquals(document, results.get(0));
 		
 		RecordedRequest request = server.takeRequest();
 		assertEquals("/test/doc/_search", request.getPath());
-		assertEquals("GET", request.getMethod());
+		assertEquals("POST", request.getMethod());
 	}
 	
 	private class TestDocument implements ElasticSearchDocument {
