@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_sort_claim"
+        android:title="@string/action_sort_claim"/>
+    <item
+        android:id="@+id/action_manage_tags"
+        android:title="@string/action_manage_tags"/>
+    <item
+        android:id="@+id/action_filter_tags"
+        android:title="@string/action_filter_tags"/>
+
+</menu>
