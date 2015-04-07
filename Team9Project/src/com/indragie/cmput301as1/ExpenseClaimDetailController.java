@@ -270,6 +270,14 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 	}
 	
 	/**
+	 * @param index The index of the {@link Comment} relative to its section.
+	 * @return The {@link Comment} at the specified index.
+	 */
+	public Comment getComment(int index) {
+		return (Comment)commentsSection.get(index).getModel();
+	}
+	
+	/**
 	 * Removes the item at the specified position.
 	 * @param position The position of the item to remove.
 	 */
