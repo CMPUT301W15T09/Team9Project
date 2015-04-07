@@ -20,6 +20,10 @@ package com.indragie.cmput301as1;
 import android.content.Intent;
 import android.os.Bundle;
 
+/**
+ * Activity that presents a user interface for entering information to 
+ * edit a tag on a claim.
+ */
 public class TagEditToClaimActivity extends TagAddToClaimActivity {
 	
 	//================================================================================
