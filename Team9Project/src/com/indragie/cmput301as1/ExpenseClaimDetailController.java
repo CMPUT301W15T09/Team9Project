@@ -64,6 +64,11 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 	 */
 	private ListSection<DetailItem> tagsSection;
 	
+	/**
+	 * Section of the list view that displays comments.
+	 */
+	private ListSection<DetailItem> commentsSection;
+	
 	//================================================================================
 	// Classes
 	//================================================================================
@@ -91,7 +96,11 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 			/**
 			 * Model object is an instance of {@link ExpenseItem}
 			 */
-			EXPENSE_ITEM
+			EXPENSE_ITEM,
+			/**
+			 * Model object is an instance of {@link Comment}
+			 */
+			COMMENT
 		}
 		
 		/**
@@ -165,10 +174,17 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 			new TagViewConfigurator()
 		);
 		
+		commentsSection = new ListSection<DetailItem>(
+			resources.getString(R.string.comments_title),
+			getCommentDetailItems(),
+			new CommentViewConfigurator()
+		);
+		
 		ArrayList<ListSection<DetailItem>> sections = new ArrayList<ListSection<DetailItem>>();
 		sections.add(destinationsSection);
 		sections.add(tagsSection);
 		sections.add(expenseItemsSection);
+		sections.add(commentsSection);
 		
 		XMLSectionHeaderConfigurator headerConfigurator = new XMLSectionHeaderConfigurator(R.layout.list_header, R.id.title_label);
 		adapter = new SectionedListAdapter<DetailItem>(context, sections, headerConfigurator);
@@ -271,6 +287,8 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 		case EXPENSE_ITEM:
 			model.removeItem(index.getItemIndex());
 			break;
+		case COMMENT:
+			break;
 		}
 	}
 	
@@ -340,6 +358,14 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 		}
 		return items;
 	}
+	
+	private ArrayList<DetailItem> getCommentDetailItems() {
+		ArrayList<DetailItem> items = new ArrayList<DetailItem>();
+		for (Comment comment : model.getExpenseClaim().getComments()) {
+			items.add(new DetailItem(DetailItem.ItemType.COMMENT, comment));
+		}
+		return items;
+	}
 
 	//================================================================================
 	// Observer
@@ -350,6 +376,7 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 		destinationsSection.setItems(getDestinationDetailItems());
 		expenseItemsSection.setItems(getExpenseItemDetailItems());
 		tagsSection.setItems(getTagDetailItems());
+		commentsSection.setItems(getCommentDetailItems());
 		adapter.noteSectionsChanged();
 	}
 }
