@@ -82,7 +82,7 @@
 	        android:layout_weight="1"
 	        android:scaleType="centerCrop"
 	        android:adjustViewBounds="true"
-	        android:src="@drawable/receipt_search" />
+	        android:src="@drawable/receipt_camera" />
 	
 	</LinearLayout>
 </ScrollView>
