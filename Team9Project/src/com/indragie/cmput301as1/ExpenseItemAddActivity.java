@@ -126,11 +126,6 @@ public class ExpenseItemAddActivity extends PlacePickerParentActivity {
 	protected boolean incomplete;
 
 	/**
-	 * Geolocation for item.
-	 */
-	protected Geolocation geolocation;
-
-	/**
 	 * Controller used for handling receipt images.
 	 */
 	private ExpenseItemReceiptController receiptController;
@@ -204,7 +199,7 @@ public class ExpenseItemAddActivity extends PlacePickerParentActivity {
 					@Override
 					public void onFocusChange(View v, boolean hasFocus) {
 						if (hasFocus) {
-							openPlacePicker(listener, null);
+							openPlacePicker(listener, expenseLocation);
 						}
 					}
 				});
@@ -255,6 +250,7 @@ public class ExpenseItemAddActivity extends PlacePickerParentActivity {
 			item.setReceiptUri(receiptFileUri);
 		}
 		item.setIncomplete(incomplete);
+		item.setLocation(expenseLocation);
 		return item;
 	}
 
@@ -293,6 +289,7 @@ public class ExpenseItemAddActivity extends PlacePickerParentActivity {
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE
 				&& resultCode == RESULT_OK) {
 			if (receiptController.postProcessReceiptImage(newReceiptFileUri)) {
@@ -308,11 +305,12 @@ public class ExpenseItemAddActivity extends PlacePickerParentActivity {
 						Toast.LENGTH_SHORT).show();
 				return;
 			}
-		}
+		} else if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE){
 		newReceiptFileUri = null;
 		Toast.makeText(getApplicationContext(),
 				getString(R.string.toast_receipt_failed), Toast.LENGTH_SHORT)
 				.show();
+		}
 	}
 
 	/**

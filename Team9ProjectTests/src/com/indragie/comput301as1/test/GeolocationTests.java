@@ -41,4 +41,13 @@ public class GeolocationTests extends TestCase {
 		assertEquals(latitude, location.getLatitude());
 		assertEquals(longitude, location.getLongitude());
 	}
+	
+	public void testGetLatLng() {
+		final double latitude = 53.5333;
+		final double longitude = 113.5000;
+		Geolocation location = new Geolocation(latitude, longitude);
+		LatLng latlng = location.getLatLng();
+		assertEquals(latitude, latlng.latitude);
+		assertEquals(longitude, latlng.longitude);
+	}
 }

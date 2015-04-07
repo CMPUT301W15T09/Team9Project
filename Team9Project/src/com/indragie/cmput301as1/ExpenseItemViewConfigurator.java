@@ -80,5 +80,11 @@ public class ExpenseItemViewConfigurator implements ViewConfigurator<ExpenseClai
 		if (item.isIncomplete()) {
 			incompleteImageView.setVisibility(View.VISIBLE);
 		}
+		
+		ImageView locationImageView = (ImageView)view.findViewById(R.id.iv_location_icon);
+		locationImageView.setVisibility(View.INVISIBLE);
+		if (item.getLocation() != null) {
+			locationImageView.setVisibility(View.VISIBLE);
+		}
 	}
 }
