@@ -70,8 +70,8 @@ public class DestinationEditActivity extends DestinationAddActivity {
 	 * @return Intent that contains the destination to add.
 	 */
 	@Override
-	protected Intent addDestinationIntent(String name, String reason, Destination destination)  {
-		Intent intent = super.addDestinationIntent(name, reason, destination);
+	protected Intent addDestinationIntent(Destination destination)  {
+		Intent intent = super.addDestinationIntent(destination);
 		intent.putExtra(EXTRA_EDIT_DESTINATION_POSITION, getIntent().getIntExtra(EXTRA_EDIT_DESTINATION_POSITION, -1));
 		return intent;
 	}

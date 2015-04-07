@@ -561,6 +561,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	public void startDestinationAddActivity() {
 		Intent addDestinationIntent = new Intent(this, DestinationAddActivity.class);
 		addDestinationIntent.putExtra(DestinationAddActivity.EXTRA_USER, user);
+		addDestinationIntent.putExtra(DestinationAddActivity.ADD_TO_CLAIM, true);
 		startActivityForResult(addDestinationIntent, ADD_DESTINATION_REQUEST);
 	}
 	
@@ -682,6 +683,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	private void startEditDestinationActivity(int position) {
 		Intent editDestinationIntent = new Intent(this, DestinationEditActivity.class);
 		editDestinationIntent.putExtra(DestinationEditActivity.EXTRA_DESTINATION, controller.getDestination(position));
+		editDestinationIntent.putExtra(DestinationEditActivity.ADD_TO_CLAIM, false);
 		editDestinationIntent.putExtra(DestinationEditActivity.EXTRA_EDIT_DESTINATION_POSITION, position);
 		editDestinationIntent.putExtra(DestinationEditActivity.EXTRA_EDIT_DESTINATION_EDITABLE, editable);
 		startActivityForResult(editDestinationIntent, EDIT_DESTINATION_REQUEST);
