@@ -689,7 +689,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		startActivityForResult(editDestinationIntent, EDIT_DESTINATION_REQUEST);
 	}
 	
-	
 	/**
 	 * Starts the {@link EditExpenseItemActivity}
 	 * @param position The position of the {@link ExpenseItem} to edit.
