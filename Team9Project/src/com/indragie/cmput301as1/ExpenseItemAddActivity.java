@@ -194,9 +194,9 @@ public class ExpenseItemAddActivity extends PlacePickerParentActivity {
 			}
 
 			@Override
-			public void onPlacePicked(Place place) {
-				expenseLocation = new Geolocation(place);
-				locationField.setText(expenseLocation.toString());
+			public void onPlacePicked(Geolocation location) {
+				expenseLocation = location;
+				locationField.setText(location.toString());
 				locationField.clearFocus();
 			}
 		};
@@ -206,7 +206,7 @@ public class ExpenseItemAddActivity extends PlacePickerParentActivity {
 					@Override
 					public void onFocusChange(View v, boolean hasFocus) {
 						if (hasFocus) {
-							openPlacePicker(listener);
+							openPlacePicker(listener, null);
 						}
 					}
 				});
