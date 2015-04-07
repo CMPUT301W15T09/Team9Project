@@ -62,7 +62,6 @@ public class DestinationEditActivity extends DestinationAddActivity {
 		
 		addLocationField.setText(location.getName() + "\n" + location.getAddress());
 		addLocationField.setEnabled(editable);
-		
 	}
 	
 	/**
