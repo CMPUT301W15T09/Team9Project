@@ -214,15 +214,28 @@ public class ExpenseClaimListController extends TypedObservable<List<ExpenseClai
 			Tag tag = mutation.getOldTag();
 			int i = 0;
 			for (ExpenseClaim claim : listModel.getItems()) {
-				if (!claim.hasTag(tag)) continue;
+				int tagIndex = -1;
+				if (isFiltered()) {
+					tagIndex = filterTags.indexOf(tag);
+				}
 				
 				switch (mutation.getMutationType()) {
 				case DELETE:
-					claim.removeTag(tag);
+					if (claim.hasTag(tag)) {
+						claim.removeTag(tag);
+					}
+					if (tagIndex != -1) {
+						filterTags.remove(tagIndex);
+					}
 					break;
 				case EDIT:
-					int tagIndex = claim.getTags().indexOf(tag);
-					claim.setTag(tagIndex, mutation.getNewTag());
+					Tag newTag = mutation.getNewTag();
+					if (claim.hasTag(tag)) {
+						claim.setTag(claim.getTags().indexOf(tag), newTag);
+					}
+					if (tagIndex != -1) {
+						filterTags.set(tagIndex, newTag);
+					}
 					break;
 				}
 				
