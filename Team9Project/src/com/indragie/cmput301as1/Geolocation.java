@@ -150,6 +150,13 @@ public class Geolocation implements Serializable {
 		this.address = address;
 	}
 	
+	/**
+	 * @return The location as a {@link LatLng} object.
+	 */
+	public LatLng getLatLng() {
+		return new LatLng(latitude, longitude);
+	}
+	
 	//================================================================================
 	// Object
 	//================================================================================
