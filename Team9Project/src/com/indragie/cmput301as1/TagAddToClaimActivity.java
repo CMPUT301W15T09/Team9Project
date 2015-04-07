@@ -38,7 +38,7 @@ public class TagAddToClaimActivity extends ListActivity implements TypedObserver
 	// Constants
 	//================================================================================
 	
-	protected static final int ADD_TAG_REQUEST= 1;
+	protected static final int ADD_TAG_REQUEST= 40;
 	
 	/**
 	 * Filename for storing tags.
