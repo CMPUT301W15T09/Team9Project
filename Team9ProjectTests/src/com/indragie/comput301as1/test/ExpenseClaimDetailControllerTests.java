@@ -48,7 +48,7 @@ public class ExpenseClaimDetailControllerTests extends AndroidTestCase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		ExpenseClaim claim = new ExpenseClaim("", "", new Date(), new Date(), new User("abcd", ""), ExpenseClaim.Status.IN_PROGRESS);
+		ExpenseClaim claim = new ExpenseClaim("", new Date(), new Date(), new User("abcd", ""), ExpenseClaim.Status.IN_PROGRESS);
 		destination1 = new Destination("Rome", "", null); 
 		destination2 = new Destination("Paris", "", null); 
 		claim.addDestination(destination1);
@@ -62,8 +62,8 @@ public class ExpenseClaimDetailControllerTests extends AndroidTestCase {
 		User approver = new User("bcde", "approver");
 		comment1 = new Comment(approver, "testcomment", new Date(), Comment.Status.RETURNED);
 		comment2 = new Comment(approver, "testcomment2", new Date(), Comment.Status.APPROVED);
-		claim.addComments(comment1);
-		claim.addComments(comment2);
+		claim.addComments(0, comment1);
+		claim.addComments(0, comment2);
 		
 		item1 = new ExpenseItem("Hotel", "", "accomodation", Money.parse("USD 2000.00"), new Date());
 		item2 = new ExpenseItem("Taxi", "", "ground transport", Money.parse("USD 50.00"), new Date());
@@ -119,8 +119,8 @@ public class ExpenseClaimDetailControllerTests extends AndroidTestCase {
 	}
 	
 	public void testGetComent() {
-		assertEquals(comment1, controller.getComment(0));
-		assertEquals(comment2, controller.getComment(1));
+		assertEquals(comment1, controller.getComment(1));
+		assertEquals(comment2, controller.getComment(0));
 	}
 	
 	public void testGetExpenseItem() {

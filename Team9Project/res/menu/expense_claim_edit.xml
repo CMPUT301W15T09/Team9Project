@@ -11,12 +11,6 @@
         android:id="@+id/action_email"
         android:title="@string/action_email"/>
     <item
-        android:id="@+id/action_mark_returned"
-        android:title="@string/action_mark_returned"/>
-    <item
-        android:id="@+id/action_mark_approved"
-        android:title="@string/action_mark_approved"/>
-    <item
         android:id="@+id/action_mark_submitted"
         android:title="@string/action_mark_submitted"/>
     <item 
