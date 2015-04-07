@@ -5,26 +5,27 @@ import android.os.Bundle;
 
 public class DestinationEditActivity extends DestinationAddActivity {
 	
-	public static final String EDIT_DESTINATION = "com.indragie.cmput301as1.EDIT_DESTINATION";
-	public static final String EDIT_DESTINATION_POSITION = "com.indragie.cmput301as1.EDIT_DESTINATION_POSITION";
-	public static final String EDIT_DESTINATION_EDITABLE = "com.indragie.cmput301as1.EDIT_DESTINATION_EDITABLE";
+	public static final String EXTRA_EDIT_DESTINATION_POSITION = "com.indragie.cmput301as1.EXTRA_EDIT_DESTINATION_POSITION";
+	public static final String EXTRA_EDIT_DESTINATION_EDITABLE = "com.indragie.cmput301as1.EXTRA_EDIT_DESTINATION_EDITABLE";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setUpFields();
 		setUpListener();
+		noLocationAdded = false;
 		
 		Intent intent = getIntent();
-		Destination destination = (Destination)intent.getSerializableExtra(EDIT_DESTINATION);
-		Geolocation location = destination.getLocation();
+		Destination destination = (Destination)intent.getSerializableExtra(EXTRA_DESTINATION);
+		location = destination.getLocation();
 
-		boolean editable = intent.getBooleanExtra(EDIT_DESTINATION_EDITABLE, false);
+		boolean editable = intent.getBooleanExtra(EXTRA_EDIT_DESTINATION_EDITABLE, false);
 		
 		nameField.setText(destination.getName());
 		nameField.setEnabled(editable);
 		reasonField.setText(destination.getTravelReason());
 		reasonField.setEnabled(editable);
+		
 		addLocationField.setText(location.getName() + "\n" + location.getAddress());
 		addLocationField.setEnabled(editable);
 		
@@ -33,7 +34,7 @@ public class DestinationEditActivity extends DestinationAddActivity {
 	@Override
 	protected Intent addDestinationIntent(String name, String reason, Destination destination)  {
 		Intent intent = super.addDestinationIntent(name, reason, destination);
-		intent.putExtra(EDIT_DESTINATION_POSITION, getIntent().getIntExtra(EDIT_DESTINATION_POSITION, -1));
+		intent.putExtra(EXTRA_EDIT_DESTINATION_POSITION, getIntent().getIntExtra(EXTRA_EDIT_DESTINATION_POSITION, -1));
 		return intent;
 	}
 
