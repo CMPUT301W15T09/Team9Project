@@ -57,7 +57,6 @@ public class ExpenseClaimAddActivity extends Activity {
 	 */
 	private DateEditText endDateField;
 	private TextView userfield;
-	private EditText commentField;
 	private User user;
 
 	//================================================================================
@@ -111,9 +110,6 @@ public class ExpenseClaimAddActivity extends Activity {
 		
 		userfield = (TextView)findViewById(R.id.tv_user);
 		userfield.append(user.getName());
-		
-		commentField = (EditText)findViewById(R.id.et_comments);
-		commentField.setEnabled(false);
 	}
 	
 	/**

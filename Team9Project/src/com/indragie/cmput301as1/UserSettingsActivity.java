@@ -25,7 +25,7 @@ import android.view.View;
 import android.widget.EditText;
 
 /**
- * Presents a user interface for modifiying user settings.
+ * Presents a user interface for modifying user settings.
  */
 public class UserSettingsActivity extends PlacePickerParentActivity {
 	//================================================================================
@@ -86,6 +86,12 @@ public class UserSettingsActivity extends PlacePickerParentActivity {
 			}
 		} else {
 			setTitle(R.string.title_activity_user_settings_first_run);
+			
+			//Default location is set to central Edmonton, AB, Canada
+			//if no location is selected. 
+			homeLocation = new Geolocation(53.333333333, 113.5000000);
+			homeLocation.setName("Home");
+			homeLocation.setAddress("Default");
 		}
 		
 		final OnPlacePickedListener listener = new OnPlacePickedListener() {
@@ -119,7 +125,7 @@ public class UserSettingsActivity extends PlacePickerParentActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()) {
-		case android.R.id.home:
+		case android.R.id.home:			
 			save();
 			return true;
 		default:

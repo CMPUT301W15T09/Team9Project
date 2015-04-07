@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:paddingLeft="12dp"
+    android:paddingRight="12dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp">
+    <ScrollView
+           android:id="@+id/scrollview"
+           android:layout_width="fill_parent"
+           android:layout_height="wrap_content"
+           android:layout_marginEnd="25dp"
+           android:fillViewport="true">
+    
+	    <TextView 
+			android:id="@+id/tv_comment"
+	    	android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:textAppearance="?android:attr/textAppearanceListItem"
+	    	android:textSize="15sp"
+	    	 />
+    </ScrollView>
+    
+	<TextView 
+	    android:id="@+id/tv_date"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignBaseline="@id/tv_name"
+	    android:layout_alignParentEnd="true"
+	    android:textAppearance="?android:attr/textAppearanceListItemSmall"
+	    android:textSize="15sp" />
+
+	<TextView 
+		android:id="@+id/tv_name"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:textAppearance="?android:attr/textAppearanceListItem" 
+    	android:layout_below="@id/scrollview"
+    	android:layout_marginStart="15dp"
+    	android:textSize="12sp"/>
+	
+	<TextView
+	    android:id="@+id/tv_status"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:paddingLeft="4dp"
+	    android:paddingRight="4dp"
+	    android:paddingBottom="1dp"
+	    android:layout_alignBaseline="@id/scrollview"
+	    android:layout_alignParentEnd="true"
+	    android:gravity="center"
+	    android:textColor="#ffffff"
+	    android:textStyle="bold"
+	    android:textSize="14sp" />
+	
+</RelativeLayout>
