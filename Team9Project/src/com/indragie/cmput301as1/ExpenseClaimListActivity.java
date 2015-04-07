@@ -234,7 +234,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.expense_claim_list, menu);
+		getMenuInflater().inflate(R.menu.expense_claim_list_owned, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 
