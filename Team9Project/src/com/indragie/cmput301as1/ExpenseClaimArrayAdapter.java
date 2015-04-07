@@ -56,40 +56,8 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 
 		// get the Geolocation of the current destination
 		List<Destination> destinations = claim.getDestinations();
-
-		// change the background color for destinations
-		if ((destinations.size() > 0)&&(user.getLocation()!=null)){
-			// get the home location
-			Geolocation home = user.getLocation();
-		
-			// get the first destination
-			if (destinations.get(0).getLocation() != null) {
-				Geolocation location = destinations.get(0).getLocation();
-
-				// get the computed distance between the home location and destination
-				float[] results = new float[1];
-				double startLatitude = home.getLatitude();
-				double startLongitude = home.getLongitude();
-				double endLatitude = location.getLatitude();
-				double endLongitude = location.getLongitude();
-				Location.distanceBetween(startLatitude, startLongitude, endLatitude, endLongitude, results);
-				float distanceBetween = results[0];
-
-				// change the color of the background of destination depending on the distance
-				if (distanceBetween < 10000000.0) {
-					convertView.setBackgroundColor(Color.BLUE);
-				} else if (distanceBetween < 20000000.0) {
-					convertView.setBackgroundColor(Color.CYAN);
-				} else if (distanceBetween < 30000000.0) {
-					convertView.setBackgroundColor(Color.GREEN);
-				} else if (distanceBetween < 40000000.0) {
-					convertView.setBackgroundColor(Color.YELLOW);
-				} else {
-					convertView.setBackgroundColor(Color.LTGRAY);
-				}				
-			}
-		}
-		setColorCoding(destinations, convertView);
+		Geolocation home = user.getLocation();
+		setColorCoding(destinations, convertView, home);
 
 		destinationsTextView.setText(buildDestinationsString(claim));
 		
@@ -115,11 +83,8 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 	 * @param destinations list of destinations
 	 * @param convertView the background of the claim
 	 */
-	private void setColorCoding(List<Destination> destinations, View convertView) {
+	private void setColorCoding(List<Destination> destinations, View convertView, Geolocation home) {
 		if ((destinations.size() > 0)&&(user.getLocation()!=null)){
-			// get the home location
-			Geolocation home = user.getLocation();
-		
 			// get the first destination
 			if (destinations.get(0).getLocation() != null) {
 				Geolocation location = destinations.get(0).getLocation();
