@@ -1,17 +1,21 @@
 package com.indragie.cmput301as1;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 
 public class DestinationEditActivity extends DestinationAddActivity {
+	
+	public static final String EDIT_DESTINATION = "com.indragie.cmput301as1.EDIT_DESTINATION";
+	public static final String EDIT_DESTINATION_POSITION = "com.indragie.cmput301as1.EDIT_DESTINATION_POSITION";
+	public static final String EDIT_DESTINATION_EDITABLE = "com.indragie.cmput301as1.EDIT_DESTINATION_EDITABLE";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_destination_add);
+		setUpFields();
+		
+		Intent intent = getIntent();
+		
 	}
 
 

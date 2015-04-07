@@ -654,9 +654,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		
 		switch (type) {
 		case DESTINATION:
-			if(status == Status.RETURNED || status == Status.IN_PROGRESS)
-				//startDestinationAddActivity(index.getItemIndex());
-				//buildDestinationAlertDialog(index.getItemIndex()).show(); TODO: destination activity
+			startEditDestinationActivity(index.getItemIndex());
 			break;
 		case TAG:
 			startEditTagActivity(index.getItemIndex());
@@ -673,7 +671,11 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	 * @param position The position of the {@link Destination} to edit.
 	 */
 	private void startEditDestinationActivity(int position) {
-		//TODO
+		Intent editDestinationIntent = new Intent(this, DestinationEditActivity.class);
+		editDestinationIntent.putExtra(DestinationEditActivity.EDIT_DESTINATION, controller.getDestination(position));
+		editDestinationIntent.putExtra(DestinationEditActivity.EDIT_DESTINATION_POSITION, position);
+		editDestinationIntent.putExtra(DestinationEditActivity.EDIT_DESTINATION_EDITABLE, editable);
+		startActivityForResult(editDestinationIntent, EDIT_DESTINATION_REQUEST);
 	}
 	
 	
@@ -681,10 +683,10 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	 * Starts the {@link EditExpenseItemActivity}
 	 * @param position The position of the {@link ExpenseItem} to edit.
 	 */
-	private void startEditExpenseItemActivity(int index) {
+	private void startEditExpenseItemActivity(int position) {
 		Intent editIntent = new Intent(this, ExpenseItemEditActivity.class);
-		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM, controller.getExpenseItem(index));
-		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_POSITION, index);
+		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM, controller.getExpenseItem(position));
+		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_POSITION, position);
 		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_EDITABLE, editable);
 		startActivityForResult(editIntent, EDIT_EXPENSE_ITEM_REQUEST);
 	}
