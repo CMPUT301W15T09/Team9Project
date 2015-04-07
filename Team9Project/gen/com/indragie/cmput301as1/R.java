@@ -505,6 +505,7 @@ containing a value of this type.
         public static final int receipt_camera=0x7f020035;
         public static final int receipt_search=0x7f020036;
         public static final int red=0x7f020037;
+        public static final int yellow=0x7f020038;
     }
     public static final class id {
         public static final int action_accept=0x7f0c0043;

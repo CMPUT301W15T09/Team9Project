@@ -107,16 +107,16 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 				float distanceBetween = results[0];
 
 				// change the color of the background of destination depending on the distance
-				if (distanceBetween < 10000000.0) {
+				if (distanceBetween < 300000.0) {
 					destinationsBar.setImageResource(R.drawable.green);
-				} else if (distanceBetween < 20000000.0) {
+				} else if (distanceBetween < 1000000.0) {
 					destinationsBar.setImageResource(R.drawable.lime);
-				} else if (distanceBetween < 30000000.0) {
+				} else if (distanceBetween < 3500000.0) {
+					destinationsBar.setImageResource(R.drawable.yellow);
+				} else if (distanceBetween < 7500000.0) {
 					destinationsBar.setImageResource(R.drawable.orange);
-				} else if (distanceBetween < 40000000.0) {
-					destinationsBar.setImageResource(R.drawable.red);
 				} else {
-					destinationsBar.setImageResource(R.drawable.grey);
+					destinationsBar.setImageResource(R.drawable.red);
 				}				
 			}
 		}
