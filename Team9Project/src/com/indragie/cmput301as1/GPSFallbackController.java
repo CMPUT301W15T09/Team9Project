@@ -115,6 +115,7 @@ public class GPSFallbackController {
 				}
 			};
 		});
+		currentLocationButton.performClick();
 		
 		return new AlertDialog.Builder(context)
 			.setTitle(R.string.gps_alert_title)
@@ -123,8 +124,17 @@ public class GPSFallbackController {
 			.setPositiveButton(android.R.string.ok, new OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					double latitude = Double.parseDouble(latitudeField.getText().toString());
-					double longitude = Double.parseDouble(longitudeField.getText().toString());
+					String latitudeStr = latitudeField.getText().toString();
+					String longitudeStr = latitudeField.getText().toString();
+					double latitude = 0.0, longitude = 0.0;
+					
+					if (!latitudeStr.isEmpty()) {
+						latitude = Double.parseDouble(latitudeField.getText().toString());
+					}
+					if (!longitudeStr.isEmpty()) {
+						longitude = Double.parseDouble(longitudeField.getText().toString());
+					}
+					
 					listener.onOk(latitude, longitude);
 				}
 			})
