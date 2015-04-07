@@ -199,7 +199,7 @@ public class ExpenseItemAddActivity extends PlacePickerParentActivity {
 					@Override
 					public void onFocusChange(View v, boolean hasFocus) {
 						if (hasFocus) {
-							openPlacePicker(listener, null);
+							openPlacePicker(listener, expenseLocation);
 						}
 					}
 				});
