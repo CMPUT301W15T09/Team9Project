@@ -508,15 +508,15 @@ containing a value of this type.
         public static final int action_done=0x7f0c0026;
         public static final int action_edit=0x7f0c003f;
         public static final int action_email=0x7f0c0043;
-        public static final int action_filter_tags=0x7f0c0049;
-        public static final int action_manage_tags=0x7f0c0048;
+        public static final int action_filter_tags=0x7f0c004a;
+        public static final int action_manage_tags=0x7f0c0049;
         public static final int action_mark_approved=0x7f0c0045;
         public static final int action_mark_returned=0x7f0c0044;
         public static final int action_mark_submitted=0x7f0c0046;
         public static final int action_set_incomplete=0x7f0c004c;
         public static final int action_settings=0x7f0c0040;
-        public static final int action_sort_claim=0x7f0c0047;
-        public static final int action_user_settings=0x7f0c004a;
+        public static final int action_sort_claim=0x7f0c0048;
+        public static final int action_user_settings=0x7f0c0047;
         public static final int adjust_height=0x7f0c0000;
         public static final int adjust_width=0x7f0c0001;
         public static final int book_now=0x7f0c0010;
@@ -602,10 +602,11 @@ containing a value of this type.
         public static final int contextual_edit=0x7f0b0003;
         public static final int destination_add=0x7f0b0004;
         public static final int expense_claim_edit=0x7f0b0005;
-        public static final int expense_claim_list_base=0x7f0b0006;
-        public static final int expense_claim_list_owned=0x7f0b0007;
-        public static final int expense_item_edit=0x7f0b0008;
-        public static final int geolocation=0x7f0b0009;
+        public static final int expense_claim_list_activity=0x7f0b0006;
+        public static final int expense_claim_list_base=0x7f0b0007;
+        public static final int expense_claim_list_owned=0x7f0b0008;
+        public static final int expense_item_edit=0x7f0b0009;
+        public static final int geolocation=0x7f0b000a;
     }
     public static final class raw {
         public static final int gtm_analytics=0x7f040000;
