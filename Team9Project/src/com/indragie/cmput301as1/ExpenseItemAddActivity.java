@@ -128,11 +128,6 @@ public class ExpenseItemAddActivity extends PlacePickerParentActivity {
 	protected boolean incomplete;
 
 	/**
-	 * Geolocation for item.
-	 */
-	protected Geolocation geolocation;
-
-	/**
 	 * Controller used for handling receipt images.
 	 */
 	private ExpenseItemReceiptController receiptController;
@@ -257,7 +252,7 @@ public class ExpenseItemAddActivity extends PlacePickerParentActivity {
 			item.setReceiptUri(receiptFileUri);
 		}
 		item.setIncomplete(incomplete);
-		item.setLocation(geolocation);
+		item.setLocation(expenseLocation);
 		return item;
 	}
 
