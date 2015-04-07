@@ -66,12 +66,12 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	/**
 	 * Request code for starting the {@link DestinationAddActivity}
 	 */
-	private static final int ADD_DESTINATION_REQUEST = 7;
+	private static final int ADD_DESTINATION_REQUEST = 34;
 	
 	/**
 	 * Request code for starting the {@link DestinationEditActivity}
 	 */
-	private static final int EDIT_DESTINATION_REQUEST = 8;
+	private static final int EDIT_DESTINATION_REQUEST = 35;
 	
 	/**
 	 * Request code for starting {@link ExpenseItemAddActivity}

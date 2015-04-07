@@ -84,9 +84,9 @@ public class DestinationAddActivity extends PlacePickerParentActivity {
 		setUpFields();
 		setUpListener();
 		
-		Boolean addToClaim = getIntent().getBooleanExtra(ADD_TO_CLAIM, false);
+		boolean addToClaim = getIntent().getBooleanExtra(ADD_TO_CLAIM, false);
 		
-		if(addToClaim) {
+		if (addToClaim) {
 			User user = (User)getIntent().getSerializableExtra(EXTRA_USER);
 			location = user.getLocation();
 			
