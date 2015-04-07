@@ -22,7 +22,8 @@ import java.math.RoundingMode;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 
-import android.app.Activity;
+import com.google.android.gms.location.places.Place;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -43,7 +44,7 @@ import android.widget.Toast;
  * Activity that presents a user interface for entering information to 
  * create a new expense item.
  */
-public class ExpenseItemAddActivity extends Activity {
+public class ExpenseItemAddActivity extends PlacePickerParentActivity {
 	//================================================================================
 	// Constants
 	//================================================================================
@@ -77,6 +78,11 @@ public class ExpenseItemAddActivity extends Activity {
 	protected EditText descriptionField;
 
 	/**
+	 * Field for the location where the expense was incurred.
+	 */
+	protected EditText locationField;
+	
+	/**
 	 * Field that displays the cost amount of the expense item.
 	 */
 	protected EditText amountField;
@@ -100,6 +106,11 @@ public class ExpenseItemAddActivity extends Activity {
 	 * Button that displays the receipt image taken, if any.
 	 */
 	protected ImageButton receiptButton;
+	
+	/**
+	 * The location where the expense was incurred.
+	 */
+	protected Geolocation expenseLocation;
 
 	/**
 	 * Uri reference of the receipt image.
@@ -156,6 +167,7 @@ public class ExpenseItemAddActivity extends Activity {
 
 		nameField = (EditText)findViewById(R.id.et_name);
 		descriptionField = (EditText)findViewById(R.id.et_description);
+		locationField = (EditText)findViewById(R.id.et_location);
 		amountField = (EditText)findViewById(R.id.et_amount);
 		dateField = (DateEditText)findViewById(R.id.et_date);
 
@@ -174,6 +186,30 @@ public class ExpenseItemAddActivity extends Activity {
 		});
 		
 		incomplete = false;
+		
+		final OnPlacePickedListener listener = new OnPlacePickedListener() {
+			
+			@Override
+			public void onPlacePickerCanceled() {
+				locationField.clearFocus();
+			}
+			
+			@Override
+			public void onPlacePicked(Place place) {
+				expenseLocation = new Geolocation(place);
+                		locationField.setText(expenseLocation.toString());
+                		locationField.clearFocus();				
+			}
+		};
+		
+		locationField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        		@Override
+        		public void onFocusChange(View v, boolean hasFocus) {
+                		if (hasFocus) {
+                			openPlacePicker(listener);
+                		}
+        		}
+        	});
 	}
 	
 	@Override

@@ -28,12 +28,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings.Secure;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -51,9 +49,9 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	private static final int ADD_EXPENSE_CLAIM_REQUEST = 1;
 	private static final int EDIT_EXPENSE_CLAIM_REQUEST = 2;
 	private static final int SORT_EXPENSE_CLAIM_REQUEST = 3;
-	private static final int SET_HOME_LOCATION_REQUEST = 6;
 	private static final int MANAGE_TAGS_REQUEST = 4;
 	private static final int FILTER_TAGS_REQUEST = 5;
+	private static final int USER_SETTINGS_REQUEST = 6;
 	
 	//================================================================================
 	// Properties
@@ -67,7 +65,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	/**
 	 * List Model of filtered expense claim.
 	 */
-	private ListModel<ExpenseClaim> filteredListModel = new ListModel<ExpenseClaim>("filtered_List", this);
+	private ListModel<ExpenseClaim> filteredListModel;
 	
 	/**
 	 * List of tags to filter expense claims.
@@ -87,9 +85,10 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		filteredListModel = new ListModel<ExpenseClaim>("filtered_List", this);
 		userManager = new UserManager(this);
 		if (userManager.getActiveUser() == null) {
-			promptForUserInformation();
+			startUserSettingsActivity();
 		} else {
 			loadData();
 		}
@@ -118,13 +117,20 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		// Show the initial list of expense claims (persisted on disk)
 		listModel = session.getOwnedClaims();
 		listModel.addObserver(this);
-		setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems()));
+		setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems(), userManager.getActiveUser()));
 
 		// Load the new list from the server
 		final Context context = this;
 		session.loadOwnedClaims(new ElasticSearchAPIClient.APICallback<List<ExpenseClaim>>() {
 			@Override
-			public void onSuccess(Response response, List<ExpenseClaim> model) {}
+			public void onSuccess(Response response, final List<ExpenseClaim> model) {
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						listModel.replace(model);
+					}
+				});
+			}
 
 			@Override
 			public void onFailure(Request request, Response response, IOException e) {
@@ -134,7 +140,6 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 						Toast.makeText(context, R.string.load_fail_error, Toast.LENGTH_LONG).show();
 					}
 				});
-				
 			}
 		});
 	}
@@ -149,7 +154,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode != RESULT_OK) {
 			if (resultCode == RESULT_CANCELED && requestCode == FILTER_TAGS_REQUEST) {
-				setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems()));
+				setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems(), userManager.getActiveUser()));
 				filteredTagsList.clear();
 			}
 			return;
@@ -164,25 +169,25 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		case SORT_EXPENSE_CLAIM_REQUEST:
 			onSortExpenseResult(data);
 			break;
-		case SET_HOME_LOCATION_REQUEST:
-			onSetHomeLocationResult(data);
-			break;
 		case MANAGE_TAGS_REQUEST:
 			onManageTagsResult(data);
 			break;
 		case FILTER_TAGS_REQUEST:
 			onFilterTagsRequest(data);
 			break;
+		case USER_SETTINGS_REQUEST:
+			onUserSettingsResult(data);
+			break;
 		}
 	}
 	
 	/**
-	 * sets the home location for the user
-	 * @param data
+	 * Sets the active user of the application.
+	 * @param data The intent to get the user from.
 	 */
-	private void onSetHomeLocationResult(Intent data) {
-		Geolocation location = (Geolocation)data.getSerializableExtra(GeolocationActivity.EXTRA_LOCATION);
-		userManager.getActiveUser().setLocation(location);
+	private void onUserSettingsResult(Intent data) {
+		User user = (User)data.getSerializableExtra(UserSettingsActivity.EXTRA_USER);
+		userManager.setActiveUser(user);
 	}
 	
 	/**
@@ -208,7 +213,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM);
 		listModel.add(claim);
 		if (!filteredTagsList.isEmpty()) {
-			setListAdapter(new ExpenseClaimArrayAdapter(this, filteredListModel.getItems()));
+			setListAdapter(new ExpenseClaimArrayAdapter(this, filteredListModel.getItems(), userManager.getActiveUser()));
 		}
 	}
 	
@@ -304,7 +309,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 			}
 		}
 		filteredListModel.replace(tempClaims);
-		setListAdapter(new ExpenseClaimArrayAdapter(this, filteredListModel.getItems()));
+		setListAdapter(new ExpenseClaimArrayAdapter(this, filteredListModel.getItems(), userManager.getActiveUser()));
 	}
 
 	@Override
@@ -325,8 +330,8 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		case R.id.action_manage_tags:
 			startManageTagsActivity();
 			return true;
-		case R.id.action_set_home_location:
-			startSetHomeLocationActivity();
+		case R.id.action_user_settings:
+			startUserSettingsActivity();
 			return true;
 		case R.id.action_filter_tags:
 			startFilterTagsActivity();
@@ -334,16 +339,6 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		default:
 			return super.onOptionsItemSelected(item);
 		}
-	}
-
-	/**
-	 * Starts the {@link GeolocationActivity}
-	 */
-	private void startSetHomeLocationActivity() {
-		Intent intent = new Intent(this, GeolocationActivity.class);
-		User user = userManager.getActiveUser();
-		intent.putExtra(GeolocationActivity.EXTRA_LOCATION, user.getLocation());
-		startActivityForResult(intent, SET_HOME_LOCATION_REQUEST);
 	}
 	
 	/**
@@ -381,32 +376,12 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	}
 	
 	/**
-	 * Prompts the user to enter their name.
+	 * Starts the {@link UserSettingsActivity}
 	 */
-	public void promptForUserInformation() {
-		// http://www.androidsnippets.com/prompt-user-input-with-an-alertdialog
-		AlertDialog.Builder alert = new AlertDialog.Builder(this);
-		alert.setCancelable(false);
-		alert.setTitle(R.string.user_alert_title);
-		alert.setMessage(R.string.user_alert_message);
-		
-		final EditText input = new EditText(this);
-		alert.setView(input);
-		
-		alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
-				String name = input.getText().toString();
-				if (name == null || name.isEmpty()) {
-					Toast.makeText(getApplicationContext(), R.string.user_alert_error, Toast.LENGTH_LONG).show();
-				} else {
-					// Device specific identifier
-					String androidID = Secure.getString(getContentResolver(), Secure.ANDROID_ID); 
-					userManager.setActiveUser(new User(androidID, name));
-					loadData();
-				}
-			}
-		});
-		alert.show();
+	private void startUserSettingsActivity() {
+		Intent userSettingsIntent = new Intent(this, UserSettingsActivity.class);
+		userSettingsIntent.putExtra(UserSettingsActivity.EXTRA_USER, userManager.getActiveUser());
+		startActivityForResult(userSettingsIntent, USER_SETTINGS_REQUEST);
 	}
 	
 	/**
@@ -471,6 +446,6 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 
 	@Override
 	public void update(TypedObservable<CollectionMutation<ExpenseClaim>> observable, CollectionMutation<ExpenseClaim> mutation) {
-		setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems()));
+		setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems(), userManager.getActiveUser()));
 	}
 }
