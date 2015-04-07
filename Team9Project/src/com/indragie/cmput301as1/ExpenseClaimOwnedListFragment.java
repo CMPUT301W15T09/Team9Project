@@ -100,7 +100,9 @@ public class ExpenseClaimOwnedListFragment extends ExpenseClaimListFragment {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
 		case ADD_EXPENSE_CLAIM_REQUEST:
-			onAddExpenseResult(data);
+			if (resultCode == Activity.RESULT_OK) {
+				onAddExpenseResult(data);
+			}
 			break;
 		default:
 			super.onActivityResult(requestCode, resultCode, data);

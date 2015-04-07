@@ -193,25 +193,31 @@ public abstract class ExpenseClaimListFragment extends ListFragment implements T
 	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		switch (requestCode) {
-		case EDIT_EXPENSE_CLAIM_REQUEST:
-			onEditExpenseResult(data);
-			break;
-		case SORT_EXPENSE_CLAIM_REQUEST:
-			onSortExpenseResult(data);
-			break;
-		case MANAGE_TAGS_REQUEST:
-			onManageTagsResult(data);
-			break;
-		case FILTER_TAGS_REQUEST:
-			if (resultCode == Activity.RESULT_OK) {
+		if (resultCode == Activity.RESULT_OK) {
+			switch (requestCode) {
+			case EDIT_EXPENSE_CLAIM_REQUEST:
+				onEditExpenseResult(data);
+				break;
+			case SORT_EXPENSE_CLAIM_REQUEST:
+				onSortExpenseResult(data);
+				break;
+			case MANAGE_TAGS_REQUEST:
+				onManageTagsResult(data);
+				break;
+			case FILTER_TAGS_REQUEST:
 				onFilterTagsRequest(data);
-			} else {
-				controller.removeFilter();
+				break;
+			default:
+				super.onActivityResult(requestCode, resultCode, data);
 			}
-			break;
-		default:
-			super.onActivityResult(requestCode, resultCode, data);
+		} else {
+			switch (requestCode) {
+			case FILTER_TAGS_REQUEST:
+				controller.removeFilter();
+				break;
+			default:
+				super.onActivityResult(requestCode, resultCode, data);
+			}
 		}
 	}
 	
