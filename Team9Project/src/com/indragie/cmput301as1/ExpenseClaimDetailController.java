@@ -183,8 +183,8 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 		ArrayList<ListSection<DetailItem>> sections = new ArrayList<ListSection<DetailItem>>();
 		sections.add(destinationsSection);
 		sections.add(tagsSection);
-		sections.add(expenseItemsSection);
 		sections.add(commentsSection);
+		sections.add(expenseItemsSection);
 		
 		XMLSectionHeaderConfigurator headerConfigurator = new XMLSectionHeaderConfigurator(R.layout.list_header, R.id.title_label);
 		adapter = new SectionedListAdapter<DetailItem>(context, sections, headerConfigurator);
@@ -267,6 +267,14 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 	 */
 	public Tag getTag(int index) {
 		return (Tag)tagsSection.get(index).getModel();
+	}
+	
+	/**
+	 * @param index The index of the {@link Comment} relative to its section.
+	 * @return The {@link Comment} at the specified index.
+	 */
+	public Comment getComment(int index) {
+		return (Comment)commentsSection.get(index).getModel();
 	}
 	
 	/**

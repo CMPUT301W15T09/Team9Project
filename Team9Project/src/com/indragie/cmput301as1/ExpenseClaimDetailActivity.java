@@ -346,6 +346,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	 */
 	public void onAddComment(Intent data) {
 		Comment comment = (Comment)data.getSerializableExtra(CommentAddActivity.COMMENT_TO_ADD);
+		claim.setApprover(user);
 		model.addComment(comment);
 		if (comment.getStatus() == Comment.Status.RETURNED) {
 			claim.setStatus(Status.RETURNED);
@@ -635,7 +636,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			submit.setEnabled(UserCheck);
 			approve.setEnabled(false);
 			returned.setEnabled(false);
-			addComment.setEnabled(true); //TODO: change later
+			addComment.setEnabled(false); 
 		}
 		if (status == Status.SUBMITTED){
 			approve.setEnabled(!UserCheck);
