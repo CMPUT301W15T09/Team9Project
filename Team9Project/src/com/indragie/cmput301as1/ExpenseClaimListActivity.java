@@ -18,6 +18,7 @@
 package com.indragie.cmput301as1;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.ActionBar.Tab;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -79,7 +80,9 @@ public class ExpenseClaimListActivity extends FragmentActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
 		case USER_SETTINGS_REQUEST:
-			onUserSettingsResult(data);
+			if (resultCode == Activity.RESULT_OK) {
+				onUserSettingsResult(data);
+			}
 			break;
 		default:
 			super.onActivityResult(requestCode, resultCode, data);
