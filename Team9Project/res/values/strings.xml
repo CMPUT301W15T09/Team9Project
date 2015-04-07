@@ -94,5 +94,9 @@
 
     <!--  Tag{Add,Edit}ToClaimActivity -->
     <string name="title_activity_tag_edit_to_claim">TagEditToClaimActivity</string>
+    <string name="action_replace_tag">Replace Tag</string>
+    <string name="title_tab_claims">Claims</string>
+    <string name="title_tab_approval">Approval</string>
+
 
 </resources>

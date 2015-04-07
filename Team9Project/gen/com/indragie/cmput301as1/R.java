@@ -139,6 +139,7 @@ public final class R {
         public static final int action_mark_returned=0x7f060024;
         public static final int action_mark_submitted=0x7f060023;
         public static final int action_new_tag=0x7f06003e;
+        public static final int action_replace_tag=0x7f060047;
         public static final int action_set_incomplete=0x7f06000f;
         public static final int action_sort_claim=0x7f060013;
         public static final int alert_submit_message=0x7f060035;
@@ -198,6 +199,8 @@ public final class R {
         /**  ExpenseClaimSortActivity 
          */
         public static final int title_activity_tag_list=0x7f060044;
+        public static final int title_tab_approval=0x7f060049;
+        public static final int title_tab_claims=0x7f060048;
         public static final int toast_receipt_deleted=0x7f06002b;
         public static final int toast_receipt_failed=0x7f06002a;
         public static final int toast_receipt_nonexistent=0x7f06002c;

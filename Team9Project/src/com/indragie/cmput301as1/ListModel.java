@@ -60,6 +60,7 @@ public class ListModel<T extends Serializable> extends TypedObservable<Collectio
 	 */
 	private ArrayList<T> list;
 	
+	
 	//================================================================================
 	// Constructors
 	//================================================================================
@@ -73,6 +74,7 @@ public class ListModel<T extends Serializable> extends TypedObservable<Collectio
 		this.fileName = fileName;
 		this.context = context;
 		this.list = load();
+		
 	}
 	
 	//================================================================================
@@ -208,6 +210,7 @@ public class ListModel<T extends Serializable> extends TypedObservable<Collectio
 			Object obj = ois.readObject();
 			ois.close();
 			fis.close();
+			
 			return (ArrayList<T>)obj;
 		} catch (Exception e) {
 			e.printStackTrace();
