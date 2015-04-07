@@ -818,6 +818,10 @@ containing a value of this type.
         public static final int status_submitted=0x7f06002e;
         public static final int store_picture_message=0x7f060001;
         public static final int store_picture_title=0x7f060000;
+        /**  ExpenseClaimPagerAdapter 
+         */
+        public static final int tab_owned=0x7f06007f;
+        public static final int tab_reviewal=0x7f060080;
         public static final int tags_title=0x7f06005f;
         public static final int title_activity_add_tag=0x7f060068;
         /**  DestinationAddActivity 
