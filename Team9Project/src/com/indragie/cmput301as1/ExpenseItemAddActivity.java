@@ -22,7 +22,8 @@ import java.math.RoundingMode;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 
-import android.app.Activity;
+import com.google.android.gms.location.places.Place;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -40,13 +41,13 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 /**
- * Activity that presents a user interface for entering information to 
- * create a new expense item.
+ * Activity that presents a user interface for entering information to create a
+ * new expense item.
  */
-public class ExpenseItemAddActivity extends Activity {
-	//================================================================================
+public class ExpenseItemAddActivity extends PlacePickerParentActivity {
+	// ================================================================================
 	// Constants
-	//================================================================================
+	// ================================================================================
 	/**
 	 * Intent key for the position of the {@link ExpenseItem} object.
 	 */
@@ -62,9 +63,9 @@ public class ExpenseItemAddActivity extends Activity {
 	 */
 	protected String[] dialogOptions;
 
-	//================================================================================
+	// ================================================================================
 	// Properties
-	//================================================================================
+	// ================================================================================
 
 	/**
 	 * Field that displays the name of the expense item.
@@ -75,6 +76,11 @@ public class ExpenseItemAddActivity extends Activity {
 	 * Field that displays the description of the expense item.
 	 */
 	protected EditText descriptionField;
+
+	/**
+	 * Field for the location where the expense was incurred.
+	 */
+	protected EditText locationField;
 
 	/**
 	 * Field that displays the cost amount of the expense item.
@@ -102,85 +108,120 @@ public class ExpenseItemAddActivity extends Activity {
 	protected ImageButton receiptButton;
 
 	/**
+	 * The location where the expense was incurred.
+	 */
+	protected Geolocation expenseLocation;
+
+	/**
 	 * Uri reference of the receipt image.
 	 */
 	protected Uri receiptFileUri;
-	
+
 	/**
-	 * Uri reference of the receipt image that is in the process of
-	 * being taken.
+	 * Uri reference of the receipt image that is in the process of being taken.
 	 */
 	private Uri newReceiptFileUri;
-	
+
 	/**
 	 * Incompleteness flag.
 	 */
 	protected boolean incomplete;
-	
+
+	/**
+	 * Geolocation for item.
+	 */
+	protected Geolocation geolocation;
+
 	/**
 	 * Controller used for handling receipt images.
 	 */
 	private ExpenseItemReceiptController receiptController;
 
-	//================================================================================
+	// ================================================================================
 	// Activity Callbacks
-	//================================================================================
+	// ================================================================================
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_expense_item_add);
-		dialogOptions = getResources().getStringArray(R.array.receipt_dialog_array);
+		dialogOptions = getResources().getStringArray(
+				R.array.receipt_dialog_array);
 		receiptController = new ExpenseItemReceiptController();
 
-		ActionBarUtils.showCancelDoneActionBar(
-			this,
-			new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					onCancel();
-				}
-			},
-			new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					onDone();
-				}
-			}
-		);
+		ActionBarUtils.showCancelDoneActionBar(this,
+				new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						onCancel();
+					}
+				}, new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						onDone();
+					}
+				});
 
-		nameField = (EditText)findViewById(R.id.et_name);
-		descriptionField = (EditText)findViewById(R.id.et_description);
-		amountField = (EditText)findViewById(R.id.et_amount);
-		dateField = (DateEditText)findViewById(R.id.et_date);
+		nameField = (EditText) findViewById(R.id.et_name);
+		descriptionField = (EditText) findViewById(R.id.et_description);
+		locationField = (EditText) findViewById(R.id.et_location);
+		amountField = (EditText) findViewById(R.id.et_amount);
+		dateField = (DateEditText) findViewById(R.id.et_date);
 
-		categorySpinner = (Spinner)findViewById(R.id.sp_category);
-		SpinnerUtils.configureSpinner(this, categorySpinner, R.array.categories_array);
+		categorySpinner = (Spinner) findViewById(R.id.sp_category);
+		SpinnerUtils.configureSpinner(this, categorySpinner,
+				R.array.categories_array);
 
-		currencySpinner = (Spinner)findViewById(R.id.sp_currency);
-		SpinnerUtils.configureSpinner(this, currencySpinner, R.array.currency_array);
+		currencySpinner = (Spinner) findViewById(R.id.sp_currency);
+		SpinnerUtils.configureSpinner(this, currencySpinner,
+				R.array.currency_array);
 
 		receiptButton = (ImageButton) findViewById(R.id.btn_receipt);
-		receiptButton.setOnClickListener(new View.OnClickListener() {	
+		receiptButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startImagePickerDialog();				
+				startImagePickerDialog();
 			}
 		});
-		
+
 		incomplete = false;
+
+		final OnPlacePickedListener listener = new OnPlacePickedListener() {
+
+			@Override
+			public void onPlacePickerCanceled() {
+				locationField.clearFocus();
+			}
+
+			@Override
+			public void onPlacePicked(Geolocation location) {
+				expenseLocation = location;
+				locationField.setText(location.toString());
+				locationField.clearFocus();
+			}
+		};
+
+		locationField
+				.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+					@Override
+					public void onFocusChange(View v, boolean hasFocus) {
+						if (hasFocus) {
+							openPlacePicker(listener, null);
+						}
+					}
+				});
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.expense_item_edit, menu);
-		menu.findItem(R.id.action_set_incomplete).setChecked(incomplete); 
+		menu.findItem(R.id.action_set_incomplete).setChecked(incomplete);
 		return true;
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch(item.getItemId()) {
+		switch (item.getItemId()) {
 		case android.R.id.home:
 			onDone();
 			return true;
@@ -193,39 +234,36 @@ public class ExpenseItemAddActivity extends Activity {
 		}
 	}
 
-	//================================================================================
+	// ================================================================================
 	// Subclass Overrides
-	//================================================================================
-	
+	// ================================================================================
+
 	/**
-	 * Creates a new expense item based on the contents of the
-	 * data fields in the user interface.
+	 * Creates a new expense item based on the contents of the data fields in
+	 * the user interface.
+	 * 
 	 * @return The new expense item.
 	 */
 	private ExpenseItem buildExpenseItem() {
 		Money amount = Money.of(
-			CurrencyUnit.of(currencySpinner.getSelectedItem().toString()), 
-			Float.parseFloat(amountField.getText().toString()),
-			RoundingMode.HALF_UP
-		);
-		ExpenseItem item = new ExpenseItem(
-			nameField.getText().toString(),
-			descriptionField.getText().toString(),
-			categorySpinner.getSelectedItem().toString(),
-			amount,
-			dateField.getDate()
-		);
+				CurrencyUnit.of(currencySpinner.getSelectedItem().toString()),
+				Float.parseFloat(amountField.getText().toString()),
+				RoundingMode.HALF_UP);
+		ExpenseItem item = new ExpenseItem(nameField.getText().toString(),
+				descriptionField.getText().toString(), categorySpinner
+						.getSelectedItem().toString(), amount,
+				dateField.getDate());
 		if (receiptFileUri != null) {
 			item.setReceiptUri(receiptFileUri);
 		}
 		item.setIncomplete(incomplete);
 		return item;
 	}
-	
+
 	/**
 	 * @return The intent to be passed back to the parent activity.
 	 */
-	protected Intent getResultIntent()  {
+	protected Intent getResultIntent() {
 		Intent intent = new Intent();
 		intent.putExtra(EXTRA_EXPENSE_ITEM, buildExpenseItem());
 		return intent;
@@ -242,9 +280,9 @@ public class ExpenseItemAddActivity extends Activity {
 		finish();
 	}
 
-	//================================================================================
+	// ================================================================================
 	// Receipt-Image Capture and Handling
-	//================================================================================
+	// ================================================================================
 
 	/**
 	 * Starts an activity to take a receipt image.
@@ -255,28 +293,36 @@ public class ExpenseItemAddActivity extends Activity {
 		intent.putExtra(MediaStore.EXTRA_OUTPUT, newReceiptFileUri);
 		startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
 	}
-	
+
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+		if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE
+				&& resultCode == RESULT_OK) {
 			if (receiptController.postProcessReceiptImage(newReceiptFileUri)) {
 				setReceiptFileUri(newReceiptFileUri);
 				newReceiptFileUri = null;
-				
-				Drawable receiptPic = Drawable.createFromPath(receiptFileUri.getPath());
+
+				Drawable receiptPic = Drawable.createFromPath(receiptFileUri
+						.getPath());
 				receiptButton.setImageDrawable(receiptPic);
-				
-				Toast.makeText(getApplicationContext(), getString(R.string.toast_receipt_success), Toast.LENGTH_SHORT).show();
+
+				Toast.makeText(getApplicationContext(),
+						getString(R.string.toast_receipt_success),
+						Toast.LENGTH_SHORT).show();
 				return;
 			}
 		}
 		newReceiptFileUri = null;
-		Toast.makeText(getApplicationContext(), getString(R.string.toast_receipt_failed), Toast.LENGTH_SHORT).show();
+		Toast.makeText(getApplicationContext(),
+				getString(R.string.toast_receipt_failed), Toast.LENGTH_SHORT)
+				.show();
 	}
-	
+
 	/**
 	 * Sets the {@link ExpenseItemAddActivity#receiptFileUri} and deletes the
 	 * receipt at the existing URI, if it exists.
-	 * @param receiptFileUri The new receipt file URI.
+	 * 
+	 * @param receiptFileUri
+	 *            The new receipt file URI.
 	 */
 	private void setReceiptFileUri(Uri receiptFileUri) {
 		if (this.receiptFileUri != null) {
@@ -285,14 +331,15 @@ public class ExpenseItemAddActivity extends Activity {
 		this.receiptFileUri = receiptFileUri;
 	}
 
-	//================================================================================
+	// ================================================================================
 	// Camera + Gallery Dialogue
-	//================================================================================
+	// ================================================================================
 
-	/* 
-	 *  Elements of method startDialog borrowed from 
-	 *  http://www.theappguruz.com/blog/android-take-photo-camera-gallery-code-sample/
-	 *  last accessed: 03/12/2015 3:02pm
+	/*
+	 * Elements of method startDialog borrowed from
+	 * http://www.theappguruz.com/blog
+	 * /android-take-photo-camera-gallery-code-sample/ last accessed: 03/12/2015
+	 * 3:02pm
 	 */
 	/**
 	 * Opens an alert dialog to allow the user to select a task.
@@ -300,41 +347,45 @@ public class ExpenseItemAddActivity extends Activity {
 	protected void startImagePickerDialog() {
 		AlertDialog.Builder openDialog = new AlertDialog.Builder(this);
 		openDialog.setTitle("Select an action");
-		openDialog.setItems(dialogOptions, new DialogInterface.OnClickListener() {
+		openDialog.setItems(dialogOptions,
+				new DialogInterface.OnClickListener() {
 
-			@Override
-			public void onClick(DialogInterface dialog, int item) {
+					@Override
+					public void onClick(DialogInterface dialog, int item) {
 
-				if (dialogOptions[item].equals("Take Photo")) {
-					takePhoto();
-				}
+						if (dialogOptions[item].equals("Take Photo")) {
+							takePhoto();
+						}
 
-				else if (dialogOptions[item].equals("Open in Gallery")) {
-					if (receiptFileUri == null) {
-						dialog.dismiss();
-						Toast.makeText(getApplicationContext(), 
-								getString(R.string.toast_receipt_nonexistent), Toast.LENGTH_SHORT).show();
+						else if (dialogOptions[item].equals("Open in Gallery")) {
+							if (receiptFileUri == null) {
+								dialog.dismiss();
+								Toast.makeText(
+										getApplicationContext(),
+										getString(R.string.toast_receipt_nonexistent),
+										Toast.LENGTH_SHORT).show();
+							} else {
+								Intent intent = new Intent();
+								intent.setAction(Intent.ACTION_VIEW);
+								intent.setDataAndType(receiptFileUri, "image/*");
+								startActivity(intent);
+							}
+						}
+
+						else if (dialogOptions[item].equals("Delete Photo")) {
+							setReceiptFileUri(null);
+							Toast.makeText(getApplicationContext(),
+									getString(R.string.toast_receipt_deleted),
+									Toast.LENGTH_SHORT).show();
+							receiptButton
+									.setImageResource(R.drawable.ic_action_search);
+						}
+
+						else if (dialogOptions[item].equals("Cancel")) {
+							dialog.dismiss();
+						}
 					}
-					else {
-						Intent intent = new Intent();
-						intent.setAction(Intent.ACTION_VIEW);
-						intent.setDataAndType(receiptFileUri, "image/*");
-						startActivity(intent);
-					}
-				}
-
-				else if (dialogOptions[item].equals("Delete Photo")) {
-					setReceiptFileUri(null);
-					Toast.makeText(getApplicationContext(), 
-							getString(R.string.toast_receipt_deleted), Toast.LENGTH_SHORT).show();
-					receiptButton.setImageResource(R.drawable.ic_action_search);
-				}
-
-				else if (dialogOptions[item].equals("Cancel")) {
-					dialog.dismiss();
-				}
-			}
-		});
+				});
 		openDialog.show();
 	}
 }
