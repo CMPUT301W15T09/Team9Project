@@ -495,6 +495,7 @@ containing a value of this type.
         public static final int ic_search=0x7f02002c;
         public static final int powered_by_google_dark=0x7f02002d;
         public static final int powered_by_google_light=0x7f02002e;
+        public static final int receipt_search=0x7f02002f;
     }
     public static final class id {
         public static final int action_accept=0x7f0c0039;
