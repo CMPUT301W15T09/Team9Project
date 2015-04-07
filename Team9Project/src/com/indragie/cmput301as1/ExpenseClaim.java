@@ -350,8 +350,8 @@ public class ExpenseClaim implements Serializable, ElasticSearchDocument {
 	 * Adds approval comments for the claim.
 	 * @param comments The approval comments.
 	 */
-	public void addComments(Comment comment) {
-		this.comments.add(comment);
+	public void addComments(int position, Comment comment) {
+		this.comments.add(position,comment);
 	}
 
 	/**
