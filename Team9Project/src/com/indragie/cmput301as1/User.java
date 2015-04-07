@@ -22,8 +22,8 @@ import java.io.Serializable;
  * Model object representing a user object.
  */
 public class User implements Serializable, ElasticSearchDocument {
-	private static final long serialVersionUID = -5731747178226322124L;
-	
+	private static final long serialVersionUID = 5700320468581917557L;
+
 	/**
 	 * Type used for indexing on ElasticSearch.
 	 */
@@ -41,6 +41,11 @@ public class User implements Serializable, ElasticSearchDocument {
 	 * The user's name.
 	 */
 	private String name;
+	
+	/**
+	 * The user's home location.
+	 */
+	private Geolocation location;
 
 	//================================================================================
 	// Constructors
@@ -72,6 +77,29 @@ public class User implements Serializable, ElasticSearchDocument {
 		return name;
 	}
 	
+	/**
+	 * Sets the name of the user.
+	 * @param name The name of the user.
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	/**
+	 * @return home location for the user
+	 */
+	public Geolocation getLocation() {
+		return location;
+	}
+
+	/**
+	 * Sets the home location for the user.
+	 * @param location The location.
+	 */
+	public void setLocation(Geolocation location) {
+		this.location = location;
+	}
+	
 	//================================================================================
 	// ElasticSearchDocument
 	//================================================================================
@@ -94,6 +122,8 @@ public class User implements Serializable, ElasticSearchDocument {
 		int result = 1;
 		result = prime * result
 				+ ((documentID == null) ? 0 : documentID.hashCode());
+		result = prime * result
+				+ ((location == null) ? 0 : location.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -111,6 +141,11 @@ public class User implements Serializable, ElasticSearchDocument {
 			if (other.documentID != null)
 				return false;
 		} else if (!documentID.equals(other.documentID))
+			return false;
+		if (location == null) {
+			if (other.location != null)
+				return false;
+		} else if (!location.equals(other.location))
 			return false;
 		if (name == null) {
 			if (other.name != null)

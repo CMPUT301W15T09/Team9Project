@@ -18,13 +18,14 @@
 package com.indragie.comput301as1.test;
 
 import com.indragie.cmput301as1.Destination;
+import com.indragie.cmput301as1.Geolocation;
 
 import junit.framework.TestCase;
 
 
 public class DestinationTests extends TestCase {
 	public void testNameAccessors() {
-		Destination destination = new Destination("Rome", "");
+		Destination destination = new Destination("Rome", "", null);
 		assertEquals("Rome", destination.getName());
 		
 		destination.setName("Paris");
@@ -32,10 +33,25 @@ public class DestinationTests extends TestCase {
 	}
 	
 	public void testTravelReasonAccessors() {
-		Destination destination = new Destination("Rome", "Some reason");
+		Destination destination = new Destination("Rome", "Some reason", null);
 		assertEquals("Some reason", destination.getTravelReason());
 		
 		destination.setTravelReason("Another reason");
 		assertEquals("Another reason", destination.getTravelReason());
 	}
+	
+	public void testLocationAccessors() {
+		Geolocation location = new Geolocation(0,0);
+		Geolocation location2 = new Geolocation(100, 50000);
+		
+		
+		Destination destination = new Destination("Rome", "Some reason", location);
+		assertEquals(location, destination.getLocation());
+		
+		destination.setLocation(location2);
+		assertEquals(location2, destination.getLocation());
+		
+		
+	}
+	
 }
