@@ -530,7 +530,7 @@ public class ElasticSearchAPIClient {
 			String path = "/" + TextUtils.join("/", tokens);
 			Request request = new Request.Builder()
 				.url(new URL(baseURL, path))
-				.get()
+				.post(RequestBody.create(MEDIA_TYPE_JSON, queryJSON))
 				.build();
 			return new APICall<List<T>>(request, client, new SearchHitDeserializer<T>(documentType));
 		} catch (UnsupportedEncodingException e) {

@@ -17,6 +17,7 @@
 package com.indragie.cmput301as1;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -123,11 +124,16 @@ public class Session implements TypedObserver<CollectionMutation<ExpenseClaim>> 
 		this.user = user;
 		this.context = context;
 		
+		// Sort by starting date descending by default
+		Comparator<ExpenseClaim> comparator = new StartDateDescendingComparator();
+		
 		ownedClaims = new ListModel<ExpenseClaim>(modelFilename(OWNED_CLAIMS_FILENAME_PREFIX, user), context);
 		ownedClaims.addObserver(this);
+		ownedClaims.setComparator(comparator);
 		
 		reviewalClaims = new ListModel<ExpenseClaim>(modelFilename(REVIEWAL_CLAIMS_FILENAME_PREFIX, user), context);
 		reviewalClaims.addObserver(this);
+		reviewalClaims.setComparator(comparator);
 		
 		pushQueue = new ElasticSearchQueue<ExpenseClaim>(context);
 		pullQueue = new ElasticSearchQueue<List<ExpenseClaim>>(context);

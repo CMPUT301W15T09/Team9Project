@@ -490,42 +490,44 @@ containing a value of this type.
         public static final int ic_action_edit=0x7f020026;
         public static final int ic_action_new=0x7f020027;
         public static final int ic_action_place=0x7f020028;
-        public static final int ic_action_search=0x7f020029;
-        public static final int ic_launcher=0x7f02002a;
-        public static final int ic_plusone_medium_off_client=0x7f02002b;
-        public static final int ic_plusone_small_off_client=0x7f02002c;
-        public static final int ic_plusone_standard_off_client=0x7f02002d;
-        public static final int ic_plusone_tall_off_client=0x7f02002e;
-        public static final int ic_search=0x7f02002f;
-        public static final int lime=0x7f020030;
-        public static final int orange=0x7f020031;
-        public static final int powered_by_google_dark=0x7f020032;
-        public static final int powered_by_google_light=0x7f020033;
-        public static final int receipt_camera=0x7f020034;
-        public static final int receipt_search=0x7f020035;
-        public static final int red=0x7f020036;
+        public static final int ic_action_refresh=0x7f020029;
+        public static final int ic_action_search=0x7f02002a;
+        public static final int ic_launcher=0x7f02002b;
+        public static final int ic_plusone_medium_off_client=0x7f02002c;
+        public static final int ic_plusone_small_off_client=0x7f02002d;
+        public static final int ic_plusone_standard_off_client=0x7f02002e;
+        public static final int ic_plusone_tall_off_client=0x7f02002f;
+        public static final int ic_search=0x7f020030;
+        public static final int lime=0x7f020031;
+        public static final int orange=0x7f020032;
+        public static final int powered_by_google_dark=0x7f020033;
+        public static final int powered_by_google_light=0x7f020034;
+        public static final int receipt_camera=0x7f020035;
+        public static final int receipt_search=0x7f020036;
+        public static final int red=0x7f020037;
     }
     public static final class id {
         public static final int action_accept=0x7f0c0043;
-        public static final int action_add_claim=0x7f0c0053;
+        public static final int action_add_claim=0x7f0c0054;
         public static final int action_add_comment=0x7f0c004e;
         public static final int action_add_destination=0x7f0c0048;
         public static final int action_add_item=0x7f0c0049;
         public static final int action_add_tag=0x7f0c0044;
         public static final int action_cancel=0x7f0c0027;
-        public static final int action_current_location=0x7f0c0055;
+        public static final int action_current_location=0x7f0c0056;
         public static final int action_delete=0x7f0c0045;
         public static final int action_done=0x7f0c0028;
         public static final int action_edit=0x7f0c0046;
         public static final int action_email=0x7f0c004a;
-        public static final int action_filter_tags=0x7f0c0052;
-        public static final int action_manage_tags=0x7f0c0051;
+        public static final int action_filter_tags=0x7f0c0053;
+        public static final int action_manage_tags=0x7f0c0052;
         public static final int action_mark_approved=0x7f0c004c;
         public static final int action_mark_returned=0x7f0c004b;
         public static final int action_mark_submitted=0x7f0c004d;
-        public static final int action_set_incomplete=0x7f0c0054;
+        public static final int action_refresh=0x7f0c0050;
+        public static final int action_set_incomplete=0x7f0c0055;
         public static final int action_settings=0x7f0c0047;
-        public static final int action_sort_claim=0x7f0c0050;
+        public static final int action_sort_claim=0x7f0c0051;
         public static final int action_user_settings=0x7f0c004f;
         public static final int adjust_height=0x7f0c0000;
         public static final int adjust_width=0x7f0c0001;
@@ -632,61 +634,62 @@ containing a value of this type.
         public static final int gtm_analytics=0x7f040000;
     }
     public static final class string {
-        public static final int TagName=0x7f060066;
+        public static final int TagName=0x7f060067;
         public static final int accept=0x7f060002;
-        public static final int action_accept=0x7f060068;
+        public static final int action_accept=0x7f060069;
         /**  ExpenseClaimListActivity 
          */
         public static final int action_add_claim=0x7f060038;
-        public static final int action_add_comment=0x7f06004d;
-        public static final int action_add_destination=0x7f060047;
-        public static final int action_add_item=0x7f060048;
-        public static final int action_add_location=0x7f060055;
-        public static final int action_add_tag=0x7f060063;
+        public static final int action_add_comment=0x7f06004e;
+        public static final int action_add_destination=0x7f060048;
+        public static final int action_add_item=0x7f060049;
+        public static final int action_add_location=0x7f060056;
+        public static final int action_add_tag=0x7f060064;
         public static final int action_confirm_prefix=0x7f060028;
-        public static final int action_current_location=0x7f060071;
+        public static final int action_current_location=0x7f060072;
         public static final int action_delete=0x7f060027;
         public static final int action_delete_claim_confirm=0x7f06003b;
-        public static final int action_delete_dest_confirm=0x7f06004e;
-        public static final int action_delete_item_confirm=0x7f06004f;
-        public static final int action_delete_tag_confirm=0x7f060050;
-        public static final int action_edit=0x7f060065;
-        public static final int action_email=0x7f060049;
+        public static final int action_delete_dest_confirm=0x7f06004f;
+        public static final int action_delete_item_confirm=0x7f060050;
+        public static final int action_delete_tag_confirm=0x7f060051;
+        public static final int action_edit=0x7f060066;
+        public static final int action_email=0x7f06004a;
         /**  FilterTagsActivity 
          */
-        public static final int action_filter_tags=0x7f060072;
-        public static final int action_manage_tags=0x7f060064;
-        public static final int action_mark_approved=0x7f06004c;
-        public static final int action_mark_returned=0x7f06004b;
-        public static final int action_mark_submitted=0x7f06004a;
-        public static final int action_new_tag=0x7f060067;
+        public static final int action_filter_tags=0x7f060073;
+        public static final int action_manage_tags=0x7f060065;
+        public static final int action_mark_approved=0x7f06004d;
+        public static final int action_mark_returned=0x7f06004c;
+        public static final int action_mark_submitted=0x7f06004b;
+        public static final int action_new_tag=0x7f060068;
+        public static final int action_refresh=0x7f06003c;
         /**  Geolocation 
          */
-        public static final int action_set_home=0x7f060070;
+        public static final int action_set_home=0x7f060071;
         public static final int action_set_incomplete=0x7f060035;
         /**  ExpenseClaimSortActivity 
          */
-        public static final int action_settings=0x7f06006b;
+        public static final int action_settings=0x7f06006c;
         public static final int action_sort_claim=0x7f060039;
         public static final int action_user_settings=0x7f06003a;
-        public static final int alert_submit_message=0x7f06005e;
-        public static final int alert_submit_title=0x7f06005d;
+        public static final int alert_submit_message=0x7f06005f;
+        public static final int alert_submit_title=0x7f06005e;
         public static final int amount=0x7f060033;
-        public static final int amount_placeholder=0x7f06005b;
+        public static final int amount_placeholder=0x7f06005c;
         /**  General 
          */
         public static final int app_name=0x7f060026;
-        public static final int approver=0x7f060059;
+        public static final int approver=0x7f06005a;
         /**  EditingActivity 
          */
         public static final int cancel_label=0x7f060036;
         /**  ExpenseItem 
          */
         public static final int category=0x7f060032;
-        public static final int comments=0x7f06005a;
+        public static final int comments=0x7f06005b;
         /**  CommentActivity 
          */
-        public static final int comments_title=0x7f06006e;
+        public static final int comments_title=0x7f06006f;
         /**   Text for notification shown when the Android Wear apps needs to be updated. Only shown on the wearable. [CHAR LIMIT=NONE] 
          */
         public static final int common_android_wear_notification_needs_update_text=0x7f060009;
@@ -797,7 +800,7 @@ containing a value of this type.
         public static final int commono_google_play_services_api_unavailable_text=0x7f060022;
         public static final int create_calendar_message=0x7f060005;
         public static final int create_calendar_title=0x7f060004;
-        public static final int current_location_button_title=0x7f06007f;
+        public static final int current_location_button_title=0x7f060080;
         public static final int date=0x7f060034;
         public static final int dates=0x7f06002a;
         public static final int decline=0x7f060003;
@@ -806,35 +809,35 @@ containing a value of this type.
         public static final int description=0x7f060029;
         /**  ExpenseClaimDetailController 
          */
-        public static final int destinations_title=0x7f06005f;
+        public static final int destinations_title=0x7f060060;
         /**  ExpenseClaim{Detail,Add}Activity 
          */
-        public static final int detail_title=0x7f060042;
+        public static final int detail_title=0x7f060043;
         public static final int done_label=0x7f060037;
-        public static final int end_label=0x7f060046;
+        public static final int end_label=0x7f060047;
         public static final int expense_items=0x7f06002c;
-        public static final int fill_in_message=0x7f06007c;
-        public static final int gps_alert_message=0x7f060081;
-        public static final int gps_alert_title=0x7f060080;
-        public static final int hello_world=0x7f06006d;
-        public static final int home_location_hint=0x7f06007b;
+        public static final int fill_in_message=0x7f06007d;
+        public static final int gps_alert_message=0x7f060082;
+        public static final int gps_alert_title=0x7f060081;
+        public static final int hello_world=0x7f06006e;
+        public static final int home_location_hint=0x7f06007c;
         public static final int incomplete=0x7f060031;
-        public static final int items_title=0x7f060061;
+        public static final int items_title=0x7f060062;
         /**  GPSFallbackController 
          */
-        public static final int latitude_hint=0x7f06007d;
-        public static final int load_fail_error=0x7f060041;
-        public static final int longitude_hint=0x7f06007e;
-        public static final int name_hint=0x7f060043;
-        public static final int no_destinations=0x7f06003d;
-        public static final int no_expenses=0x7f06003c;
-        public static final int no_location_toast=0x7f060082;
+        public static final int latitude_hint=0x7f06007e;
+        public static final int load_fail_error=0x7f060042;
+        public static final int longitude_hint=0x7f06007f;
+        public static final int name_hint=0x7f060044;
+        public static final int no_destinations=0x7f06003e;
+        public static final int no_expenses=0x7f06003d;
+        public static final int no_location_toast=0x7f060083;
         /**  PlacePickerParentActivity 
          */
-        public static final int places_unavailable_error=0x7f060076;
-        public static final int sort_order=0x7f060057;
-        public static final int sort_type=0x7f060056;
-        public static final int start_label=0x7f060045;
+        public static final int places_unavailable_error=0x7f060077;
+        public static final int sort_order=0x7f060058;
+        public static final int sort_type=0x7f060057;
+        public static final int start_label=0x7f060046;
         public static final int status=0x7f06002b;
         public static final int status_approved=0x7f06002f;
         public static final int status_in_progress=0x7f06002d;
@@ -844,41 +847,41 @@ containing a value of this type.
         public static final int store_picture_title=0x7f060000;
         /**  ExpenseClaimPagerAdapter 
          */
-        public static final int tab_owned=0x7f060083;
-        public static final int tab_reviewal=0x7f060084;
-        public static final int tags_title=0x7f060060;
-        public static final int title_activity_add_tag=0x7f060069;
-        public static final int title_activity_comment_add=0x7f06006f;
+        public static final int tab_owned=0x7f060084;
+        public static final int tab_reviewal=0x7f060085;
+        public static final int tags_title=0x7f060061;
+        public static final int title_activity_add_tag=0x7f06006a;
+        public static final int title_activity_comment_add=0x7f060070;
         /**  Destination{Add, Edit}Activity 
          */
-        public static final int title_activity_destination_add=0x7f060077;
-        public static final int title_activity_destination_edit=0x7f060078;
-        public static final int title_activity_edit_tag=0x7f06006a;
-        public static final int title_activity_filter_tag=0x7f060073;
-        public static final int title_activity_geolocation_add=0x7f06006c;
+        public static final int title_activity_destination_add=0x7f060078;
+        public static final int title_activity_destination_edit=0x7f060079;
+        public static final int title_activity_edit_tag=0x7f06006b;
+        public static final int title_activity_filter_tag=0x7f060074;
+        public static final int title_activity_geolocation_add=0x7f06006d;
         /**  ManageTagsActivity 
          */
-        public static final int title_activity_manage_tags=0x7f060062;
+        public static final int title_activity_manage_tags=0x7f060063;
         /**  Tag{Add,Edit}ToClaimActivity 
          */
-        public static final int title_activity_tag_edit_to_claim=0x7f060075;
+        public static final int title_activity_tag_edit_to_claim=0x7f060076;
         /**  ExpenseClaimSortActivity 
          */
-        public static final int title_activity_tag_list=0x7f060074;
+        public static final int title_activity_tag_list=0x7f060075;
         /**  UserSettingsActivity 
          */
-        public static final int title_activity_user_settings=0x7f060079;
-        public static final int title_activity_user_settings_first_run=0x7f06007a;
-        public static final int toast_receipt_deleted=0x7f060053;
-        public static final int toast_receipt_failed=0x7f060052;
-        public static final int toast_receipt_nonexistent=0x7f060054;
-        public static final int toast_receipt_success=0x7f060051;
-        public static final int total_label=0x7f06005c;
-        public static final int travel_reason_hint=0x7f060044;
-        public static final int user=0x7f060058;
-        public static final int user_alert_error=0x7f060040;
-        public static final int user_alert_message=0x7f06003f;
-        public static final int user_alert_title=0x7f06003e;
+        public static final int title_activity_user_settings=0x7f06007a;
+        public static final int title_activity_user_settings_first_run=0x7f06007b;
+        public static final int toast_receipt_deleted=0x7f060054;
+        public static final int toast_receipt_failed=0x7f060053;
+        public static final int toast_receipt_nonexistent=0x7f060055;
+        public static final int toast_receipt_success=0x7f060052;
+        public static final int total_label=0x7f06005d;
+        public static final int travel_reason_hint=0x7f060045;
+        public static final int user=0x7f060059;
+        public static final int user_alert_error=0x7f060041;
+        public static final int user_alert_message=0x7f060040;
+        public static final int user_alert_title=0x7f06003f;
         /**  Text on a placeholder buy button when Google Play services is not
          available or up-to-date 
          */
