@@ -26,6 +26,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+/**
+ * Activity to add a comment to a claim.
+ */
 public class CommentAddActivity extends Activity {
 
 	//================================================================================

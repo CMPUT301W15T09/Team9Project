@@ -21,6 +21,9 @@ import java.io.Serializable;
 import java.util.Date;
 import android.content.res.Resources;
 
+/**
+ * Comment object to represent a comment.
+ */
 public class Comment implements Serializable, ElasticSearchDocument {
 	private static final long serialVersionUID = -8266484958579212124L;
 	/**

@@ -29,6 +29,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+/**
+ * Adapter for showing an array of {@link Comment} objects in a {@link ListView}
+ * Based on https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
+ */
 public class CommentArrayAdapter extends ArrayAdapter<Comment> {
 	public CommentArrayAdapter(Context context, List<Comment> comments) {
 		super(context, R.layout.comment_list_row, comments);
