@@ -104,7 +104,6 @@ public class DestinationAddActivity extends PlacePickerParentActivity {
 		nameField = (EditText)findViewById(R.id.et_name);
 		reasonField = (EditText)findViewById(R.id.et_travel_reason);
 		addLocationField = (EditText)findViewById(R.id.et_add_location);
-		
 	}
 	
 	/**
@@ -116,15 +115,16 @@ public class DestinationAddActivity extends PlacePickerParentActivity {
 			@Override
 			public void onPlacePickerCanceled() {
 				addLocationField.clearFocus();
-				
 			}
 
 			@Override
-			public void onPlacePicked(Geolocation location) {
-				addLocationField.setText(location.getName() + "\n" + location.getAddress());
+			public void onPlacePicked(Geolocation pickedLocation) {
+				addLocationField.setText(pickedLocation.getName() + "\n" + pickedLocation.getAddress());
 				addLocationField.clearFocus();
 				
-				location = new Geolocation(location.getLatitude(), location.getLongitude());
+				location = new Geolocation(pickedLocation.getLatitude(), pickedLocation.getLongitude());
+				location.setName(pickedLocation.getName());
+				location.setAddress(pickedLocation.getAddress());
 			}
 		};
 		
@@ -158,10 +158,12 @@ public class DestinationAddActivity extends PlacePickerParentActivity {
 			setResult(RESULT_OK, addDestinationIntent(destination)); 
 			finish();
 			return true;
+			
 		case android.R.id.home:
 			setResult(RESULT_CANCELED, new Intent());
 			finish();
 			return true;
+			
 		default:
 			return super.onOptionsItemSelected(item);
 		}
