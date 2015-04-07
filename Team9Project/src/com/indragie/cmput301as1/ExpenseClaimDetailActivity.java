@@ -64,6 +64,16 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	public static final String EXTRA_FILTERED_EXPENSE_CLAIM_INDEX = "com.indragie.cmput301as1.EXTRA_FILTERED_EXPENSE_CLAIM_INDEX";
 	
 	/**
+	 * Request code for starting the {@link DestinationAddActivity}
+	 */
+	private static final int ADD_DESTINATION_REQUEST = 34;
+	
+	/**
+	 * Request code for starting the {@link DestinationEditActivity}
+	 */
+	private static final int EDIT_DESTINATION_REQUEST = 35;
+	
+	/**
 	 * Request code for starting {@link ExpenseItemAddActivity}
 	 */
 	private static final int ADD_EXPENSE_ITEM_REQUEST = 30;
@@ -79,15 +89,15 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	private static final int ADD_TAG_REQUEST = 32;
 	
 	/**
-	 * Request code for start {@link TagEditToClaimActivity}
+	 * Request code for starting {@link TagEditToClaimActivity}
 	 */
 	private static final int EDIT_TAG_REQUEST = 33;
-	
-	/**
-	 * Index used to indicate the nonexistence of an index.
-	 */
-	private static final int NO_INDEX = -1;
 
+	/**
+	 * Request code for starting {@link CommentAddActivity}
+	 */
+	private static final int ADD_COMMENT_REQUEST = 40;
+	
 	//================================================================================
 	// Properties
 	//================================================================================
@@ -127,21 +137,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	 * Field that displays the summarized amounts for the expense items.
 	 */
 	private TextView amountsTextView;
-
-	/**
-	 * Field that displays approver comments.
-	 */
-	private EditText comments;
-	
-	/**
-	 * Field that displays the name of the user.
-	 */
-	private TextView userField;
-	
-	/**
-	 * Field that displays the name of the approver.
-	 */
-	private TextView approverField;
 	
 	/**
 	 * The current user.
@@ -209,7 +204,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		View headerView = getLayoutInflater().inflate(R.layout.activity_claim_header, getListView(), false);
 
 		nameField = (EditText)headerView.findViewById(R.id.et_name);
-		nameField.setText(claim.getName());
+		nameField.setText(claim.getUser().getName());
 
 		descriptionField = (EditText)headerView.findViewById(R.id.et_description);
 		descriptionField.setText(claim.getDescription());
@@ -231,18 +226,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 				startDateField.setMaxDate(date);
 			}
 		});
-
-		userField = (TextView)headerView.findViewById(R.id.tv_user);
-		userField.append(claim.getUser().getName());
-
-		approverField = (TextView)headerView.findViewById(R.id.tv_approver);
-		User approver = claim.getApprover();
-		if (approver != null) {
-			approverField.append(approver.getName());
-		}
-
-		comments = (EditText)headerView.findViewById(R.id.et_comments);
-		comments.setText(claim.getComments());
 
 		getListView().addHeaderView(headerView);
 	}
@@ -266,12 +249,11 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	private void setEditable(){
 		boolean UserCheck = user.getName().contentEquals(claim.getUser().getName()); //SHOULD BE ID USING NAME FOR TESTING
 
-		if(status == Status.SUBMITTED || status == Status.APPROVED ){
+		if (status == Status.SUBMITTED || status == Status.APPROVED ){
 			nameField.setEnabled(false);
 			descriptionField.setEnabled(false);
 			startDateField.setEnabled(false);
 			endDateField.setEnabled(false);
-			comments.setEnabled(status != Status.APPROVED);
 			this.editable = false;
 		}
 		else {
@@ -279,7 +261,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			descriptionField.setEnabled(UserCheck);
 			startDateField.setEnabled(UserCheck);
 			endDateField.setEnabled(UserCheck);
-			comments.setEnabled(false);
 			this.editable= UserCheck;
 		}
 		invalidateOptionsMenu();
@@ -313,6 +294,12 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode != RESULT_OK) return;
 		switch (requestCode) {
+		case ADD_DESTINATION_REQUEST:
+			onAddDestination(data);
+			break;
+		case EDIT_DESTINATION_REQUEST:
+			onEditDestination(data);
+			break;
 		case ADD_EXPENSE_ITEM_REQUEST:
 			onAddExpenseItem(data);
 			break;
@@ -325,11 +312,50 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		case EDIT_TAG_REQUEST:
 			onEditTag(data);
 			break;
+		case ADD_COMMENT_REQUEST:
+			onAddComment(data);
+			break;
 		default:
 			break;
 		}
 	}
+	
+	/**
+	 * Retrieves the comment from a intent to add to the expense claim.
+	 * @param data The intent.
+	 */
+	public void onAddComment(Intent data) {
+		Comment comment = (Comment)data.getSerializableExtra(CommentAddActivity.COMMENT_TO_ADD);
+		claim.setApprover(user);
+		model.addComment(comment);
+		if (comment.getStatus() == Comment.Status.RETURNED) {
+			claim.setStatus(Status.RETURNED);
+			setEditable();
+		} else {
+			claim.setStatus(Status.APPROVED);
+			commitChangesAndFinish();
+		}
+	}
+	
+	/**
+	 * Retrieves the destination from a intent to add to the expense claim.
+	 * @param data The intent.
+	 */
+	private void onAddDestination(Intent data) {
+		Destination destination = (Destination)data.getSerializableExtra(DestinationAddActivity.EXTRA_DESTINATION);
+		model.addDestination(destination);
+	}
 
+	/**
+	 * Retrieves the destination from a intent to edit on the expense claim.
+	 * @param data The intent.
+	 */
+	private void onEditDestination(Intent data) {
+		Destination destination = (Destination)data.getSerializableExtra(DestinationEditActivity.EXTRA_DESTINATION);
+		int position = data.getIntExtra(DestinationEditActivity.EXTRA_EDIT_DESTINATION_POSITION, -1);
+		model.setDestination(position, destination);	
+	}
+	
 	/**
 	 * Retrieves the expense item from a intent to add to the expense claim.
 	 * @param data The intent.
@@ -397,7 +423,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			commitChangesAndFinish();
 			return true;
 		case R.id.action_add_destination:
-			//startDestinationAddActivity();
+			startDestinationAddActivity(); 
 			return true;
 		case R.id.action_add_item:
 			startAddExpenseItemActivity();
@@ -410,16 +436,9 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			return true;
 		case R.id.action_mark_submitted:
 			startSubmitAlertDialog();
-			return true;
-		case R.id.action_mark_returned:
-			claim.setStatus(Status.RETURNED);
-			claim.setApprover(user);
-			setEditable();
-			return true;
-		case R.id.action_mark_approved:
-			claim.setStatus(Status.APPROVED);
-			claim.setApprover(user);
-			commitChangesAndFinish();
+			return true; 
+		case R.id.action_add_comment:
+			startaddCommentActivity();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -459,46 +478,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	}
 	
 	/**
-	 * Alert dialog that warns about no index.
-	 * @return The alert dialog.
-	 */
-	private void buildDestinationAlertDialog() {
-		//startDestinationAddActivity(NO_INDEX);
-	}
-	
-	/* 
-	@SuppressLint("InflateParams")
-	private AlertDialog buildDestinationAlertDialog(final int index) {
-		View dialogView = getLayoutInflater().inflate(R.layout.activity_destination, null);
-		final EditText nameField = (EditText)dialogView.findViewById(R.id.et_name);
-		final EditText reasonField = (EditText)dialogView.findViewById(R.id.et_travel_reason);
-		
-		if (index != NO_INDEX) {
-			Destination destination = controller.getDestination(index);
-			nameField.setText(destination.getName());
-			reasonField.setText(destination.getTravelReason());
-		}
-		
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder
-		.setTitle(R.string.action_add_destination)
-		.setView(dialogView)
-		.setPositiveButton(android.R.string.ok, new OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				Destination destination = new Destination(nameField.getText().toString(), reasonField.getText().toString());
-				if (index != NO_INDEX) {
-					model.setDestination(index, destination);
-				} else {
-					model.addDestination(destination);
-				}
-			}
-		})
-		.setNegativeButton(android.R.string.cancel, null);
-		return builder.create();
-	}
-	*/
-	/**
 	 * Prompts the user for confirmation in response to deleting items in the activity.
 	 * @param type The ItemType of the DetailItem.
 	 */
@@ -533,6 +512,16 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	}
 	
 	/**
+	 * Starts the {@link DestinationAddActivity}
+	 */
+	public void startDestinationAddActivity() {
+		Intent addDestinationIntent = new Intent(this, DestinationAddActivity.class);
+		addDestinationIntent.putExtra(DestinationAddActivity.EXTRA_USER, user);
+		addDestinationIntent.putExtra(DestinationAddActivity.ADD_TO_CLAIM, true);
+		startActivityForResult(addDestinationIntent, ADD_DESTINATION_REQUEST);
+	}
+	
+	/**
 	 * Starts the {@link ExpenseItemAddActivity}
 	 */
 	private void startAddExpenseItemActivity() {
@@ -549,13 +538,22 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	}
 	
 	/**
+	 * Starts the {@link CommentAddActivity}
+	 */
+	private void startaddCommentActivity() {
+		Intent commentAddIntent = new Intent(this, CommentAddActivity.class);
+		commentAddIntent.putExtra(CommentAddActivity.COMMENT_APPROVER, user);
+		startActivityForResult(commentAddIntent, ADD_COMMENT_REQUEST);
+	}
+	
+	/**
 	 * Starts a choose activity for sending the {@link ExpenseClaim} contents
 	 * as an email.
 	 */
 	private void startEmailActivity() {
 		// Based on http://stackoverflow.com/a/2745702/153112
 		Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:"));
-		emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Expense Claim: " + claim.getName());
+		emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Expense Claim: " + claim.getUser().getName());
 
 		// Originally planned to use HTML for rich text in the email, but it turns
 		// out that most email clients on Android (including K-9) don't support HTML
@@ -563,16 +561,14 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		emailIntent.putExtra(Intent.EXTRA_TEXT, controller.getPlainText());
 		startActivity(Intent.createChooser(emailIntent, "Send Email"));
 	}
-
+	
 	/**
 	 * Saves changes made to the expense claim and finishes the activity.
 	 */
 	private void commitChangesAndFinish() {
-		claim.setName(nameField.getText().toString());
 		claim.setDescription(descriptionField.getText().toString());
 		claim.setStartDate(startDateField.getDate());
 		claim.setEndDate(endDateField.getDate());
-		claim.setComments(comments.getText().toString());
 
 		Intent intent = new Intent();
 		intent.putExtra(EXTRA_EXPENSE_CLAIM, claim);
@@ -591,29 +587,25 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		MenuItem addDestination = menu.findItem(R.id.action_add_destination); 
 		MenuItem addItem = menu.findItem(R.id.action_add_item);
 		MenuItem submit = menu.findItem(R.id.action_mark_submitted);
-		MenuItem approve = menu.findItem(R.id.action_mark_approved);
-		MenuItem returned = menu.findItem(R.id.action_mark_returned);
+		MenuItem addComment = menu.findItem(R.id.action_add_comment);
 
 		if (status == Status.APPROVED){
 			addDestination.setEnabled(false);
 			addItem.setEnabled(false);
 			submit.setEnabled(false);
-			approve.setEnabled(false);
-			returned.setEnabled(false);
+			addComment.setEnabled(false);
 		}
-		if(status == Status.RETURNED || status == Status.IN_PROGRESS){
+		if (status == Status.RETURNED || status == Status.IN_PROGRESS){
 			addDestination.setEnabled(UserCheck);
 			addItem.setEnabled(UserCheck);
 			submit.setEnabled(UserCheck);
-			approve.setEnabled(false);
-			returned.setEnabled(false);
+			addComment.setEnabled(false); 
 		}
-		if(status == Status.SUBMITTED){
-			approve.setEnabled(!UserCheck);
-			returned.setEnabled(!UserCheck);
+		if (status == Status.SUBMITTED){
 			addDestination.setEnabled(false);
 			addItem.setEnabled(false);
 			submit.setEnabled(false);
+			addComment.setEnabled(!UserCheck);
 		}
 	}
 
@@ -631,9 +623,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		
 		switch (type) {
 		case DESTINATION:
-			if(status == Status.RETURNED || status == Status.IN_PROGRESS)
-				//startDestinationAddActivity(index.getItemIndex());
-				//buildDestinationAlertDialog(index.getItemIndex()).show(); TODO: destination activity
+			startEditDestinationActivity(index.getItemIndex());
 			break;
 		case TAG:
 			startEditTagActivity(index.getItemIndex());
@@ -646,24 +636,37 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	}
 	
 	/**
+	 * Starts the {@link DestinationEditActivity}
+	 * @param position The position of the {@link Destination} to edit.
+	 */
+	private void startEditDestinationActivity(int position) {
+		Intent editDestinationIntent = new Intent(this, DestinationEditActivity.class);
+		editDestinationIntent.putExtra(DestinationEditActivity.EXTRA_DESTINATION, controller.getDestination(position));
+		editDestinationIntent.putExtra(DestinationEditActivity.ADD_TO_CLAIM, false);
+		editDestinationIntent.putExtra(DestinationEditActivity.EXTRA_EDIT_DESTINATION_POSITION, position);
+		editDestinationIntent.putExtra(DestinationEditActivity.EXTRA_EDIT_DESTINATION_EDITABLE, editable);
+		startActivityForResult(editDestinationIntent, EDIT_DESTINATION_REQUEST);
+	}
+	
+	/**
 	 * Starts the {@link EditExpenseItemActivity}
 	 * @param position The position of the {@link ExpenseItem} to edit.
 	 */
-	private void startEditExpenseItemActivity(int index) {
+	private void startEditExpenseItemActivity(int position) {
 		Intent editIntent = new Intent(this, ExpenseItemEditActivity.class);
-		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM, controller.getExpenseItem(index));
-		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_POSITION, index);
+		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM, controller.getExpenseItem(position));
+		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_POSITION, position);
 		editIntent.putExtra(ExpenseItemEditActivity.EXTRA_EXPENSE_ITEM_EDITABLE, editable);
 		startActivityForResult(editIntent, EDIT_EXPENSE_ITEM_REQUEST);
 	}
 	
 	/**
 	 * Starts the {@link TagEditToClaimActivity}
-	 * @param index The index of the {@link Tag} to edit.
+	 * @param position The index of the {@link Tag} to edit.
 	 */
-	private void startEditTagActivity(int index) {
+	private void startEditTagActivity(int position) {
 		Intent editTagIntent = new Intent(this, TagEditToClaimActivity.class);
-		editTagIntent.putExtra(TagEditToClaimActivity.EXTRA_TAG_POSITION, index);
+		editTagIntent.putExtra(TagEditToClaimActivity.EXTRA_TAG_POSITION, position);
 		startActivityForResult(editTagIntent, EDIT_TAG_REQUEST);
 	}
 

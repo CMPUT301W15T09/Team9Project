@@ -173,4 +173,22 @@ public class ExpenseClaimDetailModel extends TypedObservable<Object> {
 		setChanged();
 		notifyObservers();
 	}
+	
+	/**
+	 * Adds a comment to the expense claim.
+	 * @param comment The comment to add.
+	 */
+	public void addComment(Comment comment) {
+		claim.addComments(0,comment);
+		setChanged();
+		notifyObservers();
+	}
+	
+	/**
+	 * @return The tags for the expense claim.
+	 */
+	public List<Comment> getComments() {
+		return claim.getComments();
+	}
+	
 }

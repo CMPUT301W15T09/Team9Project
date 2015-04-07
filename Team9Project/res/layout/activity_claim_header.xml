@@ -14,8 +14,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/name_hint"
-        android:longClickable="false" />
-
+        android:longClickable="false" 
+        android:focusable="false"/>
+        
     <EditText
         android:id="@+id/et_description"
         android:layout_width="match_parent"
@@ -80,28 +81,5 @@
             android:longClickable="false" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tv_user"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/user" />
-
-    <TextView
-        android:id="@+id/tv_approver"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/approver" />
-
-    <EditText
-        android:id="@+id/et_comments"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/comments"
-        android:inputType="textMultiLine"
-        android:longClickable="false" >
-
-        <requestFocus />
-    </EditText>
-
+ 
 </LinearLayout>

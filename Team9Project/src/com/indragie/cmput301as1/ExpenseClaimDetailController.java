@@ -64,6 +64,11 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 	 */
 	private ListSection<DetailItem> tagsSection;
 	
+	/**
+	 * Section of the list view that displays comments.
+	 */
+	private ListSection<DetailItem> commentsSection;
+	
 	//================================================================================
 	// Classes
 	//================================================================================
@@ -91,7 +96,11 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 			/**
 			 * Model object is an instance of {@link ExpenseItem}
 			 */
-			EXPENSE_ITEM
+			EXPENSE_ITEM,
+			/**
+			 * Model object is an instance of {@link Comment}
+			 */
+			COMMENT
 		}
 		
 		/**
@@ -165,9 +174,16 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 			new TagViewConfigurator()
 		);
 		
+		commentsSection = new ListSection<DetailItem>(
+			resources.getString(R.string.comments_title),
+			getCommentDetailItems(),
+			new CommentViewConfigurator()
+		);
+		
 		ArrayList<ListSection<DetailItem>> sections = new ArrayList<ListSection<DetailItem>>();
 		sections.add(destinationsSection);
 		sections.add(tagsSection);
+		sections.add(commentsSection);
 		sections.add(expenseItemsSection);
 		
 		XMLSectionHeaderConfigurator headerConfigurator = new XMLSectionHeaderConfigurator(R.layout.list_header, R.id.title_label);
@@ -185,7 +201,7 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 	public String getPlainText() {
 		ExpenseClaim claim = model.getExpenseClaim();
 		Resources resources = context.getResources();
-		StringBuilder builder = new StringBuilder(claim.getName() + "\n");
+		StringBuilder builder = new StringBuilder(claim.getUser().getName() + "\n");
 		String description = claim.getDescription();
 		if (description.length() > 0) {
 			builder.append(resources.getString(R.string.description) + ": " + description + "\n");
@@ -254,6 +270,14 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 	}
 	
 	/**
+	 * @param index The index of the {@link Comment} relative to its section.
+	 * @return The {@link Comment} at the specified index.
+	 */
+	public Comment getComment(int index) {
+		return (Comment)commentsSection.get(index).getModel();
+	}
+	
+	/**
 	 * Removes the item at the specified position.
 	 * @param position The position of the item to remove.
 	 */
@@ -270,6 +294,8 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 			break;
 		case EXPENSE_ITEM:
 			model.removeItem(index.getItemIndex());
+			break;
+		case COMMENT:
 			break;
 		}
 	}
@@ -340,6 +366,17 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 		}
 		return items;
 	}
+	
+	/**
+	 * @return The comments for the expense claim, wrapped in {@link Comment} objects.
+	 */
+	private ArrayList<DetailItem> getCommentDetailItems() {
+		ArrayList<DetailItem> items = new ArrayList<DetailItem>();
+		for (Comment comment : model.getExpenseClaim().getComments()) {
+			items.add(new DetailItem(DetailItem.ItemType.COMMENT, comment));
+		}
+		return items;
+	}
 
 	//================================================================================
 	// Observer
@@ -350,6 +387,7 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 		destinationsSection.setItems(getDestinationDetailItems());
 		expenseItemsSection.setItems(getExpenseItemDetailItems());
 		tagsSection.setItems(getTagDetailItems());
+		commentsSection.setItems(getCommentDetailItems());
 		adapter.noteSectionsChanged();
 	}
 }
