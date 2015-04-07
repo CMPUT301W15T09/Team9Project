@@ -94,10 +94,9 @@
     <string name="hello_world">Hello world!</string>
 
 
-    <!-- Tag{Add,Edit}ToClaimActivity -->
-    <string name="title_activity_tag_edit_to_claim">TagEditToClaimActivity</string>
+    <!-- CommentActivity -->
     <string name="comments_title">Comments</string>
-    <string name="title_activity_comment_add">CommentAddActivity</string>
+    <string name="title_activity_comment_add">Add comment</string>
 
     <!-- Geolocation -->
     <string name="action_set_home">Set Home Location</string>
@@ -108,14 +107,20 @@
     <string name="title_activity_filter_tag">Filter Tags</string>
 
     <!-- ExpenseClaimSortActivity -->
-    <string name="title_activity_tag_list">TagListActivity</string>
+    <string name="title_activity_tag_list">Tags</string>
+
+    <!-- Tag{Add,Edit}ToClaimActivity -->
+    <string name="title_activity_tag_edit_to_claim">Edit Tag</string>
+    
 
     <!-- PlacePickerParentActivity -->
     <string name="places_unavailable_error">Unable to connect to Google Places</string>
 
     <!-- DestinationAddActivity -->
-    <string name="title_activity_destination_add">DestinationAddActivity</string>
-    <string name="title_activity_destination_edit">DestinationEditActivity</string>
+
+
+    <string name="title_activity_destination_add">Add Destination</string>
+
     
     <!-- UserSettingsActivity -->
     <string name="title_activity_user_settings">User Settings</string>
