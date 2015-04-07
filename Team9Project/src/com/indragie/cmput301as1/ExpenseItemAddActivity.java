@@ -257,6 +257,7 @@ public class ExpenseItemAddActivity extends PlacePickerParentActivity {
 			item.setReceiptUri(receiptFileUri);
 		}
 		item.setIncomplete(incomplete);
+		item.setLocation(geolocation);
 		return item;
 	}
 
@@ -311,11 +312,12 @@ public class ExpenseItemAddActivity extends PlacePickerParentActivity {
 						Toast.LENGTH_SHORT).show();
 				return;
 			}
-		}
+		} else if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE){
 		newReceiptFileUri = null;
 		Toast.makeText(getApplicationContext(),
 				getString(R.string.toast_receipt_failed), Toast.LENGTH_SHORT)
 				.show();
+		}
 	}
 
 	/**
