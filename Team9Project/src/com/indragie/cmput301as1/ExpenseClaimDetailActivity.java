@@ -91,9 +91,13 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	/**
 	 * Request code for starting {@link TagEditToClaimActivity}
 	 */
-
 	private static final int EDIT_TAG_REQUEST = 33;
 
+	/**
+	 * Request code for starting {@link CommentAddActivity}
+	 */
+	private static final int ADD_COMMENT_REQUEST = 40;
+	
 	//================================================================================
 	// Properties
 	//================================================================================
@@ -134,11 +138,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	 */
 	private TextView amountsTextView;
 
-	/**
-	 * Field that displays approver comments.
-	 */
-	private EditText comments;
-	
 	/**
 	 * Field that displays the name of the user.
 	 */
@@ -247,8 +246,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			approverField.append(approver.getName());
 		}
 
-		comments = (EditText)headerView.findViewById(R.id.et_comments);
-		comments.setText(claim.getComments());
 
 		getListView().addHeaderView(headerView);
 	}
@@ -277,7 +274,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			descriptionField.setEnabled(false);
 			startDateField.setEnabled(false);
 			endDateField.setEnabled(false);
-			comments.setEnabled(status != Status.APPROVED);
 			this.editable = false;
 		}
 		else {
@@ -285,7 +281,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			descriptionField.setEnabled(UserCheck);
 			startDateField.setEnabled(UserCheck);
 			endDateField.setEnabled(UserCheck);
-			comments.setEnabled(false);
 			this.editable= UserCheck;
 		}
 		invalidateOptionsMenu();
@@ -337,9 +332,17 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		case EDIT_TAG_REQUEST:
 			onEditTag(data);
 			break;
+		case ADD_COMMENT_REQUEST:
+			onAddComment(data);
+			break;
 		default:
 			break;
 		}
+	}
+	
+	public void onAddComment(Intent data) {
+		Comment comment = (Comment)data.getSerializableExtra(CommentAddActivity.COMMENT_TO_ADD);
+		model.addComment(comment);
 	}
 	
 	/**
@@ -451,6 +454,9 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			claim.setStatus(Status.APPROVED);
 			claim.setApprover(user);
 			commitChangesAndFinish();
+			return true; 
+		case R.id.action_add_comment:
+			startaddCommentActivity();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -489,38 +495,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		openDialog.show();
 	}
 	
-	/* 
-	@SuppressLint("InflateParams")
-	private AlertDialog buildDestinationAlertDialog(final int index) {
-		View dialogView = getLayoutInflater().inflate(R.layout.activity_destination, null);
-		final EditText nameField = (EditText)dialogView.findViewById(R.id.et_name);
-		final EditText reasonField = (EditText)dialogView.findViewById(R.id.et_travel_reason);
-		
-		if (index != NO_INDEX) {
-			Destination destination = controller.getDestination(index);
-			nameField.setText(destination.getName());
-			reasonField.setText(destination.getTravelReason());
-		}
-		
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder
-		.setTitle(R.string.action_add_destination)
-		.setView(dialogView)
-		.setPositiveButton(android.R.string.ok, new OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				Destination destination = new Destination(nameField.getText().toString(), reasonField.getText().toString());
-				if (index != NO_INDEX) {
-					model.setDestination(index, destination);
-				} else {
-					model.addDestination(destination);
-				}
-			}
-		})
-		.setNegativeButton(android.R.string.cancel, null);
-		return builder.create();
-	}
-	*/
 	/**
 	 * Prompts the user for confirmation in response to deleting items in the activity.
 	 * @param type The ItemType of the DetailItem.
@@ -597,6 +571,11 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		startActivity(Intent.createChooser(emailIntent, "Send Email"));
 	}
 
+	private void startaddCommentActivity() {
+		Intent commentAddIntent = new Intent(this, CommentAddActivity.class);
+		startActivityForResult(commentAddIntent, ADD_COMMENT_REQUEST);
+	}
+	
 	/**
 	 * Saves changes made to the expense claim and finishes the activity.
 	 */
@@ -605,7 +584,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		claim.setDescription(descriptionField.getText().toString());
 		claim.setStartDate(startDateField.getDate());
 		claim.setEndDate(endDateField.getDate());
-		claim.setComments(comments.getText().toString());
 
 		Intent intent = new Intent();
 		intent.putExtra(EXTRA_EXPENSE_CLAIM, claim);
@@ -626,6 +604,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		MenuItem submit = menu.findItem(R.id.action_mark_submitted);
 		MenuItem approve = menu.findItem(R.id.action_mark_approved);
 		MenuItem returned = menu.findItem(R.id.action_mark_returned);
+		MenuItem addComment = menu.findItem(R.id.action_add_comment);
 
 		if (status == Status.APPROVED){
 			addDestination.setEnabled(false);
@@ -633,6 +612,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			submit.setEnabled(false);
 			approve.setEnabled(false);
 			returned.setEnabled(false);
+			addComment.setEnabled(false);
 		}
 		if(status == Status.RETURNED || status == Status.IN_PROGRESS){
 			addDestination.setEnabled(UserCheck);
@@ -640,6 +620,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			submit.setEnabled(UserCheck);
 			approve.setEnabled(false);
 			returned.setEnabled(false);
+			addComment.setEnabled(true); //TODO: change later
 		}
 		if(status == Status.SUBMITTED){
 			approve.setEnabled(!UserCheck);
@@ -647,6 +628,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			addDestination.setEnabled(false);
 			addItem.setEnabled(false);
 			submit.setEnabled(false);
+			addComment.setEnabled(!UserCheck);
 		}
 	}
 

@@ -55,7 +55,7 @@ public class ExpenseClaim implements Serializable, ElasticSearchDocument {
 	);
 	
 	/**
-	 * Name of the user who created the claim. TODO: Make this work with the new User stuff.
+	 * Name of the user who created the claim. 
 	 */
 	private String name;
 	
@@ -78,6 +78,11 @@ public class ExpenseClaim implements Serializable, ElasticSearchDocument {
 	 * Tags contained in the claim.
 	 */
 	private List<Tag> tags = new ArrayList<Tag>();
+	
+	/**
+	 * Comments contained in the claim.
+	 */
+	private List<Comment> comments = new ArrayList<Comment>();
 	
 	/**
 	 * Possible statuses for an expense claim.
@@ -125,11 +130,6 @@ public class ExpenseClaim implements Serializable, ElasticSearchDocument {
 	 * User who created this claim.
 	 */
 	private User user;
-	
-	/**
-	 * Approvers comments.
-	 */
-	private String comments;
 	
 	/**
 	 * User who returned or approved claim.
@@ -360,16 +360,20 @@ public class ExpenseClaim implements Serializable, ElasticSearchDocument {
 	/**
 	 * @return Approval comments for the claim.
 	 */
-	public String getComments() {
+	public List<Comment> getComments() {
 		return comments;
+	}
+	
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
 	}
 
 	/**
-	 * Sets the approval comments for the claim.
+	 * Adds approval comments for the claim.
 	 * @param comments The approval comments.
 	 */
-	public void setComments(String comments) {
-		this.comments = comments;
+	public void addComments(Comment comment) {
+		this.comments.add(comment);
 	}
 
 	/**
