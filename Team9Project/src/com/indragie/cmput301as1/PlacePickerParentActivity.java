@@ -21,6 +21,7 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.model.LatLngBounds;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -113,6 +114,12 @@ public class PlacePickerParentActivity extends Activity {
 	private void startPlacePickerActivity(final OnPlacePickedListener placePickedListener, Geolocation existingLocation) {
 		try {
 			PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+			if (existingLocation != null) {
+				builder.setLatLngBounds(
+						LatLngBounds.builder()
+						.include(existingLocation.getLatLng())
+						.build());
+			}
 			Intent intent = builder.build(this);
 			this.placePickedListener = placePickedListener;
 			startActivityForResult(intent, PLACE_PICKER_REQUEST_CODE);
