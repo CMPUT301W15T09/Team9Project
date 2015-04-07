@@ -183,8 +183,8 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 		ArrayList<ListSection<DetailItem>> sections = new ArrayList<ListSection<DetailItem>>();
 		sections.add(destinationsSection);
 		sections.add(tagsSection);
-		sections.add(expenseItemsSection);
 		sections.add(commentsSection);
+		sections.add(expenseItemsSection);
 		
 		XMLSectionHeaderConfigurator headerConfigurator = new XMLSectionHeaderConfigurator(R.layout.list_header, R.id.title_label);
 		adapter = new SectionedListAdapter<DetailItem>(context, sections, headerConfigurator);
