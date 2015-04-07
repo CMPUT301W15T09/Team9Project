@@ -28,6 +28,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+/**
+ * Activity that presents a user interface for entering information to 
+ * add a tag to a claim.
+ */
 public class TagAddToClaimActivity extends ListActivity implements TypedObserver<CollectionMutation<Tag>>{
 
 	//================================================================================
