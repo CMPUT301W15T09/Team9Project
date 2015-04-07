@@ -359,6 +359,9 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 		return items;
 	}
 	
+	/**
+	 * @return The comments for the expense claim, wrapped in {@link Comment} objects.
+	 */
 	private ArrayList<DetailItem> getCommentDetailItems() {
 		ArrayList<DetailItem> items = new ArrayList<DetailItem>();
 		for (Comment comment : model.getExpenseClaim().getComments()) {

@@ -63,6 +63,7 @@ public class CommentArrayAdapter extends ArrayAdapter<Comment> {
 		
 		return convertView;
 	}
+	
 	/**
 	 * Draws the status of the comment
 	 * @param status The status.
