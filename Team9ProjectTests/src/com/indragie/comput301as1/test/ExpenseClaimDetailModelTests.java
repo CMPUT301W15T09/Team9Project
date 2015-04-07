@@ -26,6 +26,7 @@ import com.indragie.cmput301as1.ExpenseClaim;
 import com.indragie.cmput301as1.ExpenseClaimDetailModel;
 import com.indragie.cmput301as1.ExpenseItem;
 import com.indragie.cmput301as1.User;
+import com.indragie.cmput301as1.Comment;
 
 import junit.framework.TestCase;
 
@@ -99,5 +100,15 @@ public class ExpenseClaimDetailModelTests extends TestCase {
 		model.removeItem(0);
 		assertEquals(1, model.getItems().size());
 		assertEquals(item2, model.getItems().get(0));
+	}
+	
+	public void testAddComment() {
+		Comment comment1 = new Comment(new User("test_id", "Test User"), null, new Date(), null);
+		Comment comment2 = new Comment(new User("test_id", "Test User2"), null, new Date(), null);
+		model.addComment(comment1);
+		assertEquals(comment1, model.getComments().get(0));
+		
+		model.addComment(comment2);
+		assertEquals(comment2, model.getComments().get(1));
 	}
 }

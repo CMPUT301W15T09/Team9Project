@@ -184,4 +184,11 @@ public class ExpenseClaimDetailModel extends TypedObservable<Object> {
 		notifyObservers();
 	}
 	
+	/**
+	 * @return The tags for the expense claim.
+	 */
+	public List<Comment> getComments() {
+		return claim.getComments();
+	}
+	
 }

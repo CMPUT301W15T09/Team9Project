@@ -340,6 +340,10 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		}
 	}
 	
+	/**
+	 * Retrieves the comment from a intent to add to the expense claim.
+	 * @param data The intent.
+	 */
 	public void onAddComment(Intent data) {
 		Comment comment = (Comment)data.getSerializableExtra(CommentAddActivity.COMMENT_TO_ADD);
 		model.addComment(comment);
@@ -563,6 +567,15 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	}
 	
 	/**
+	 * Starts the {@link CommentAddActivity}
+	 */
+	private void startaddCommentActivity() {
+		Intent commentAddIntent = new Intent(this, CommentAddActivity.class);
+		commentAddIntent.putExtra(CommentAddActivity.COMMENT_APPROVER, user);
+		startActivityForResult(commentAddIntent, ADD_COMMENT_REQUEST);
+	}
+	
+	/**
 	 * Starts a choose activity for sending the {@link ExpenseClaim} contents
 	 * as an email.
 	 */
@@ -576,12 +589,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		// for composing emails, so I decided to use plain text instead.
 		emailIntent.putExtra(Intent.EXTRA_TEXT, controller.getPlainText());
 		startActivity(Intent.createChooser(emailIntent, "Send Email"));
-	}
-
-	private void startaddCommentActivity() {
-		Intent commentAddIntent = new Intent(this, CommentAddActivity.class);
-		commentAddIntent.putExtra(CommentAddActivity.COMMENT_APPROVER, user);
-		startActivityForResult(commentAddIntent, ADD_COMMENT_REQUEST);
 	}
 	
 	/**
