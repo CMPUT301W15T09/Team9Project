@@ -87,7 +87,7 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 	 * @param convertView the background of the claim
 	 */
 	private void setColorCoding(List<Destination> destinations, View convertView) {
-		if ((destinations.size() > 0)&&(user.getLocation()!=null)){
+		if ((destinations.size() > 0) && (user.getLocation() != null)) {
 			// get the home location
 			Geolocation home = user.getLocation();
 			ImageView destinationsBar = (ImageView)convertView.findViewById(R.id.destination_color_bar);

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- From https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/layout/simple_list_item_2.xml -->
-<!-- Copyright (C) 2006 The Android Open Source Project
+<!--
+     Copyright (C) 2006 The Android Open Source Project
 	 Copyright (C) 2015 Indragie Karunaratne
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -15,58 +16,65 @@
      limitations under the License.
 -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="?android:attr/listPreferredItemHeight"
-    android:paddingRight="12dp">
-    
-    <ImageView 
+    android:paddingRight="12dp" >
+
+    <ImageView
         android:id="@+id/destination_color_bar"
-        android:layout_height="fill_parent"
         android:layout_width="10dp"
+        android:layout_height="fill_parent"
         android:layout_alignParentStart="true"
         android:layout_marginEnd="12dp"
+        android:scaleType="fitXY"
         android:src="@drawable/grey"
-        android:visibility="invisible"
-        android:scaleType="fitXY"/>
-    
-	<TextView
-	    android:id="@+id/tv_name"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_toEndOf="@id/destination_color_bar"
-	    android:textAppearance="?android:attr/textAppearanceListItem" />
-	
-	<TextView 
-	    android:id="@+id/tv_date"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_alignBaseline="@id/tv_name"
-	    android:layout_alignParentEnd="true"
-	    android:textAppearance="?android:attr/textAppearanceListItemSmall" />
-	
-	<TextView
-	    android:id="@+id/tv_amounts"
-    	android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-    	android:layout_below="@id/tv_name"
-      	android:layout_alignStart="@id/tv_name"
-    	android:textAppearance="?android:attr/textAppearanceListItemSmall" />
-	
-	<TextView
-	    android:id="@+id/tv_status"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:paddingLeft="4dp"
-	    android:paddingRight="4dp"
-	    android:paddingBottom="1dp"
-	    android:layout_below="@id/tv_date"
-	    android:layout_marginTop="12dp"
-	    android:layout_alignParentEnd="true"
-	    android:gravity="center"
-	    android:textColor="#ffffff"
-	    android:textStyle="bold"
-	    android:textSize="14sp" />
+        android:visibility="invisible" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/destination_color_bar"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp" >
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceListItem" />
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/tv_name"
+            android:layout_alignParentEnd="true"
+            android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+
+        <TextView
+            android:id="@+id/tv_amounts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/tv_name"
+            android:layout_below="@id/tv_name"
+            android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+
+        <TextView
+            android:id="@+id/tv_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/tv_date"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:paddingBottom="1dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:textColor="#ffffff"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
 
 </RelativeLayout>
