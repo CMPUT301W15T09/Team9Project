@@ -75,13 +75,12 @@
 	
 	    <ImageButton
 	        android:id="@+id/btn_receipt"
-	        android:layout_width="fill_parent"
-	        android:layout_height="180dp"
+	        android:layout_width="match_parent"
+	        android:layout_height="0dp"
 	        android:layout_gravity="center_vertical"
 	        android:layout_weight="1"
-	        android:src="@drawable/ic_action_search"
-	        android:scaleType="fitCenter" 
-	        android:paddingTop="@dimen/activity_vertical_margin"/>
+	        android:scaleType="fitCenter"
+	        android:src="@drawable/receipt_search" />
 	
 	</LinearLayout>
 </ScrollView>
