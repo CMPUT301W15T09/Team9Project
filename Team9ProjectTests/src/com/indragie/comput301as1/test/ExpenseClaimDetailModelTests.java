@@ -108,7 +108,10 @@ public class ExpenseClaimDetailModelTests extends TestCase {
 		model.addComment(comment1);
 		assertEquals(comment1, model.getComments().get(0));
 		
-		model.addComment(comment2);
-		assertEquals(comment2, model.getComments().get(1));
+		model.addComment(comment1);
+		assertEquals(comment2, model.getComments().get(0));
+		
+		model.addComment(comment1);
+		assertEquals(comment1, model.getComments().get(1));
 	}
 }
