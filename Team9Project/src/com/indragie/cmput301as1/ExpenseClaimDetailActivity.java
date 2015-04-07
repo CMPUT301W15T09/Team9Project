@@ -116,7 +116,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	/**
 	 * Field that displays the name of the expense claim.
 	 */
-	private EditText nameField;
+	private TextView nameField;
 	
 	/**
 	 * Field that displays the description of the expense claim.
@@ -137,16 +137,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	 * Field that displays the summarized amounts for the expense items.
 	 */
 	private TextView amountsTextView;
-
-	/**
-	 * Field that displays the name of the user.
-	 */
-	private TextView userField;
-	
-	/**
-	 * Field that displays the name of the approver.
-	 */
-	private TextView approverField;
 	
 	/**
 	 * The current user.
@@ -213,8 +203,8 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	private void setupListHeaderView() {
 		View headerView = getLayoutInflater().inflate(R.layout.activity_claim_header, getListView(), false);
 
-		nameField = (EditText)headerView.findViewById(R.id.et_name);
-		nameField.setText(claim.getName());
+		nameField = (TextView)headerView.findViewById(R.id.text_name);
+		nameField.setText(claim.getUser().getName());
 
 		descriptionField = (EditText)headerView.findViewById(R.id.et_description);
 		descriptionField.setText(claim.getDescription());
@@ -236,15 +226,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 				startDateField.setMaxDate(date);
 			}
 		});
-
-		userField = (TextView)headerView.findViewById(R.id.tv_user);
-		userField.append(claim.getUser().getName());
-
-		approverField = (TextView)headerView.findViewById(R.id.tv_approver);
-		User approver = claim.getApprover();
-		if (approver != null) {
-			approverField.append(approver.getName());
-		}
 
 
 		getListView().addHeaderView(headerView);
