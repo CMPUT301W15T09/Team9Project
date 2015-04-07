@@ -24,7 +24,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
 /**
  * Activity that presents a user interface for entering information to 
@@ -56,7 +55,6 @@ public class ExpenseClaimAddActivity extends Activity {
 	 * The end date of the expense claim.
 	 */
 	private DateEditText endDateField;
-	private TextView userfield;
 	private User user;
 
 	//================================================================================
@@ -90,6 +88,7 @@ public class ExpenseClaimAddActivity extends Activity {
 		);
 
 		nameField = (EditText)findViewById(R.id.et_name);
+		nameField.setText(user.getName());
 		descriptionField = (EditText)findViewById(R.id.et_description);
 
 		startDateField = (DateEditText)findViewById(R.id.et_start_date);
@@ -108,8 +107,6 @@ public class ExpenseClaimAddActivity extends Activity {
 			}
 		});
 		
-		userfield = (TextView)findViewById(R.id.tv_user);
-		userfield.append(user.getName());
 	}
 	
 	/**
