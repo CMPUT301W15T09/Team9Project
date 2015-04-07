@@ -101,7 +101,13 @@ public abstract class ExpenseClaimListFragment extends ListFragment implements T
 	 * @param controller The controller for this fragment.
 	 */
 	public void setController(ExpenseClaimListController controller) {
+		if (this.controller != null) {
+			this.controller.deleteObserver(this);
+		}
 		this.controller = controller;
+		if (this.controller != null) {
+			this.controller.addObserver(this);
+		}
 	}
 	
 	//================================================================================
