@@ -19,62 +19,61 @@ package com.indragie.cmput301as1;
 import java.io.IOException;
 import java.util.List;
 
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+
 
 /**
- * A fragment class for other users claims
+ * A fragment class for users own claims
  */
 public class ApprovalTabFragment extends ExpenseClaimTabFragment {
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		activity = getActivity();
-		userManager = new UserManager(activity);
+		filteredListModel = new ListModel<ExpenseClaim>("filtered_List", activity);
+
+		userManager = ((ExpenseClaimListActivity) activity).getUserManager();
 		if (userManager.getActiveUser() == null) {
 			promptForUserInformation();
 		} else {
 			loadData();
 		}
-		
 		setHasOptionsMenu(true);
 
+
 	}
-	
+
 	/**
 	 * Loads the expense claim data to display in the {@link ListView}
 	 */
-	protected void loadData() {
+	private void loadData() {
 		// Create the application-wide session
 		Session session = new Session(activity, userManager.getActiveUser());
 		Session.setSharedSession(session);
 
 		// Show the initial list of expense claims (persisted on disk)
-		listModel = session.getOwnedClaims();
-		listModel.addObserver((TypedObserver<CollectionMutation<ExpenseClaim>>)this);
+		listModel = session.getReviewalClaims();
+		listModel.addObserver(this);
 		setListAdapter(new ExpenseClaimArrayAdapter(activity, listModel.getItems()));
 
-		//Load the new list from the server
+		// Load the new list from the server
 		final Context context = activity;
-		session.loadOwnedClaims(new ElasticSearchAPIClient.APICallback<List<ExpenseClaim>>() {
+		session.loadReviewalClaims(new ElasticSearchAPIClient.APICallback<List<ExpenseClaim>>() {
 			@Override
 			public void onSuccess(Response response, final List<ExpenseClaim> model) {
-				
-					activity.runOnUiThread(new Runnable() {
+				activity.runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
 						listModel.replace(model);
@@ -90,11 +89,10 @@ public class ApprovalTabFragment extends ExpenseClaimTabFragment {
 						Toast.makeText(context, R.string.load_fail_error, Toast.LENGTH_LONG).show();
 					}
 				});
-				
 			}
 		});
 	}
-	
+
 	/**
 	 * Prompts the user to enter their name.
 	 */
@@ -124,5 +122,5 @@ public class ApprovalTabFragment extends ExpenseClaimTabFragment {
 		alert.show();
 	}
 
-	
+
 }

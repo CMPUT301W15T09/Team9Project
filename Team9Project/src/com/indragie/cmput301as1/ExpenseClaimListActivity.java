@@ -17,8 +17,6 @@
 
 package com.indragie.cmput301as1;
 
-import java.util.ArrayList;
-
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.os.Bundle;
@@ -31,36 +29,15 @@ import android.support.v4.app.FragmentActivity;
 
 public class ExpenseClaimListActivity extends FragmentActivity {
 
-	private static final int ADD_EXPENSE_CLAIM_REQUEST = 1;
-	private static final int EDIT_EXPENSE_CLAIM_REQUEST = 2;
-	private static final int SORT_EXPENSE_CLAIM_REQUEST = 3;
-	private static final int MANAGE_TAGS_REQUEST = 4;
-	private static final int FILTER_TAGS_REQUEST = 5;
-	
-
 	//================================================================================
 	// Properties
 	//================================================================================
 
 	/**
-	 * List model of expense claim.
-	 */
-	private ListModel<ExpenseClaim> listModel;
-	
-	/**
-	 * List Model of filtered expense claim.
-	 */
-	private ListModel<ExpenseClaim> filteredListModel = new ListModel<ExpenseClaim>("filtered_List", this);
-	
-	/**
-	 * List of tags to filter expense claims.
-	 */
-	private ArrayList<Tag> filteredTagsList = new ArrayList<Tag>();
-	
-	/**
 	 * Manages the user and associated preferences.
 	 */
-	private UserManager userManager;
+	protected UserManager userManager;
+
 
 	//================================================================================
 	// Activity Callbacks
@@ -69,7 +46,8 @@ public class ExpenseClaimListActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
+		userManager = new UserManager(this);
 
 		ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -88,8 +66,12 @@ public class ExpenseClaimListActivity extends FragmentActivity {
 		actionBar.addTab(tab);;
 
 	}
-	
-	
-	
+
+	public UserManager getUserManager(){
+		return userManager;
+	}
+
+
+
 
 }

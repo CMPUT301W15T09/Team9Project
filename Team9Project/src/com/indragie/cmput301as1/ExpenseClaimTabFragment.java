@@ -16,30 +16,21 @@
  */
 package com.indragie.cmput301as1;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
-
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListFragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings.Secure;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 
 /**
@@ -54,7 +45,6 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 
 	protected static final String EXPENSE_CLAIM_FILENAME = "claims";
 	protected static final String EXPENSE_APPROVAL_FILENAME = "approval";
-	private static final String PREFERENCE = "PREFERENCE";
 	private static final int ADD_EXPENSE_CLAIM_REQUEST = 1;
 	private static final int EDIT_EXPENSE_CLAIM_REQUEST = 2;
 	private static final int SORT_EXPENSE_CLAIM_REQUEST = 3;
@@ -70,11 +60,6 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 	 */
 	protected ListModel<ExpenseClaim> listModel;
 
-	/**
-	 * Active user.
-	 */
-	protected User user;
-
 	/** Activity of the class that created the fragment */
 
 	protected Activity activity;
@@ -83,12 +68,12 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 	 * Manages the user and associated preferences.
 	 */
 	protected UserManager userManager;
-	
+
 	/**
 	 * List of tags to filter expense claims.
 	 */
 	private ArrayList<Tag> filteredTagsList = new ArrayList<Tag>();
-	
+
 	/**
 	 * List Model of filtered expense claim.
 	 */
@@ -98,19 +83,16 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 	// Activity Callbacks
 	//================================================================================
 
-	
-	
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-
 
 		getListView().setOnItemLongClickListener(new LongClickDeleteListener(activity, new LongClickDeleteListener.OnDeleteListener() {
 			@Override
 			public void onDelete(int position) {
 				showDeleteAlertDialog(position);
 			}
-			
+
 			@Override
 			public boolean shouldDelete(int position) {
 				return true;
@@ -178,7 +160,7 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 			setListAdapter(new ExpenseClaimArrayAdapter(activity, filteredListModel.getItems()));
 		}
 	}
-	
+
 	/**
 	 * Sets a expense claim at a specified position in the list model from a intent.
 	 * Displays the filteredListModel instead if there are filtered tags.
@@ -192,9 +174,8 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 		if (!filteredTagsList.isEmpty()) {
 			setFilteredClaims();
 		}
-
 	}
-	
+
 	/**
 	 * Sets the listModel used to filteredListModel.
 	 * @param data The intent to get the filteredTagsList.
@@ -241,7 +222,7 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 		addIntent.putExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM_USER, userManager.getActiveUser());
 		startActivityForResult(addIntent, ADD_EXPENSE_CLAIM_REQUEST);
 	}
-	
+
 	/**
 	 * Starts the {@link ExpenseClaimSortActivity}
 	 */
@@ -249,7 +230,7 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 		Intent intent = new Intent(activity, ExpenseClaimSortActivity.class);
 		startActivityForResult(intent, SORT_EXPENSE_CLAIM_REQUEST);
 	}
-		
+
 	/**
 	 * Starts the {@link ManageTagsActivity}
 	 */
@@ -257,7 +238,7 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 		Intent manageTagsIntent = new Intent(activity, ManageTagsActivity.class);
 		startActivityForResult(manageTagsIntent, MANAGE_TAGS_REQUEST);
 	}
-	
+
 	/**
 	 * Starts the {@link FilterTagsActivity}
 	 */
@@ -283,13 +264,13 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 		ArrayList<ManageTagsActivity.TagMutation> mutations =
 				(ArrayList<ManageTagsActivity.TagMutation>)data.getSerializableExtra(ManageTagsActivity.EXTRA_TAG_MUTATIONS);
 		SparseArray<ExpenseClaim> modifiedClaims = new SparseArray<ExpenseClaim>();
-		
+
 		for (ManageTagsActivity.TagMutation mutation : mutations) {
 			Tag tag = mutation.getOldTag();
 			int i = 0;
 			for (ExpenseClaim claim : listModel.getItems()) {
 				if (!claim.hasTag(tag)) continue;
-				
+
 				switch (mutation.getMutationType()) {
 				case DELETE:
 					claim.removeTag(tag);
@@ -306,20 +287,20 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 					}
 					break;
 				}
-				
+
 				modifiedClaims.append(i, claim);
 				i++;
 			}
-			
+
 		}
-		
+
 		for (int i = 0; i < modifiedClaims.size(); i++) {
 			listModel.set(modifiedClaims.keyAt(i), modifiedClaims.valueAt(i));
 		}
 		if (!filteredTagsList.isEmpty()) {
 			setFilteredClaims();
 		}
-		
+
 	}
 
 	/**
@@ -329,7 +310,7 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 	public void showDeleteAlertDialog(final int index) {
 		AlertDialog.Builder openDialog = new AlertDialog.Builder(activity);
 		openDialog.setTitle(R.string.action_delete_claim_confirm);
-		
+
 		openDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -342,7 +323,7 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 				}
 			}
 		});
-		
+
 		openDialog.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -351,14 +332,14 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 		});
 		openDialog.show();
 	}
-	
+
 	/**
 	 * Checks list of filtered tags. 
 	 * If claim contains filtered tag, we keep the claim in our filteredListModel.
 	 */
 	private void setFilteredClaims() {
 		ArrayList<ExpenseClaim> tempClaims = new ArrayList<ExpenseClaim>();
-		
+
 		for (Tag tag: filteredTagsList) {
 			for (ExpenseClaim claim: listModel.getItems()) {
 				if (claim.hasTag(tag)) {
@@ -371,8 +352,8 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 		filteredListModel.replace(tempClaims);
 		setListAdapter(new ExpenseClaimArrayAdapter(activity, filteredListModel.getItems()));
 	}
-	
-	
+
+
 
 	// ================================================================================
 	// ListView Callbacks
@@ -399,7 +380,7 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 		editIntent.putExtra(
 				ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_INDEX, position);
 		editIntent.putExtra(
-				ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_USER, user);
+				ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_USER, userManager.getActiveUser());
 		startActivityForResult(editIntent, EDIT_EXPENSE_CLAIM_REQUEST);
 	}
 
