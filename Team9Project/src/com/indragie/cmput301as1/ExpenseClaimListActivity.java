@@ -35,7 +35,7 @@ public class ExpenseClaimListActivity extends FragmentActivity {
 	// Constants
 	//================================================================================
 
-	private static final int USER_SETTINGS_REQUEST = 6;
+	private static final int USER_SETTINGS_REQUEST = 20;
 
 	//================================================================================
 	// Properties
