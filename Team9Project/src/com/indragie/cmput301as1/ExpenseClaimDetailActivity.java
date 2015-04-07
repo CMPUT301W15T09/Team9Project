@@ -269,7 +269,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	private void setEditable(){
 		boolean UserCheck = user.getName().contentEquals(claim.getUser().getName()); //SHOULD BE ID USING NAME FOR TESTING
 
-		if(status == Status.SUBMITTED || status == Status.APPROVED ){
+		if (status == Status.SUBMITTED || status == Status.APPROVED ){
 			nameField.setEnabled(false);
 			descriptionField.setEnabled(false);
 			startDateField.setEnabled(false);
@@ -347,7 +347,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	public void onAddComment(Intent data) {
 		Comment comment = (Comment)data.getSerializableExtra(CommentAddActivity.COMMENT_TO_ADD);
 		model.addComment(comment);
-		if(comment.getStatus() == Comment.Status.RETURNED) {
+		if (comment.getStatus() == Comment.Status.RETURNED) {
 			claim.setStatus(Status.RETURNED);
 			setEditable();
 		} else {
@@ -629,7 +629,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			returned.setEnabled(false);
 			addComment.setEnabled(false);
 		}
-		if(status == Status.RETURNED || status == Status.IN_PROGRESS){
+		if (status == Status.RETURNED || status == Status.IN_PROGRESS){
 			addDestination.setEnabled(UserCheck);
 			addItem.setEnabled(UserCheck);
 			submit.setEnabled(UserCheck);
@@ -637,7 +637,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			returned.setEnabled(false);
 			addComment.setEnabled(true); //TODO: change later
 		}
-		if(status == Status.SUBMITTED){
+		if (status == Status.SUBMITTED){
 			approve.setEnabled(!UserCheck);
 			returned.setEnabled(!UserCheck);
 			addDestination.setEnabled(false);
