@@ -76,13 +76,13 @@ public class UserSettingsActivity extends PlacePickerParentActivity {
 		user = (User)getIntent().getSerializableExtra(EXTRA_USER);
 		if (user != null) {
 			String name = user.getName();
-			Geolocation location = user.getLocation();
+			homeLocation = user.getLocation();
 			
 			if (name != null) {
 				nameField.setText(name);
 			}
-			if (location != null) {
-				locationField.setText(location.toString());
+			if (homeLocation != null) {
+				locationField.setText(homeLocation.toString());
 			}
 		} else {
 			setTitle(R.string.title_activity_user_settings_first_run);
@@ -107,6 +107,11 @@ public class UserSettingsActivity extends PlacePickerParentActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     openPlacePicker(listener, user.getLocation());
+                	Geolocation location = null;
+                	if (user != null) {
+                		location = user.getLocation();
+                	}
+                    openPlacePicker(listener, location);
                 }
             }
         });

@@ -30,7 +30,6 @@ import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
@@ -490,14 +489,9 @@ public class ElasticSearchAPIClient {
 	 * argument passed to this method.
 	 */
 	public <T extends ElasticSearchDocument> APICall<T> update(T newDocument) {
-		JsonElement docElement = gson.getAdapter(new TypeToken<T>() {}).toJsonTree(newDocument);
-		JsonObject rootElement = new JsonObject();
-		rootElement.add("doc", docElement);
-		String json = rootElement.toString();
-		
 		Request request = new Request.Builder()
 			.url(newDocument.getDocumentID().getURL(baseURL))
-			.put(RequestBody.create(MEDIA_TYPE_JSON, json))
+			.put(RequestBody.create(MEDIA_TYPE_JSON, gson.toJson(newDocument)))
 			.build();
 		return new APICall<T>(request, client, new IdentityDeserializer<T>(newDocument));
 	}

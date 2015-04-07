@@ -22,8 +22,6 @@ import java.math.RoundingMode;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 
-import com.google.android.gms.location.places.Place;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
