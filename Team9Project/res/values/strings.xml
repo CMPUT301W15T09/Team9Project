@@ -102,9 +102,10 @@
 
     <!-- Tag{Add,Edit}ToClaimActivity -->
     <string name="title_activity_tag_edit_to_claim">TagEditToClaimActivity</string>
-    
+
     <!-- PlacePickerParentActivity -->
     <string name="places_unavailable_error">Unable to connect to Google Places</string>
-    
     <string name="title_activity_destination_add">DestinationAddActivity</string>
+    <string name="title_activity_destination_edit">DestinationEditActivity</string>
+
 </resources>

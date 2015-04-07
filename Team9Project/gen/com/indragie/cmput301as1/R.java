@@ -521,13 +521,13 @@ containing a value of this type.
         public static final int adjust_width=0x7f0c0001;
         public static final int book_now=0x7f0c0010;
         public static final int btn_receipt=0x7f0c002f;
-        public static final int button_add_location=0x7f0c0024;
         public static final int button_add_tag=0x7f0c0031;
         public static final int buyButton=0x7f0c000c;
         public static final int buy_now=0x7f0c0011;
         public static final int buy_with_google=0x7f0c0012;
         public static final int classic=0x7f0c0014;
         public static final int donate_with_google=0x7f0c0013;
+        public static final int et_add_location=0x7f0c0024;
         public static final int et_amount=0x7f0c002d;
         public static final int et_comments=0x7f0c0022;
         public static final int et_date=0x7f0c002e;
@@ -802,6 +802,7 @@ containing a value of this type.
         public static final int tags_title=0x7f06005e;
         public static final int title_activity_add_tag=0x7f060067;
         public static final int title_activity_destination_add=0x7f060073;
+        public static final int title_activity_destination_edit=0x7f060074;
         public static final int title_activity_edit_tag=0x7f060068;
         public static final int title_activity_filter_tag=0x7f06006f;
         public static final int title_activity_geolocation_add=0x7f06006a;
