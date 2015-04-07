@@ -117,7 +117,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		// Show the initial list of expense claims (persisted on disk)
 		listModel = session.getOwnedClaims();
 		listModel.addObserver(this);
-		setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems()));
+		setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems(), userManager.getActiveUser()));
 
 		// Load the new list from the server
 		final Context context = this;
@@ -154,7 +154,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode != RESULT_OK) {
 			if (resultCode == RESULT_CANCELED && requestCode == FILTER_TAGS_REQUEST) {
-				setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems()));
+				setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems(), userManager.getActiveUser()));
 				filteredTagsList.clear();
 			}
 			return;
@@ -213,7 +213,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM);
 		listModel.add(claim);
 		if (!filteredTagsList.isEmpty()) {
-			setListAdapter(new ExpenseClaimArrayAdapter(this, filteredListModel.getItems()));
+			setListAdapter(new ExpenseClaimArrayAdapter(this, filteredListModel.getItems(), userManager.getActiveUser()));
 		}
 	}
 	
@@ -309,7 +309,7 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 			}
 		}
 		filteredListModel.replace(tempClaims);
-		setListAdapter(new ExpenseClaimArrayAdapter(this, filteredListModel.getItems()));
+		setListAdapter(new ExpenseClaimArrayAdapter(this, filteredListModel.getItems(), userManager.getActiveUser()));
 	}
 
 	@Override
@@ -446,6 +446,6 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 
 	@Override
 	public void update(TypedObservable<CollectionMutation<ExpenseClaim>> observable, CollectionMutation<ExpenseClaim> mutation) {
-		setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems()));
+		setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems(), userManager.getActiveUser()));
 	}
 }
