@@ -86,6 +86,9 @@ public class UserSettingsActivity extends PlacePickerParentActivity {
 			}
 		} else {
 			setTitle(R.string.title_activity_user_settings_first_run);
+			
+			//Default location is set to central Edmonton, AB, Canada
+			//if no location is selected. 
 			homeLocation = new Geolocation(53.333333333, 113.5000000);
 			homeLocation.setName("Home");
 			homeLocation.setAddress("Default");
