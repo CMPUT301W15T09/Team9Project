@@ -201,7 +201,7 @@ public class ExpenseClaimDetailController implements TypedObserver<Object> {
 	public String getPlainText() {
 		ExpenseClaim claim = model.getExpenseClaim();
 		Resources resources = context.getResources();
-		StringBuilder builder = new StringBuilder(claim.getName() + "\n");
+		StringBuilder builder = new StringBuilder(claim.getUser().getName() + "\n");
 		String description = claim.getDescription();
 		if (description.length() > 0) {
 			builder.append(resources.getString(R.string.description) + ": " + description + "\n");
