@@ -51,21 +51,27 @@
         <activity
             android:name=".ExpenseClaimDetailActivity"
             android:label="@string/detail_title"
-            android:parentActivityName=".ExpenseClaimListActivity" >
+            android:parentActivityName=".ExpenseClaimListActivity" 
+            android:windowSoftInputMode="stateHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.indragie.cmput301as1.ExpenseClaimListActivity" />
         </activity>
         <activity
             android:name=".ExpenseClaimAddActivity"
-            android:parentActivityName=".ExpenseClaimListActivity" >
+            android:parentActivityName=".ExpenseClaimListActivity" 
+            android:windowSoftInputMode="stateHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.indragie.cmput301as1.ExpenseClaimListActivity" />
         </activity>
-        <activity android:name=".ExpenseItemAddActivity" >
+        <activity
+            android:name=".ExpenseItemAddActivity" 
+            android:windowSoftInputMode="stateHidden">
         </activity>
-        <activity android:name=".ExpenseItemEditActivity" >
+        <activity 
+            android:name=".ExpenseItemEditActivity"
+            android:windowSoftInputMode="stateHidden" >
         </activity>
         <activity
             android:name=".ManageTagsActivity"

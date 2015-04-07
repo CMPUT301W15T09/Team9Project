@@ -106,6 +106,7 @@ public class UserSettingsActivity extends PlacePickerParentActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
+                    openPlacePicker(listener, user.getLocation());
                 	Geolocation location = null;
                 	if (user != null) {
                 		location = user.getLocation();
