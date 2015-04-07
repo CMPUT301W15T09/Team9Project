@@ -114,7 +114,7 @@ public abstract class ExpenseClaimListFragment extends ListFragment implements T
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		user = (User)savedInstanceState.getSerializable(BUNDLE_USER);
+		user = (User)getArguments().getSerializable(BUNDLE_USER);
 		setHasOptionsMenu(true);
 	}
 	
