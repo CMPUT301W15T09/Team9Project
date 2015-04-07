@@ -393,7 +393,6 @@ TypedObserver<CollectionMutation<ExpenseClaim>> {
 			CollectionMutation<ExpenseClaim> arg) {
 		setListAdapter(new ExpenseClaimArrayAdapter(activity,
 				listModel.getItems()));
-		// TODO Auto-generated method stub
 
 	}
 
