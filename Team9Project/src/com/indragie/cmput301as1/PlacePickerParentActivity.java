@@ -23,7 +23,9 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.net.NetworkInfo;
 import android.widget.Toast;
 
 /**
@@ -50,9 +52,9 @@ public class PlacePickerParentActivity extends Activity {
 	public interface OnPlacePickedListener {
 		/**
 		 * Called when a place is picked.
-		 * @param place The place that was picked.
+		 * @param location The location of the place that was picked.
 		 */
-		public void onPlacePicked(Place place);
+		public void onPlacePicked(Geolocation location);
 		
 		/**
 		 * Called when the place picker action is canceled.
@@ -69,15 +71,46 @@ public class PlacePickerParentActivity extends Activity {
 	 */
 	private OnPlacePickedListener placePickedListener;
 	
+	/**
+	 * Used to query for network state.
+	 */
+	private NetworkStateListener networkListener;
+	
+	//================================================================================
+	// Constructors
+	//================================================================================
+	
+	/**
+	 * Creates a new instance of {@link PlacePickerParentController}
+	 */
+	public PlacePickerParentActivity() {
+		this.networkListener = new NetworkStateListener(this);
+	}
+	
 	//================================================================================
 	// API
 	//================================================================================
 	
 	/**
-	 * Opens the place picker activity.
+	 * Opens the place picker activity or the GPS fallback alert, depending on
+	 * whether there is a network connection.
 	 * @param placePickedListener Listener that is called when a place is picked.
+	 * @param existingLocation Optional existing location to use to fill in fields.
 	 */
-	public void openPlacePicker(OnPlacePickedListener placePickedListener) {
+	public void openPlacePicker(final OnPlacePickedListener placePickedListener, Geolocation existingLocation) {
+		if (networkListener.getNetworkState() != NetworkInfo.State.CONNECTED) {
+			showGPSFallbackAlert(placePickedListener, existingLocation);
+		} else {
+			startPlacePickerActivity(placePickedListener, existingLocation);
+		}
+	}
+	
+	/**
+	 * Starts the place picker activity.
+	 * @param placePickedListener Listener that is called when a place is picked.
+	 * @param existingLocation Optional existing location to use to fill in fields.
+	 */
+	private void startPlacePickerActivity(final OnPlacePickedListener placePickedListener, Geolocation existingLocation) {
 		try {
 			PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 			Intent intent = builder.build(this);
@@ -92,6 +125,28 @@ public class PlacePickerParentActivity extends Activity {
 		}
 	}
 	
+	/**
+	 * Shows the GPS fallback alert dialog.
+	 * @param placePickedListener Listener that is called when a place is picked.
+	 * @param existingLocation Optional existing location to use to fill in fields.
+	 */
+	private void showGPSFallbackAlert(final OnPlacePickedListener placePickedListener, Geolocation existingLocation) {
+		AlertDialog dialog = new GPSFallbackController(this)
+			.buildAlertDialog(existingLocation, new GPSFallbackController.AlertListener() {
+				@Override
+				public void onOk(double latitude, double longitude) {
+					Geolocation location = new Geolocation(latitude, longitude);
+					placePickedListener.onPlacePicked(location);
+				}
+				
+				@Override
+				public void onCancel() {
+					placePickedListener.onPlacePickerCanceled();
+				}
+			});
+		dialog.show();
+	}
+	
 	//================================================================================
 	// Activity
 	//================================================================================
@@ -101,7 +156,7 @@ public class PlacePickerParentActivity extends Activity {
 		if (requestCode == PLACE_PICKER_REQUEST_CODE) {
 			if (resultCode == RESULT_OK) {
 				final Place place = PlacePicker.getPlace(data, this);
-				placePickedListener.onPlacePicked(place);
+				placePickedListener.onPlacePicked(new Geolocation(place));
 			} else {
 				placePickedListener.onPlacePickerCanceled();
 			}

@@ -24,8 +24,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
-import com.google.android.gms.location.places.Place;
-
 /**
  * Presents a user interface for modifiying user settings.
  */
@@ -97,9 +95,9 @@ public class UserSettingsActivity extends PlacePickerParentActivity {
             }
 
             @Override
-            public void onPlacePicked(Place place) {
-                homeLocation = new Geolocation(place);
-                locationField.setText(homeLocation.toString());
+            public void onPlacePicked(Geolocation location) {
+                homeLocation = location;
+                locationField.setText(location.toString());
                 locationField.clearFocus();
             }
         };
@@ -108,7 +106,7 @@ public class UserSettingsActivity extends PlacePickerParentActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-                    openPlacePicker(listener);
+                    openPlacePicker(listener, user.getLocation());
                 }
             }
         });
