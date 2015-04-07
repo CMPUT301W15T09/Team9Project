@@ -44,7 +44,7 @@ public class ExpenseClaimOwnedListFragment extends ExpenseClaimListFragment {
 	/**
 	 * Request code used to start {@link ExpenseClaimAddActivity}
 	 */
-	private static final int ADD_EXPENSE_CLAIM_REQUEST = 1;
+	private static final int ADD_EXPENSE_CLAIM_REQUEST = 5;
 
 	//================================================================================
 	// Fragment Callbacks
