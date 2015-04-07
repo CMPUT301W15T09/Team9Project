@@ -2,6 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="10dp"
+    android:gravity="center"
     android:orientation="vertical" >
 
     <EditText
@@ -17,6 +19,7 @@
         android:id="@+id/et_longitude"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:hint="@string/longitude_hint"
         android:inputType="number|numberDecimal"
         android:labelFor="@id/et_longitude"
@@ -26,6 +29,7 @@
         android:id="@+id/btn_current_location"
    		android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
+    	android:layout_marginTop="10dp"
     	android:text="@string/current_location_button_title" />
 
 </LinearLayout>
