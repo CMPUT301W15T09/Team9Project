@@ -92,7 +92,7 @@ public class CommentAddActivity extends Activity {
 	 */
 	private Intent constructResultIntent() {
 		Comment.Status status;
-		if (statusSpinner.getSelectedItem().toString() == "Returned") {
+		if (statusSpinner.getSelectedItemPosition() == 0) {
 			status = Comment.Status.RETURNED;
 		} else {
 			status = Comment.Status.APPROVED;
