@@ -99,16 +99,16 @@
     <string name="title_activity_filter_tag">Filter Tags</string>
 
     <!-- ExpenseClaimSortActivity -->
-    <string name="title_activity_tag_list">TagListActivity</string>
+    <string name="title_activity_tag_list">Tags</string>
 
     <!-- Tag{Add,Edit}ToClaimActivity -->
-    <string name="title_activity_tag_edit_to_claim">TagEditToClaimActivity</string>
+    <string name="title_activity_tag_edit_to_claim">Edit Tag</string>
     
     <!-- PlacePickerParentActivity -->
     <string name="places_unavailable_error">Unable to connect to Google Places</string>
     
     <!-- DestinationAddActivity -->
-    <string name="title_activity_destination_add">DestinationAddActivity</string>
+    <string name="title_activity_destination_add">Add Destination</string>
     
     <!-- UserSettingsActivity -->
     <string name="title_activity_user_settings">User Settings</string>
