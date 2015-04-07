@@ -21,6 +21,7 @@ import java.util.Date;
 
 import org.joda.money.Money;
 
+import com.indragie.cmput301as1.Comment;
 import com.indragie.cmput301as1.Destination;
 import com.indragie.cmput301as1.ExpenseClaim;
 import com.indragie.cmput301as1.ExpenseClaimDetailController;
@@ -28,6 +29,7 @@ import com.indragie.cmput301as1.ExpenseClaimDetailModel;
 import com.indragie.cmput301as1.ExpenseItem;
 import com.indragie.cmput301as1.SectionedListAdapter;
 import com.indragie.cmput301as1.SectionedListIndex;
+import com.indragie.cmput301as1.Tag;
 import com.indragie.cmput301as1.User;
 
 import android.test.AndroidTestCase;
@@ -38,6 +40,10 @@ public class ExpenseClaimDetailControllerTests extends AndroidTestCase {
 	private Destination destination2;
 	private ExpenseItem item1;
 	private ExpenseItem item2;
+	private Tag tag1;
+	private Tag tag2;
+	private Comment comment1;
+	private Comment comment2;
 	
 	@Override
 	protected void setUp() throws Exception {
@@ -47,6 +53,17 @@ public class ExpenseClaimDetailControllerTests extends AndroidTestCase {
 		destination2 = new Destination("Paris", "", null); 
 		claim.addDestination(destination1);
 		claim.addDestination(destination2);
+		
+		tag1 = new Tag("testtag");
+		tag2 = new Tag("testtag2");
+		claim.addTag(tag1);
+		claim.addTag(tag2);
+		
+		User approver = new User("bcde", "approver");
+		comment1 = new Comment(approver, "testcomment", new Date(), Comment.Status.RETURNED);
+		comment2 = new Comment(approver, "testcomment2", new Date(), Comment.Status.APPROVED);
+		claim.addComments(comment1);
+		claim.addComments(comment2);
 		
 		item1 = new ExpenseItem("Hotel", "", "accomodation", Money.parse("USD 2000.00"), new Date());
 		item2 = new ExpenseItem("Taxi", "", "ground transport", Money.parse("USD 50.00"), new Date());
@@ -68,6 +85,12 @@ public class ExpenseClaimDetailControllerTests extends AndroidTestCase {
 		assertEquals(new SectionedListIndex(1, SectionedListAdapter.NOT_AN_ITEM_INDEX), controller.getSectionedIndex(3));
 		assertEquals(new SectionedListIndex(1, 0), controller.getSectionedIndex(4));
 		assertEquals(new SectionedListIndex(1, 1), controller.getSectionedIndex(5));
+		assertEquals(new SectionedListIndex(2, SectionedListAdapter.NOT_AN_ITEM_INDEX), controller.getSectionedIndex(6));
+		assertEquals(new SectionedListIndex(2, 0), controller.getSectionedIndex(7));
+		assertEquals(new SectionedListIndex(2, 1), controller.getSectionedIndex(8));
+		assertEquals(new SectionedListIndex(3, SectionedListAdapter.NOT_AN_ITEM_INDEX), controller.getSectionedIndex(9));
+		assertEquals(new SectionedListIndex(3, 0), controller.getSectionedIndex(10));
+		assertEquals(new SectionedListIndex(3, 1), controller.getSectionedIndex(11));
 	}
 	
 	public void testGetItemType() {
@@ -75,13 +98,29 @@ public class ExpenseClaimDetailControllerTests extends AndroidTestCase {
 		assertEquals(ExpenseClaimDetailController.DetailItem.ItemType.DESTINATION, controller.getItemType(1));
 		assertEquals(ExpenseClaimDetailController.DetailItem.ItemType.DESTINATION, controller.getItemType(2));
 		assertNull(controller.getItemType(3));
-		assertEquals(ExpenseClaimDetailController.DetailItem.ItemType.EXPENSE_ITEM, controller.getItemType(4));
-		assertEquals(ExpenseClaimDetailController.DetailItem.ItemType.EXPENSE_ITEM, controller.getItemType(5));
+		assertEquals(ExpenseClaimDetailController.DetailItem.ItemType.TAG, controller.getItemType(4));
+		assertEquals(ExpenseClaimDetailController.DetailItem.ItemType.TAG, controller.getItemType(5));
+		assertNull(controller.getItemType(6));
+		assertEquals(ExpenseClaimDetailController.DetailItem.ItemType.COMMENT, controller.getItemType(7));
+		assertEquals(ExpenseClaimDetailController.DetailItem.ItemType.COMMENT, controller.getItemType(8));
+		assertNull(controller.getItemType(9));
+		assertEquals(ExpenseClaimDetailController.DetailItem.ItemType.EXPENSE_ITEM, controller.getItemType(10));
+		assertEquals(ExpenseClaimDetailController.DetailItem.ItemType.EXPENSE_ITEM, controller.getItemType(11));
 	}
 	
 	public void testGetDestination() {
 		assertEquals(destination1, controller.getDestination(0));
 		assertEquals(destination2, controller.getDestination(1));	
+	}
+	
+	public void testGetTag() {
+		assertEquals(tag1, controller.getTag(0));
+		assertEquals(tag2, controller.getTag(1));
+	}
+	
+	public void testGetComent() {
+		assertEquals(comment1, controller.getComment(0));
+		assertEquals(comment2, controller.getComment(1));
 	}
 	
 	public void testGetExpenseItem() {
@@ -93,6 +132,6 @@ public class ExpenseClaimDetailControllerTests extends AndroidTestCase {
 		controller.remove(1);
 		assertEquals(destination2, controller.getDestination(0));
 		controller.remove(3);
-		assertEquals(item2, controller.getExpenseItem(0));
+		assertEquals(tag2, controller.getTag(0));
 	}
 }
