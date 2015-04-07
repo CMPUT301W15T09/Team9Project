@@ -109,6 +109,10 @@
             android:name=".DestinationAddActivity"
             android:label="@string/title_activity_destination_add" >
         </activity>
+        <activity
+            android:name=".DestinationEditActivity"
+            android:label="@string/title_activity_destination_edit" >
+        </activity>
     </application>
 
 </manifest>

@@ -19,11 +19,9 @@ package com.indragie.cmput301as1;
 
 import java.util.Date;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -66,6 +64,16 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	public static final String EXTRA_FILTERED_EXPENSE_CLAIM_INDEX = "com.indragie.cmput301as1.EXTRA_FILTERED_EXPENSE_CLAIM_INDEX";
 	
 	/**
+	 * Request code for starting the {@link DestinationAddActivity}
+	 */
+	private static final int ADD_DESTINATION_REQUEST = 7;
+	
+	/**
+	 * Request code for starting the {@link DestinationEditActivity}
+	 */
+	private static final int EDIT_DESTINATION_REQUEST = 8;
+	
+	/**
 	 * Request code for starting {@link ExpenseItemAddActivity}
 	 */
 	private static final int ADD_EXPENSE_ITEM_REQUEST = 1;
@@ -81,7 +89,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	private static final int ADD_TAG_REQUEST = 3;
 	
 	/**
-	 * Request code for start {@link TagEditToClaimActivity}
+	 * Request code for starting {@link TagEditToClaimActivity}
 	 */
 	private static final int EDIT_TAG_REQUEST = 4;
 	
@@ -315,6 +323,9 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode != RESULT_OK) return;
 		switch (requestCode) {
+		case ADD_DESTINATION_REQUEST:
+			onAddDestinationItem(data);
+			break;
 		case ADD_EXPENSE_ITEM_REQUEST:
 			onAddExpenseItem(data);
 			break;
@@ -330,6 +341,15 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		default:
 			break;
 		}
+	}
+	
+	/**
+	 * Retreives the destination from a intent to add to the expense claim.
+	 * @param data The intent.
+	 */
+	private void onAddDestinationItem(Intent data) {
+		Destination destination = (Destination)data.getSerializableExtra(DestinationAddActivity.ADD_DESTINATION);
+		model.addDestination(destination);
 	}
 
 	/**
@@ -399,7 +419,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			commitChangesAndFinish();
 			return true;
 		case R.id.action_add_destination:
-			//startDestinationAddActivity();
+			startDestinationAddActivity(); 
 			return true;
 		case R.id.action_add_item:
 			startAddExpenseItemActivity();
@@ -458,14 +478,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			}
 		});
 		openDialog.show();
-	}
-	
-	/**
-	 * Alert dialog that warns about no index.
-	 * @return The alert dialog.
-	 */
-	private void buildDestinationAlertDialog() {
-		//startDestinationAddActivity(NO_INDEX);
 	}
 	
 	/* 
@@ -533,6 +545,15 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		});
 		openDialog.show();
 	}
+	
+	/**
+	 * Starts the {@link DestinationAddActivity}
+	 */
+	public void startDestinationAddActivity() {
+		Intent addDestinationIntent = new Intent(this, DestinationAddActivity.class);
+		startActivityForResult(addDestinationIntent, ADD_DESTINATION_REQUEST);
+	}
+	
 	
 	/**
 	 * Starts the {@link ExpenseItemAddActivity}
@@ -648,6 +669,15 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	}
 	
 	/**
+	 * Starts the {@link DestinationEditActivity}
+	 * @param position The position of the {@link Destination} to edit.
+	 */
+	private void startEditDestinationActivity(int position) {
+		//TODO
+	}
+	
+	
+	/**
 	 * Starts the {@link EditExpenseItemActivity}
 	 * @param position The position of the {@link ExpenseItem} to edit.
 	 */
@@ -661,11 +691,11 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	
 	/**
 	 * Starts the {@link TagEditToClaimActivity}
-	 * @param index The index of the {@link Tag} to edit.
+	 * @param position The index of the {@link Tag} to edit.
 	 */
-	private void startEditTagActivity(int index) {
+	private void startEditTagActivity(int position) {
 		Intent editTagIntent = new Intent(this, TagEditToClaimActivity.class);
-		editTagIntent.putExtra(TagEditToClaimActivity.EXTRA_TAG_POSITION, index);
+		editTagIntent.putExtra(TagEditToClaimActivity.EXTRA_TAG_POSITION, position);
 		startActivityForResult(editTagIntent, EDIT_TAG_REQUEST);
 	}
 
