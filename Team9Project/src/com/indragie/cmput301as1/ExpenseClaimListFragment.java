@@ -131,12 +131,18 @@ public abstract class ExpenseClaimListFragment extends ListFragment implements T
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		setupController();
+		refresh();
 	}
 	
 	/**
 	 * Subclasses override this to set up their controller.
 	 */
 	protected abstract void setupController();
+	
+	/**
+	 * Subclasses override this to refresh their data.
+	 */
+	protected abstract void refresh();
 	
 	@Override
 	public void onDestroy() {
@@ -152,6 +158,9 @@ public abstract class ExpenseClaimListFragment extends ListFragment implements T
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case R.id.action_refresh:
+			refresh();
+			return true;
 		case R.id.action_sort_claim:
 			startSortExpenseClaimActivity();
 			return true;

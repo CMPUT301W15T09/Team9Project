@@ -36,13 +36,18 @@ public class ExpenseClaimReviewalListFragment extends ExpenseClaimListFragment {
 	 */
 	@Override
 	protected void setupController() {
-		final Activity activity = getActivity();
-		Session session = Session.getSharedSession();
-		ListModel<ExpenseClaim> listModel = session.getReviewalClaims();
+		ListModel<ExpenseClaim> listModel = Session.getSharedSession().getReviewalClaims();
 		setController(new ExpenseClaimListController(getActivity(), listModel));
 		setListAdapter(new ExpenseClaimArrayAdapter(getActivity(), listModel.getItems(), getUser()));
-		
-		session.loadReviewalClaims(new ElasticSearchAPIClient.APICallback<List<ExpenseClaim>>() {
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.indragie.cmput301as1.ExpenseClaimListFragment#refresh()
+	 */
+	@Override
+	protected void refresh() {
+		final Activity activity = getActivity();
+		Session.getSharedSession().loadReviewalClaims(new ElasticSearchAPIClient.APICallback<List<ExpenseClaim>>() {
 			@Override
 			public void onSuccess(Response response, final List<ExpenseClaim> claims) {
 				activity.runOnUiThread(new Runnable() {

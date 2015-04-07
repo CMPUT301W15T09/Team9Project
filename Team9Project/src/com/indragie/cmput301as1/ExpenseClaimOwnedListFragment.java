@@ -129,13 +129,18 @@ public class ExpenseClaimOwnedListFragment extends ExpenseClaimListFragment {
 	 */
 	@Override
 	protected void setupController() {
-		final Activity activity = getActivity();
-		Session session = Session.getSharedSession();
-		ListModel<ExpenseClaim> listModel = session.getOwnedClaims();
+		ListModel<ExpenseClaim> listModel = Session.getSharedSession().getOwnedClaims();
 		setController(new ExpenseClaimListController(getActivity(), listModel));
 		setListAdapter(new ExpenseClaimArrayAdapter(getActivity(), listModel.getItems(), getUser()));
-		
-		session.loadOwnedClaims(new ElasticSearchAPIClient.APICallback<List<ExpenseClaim>>() {
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.indragie.cmput301as1.ExpenseClaimListFragment#refresh()
+	 */
+	@Override
+	protected void refresh() {
+		final Activity activity = getActivity();
+		Session.getSharedSession().loadOwnedClaims(new ElasticSearchAPIClient.APICallback<List<ExpenseClaim>>() {
 			@Override
 			public void onSuccess(Response response, final List<ExpenseClaim> claims) {
 				activity.runOnUiThread(new Runnable() {
