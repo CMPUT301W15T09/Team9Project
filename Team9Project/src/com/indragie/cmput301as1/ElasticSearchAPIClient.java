@@ -30,7 +30,6 @@ import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
@@ -391,16 +390,7 @@ public class ElasticSearchAPIClient {
 								if (element.isJsonObject()) {
 									JsonElement sourceElement = element.getAsJsonObject().get("_source");
 									if (sourceElement.isJsonObject()) {
-										// For some reason sometimes the results from ES will put
-										// the actual JSON document inside another doc element.
-										// Check for both cases.
-										JsonElement docElement = sourceElement.getAsJsonObject().get("doc");
-										T model = null;
-										if (docElement != null) {
-											model = gson.fromJson(docElement, documentType);
-										} else {
-											model = gson.fromJson(sourceElement, documentType);
-										}
+										T model = gson.fromJson(sourceElement, documentType);
 										if (model != null) {
 											models.add(model);
 										}
@@ -490,14 +480,9 @@ public class ElasticSearchAPIClient {
 	 * argument passed to this method.
 	 */
 	public <T extends ElasticSearchDocument> APICall<T> update(T newDocument) {
-		JsonElement docElement = gson.getAdapter(new TypeToken<T>() {}).toJsonTree(newDocument);
-		JsonObject rootElement = new JsonObject();
-		rootElement.add("doc", docElement);
-		String json = rootElement.toString();
-		
 		Request request = new Request.Builder()
 			.url(newDocument.getDocumentID().getURL(baseURL))
-			.put(RequestBody.create(MEDIA_TYPE_JSON, json))
+			.put(RequestBody.create(MEDIA_TYPE_JSON, gson.toJson(newDocument)))
 			.build();
 		return new APICall<T>(request, client, new IdentityDeserializer<T>(newDocument));
 	}

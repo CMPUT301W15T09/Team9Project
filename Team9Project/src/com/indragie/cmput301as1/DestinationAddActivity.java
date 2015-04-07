@@ -17,8 +17,6 @@
 
 package com.indragie.cmput301as1;
 
-import com.google.android.gms.location.places.Place;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -115,13 +113,13 @@ public class DestinationAddActivity extends PlacePickerParentActivity {
 				addLocationField.clearFocus();
 				
 			}
-			
+
 			@Override
-			public void onPlacePicked(Place place) {
-				addLocationField.setText(place.getName() + "\n" + place.getAddress());
+			public void onPlacePicked(Geolocation location) {
+				addLocationField.setText(location.getName() + "\n" + location.getAddress());
 				addLocationField.clearFocus();
 				
-				location = new Geolocation(place);
+				location = new Geolocation(location.getLatitude(), location.getLongitude());
 			}
 		};
 		
@@ -129,7 +127,7 @@ public class DestinationAddActivity extends PlacePickerParentActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-                    openPlacePicker(listener);
+                    openPlacePicker(listener, location);
                 }
             }
         });

@@ -17,65 +17,44 @@
 
 package com.indragie.cmput301as1;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-
-import android.app.AlertDialog;
-import android.app.ListActivity;
-import android.content.Context;
-import android.content.DialogInterface;
+import android.app.ActionBar;
+import android.app.ActionBar.Tab;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.SparseArray;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ListView;
-import android.widget.Toast;
-
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 /**
  * An activity that presents a list of expense claims.
  */
-public class ExpenseClaimListActivity extends ListActivity implements TypedObserver<CollectionMutation<ExpenseClaim>> {
+public class ExpenseClaimListActivity extends FragmentActivity {
 	//================================================================================
 	// Constants
 	//================================================================================
 
-	private static final int ADD_EXPENSE_CLAIM_REQUEST = 1;
-	private static final int EDIT_EXPENSE_CLAIM_REQUEST = 2;
-	private static final int SORT_EXPENSE_CLAIM_REQUEST = 3;
-	private static final int MANAGE_TAGS_REQUEST = 4;
-	private static final int FILTER_TAGS_REQUEST = 5;
-	private static final int USER_SETTINGS_REQUEST = 6;
-	
+	private static final int USER_SETTINGS_REQUEST = 20;
+
 	//================================================================================
 	// Properties
 	//================================================================================
 
 	/**
-	 * List model of expense claim.
-	 */
-	private ListModel<ExpenseClaim> listModel;
-	
-	/**
-	 * List Model of filtered expense claim.
-	 */
-	private ListModel<ExpenseClaim> filteredListModel;
-	
-	/**
-	 * List of tags to filter expense claims.
-	 */
-	private ArrayList<Tag> filteredTagsList = new ArrayList<Tag>();
-	
-	/**
 	 * Manages the user and associated preferences.
 	 */
 	private UserManager userManager;
+
+	/**
+	 * Adapter used to show fragments in the {@link ViewPager}
+	 */
+	private ExpenseClaimPagerAdapter pagerAdapter;
+
+	/**
+	 * Pager view for the owned/reviewal claims tabs.
+	 */
+	private ViewPager pager;
 
 	//================================================================================
 	// Activity Callbacks
@@ -84,297 +63,102 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		filteredListModel = new ListModel<ExpenseClaim>("filtered_List", this);
+
+		setContentView(R.layout.activity_expense_claim_list);
+		pager = (ViewPager)findViewById(R.id.pager);
+
 		userManager = new UserManager(this);
 		if (userManager.getActiveUser() == null) {
 			startUserSettingsActivity();
 		} else {
-			loadData();
+			setupFragments();
 		}
-		
-		getListView().setOnItemLongClickListener(new LongClickDeleteListener(this, new LongClickDeleteListener.OnDeleteListener() {
-			@Override
-			public void onDelete(int position) {
-				showDeleteAlertDialog(position);
-			}
-			
-			@Override
-			public boolean shouldDelete(int position) {
-				return true;
-			}
-		}));
-	}
-	
-	/**
-	 * Loads the expense claim data to display in the {@link ListView}
-	 */
-	private void loadData() {
-		// Create the application-wide session
-		Session session = new Session(this, userManager.getActiveUser());
-		Session.setSharedSession(session);
-
-		// Show the initial list of expense claims (persisted on disk)
-		listModel = session.getOwnedClaims();
-		listModel.addObserver(this);
-		setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems(), userManager.getActiveUser()));
-
-		// Load the new list from the server
-		final Context context = this;
-		session.loadOwnedClaims(new ElasticSearchAPIClient.APICallback<List<ExpenseClaim>>() {
-			@Override
-			public void onSuccess(Response response, final List<ExpenseClaim> model) {
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						listModel.replace(model);
-					}
-				});
-			}
-
-			@Override
-			public void onFailure(Request request, Response response, IOException e) {
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						Toast.makeText(context, R.string.load_fail_error, Toast.LENGTH_LONG).show();
-					}
-				});
-			}
-		});
-	}
-
-	@Override
-	public void onDestroy() {
-		listModel.deleteObserver(this);
-		super.onDestroy();
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (resultCode != RESULT_OK) {
-			if (resultCode == RESULT_CANCELED && requestCode == FILTER_TAGS_REQUEST) {
-				setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems(), userManager.getActiveUser()));
-				filteredTagsList.clear();
-			}
-			return;
-		}
 		switch (requestCode) {
-		case ADD_EXPENSE_CLAIM_REQUEST:
-			onAddExpenseResult(data);
-			break;
-		case EDIT_EXPENSE_CLAIM_REQUEST:
-			onEditExpenseResult(data);
-			break;
-		case SORT_EXPENSE_CLAIM_REQUEST:
-			onSortExpenseResult(data);
-			break;
-		case MANAGE_TAGS_REQUEST:
-			onManageTagsResult(data);
-			break;
-		case FILTER_TAGS_REQUEST:
-			onFilterTagsRequest(data);
-			break;
 		case USER_SETTINGS_REQUEST:
 			onUserSettingsResult(data);
 			break;
+		default:
+			super.onActivityResult(requestCode, resultCode, data);
+			break;
 		}
-	}
-	
-	/**
-	 * Sets the active user of the application.
-	 * @param data The intent to get the user from.
-	 */
-	private void onUserSettingsResult(Intent data) {
-		User user = (User)data.getSerializableExtra(UserSettingsActivity.EXTRA_USER);
-		userManager.setActiveUser(user);
-	}
-	
-	/**
-	 * Changes the sorting mode based on a comparator chosen by {@link ExpenseClaimSortActivity}
-	 * @param data The intent to get the comparator from.
-	 */
-	@SuppressWarnings("unchecked")
-	private void onSortExpenseResult(Intent data) {
-		Comparator<ExpenseClaim> comparator = (Comparator<ExpenseClaim>)data.getSerializableExtra(ExpenseClaimSortActivity.EXPENSE_CLAIM_SORT);
-		listModel.setComparator(comparator);
-		if (!filteredTagsList.isEmpty()) {
-			setFilteredClaims();
-			filteredListModel.setComparator(comparator);
-		}
-	}
-
-	/**
-	 * Adds a expense claim to list model from a intent.
-	 * Displays the filteredListModel instead if there are filtered tags.
-	 * @param data The intent to get the expense claim from.
-	 */
-	private void onAddExpenseResult(Intent data) {
-		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM);
-		listModel.add(claim);
-		if (!filteredTagsList.isEmpty()) {
-			setListAdapter(new ExpenseClaimArrayAdapter(this, filteredListModel.getItems(), userManager.getActiveUser()));
-		}
-	}
-	
-	/**
-	 * Sets a expense claim at a specified position in the list model from a intent.
-	 * @param data The intent to get the expense claim from.
-	 */
-	private void onEditExpenseResult(Intent data) {
-		ExpenseClaim claim = (ExpenseClaim)data.getSerializableExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM);
-		int position = data.getIntExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_INDEX, -1);
-		listModel.set(position, claim);
-		if (!filteredTagsList.isEmpty()) {
-			setFilteredClaims();
-		}
-
-	}
-
-	/**
-	 * Sets the list used in ListModel to the returned list of expense claims from the intent. 
-	 * If tag is in the filteredTagsList, we have to update the list to accommodate for the changes.
-	 * Displays the filteredListModel instead if there are filtered tags.
-	 * @param data The intent to get the list of expense claims from. 
-	 */
-	@SuppressWarnings("unchecked")
-	private void onManageTagsResult(Intent data) {
-		ArrayList<ManageTagsActivity.TagMutation> mutations =
-				(ArrayList<ManageTagsActivity.TagMutation>)data.getSerializableExtra(ManageTagsActivity.EXTRA_TAG_MUTATIONS);
-		SparseArray<ExpenseClaim> modifiedClaims = new SparseArray<ExpenseClaim>();
-		
-		for (ManageTagsActivity.TagMutation mutation : mutations) {
-			Tag tag = mutation.getOldTag();
-			int i = 0;
-			for (ExpenseClaim claim : listModel.getItems()) {
-				if (!claim.hasTag(tag)) continue;
-				
-				switch (mutation.getMutationType()) {
-				case DELETE:
-					claim.removeTag(tag);
-					if (filteredTagsList.contains(tag) && !filteredTagsList.isEmpty()) {
-						filteredTagsList.remove(tag);
-					}
-					break;
-				case EDIT:
-					int tagIndex = claim.getTags().indexOf(tag);
-					claim.setTag(tagIndex, mutation.getNewTag());
-					if (filteredTagsList.contains(tag) && !filteredTagsList.isEmpty()) {
-						int selectedIndex = filteredTagsList.indexOf(tag);
-						filteredTagsList.set(selectedIndex, mutation.getNewTag());
-					}
-					break;
-				}
-				
-				modifiedClaims.append(i, claim);
-				i++;
-			}
-			
-		}
-		
-		for (int i = 0; i < modifiedClaims.size(); i++) {
-			listModel.set(modifiedClaims.keyAt(i), modifiedClaims.valueAt(i));
-		}
-		if (!filteredTagsList.isEmpty()) {
-			setFilteredClaims();
-		}
-		
-	}
-	
-	/**
-	 * Sets the listModel used to filteredListModel.
-	 * @param data The intent to get the filteredTagsList.
-	 */
-	@SuppressWarnings("unchecked")
-	private void onFilterTagsRequest(Intent data) {
-		filteredTagsList = (ArrayList<Tag>)data.getSerializableExtra(FilterTagsActivity.TAG_TO_FILTER);
-
-		setFilteredClaims();
-	}
-	
-	/**
-	 * Checks list of filtered tags. 
-	 * If claim contains filtered tag, we keep the claim in our filteredListModel.
-	 */
-	private void setFilteredClaims() {
-		ArrayList<ExpenseClaim> tempClaims = new ArrayList<ExpenseClaim>();
-		
-		for (Tag tag: filteredTagsList) {
-			for (ExpenseClaim claim: listModel.getItems()) {
-				if (claim.hasTag(tag)) {
-					if (!tempClaims.contains(claim)) {
-						tempClaims.add(claim);
-					}
-				}
-			}
-		}
-		filteredListModel.replace(tempClaims);
-		setListAdapter(new ExpenseClaimArrayAdapter(this, filteredListModel.getItems(), userManager.getActiveUser()));
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.expense_claim_list, menu);
+		getMenuInflater().inflate(R.menu.expense_claim_list_activity, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.action_add_claim:
-			startAddExpenseClaimActivity();
-			return true;
-		case R.id.action_sort_claim:
-			startSortExpenseClaimActivity();
-			return true;
-		case R.id.action_manage_tags:
-			startManageTagsActivity();
-			return true;
 		case R.id.action_user_settings:
 			startUserSettingsActivity();
-			return true;
-		case R.id.action_filter_tags:
-			startFilterTagsActivity();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
 	/**
-	 * Starts the {@link ExpenseClaimAddActivity}
+	 * Set up fragments to display expense claim data.
 	 */
-	private void startAddExpenseClaimActivity() {
-		Intent addIntent = new Intent(this, ExpenseClaimAddActivity.class);
-		addIntent.putExtra(ExpenseClaimAddActivity.EXTRA_EXPENSE_CLAIM_USER, userManager.getActiveUser());
-		startActivityForResult(addIntent, ADD_EXPENSE_CLAIM_REQUEST);
+	private void setupFragments() {
+		User user = userManager.getActiveUser();
+		Session session = new Session(this, user);
+		Session.setSharedSession(session);
+
+		pagerAdapter = new ExpenseClaimPagerAdapter(this, getSupportFragmentManager(), user);
+		pager.setAdapter(pagerAdapter);
+
+		// From http://developer.android.com/training/implementing-navigation/lateral.html
+		final ActionBar actionBar = getActionBar();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+		ActionBar.TabListener tabListener = new ActionBar.TabListener() {
+			public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+				pager.setCurrentItem(tab.getPosition());
+			}
+			public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {}
+			public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {}
+		};
+
+		pager.setOnPageChangeListener(
+			new ViewPager.SimpleOnPageChangeListener() {
+				@Override
+				public void onPageSelected(int position) {
+					actionBar.setSelectedNavigationItem(position);
+				}
+			});
+
+		Tab ownedTab = actionBar.newTab()
+			.setText(R.string.tab_owned)
+			.setTabListener(tabListener);
+		Tab reviewalTab = actionBar.newTab()
+			.setText(R.string.tab_reviewal)
+			.setTabListener(tabListener);
+
+		actionBar.addTab(ownedTab);
+		actionBar.addTab(reviewalTab);
 	}
-	
+
 	/**
-	 * Starts the {@link ExpenseClaimSortActivity}
+	 * Sets the active user of the application.
+	 * @param data The intent to get the user from.
 	 */
-	private void startSortExpenseClaimActivity() {
-		Intent intent = new Intent(this, ExpenseClaimSortActivity.class);
-		startActivityForResult(intent, SORT_EXPENSE_CLAIM_REQUEST);
+	private void onUserSettingsResult(Intent data) {
+		User user = (User)data.getSerializableExtra(UserSettingsActivity.EXTRA_USER);
+		boolean noExistingUser = (userManager.getActiveUser() == null);
+		userManager.setActiveUser(user);
+		if (noExistingUser) {
+			setupFragments();
+		}
 	}
-		
-	/**
-	 * Starts the {@link ManageTagsActivity}
-	 */
-	private void startManageTagsActivity() {
-		Intent manageTagsIntent = new Intent(this, ManageTagsActivity.class);
-		startActivityForResult(manageTagsIntent, MANAGE_TAGS_REQUEST);
-	}
-	
-	/**
-	 * Starts the {@link FilterTagsActivity}
-	 */
-	private void startFilterTagsActivity() {
-		Intent filterTagsIntent = new Intent(this, FilterTagsActivity.class);
-		filterTagsIntent.putExtra(FilterTagsActivity.TAG_TO_FILTER, filteredTagsList);
-		startActivityForResult(filterTagsIntent, FILTER_TAGS_REQUEST);
-	}
-	
+
 	/**
 	 * Starts the {@link UserSettingsActivity}
 	 */
@@ -382,70 +166,5 @@ public class ExpenseClaimListActivity extends ListActivity implements TypedObser
 		Intent userSettingsIntent = new Intent(this, UserSettingsActivity.class);
 		userSettingsIntent.putExtra(UserSettingsActivity.EXTRA_USER, userManager.getActiveUser());
 		startActivityForResult(userSettingsIntent, USER_SETTINGS_REQUEST);
-	}
-	
-	/**
-	 * Prompts the user for confirmation in response to deleting an expense claim.
-	 * @param index The index of the expense claim to remove.
-	 */
-	public void showDeleteAlertDialog(final int index) {
-		AlertDialog.Builder openDialog = new AlertDialog.Builder(this);
-		openDialog.setTitle(R.string.action_delete_claim_confirm);
-		
-		openDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				if (!filteredTagsList.isEmpty()) {
-					ExpenseClaim claimToRemove = filteredListModel.getItems().get(index);
-					listModel.remove(claimToRemove);
-					setFilteredClaims();
-				} else {
-					listModel.remove(index);
-				}
-			}
-		});
-		
-		openDialog.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-			}
-		});
-		openDialog.show();
-	}
-
-	//================================================================================
-	// ListView Callbacks
-	//================================================================================
-
-	@Override
-	public void onListItemClick(ListView listView, View view, int position, long id) {
-		startEditExpenseClaimActivity(position);
-	}
-	
-	/**
-	 * Calls the intent to edit a expense claim at a specified position.
-	 * @param position The position of the expense claim to edit.
-	 */
-	private void startEditExpenseClaimActivity(int position) {
-		Intent editIntent = new Intent(this, ExpenseClaimDetailActivity.class);
-		if (!filteredTagsList.isEmpty()) {
-			editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM, filteredListModel.getItems().get(position));
-			position = listModel.getItems().indexOf(filteredListModel.getItems().get(position));
-		} else {
-			editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM, listModel.getItems().get(position));
-		}
-		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_INDEX, position);
-		editIntent.putExtra(ExpenseClaimDetailActivity.EXTRA_EXPENSE_CLAIM_USER, userManager.getActiveUser());
-		startActivityForResult(editIntent, EDIT_EXPENSE_CLAIM_REQUEST);
-	}
-
-	//================================================================================
-	// TypedObserver
-	//================================================================================
-
-	@Override
-	public void update(TypedObservable<CollectionMutation<ExpenseClaim>> observable, CollectionMutation<ExpenseClaim> mutation) {
-		setListAdapter(new ExpenseClaimArrayAdapter(this, listModel.getItems(), userManager.getActiveUser()));
 	}
 }
