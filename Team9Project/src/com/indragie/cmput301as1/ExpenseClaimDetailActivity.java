@@ -343,6 +343,13 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	public void onAddComment(Intent data) {
 		Comment comment = (Comment)data.getSerializableExtra(CommentAddActivity.COMMENT_TO_ADD);
 		model.addComment(comment);
+		if(comment.getStatus() == Comment.Status.RETURNED) {
+			claim.setStatus(Status.RETURNED);
+			setEditable();
+		} else {
+			claim.setStatus(Status.APPROVED);
+			commitChangesAndFinish();
+		}
 	}
 	
 	/**

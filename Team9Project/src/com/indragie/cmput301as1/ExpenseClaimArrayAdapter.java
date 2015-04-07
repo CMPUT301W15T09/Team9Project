@@ -111,7 +111,7 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 	}
 	
 	/**
-	 * Changes the background color of the claim depending on the distance from the first destination to the home location
+	 * Changes the background color of the claim depending on the distance from the first destination to the home location.
 	 * @param destinations list of destinations
 	 * @param convertView the background of the claim
 	 */
@@ -150,7 +150,7 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 	}
 	
 	/**
-	 * Draws the status of the expense claim
+	 * Draws the status of the expense claim.
 	 * @param status The status.
 	 * @param resources The application's resources.
 	 * @return The drawable resource.
@@ -171,7 +171,7 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 	}
 	
 	/**
-	 * Builds a string containing every destination in the specified
+	 * Builds a string containing every destination in the specified.
 	 * expense claim, each separated by a new line.
 	 * @param claim The expense claim.
 	 * @return String containing every destination in the expense claim, suitable
