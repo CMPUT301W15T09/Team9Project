@@ -2,7 +2,7 @@
 <resources>
 
     <!-- General -->
-    <string name="app_name">karunara-expenses</string>
+    <string name="app_name">Expense Tracker</string>
     <string name="action_delete">Delete</string>
     <string name="action_confirm_prefix">Are you sure you want to </string>
 
