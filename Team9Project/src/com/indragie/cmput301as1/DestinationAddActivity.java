@@ -14,9 +14,9 @@ public class DestinationAddActivity extends PlacePickerParentActivity {
 	
 	public static final String ADD_DESTINATION = "com.indragie.cmput301as1.ADD_DESTINATION";
 
-	EditText nameField;
-	EditText reasonField;
-	EditText addLocationField;
+	protected EditText nameField;
+	protected EditText reasonField;
+	protected EditText addLocationField;
 	
 	Geolocation location;
 	
@@ -27,7 +27,7 @@ public class DestinationAddActivity extends PlacePickerParentActivity {
 		
 	}
 
-	private void setUpFields() {
+	protected void setUpFields() {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		setContentView(R.layout.activity_destination_add);
 		
