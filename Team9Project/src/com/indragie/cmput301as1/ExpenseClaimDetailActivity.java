@@ -323,6 +323,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 			break;
 		case EDIT_DESTINATION_REQUEST:
 			onEditDestination(data);
+			break;
 		case ADD_EXPENSE_ITEM_REQUEST:
 			onAddExpenseItem(data);
 			break;
@@ -345,7 +346,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	 * @param data The intent.
 	 */
 	private void onAddDestination(Intent data) {
-		Destination destination = (Destination)data.getSerializableExtra(DestinationAddActivity.ADD_DESTINATION);
+		Destination destination = (Destination)data.getSerializableExtra(DestinationAddActivity.EXTRA_DESTINATION);
 		model.addDestination(destination);
 	}
 
@@ -354,8 +355,8 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	 * @param data The intent.
 	 */
 	private void onEditDestination(Intent data) {
-		Destination destination = (Destination)data.getSerializableExtra(DestinationEditActivity.EDIT_DESTINATION);
-		int position = data.getIntExtra(DestinationEditActivity.EDIT_DESTINATION_POSITION, -1);
+		Destination destination = (Destination)data.getSerializableExtra(DestinationEditActivity.EXTRA_DESTINATION);
+		int position = data.getIntExtra(DestinationEditActivity.EXTRA_EDIT_DESTINATION_POSITION, -1);
 		model.setDestination(position, destination);	
 	}
 	
@@ -558,6 +559,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	 */
 	public void startDestinationAddActivity() {
 		Intent addDestinationIntent = new Intent(this, DestinationAddActivity.class);
+		addDestinationIntent.putExtra(DestinationAddActivity.EXTRA_USER, user);
 		startActivityForResult(addDestinationIntent, ADD_DESTINATION_REQUEST);
 	}
 	
@@ -678,9 +680,9 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	 */
 	private void startEditDestinationActivity(int position) {
 		Intent editDestinationIntent = new Intent(this, DestinationEditActivity.class);
-		editDestinationIntent.putExtra(DestinationEditActivity.EDIT_DESTINATION, controller.getDestination(position));
-		editDestinationIntent.putExtra(DestinationEditActivity.EDIT_DESTINATION_POSITION, position);
-		editDestinationIntent.putExtra(DestinationEditActivity.EDIT_DESTINATION_EDITABLE, editable);
+		editDestinationIntent.putExtra(DestinationEditActivity.EXTRA_DESTINATION, controller.getDestination(position));
+		editDestinationIntent.putExtra(DestinationEditActivity.EXTRA_EDIT_DESTINATION_POSITION, position);
+		editDestinationIntent.putExtra(DestinationEditActivity.EXTRA_EDIT_DESTINATION_EDITABLE, editable);
 		startActivityForResult(editDestinationIntent, EDIT_DESTINATION_REQUEST);
 	}
 	

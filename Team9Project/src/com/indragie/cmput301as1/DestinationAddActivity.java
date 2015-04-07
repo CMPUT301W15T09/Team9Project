@@ -12,19 +12,24 @@ import android.widget.EditText;
 
 public class DestinationAddActivity extends PlacePickerParentActivity {
 	
-	public static final String ADD_DESTINATION = "com.indragie.cmput301as1.ADD_DESTINATION";
-
+	public static final String EXTRA_DESTINATION = "com.indragie.cmput301as1.EXTRA_DESTINATION";
+	public static final String EXTRA_USER = "com.indragie.cmput301as1.EXTRA_USER";
+	
 	protected EditText nameField;
 	protected EditText reasonField;
 	protected EditText addLocationField;
 	
-	Geolocation location;
+	protected Geolocation location;
+	
+	protected boolean noLocationAdded = true;
+	private User user;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setUpFields();
 		setUpListener();
+		user = (User)getIntent().getSerializableExtra(EXTRA_USER);
 	}
 
 	protected void setUpFields() {
@@ -50,8 +55,8 @@ public class DestinationAddActivity extends PlacePickerParentActivity {
 				addLocationField.setText(place.getName() + "\n" + place.getAddress());
 				addLocationField.clearFocus();
 				
-				location = new Geolocation(place.getLatLng());
-				
+				location = new Geolocation(place);
+				noLocationAdded = false;
 			}
 		};
 		
@@ -79,8 +84,13 @@ public class DestinationAddActivity extends PlacePickerParentActivity {
 		case R.id.action_accept:
 			String name = nameField.getText().toString();
 			String reason = reasonField.getText().toString();
-			Destination destination = new Destination(name, reason, location);
 			
+			if(noLocationAdded) {
+				location = user.getLocation();
+			}
+			Destination destination = new Destination(name, reason, location);
+			System.out.println("Name after saving in destination: " +location.getName());
+			System.out.println("Address after saving in destination: " + location.getAddress());
 			setResult(RESULT_OK, addDestinationIntent(name, reason, destination)); 
 			finish();
 			return true;
@@ -98,9 +108,8 @@ public class DestinationAddActivity extends PlacePickerParentActivity {
 	 * @return Intent that contains the destination to add.
 	 */
 	protected Intent addDestinationIntent(String name, String reason, Destination destination)  {
-		
 		Intent intent = new Intent();
-		intent.putExtra(ADD_DESTINATION, destination);
+		intent.putExtra(EXTRA_DESTINATION, destination);
 		return intent;
 	}
 	
