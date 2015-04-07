@@ -29,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -58,37 +59,7 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 		List<Destination> destinations = claim.getDestinations();
 
 		// change the background color for destinations
-		if ((destinations.size() > 0)&&(user.getLocation()!=null)){
-			// get the home location
-			Geolocation home = user.getLocation();
 		
-			// get the first destination
-			if (destinations.get(0).getLocation() != null) {
-				Geolocation location = destinations.get(0).getLocation();
-
-				// get the computed distance between the home location and destination
-				float[] results = new float[1];
-				double startLatitude = home.getLatitude();
-				double startLongitude = home.getLongitude();
-				double endLatitude = location.getLatitude();
-				double endLongitude = location.getLongitude();
-				Location.distanceBetween(startLatitude, startLongitude, endLatitude, endLongitude, results);
-				float distanceBetween = results[0];
-
-				// change the color of the background of destination depending on the distance
-				if (distanceBetween < 10000000.0) {
-					convertView.setBackgroundColor(Color.BLUE);
-				} else if (distanceBetween < 20000000.0) {
-					convertView.setBackgroundColor(Color.CYAN);
-				} else if (distanceBetween < 30000000.0) {
-					convertView.setBackgroundColor(Color.GREEN);
-				} else if (distanceBetween < 40000000.0) {
-					convertView.setBackgroundColor(Color.YELLOW);
-				} else {
-					convertView.setBackgroundColor(Color.LTGRAY);
-				}				
-			}
-		}
 		setColorCoding(destinations, convertView);
 
 		destinationsTextView.setText(buildDestinationsString(claim));
@@ -119,6 +90,8 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 		if ((destinations.size() > 0)&&(user.getLocation()!=null)){
 			// get the home location
 			Geolocation home = user.getLocation();
+			ImageView destinationsBar = (ImageView)convertView.findViewById(R.id.destination_color_bar);
+			destinationsBar.setVisibility(View.VISIBLE);
 		
 			// get the first destination
 			if (destinations.get(0).getLocation() != null) {
@@ -134,16 +107,16 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 				float distanceBetween = results[0];
 
 				// change the color of the background of destination depending on the distance
-				if (distanceBetween < 10000000.0) {
-					convertView.setBackgroundColor(Color.BLUE);
-				} else if (distanceBetween < 20000000.0) {
-					convertView.setBackgroundColor(Color.CYAN);
-				} else if (distanceBetween < 30000000.0) {
-					convertView.setBackgroundColor(Color.GREEN);
-				} else if (distanceBetween < 40000000.0) {
-					convertView.setBackgroundColor(Color.YELLOW);
+				if (distanceBetween < 300000.0) {
+					destinationsBar.setImageResource(R.drawable.green);
+				} else if (distanceBetween < 1000000.0) {
+					destinationsBar.setImageResource(R.drawable.lime);
+				} else if (distanceBetween < 3500000.0) {
+					destinationsBar.setImageResource(R.drawable.yellow);
+				} else if (distanceBetween < 7500000.0) {
+					destinationsBar.setImageResource(R.drawable.orange);
 				} else {
-					convertView.setBackgroundColor(Color.LTGRAY);
+					destinationsBar.setImageResource(R.drawable.red);
 				}				
 			}
 		}

@@ -110,6 +110,7 @@ public class ExpenseItemEditActivity extends ExpenseItemAddActivity {
 
 		dateField.setDate(item.getDate());
 		dateField.setEnabled(editable);
+		dateField.clearFocus();
 
 		SpinnerUtils.setSelectedItem(categorySpinner, item.getCategory());
 		categorySpinner.setEnabled(editable);
