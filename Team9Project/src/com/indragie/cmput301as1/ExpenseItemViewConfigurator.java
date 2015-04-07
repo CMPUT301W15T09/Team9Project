@@ -50,7 +50,7 @@ public class ExpenseItemViewConfigurator implements ViewConfigurator<ExpenseClai
 	
 	@Override
 	public View createView(Context context, ViewGroup parent) {
-		return LayoutInflater.from(context).inflate(R.layout.expense_claim_list_row, parent, false);
+		return LayoutInflater.from(context).inflate(R.layout.expense_item_list_row, parent, false);
 	}
 	
 	@Override

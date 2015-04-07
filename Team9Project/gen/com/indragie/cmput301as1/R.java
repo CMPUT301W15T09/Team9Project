@@ -612,7 +612,8 @@ containing a value of this type.
         public static final int alert_gps=0x7f03000d;
         public static final int comment_list_row=0x7f03000e;
         public static final int expense_claim_list_row=0x7f03000f;
-        public static final int list_header=0x7f030010;
+        public static final int expense_item_list_row=0x7f030010;
+        public static final int list_header=0x7f030011;
     }
     public static final class menu {
         public static final int contextual_accept=0x7f0b0000;
