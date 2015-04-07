@@ -25,7 +25,6 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,6 +58,33 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 		List<Destination> destinations = claim.getDestinations();
 
 		// change the background color for destinations
+		setColorCoding(destinations, convertView);
+
+		destinationsTextView.setText(buildDestinationsString(claim));
+		
+		TextView dateTextView = (TextView)convertView.findViewById(R.id.tv_date);
+		dateTextView.setText(DateFormat.getDateInstance().format(claim.getStartDate()));
+		
+		TextView amountsTextView = (TextView)convertView.findViewById(R.id.tv_amounts);
+		String amounts = claim.getSummarizedAmounts();
+		if (amounts == null) {
+			amounts = resources.getString(R.string.no_expenses);
+		}
+		amountsTextView.setText(amounts);
+		
+		TextView statusTextView = (TextView)convertView.findViewById(R.id.tv_status);
+		statusTextView.setText(claim.getStatusString(resources));
+		statusTextView.setBackground(drawableForStatus(claim.getStatus(), resources));
+		
+		return convertView;
+	}
+	
+	/**
+	 * Changes the background color of the claim depending on the distance from the first destination to the home location
+	 * @param destinations list of destinations
+	 * @param convertView the background of the claim
+	 */
+	private void setColorCoding(List<Destination> destinations, View convertView) {
 		if ((destinations.size() > 0)&&(user.getLocation()!=null)){
 			// get the home location
 			Geolocation home = user.getLocation();
@@ -90,24 +116,6 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 				}				
 			}
 		}
-
-		destinationsTextView.setText(buildDestinationsString(claim));
-		
-		TextView dateTextView = (TextView)convertView.findViewById(R.id.tv_date);
-		dateTextView.setText(DateFormat.getDateInstance().format(claim.getStartDate()));
-		
-		TextView amountsTextView = (TextView)convertView.findViewById(R.id.tv_amounts);
-		String amounts = claim.getSummarizedAmounts();
-		if (amounts == null) {
-			amounts = resources.getString(R.string.no_expenses);
-		}
-		amountsTextView.setText(amounts);
-		
-		TextView statusTextView = (TextView)convertView.findViewById(R.id.tv_status);
-		statusTextView.setText(claim.getStatusString(resources));
-		statusTextView.setBackground(drawableForStatus(claim.getStatus(), resources));
-		
-		return convertView;
 	}
 	
 	/**
