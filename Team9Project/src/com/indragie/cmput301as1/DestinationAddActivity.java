@@ -44,6 +44,11 @@ public class DestinationAddActivity extends PlacePickerParentActivity {
 	 */
 	public static final String EXTRA_USER = "com.indragie.cmput301as1.EXTRA_USER";
 	
+	/**
+	 * Intent key for checking if adding destination or editing.
+	 */
+	public static final String ADD_TO_CLAIM = "com.indragie.cmput301as1.ADD_TO_CLAIM";
+	
 	//================================================================================
 	// Properties
 	//================================================================================
@@ -79,14 +84,14 @@ public class DestinationAddActivity extends PlacePickerParentActivity {
 		setUpFields();
 		setUpListener();
 		
-		User user = (User)getIntent().getSerializableExtra(EXTRA_USER);
-		location = user.getLocation();
+		Boolean addToClaim = getIntent().getBooleanExtra(ADD_TO_CLAIM, false);
 		
-		if (location == null) {
-			System.out.println("was null");
-			location = new Geolocation(0, 0);
+		if(addToClaim) {
+			User user = (User)getIntent().getSerializableExtra(EXTRA_USER);
+			location = user.getLocation();
+			
+			addLocationField.setText(location.getName() + "\n" + location.getAddress());
 		}
-		addLocationField.setText(location.getName() + "\n" + location.getAddress());
 	}
 
 	/**
@@ -149,9 +154,8 @@ public class DestinationAddActivity extends PlacePickerParentActivity {
 			String reason = reasonField.getText().toString();
 			
 			Destination destination = new Destination(name, reason, location);
-			System.out.println("Name after saving in destination: " +location.getName());
-			System.out.println("Address after saving in destination: " + location.getAddress());
-			setResult(RESULT_OK, addDestinationIntent(name, reason, destination)); 
+
+			setResult(RESULT_OK, addDestinationIntent(destination)); 
 			finish();
 			return true;
 		case android.R.id.home:
@@ -167,7 +171,7 @@ public class DestinationAddActivity extends PlacePickerParentActivity {
 	 * Calls method for adding a destination
 	 * @return Intent that contains the destination to add.
 	 */
-	protected Intent addDestinationIntent(String name, String reason, Destination destination)  {
+	protected Intent addDestinationIntent(Destination destination)  {
 		Intent intent = new Intent();
 		intent.putExtra(EXTRA_DESTINATION, destination);
 		return intent;
