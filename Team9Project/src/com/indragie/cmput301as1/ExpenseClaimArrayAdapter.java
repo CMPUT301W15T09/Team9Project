@@ -25,6 +25,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,7 +57,7 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 
 		// get the Geolocation of the current destination
 		List<Destination> destinations = claim.getDestinations();
-		
+
 		// change the background color for destinations
 		if ((destinations.size() > 0)&&(user.getLocation()!=null)){
 			// get the home location
@@ -64,7 +65,7 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 			for (int i=0; i<destinations.size(); i++) {
 				if (destinations.get(i).getLocation() != null) {
 					Geolocation location = destinations.get(i).getLocation();
-					
+
 					// get the computed distance between the home location and destination
 					float[] results = new float[1];
 					double startLatitude = home.getLatitude();
@@ -73,19 +74,23 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 					double endLongitude = location.getLongitude();
 					Location.distanceBetween(startLatitude, startLongitude, endLatitude, endLongitude, results);
 					float distanceBetween = results[0];
-					
-					// now we want to change the color of the background depending on the distance
-					if (distanceBetween < 1000) {
+
+					// change the color of the background of destination depending on the distance
+					if (distanceBetween < 10000000.0) {
 						destinationsTextView.setBackgroundColor(Color.BLUE);
-					} else if (distanceBetween < 20000) {
+					} else if (distanceBetween < 20000000.0) {
+						destinationsTextView.setBackgroundColor(Color.CYAN);
+					} else if (distanceBetween < 30000000.0) {
 						destinationsTextView.setBackgroundColor(Color.GREEN);
-					} else {
+					} else if (distanceBetween < 40000000.0) {
 						destinationsTextView.setBackgroundColor(Color.YELLOW);
+					} else {
+						destinationsTextView.setBackgroundColor(Color.LTGRAY);
 					}
 				}				
 			}
 		}
-		
+
 		destinationsTextView.setText(buildDestinationsString(claim));
 		
 		TextView dateTextView = (TextView)convertView.findViewById(R.id.tv_date);
