@@ -92,11 +92,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	 * Request code for starting {@link TagEditToClaimActivity}
 	 */
 	private static final int EDIT_TAG_REQUEST = 4;
-	
-	/**
-	 * Index used to indicate the nonexistence of an index.
-	 */
-	private static final int NO_INDEX = -1;
 
 	//================================================================================
 	// Properties
@@ -324,8 +319,10 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		if (resultCode != RESULT_OK) return;
 		switch (requestCode) {
 		case ADD_DESTINATION_REQUEST:
-			onAddDestinationItem(data);
+			onAddDestination(data);
 			break;
+		case EDIT_DESTINATION_REQUEST:
+			onEditDestination(data);
 		case ADD_EXPENSE_ITEM_REQUEST:
 			onAddExpenseItem(data);
 			break;
@@ -344,14 +341,24 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 	}
 	
 	/**
-	 * Retreives the destination from a intent to add to the expense claim.
+	 * Retrieves the destination from a intent to add to the expense claim.
 	 * @param data The intent.
 	 */
-	private void onAddDestinationItem(Intent data) {
+	private void onAddDestination(Intent data) {
 		Destination destination = (Destination)data.getSerializableExtra(DestinationAddActivity.ADD_DESTINATION);
 		model.addDestination(destination);
 	}
 
+	/**
+	 * Retrieves the destination from a intent to edit on the expense claim.
+	 * @param data The intent.
+	 */
+	private void onEditDestination(Intent data) {
+		Destination destination = (Destination)data.getSerializableExtra(DestinationEditActivity.EDIT_DESTINATION);
+		int position = data.getIntExtra(DestinationEditActivity.EDIT_DESTINATION_POSITION, -1);
+		model.setDestination(position, destination);	
+	}
+	
 	/**
 	 * Retrieves the expense item from a intent to add to the expense claim.
 	 * @param data The intent.
@@ -553,7 +560,6 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 		Intent addDestinationIntent = new Intent(this, DestinationAddActivity.class);
 		startActivityForResult(addDestinationIntent, ADD_DESTINATION_REQUEST);
 	}
-	
 	
 	/**
 	 * Starts the {@link ExpenseItemAddActivity}

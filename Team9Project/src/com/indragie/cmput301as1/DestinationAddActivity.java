@@ -24,7 +24,7 @@ public class DestinationAddActivity extends PlacePickerParentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setUpFields();
-		
+		setUpListener();
 	}
 
 	protected void setUpFields() {
@@ -34,8 +34,9 @@ public class DestinationAddActivity extends PlacePickerParentActivity {
 		nameField = (EditText)findViewById(R.id.et_name);
 		reasonField = (EditText)findViewById(R.id.et_travel_reason);
 		addLocationField = (EditText)findViewById(R.id.et_add_location);
-
-		
+	}
+	
+	protected void setUpListener() {
 		final OnPlacePickedListener listener = new OnPlacePickedListener() {
 			
 			@Override
@@ -76,7 +77,11 @@ public class DestinationAddActivity extends PlacePickerParentActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_accept:
-			setResult(RESULT_OK, addDestinationIntent()); 
+			String name = nameField.getText().toString();
+			String reason = reasonField.getText().toString();
+			Destination destination = new Destination(name, reason, location);
+			
+			setResult(RESULT_OK, addDestinationIntent(name, reason, destination)); 
 			finish();
 			return true;
 		case android.R.id.home:
@@ -92,11 +97,8 @@ public class DestinationAddActivity extends PlacePickerParentActivity {
 	 * Calls method for adding a destination
 	 * @return Intent that contains the destination to add.
 	 */
-	private Intent addDestinationIntent()  {
-		String name = nameField.getText().toString();
-		String reason = reasonField.getText().toString();
+	protected Intent addDestinationIntent(String name, String reason, Destination destination)  {
 		
-		Destination destination = new Destination(name, reason, location);
 		Intent intent = new Intent();
 		intent.putExtra(ADD_DESTINATION, destination);
 		return intent;
