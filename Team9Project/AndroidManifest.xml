@@ -115,6 +115,10 @@
             android:name=".UserSettingsActivity"
             android:label="@string/title_activity_user_settings" >
         </activity>
+        <activity
+            android:name=".CommentAddActivity"
+            android:label="@string/title_activity_comment_add">
+        </activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

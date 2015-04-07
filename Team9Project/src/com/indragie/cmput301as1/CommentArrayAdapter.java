@@ -44,7 +44,7 @@ public class CommentArrayAdapter extends ArrayAdapter<Comment> {
 		}
 
 		TextView commentName = (TextView)convertView.findViewById(R.id.tv_name);
-		commentName.setText(comment.getApprover().getName());
+		commentName.setText("Approver: " + comment.getApprover().getName());
 		
 		TextView commentTextView = (TextView)convertView.findViewById(R.id.tv_comment);
 		commentTextView.setText(comment.getComment());
@@ -75,28 +75,4 @@ public class CommentArrayAdapter extends ArrayAdapter<Comment> {
 			return resources.getDrawable(R.drawable.bg_rounded_red);
 		}
 	}
-	
-	/**
-	 * Builds a string containing every comment in the specified
-	 * expense claim, each separated by a new line.
-	 * @param comment The comment.
-	 * @return String containing every comment in the expense claim, suitable
-	 * for display in the UI.
-	 */
-	/*private String buildCommentsString(Comment comment) {
-		List<Comment> comments = comment.getComments();
-		if (comments.size() == 0) {
-			return getContext().getResources().getString(R.string.no_comments);
-		}
-		
-		StringBuilder builder = new StringBuilder();
-		for (Comment comment : comments) {
-			builder.append(comment.getName());
-			builder.append("\n");
-		}
-		
-		// Remove trailing newline
-		builder.deleteCharAt(builder.length() - 1);
-		return builder.toString();
-	}*/
 }

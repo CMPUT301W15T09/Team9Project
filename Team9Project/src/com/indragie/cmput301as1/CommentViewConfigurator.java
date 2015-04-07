@@ -52,8 +52,8 @@ public class CommentViewConfigurator implements ViewConfigurator<ExpenseClaimDet
 	public void configureView(Context context, View view, DetailItem object) {
 		Comment comment = (Comment)object.getModel();
 		
-		//TextView approverTextView = (TextView)view.findViewById(R.id.tv_name);
-		//approverTextView.setText(comment.getApprover().getName());
+		TextView approverTextView = (TextView)view.findViewById(R.id.tv_name);
+		approverTextView.setText(comment.getApprover().getName());
 		
 		TextView commentTextView = (TextView)view.findViewById(R.id.tv_comment);
 		commentTextView.setText(comment.getComment());

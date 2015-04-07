@@ -7,20 +7,21 @@
     android:paddingRight="12dp"
     android:paddingTop="8dp"
     android:paddingBottom="8dp">
+    <ScrollView
+           android:id="@+id/scrollview"
+           android:layout_width="fill_parent"
+           android:layout_height="wrap_content"
+           android:layout_marginRight="15dp"
+           android:fillViewport="true">
     
-    
-    <TextView 
-		android:id="@+id/tv_name"
-    	android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-    	android:textAppearance="?android:attr/textAppearanceListItem" />
-    
-    <TextView 
-		android:id="@+id/tv_comment"
-    	android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-    	android:textAppearance="?android:attr/textAppearanceListItem" />
-    
+	    <TextView 
+			android:id="@+id/tv_comment"
+	    	android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:textAppearance="?android:attr/textAppearanceListItem"
+	    	android:textSize="15sp"
+	    	 />
+    </ScrollView>
     
 	<TextView 
 	    android:id="@+id/tv_date"
@@ -28,15 +29,17 @@
 	    android:layout_height="wrap_content"
 	    android:layout_alignBaseline="@id/tv_name"
 	    android:layout_alignParentEnd="true"
-	    android:textAppearance="?android:attr/textAppearanceListItemSmall" />
-	
-	<TextView
-	    android:id="@+id/tv_amounts"
+	    android:textAppearance="?android:attr/textAppearanceListItemSmall"
+	    android:textSize="15sp" />
+
+	<TextView 
+		android:id="@+id/tv_name"
     	android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
-    	android:layout_below="@id/tv_name"
-      	android:layout_alignStart="@id/tv_name"
-    	android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+    	android:textAppearance="?android:attr/textAppearanceListItem" 
+    	android:layout_below="@id/scrollview"
+    	android:layout_marginStart="15dp"
+    	android:textSize="12sp"/>
 	
 	<TextView
 	    android:id="@+id/tv_status"
@@ -45,7 +48,7 @@
 	    android:paddingLeft="4dp"
 	    android:paddingRight="4dp"
 	    android:paddingBottom="1dp"
-	    android:layout_alignBaseline="@id/tv_amounts"
+	    android:layout_alignBaseline="@id/scrollview"
 	    android:layout_alignParentEnd="true"
 	    android:gravity="center"
 	    android:textColor="#ffffff"

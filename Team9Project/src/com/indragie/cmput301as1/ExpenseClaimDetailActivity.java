@@ -573,6 +573,7 @@ public class ExpenseClaimDetailActivity extends ListActivity implements TypedObs
 
 	private void startaddCommentActivity() {
 		Intent commentAddIntent = new Intent(this, CommentAddActivity.class);
+		commentAddIntent.putExtra(CommentAddActivity.COMMENT_APPROVER, user);
 		startActivityForResult(commentAddIntent, ADD_COMMENT_REQUEST);
 	}
 	
