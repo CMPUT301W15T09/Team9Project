@@ -156,6 +156,8 @@ public class ExpenseItemAddActivity extends PlacePickerParentActivity {
 				});
 
 		nameField = (EditText) findViewById(R.id.et_name);
+		nameField.requestFocus();
+		
 		descriptionField = (EditText) findViewById(R.id.et_description);
 		locationField = (EditText) findViewById(R.id.et_location);
 		amountField = (EditText) findViewById(R.id.et_amount);
