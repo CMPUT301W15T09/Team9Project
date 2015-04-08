@@ -37,18 +37,26 @@
         android:layout_toEndOf="@id/destination_color_bar"
         android:paddingBottom="8dp"
         android:paddingTop="8dp" >
+        
+        <TextView
+            android:id="@+id/tv_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceListItemSmall" />
 
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignStart="@id/tv_user_name"
+            android:layout_below="@id/tv_user_name"
             android:textAppearance="?android:attr/textAppearanceListItem" />
 
         <TextView
             android:id="@+id/tv_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@id/tv_name"
+            android:layout_alignBaseline="@id/tv_user_name"
             android:layout_alignParentEnd="true"
             android:textAppearance="?android:attr/textAppearanceListItemSmall" />
 
@@ -66,7 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_below="@id/tv_date"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="8dp"
             android:gravity="center"
             android:paddingBottom="1dp"
             android:paddingLeft="4dp"

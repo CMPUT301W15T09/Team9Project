@@ -508,26 +508,26 @@ containing a value of this type.
         public static final int yellow=0x7f020038;
     }
     public static final class id {
-        public static final int action_accept=0x7f0c0040;
-        public static final int action_add_claim=0x7f0c004f;
-        public static final int action_add_comment=0x7f0c0049;
-        public static final int action_add_destination=0x7f0c0045;
-        public static final int action_add_item=0x7f0c0046;
-        public static final int action_add_tag=0x7f0c0041;
+        public static final int action_accept=0x7f0c0041;
+        public static final int action_add_claim=0x7f0c0050;
+        public static final int action_add_comment=0x7f0c004a;
+        public static final int action_add_destination=0x7f0c0046;
+        public static final int action_add_item=0x7f0c0047;
+        public static final int action_add_tag=0x7f0c0042;
         public static final int action_cancel=0x7f0c0024;
-        public static final int action_current_location=0x7f0c0051;
-        public static final int action_delete=0x7f0c0042;
+        public static final int action_current_location=0x7f0c0052;
+        public static final int action_delete=0x7f0c0043;
         public static final int action_done=0x7f0c0025;
-        public static final int action_edit=0x7f0c0043;
-        public static final int action_email=0x7f0c0047;
-        public static final int action_filter_tags=0x7f0c004e;
-        public static final int action_manage_tags=0x7f0c004d;
-        public static final int action_mark_submitted=0x7f0c0048;
-        public static final int action_refresh=0x7f0c004b;
-        public static final int action_set_incomplete=0x7f0c0050;
-        public static final int action_settings=0x7f0c0044;
-        public static final int action_sort_claim=0x7f0c004c;
-        public static final int action_user_settings=0x7f0c004a;
+        public static final int action_edit=0x7f0c0044;
+        public static final int action_email=0x7f0c0048;
+        public static final int action_filter_tags=0x7f0c004f;
+        public static final int action_manage_tags=0x7f0c004e;
+        public static final int action_mark_submitted=0x7f0c0049;
+        public static final int action_refresh=0x7f0c004c;
+        public static final int action_set_incomplete=0x7f0c0051;
+        public static final int action_settings=0x7f0c0045;
+        public static final int action_sort_claim=0x7f0c004d;
+        public static final int action_user_settings=0x7f0c004b;
         public static final int adjust_height=0x7f0c0000;
         public static final int adjust_width=0x7f0c0001;
         public static final int book_now=0x7f0c0010;
@@ -556,9 +556,9 @@ containing a value of this type.
         public static final int holo_dark=0x7f0c0007;
         public static final int holo_light=0x7f0c0008;
         public static final int hybrid=0x7f0c0003;
-        public static final int iv_incomplete_icon=0x7f0c003d;
-        public static final int iv_location_icon=0x7f0c003e;
-        public static final int iv_receipt_icon=0x7f0c003c;
+        public static final int iv_incomplete_icon=0x7f0c003e;
+        public static final int iv_location_icon=0x7f0c003f;
+        public static final int iv_receipt_icon=0x7f0c003d;
         public static final int map=0x7f0c0031;
         public static final int match_parent=0x7f0c000e;
         public static final int monochrome=0x7f0c0016;
@@ -581,7 +581,7 @@ containing a value of this type.
         public static final int strict_sandbox=0x7f0c000b;
         public static final int tagNameEditText=0x7f0c0033;
         public static final int terrain=0x7f0c0006;
-        public static final int title_label=0x7f0c003f;
+        public static final int title_label=0x7f0c0040;
         public static final int tv_amounts=0x7f0c0019;
         public static final int tv_comment=0x7f0c0038;
         public static final int tv_date=0x7f0c0039;
@@ -589,6 +589,7 @@ containing a value of this type.
         public static final int tv_name=0x7f0c0018;
         public static final int tv_start_label=0x7f0c001e;
         public static final int tv_status=0x7f0c003a;
+        public static final int tv_user_name=0x7f0c003c;
         public static final int wrap_content=0x7f0c000f;
     }
     public static final class integer {

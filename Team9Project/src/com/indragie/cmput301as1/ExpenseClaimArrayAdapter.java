@@ -58,6 +58,13 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 		TextView destinationsTextView = (TextView)convertView.findViewById(R.id.tv_name);
 		destinationsTextView.setText(buildDestinationsString(claim));
 		
+		TextView usersTextView = (TextView)convertView.findViewById(R.id.tv_user_name);
+		if (claim.getUser().equals(user)) {
+			usersTextView.setVisibility(View.GONE);
+		} else {
+			usersTextView.setText(claim.getUser().getName());
+		}
+		
 		TextView dateTextView = (TextView)convertView.findViewById(R.id.tv_date);
 		dateTextView.setText(DateFormat.getDateInstance().format(claim.getStartDate()));
 		
