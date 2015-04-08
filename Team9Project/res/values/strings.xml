@@ -134,7 +134,7 @@
     <string name="no_location_toast">Current location is unavailable</string>
     
     <!-- ExpenseClaimPagerAdapter -->
-    <string name="tab_owned">Owned</string>
-    <string name="tab_reviewal">Reviewal</string>
+    <string name="tab_owned">My Claims</string>
+    <string name="tab_reviewal">Review Queue</string>
     
 </resources>
