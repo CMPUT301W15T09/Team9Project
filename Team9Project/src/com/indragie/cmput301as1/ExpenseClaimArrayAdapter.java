@@ -88,7 +88,8 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 	 * @param convertView the background of the claim
 	 */
 	private void setColorCoding(List<Destination> destinations, View convertView) {
-		ImageView destinationsBar = (ImageView)convertView.findViewById(R.id.destination_color_bar);
+		View destinationsBar = (View)convertView.findViewById(R.id.destination_color_bar);
+		
 		if ((destinations.size() > 0) && (user.getLocation() != null)) {
 			// get the home location
 			Geolocation home = user.getLocation();
@@ -108,19 +109,19 @@ public class ExpenseClaimArrayAdapter extends ArrayAdapter<ExpenseClaim> {
 
 				// change the color of the background of destination depending on the distance
 				if (distanceBetween < 300000.0) {
-					destinationsBar.setImageResource(R.drawable.green);
+					destinationsBar.setBackgroundResource(R.drawable.green);
 				} else if (distanceBetween < 1000000.0) {
-					destinationsBar.setImageResource(R.drawable.lime);
+					destinationsBar.setBackgroundResource(R.drawable.lime);
 				} else if (distanceBetween < 3500000.0) {
-					destinationsBar.setImageResource(R.drawable.yellow);
+					destinationsBar.setBackgroundResource(R.drawable.yellow);
 				} else if (distanceBetween < 7500000.0) {
-					destinationsBar.setImageResource(R.drawable.orange);
+					destinationsBar.setBackgroundResource(R.drawable.orange);
 				} else {
-					destinationsBar.setImageResource(R.drawable.red);
+					destinationsBar.setBackgroundResource(R.drawable.red);
 				}				
 			}
 		} else {
-			destinationsBar.setImageResource(R.drawable.grey);
+			destinationsBar.setBackgroundResource(R.drawable.grey);
 		}
 	}
 	
